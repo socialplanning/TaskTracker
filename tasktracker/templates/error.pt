@@ -1,1 +1,1 @@
-Error: <span tal:replace="c.error"/>
+Error: <span tal:replace="c/error"/>

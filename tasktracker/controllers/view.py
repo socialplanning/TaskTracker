@@ -20,8 +20,7 @@ class ViewController(BaseController):
         return render_response('zpt', 'show_create')
 
     def create(self):
-        c.task = Task()
-        c.task.set(**self.clean_params(request.params))
+        c.task = Task(**self.clean_params(request.params))
 
         return redirect_to(action='view',id=c.task.id)
 
@@ -41,21 +40,21 @@ class ViewController(BaseController):
 
         return redirect_to(action='view',id=c.task.id)
 
-    def view(self, id):
+    def getTask(self, id):
         try:
-            c.task = Task.get(int(id))
-            return render_response('zpt', 'view')
+            return Task.get(int(id))
         except LookupError:
-            c.error = "No such task"
-            return render_response('zpt', 'error')            
+            raise NoSuchIdError("No such task ID: %s" % id)
 
+    @catches_errors
+    def view(self, id):
+        c.task = self.getTask(int(id))
+        return render_response('zpt', 'view')
+
+    @catches_errors
     def destroy(self, id):
-        try:
             c.task = Task.get(int(id))
             c.task.live = False
             c.flash = "Deleted."
             return self.index()
-        except LookupError:
-            c.error = "No such task"
-            return render_response('zpt', 'error')
         

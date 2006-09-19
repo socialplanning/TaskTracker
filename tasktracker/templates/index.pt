@@ -1,7 +1,12 @@
 List of tasks:
 
+<metal:macro define-macro="item_list">
+
 <ul tal:repeat="task c/tasks">
 <li>
+<span metal:define-slot="selected" />
+
+
 <div tal:content="task/title"/>
 <div tal:content="task/created"/>
 
@@ -14,6 +19,13 @@ List of tasks:
 
 </li>
 </ul>
+
+</metal:macro>
+
+<metal:do metal:use-macro="other_file/macros/item_list">
+<span metal:fill-slot="selected"><input type="checkbox" disabled checked></span>
+
+</metal:do>
 
 <p>
 <a tal:attributes="href python:h.url_for(controller='view', action='show_create')">Create a new task.</a>

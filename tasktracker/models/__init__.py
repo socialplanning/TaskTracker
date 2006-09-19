@@ -18,7 +18,8 @@ class Task(SQLObject):
     title = StringCol()
     text = StringCol()
     live = BoolCol(default=True)
-    #completed = BoolCol(default=False)
+    
+    status = BoolCol(default=False) # True means it's done.
     
     comments = MultipleJoin("Comment")
 
