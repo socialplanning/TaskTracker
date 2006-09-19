@@ -1,0 +1,20 @@
+List of tasks:
+
+<ul tal:repeat="task c/tasks">
+<li>
+<div tal:content="task/title"/>
+<div tal:content="task/created"/>
+
+<a tal:attributes="href python:h.url_for(controller='view', action='view', id=task.id)">view</a>
+|
+<a tal:attributes="href python:h.url_for(controller='view', action='show_update', id=task.id)">edit</a>
+|
+<a tal:attributes="href python:h.url_for(controller='view',action='destroy', id=task.id)">delete</a>
+
+
+</li>
+</ul>
+
+<p>
+<a tal:attributes="href python:h.url_for(controller='view', action='show_create')">Create a new task.</a>
+</p>
