@@ -5,7 +5,7 @@ from tasktracker.models import *
 class ViewController(BaseController):
 
     def clean_params(self, params):
-        allowed_params = ("title", "text")
+        allowed_params = ("title", "text", "status")
         clean = {}
         for param in allowed_params:
             if params.has_key(param):
@@ -38,7 +38,7 @@ class ViewController(BaseController):
         c.task = Task.get(int(id))
         c.task.set(**self.clean_params(request.params))
 
-        return redirect_to(action='view',id=c.task.id)
+        return redirect_to(action='index')
 
     def getTask(self, id):
         try:

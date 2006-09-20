@@ -19,7 +19,7 @@ class Task(SQLObject):
     text = StringCol()
     live = BoolCol(default=True)
     
-    status = BoolCol(default=False) # True means it's done.
+    status = EnumCol(default='uncompleted', enumValues=('completed', 'uncompleted'))
     
     comments = MultipleJoin("Comment")
 

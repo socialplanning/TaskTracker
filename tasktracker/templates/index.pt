@@ -1,31 +1,19 @@
-List of tasks:
+Uncompleted tasks:
 
-<metal:macro define-macro="item_list">
-
-<ul tal:repeat="task c/tasks">
-<li>
-<span metal:define-slot="selected" />
-
-
-<div tal:content="task/title"/>
-<div tal:content="task/created"/>
-
-<a tal:attributes="href python:h.url_for(controller='view', action='view', id=task.id)">view</a>
-|
-<a tal:attributes="href python:h.url_for(controller='view', action='show_update', id=task.id)">edit</a>
-|
-<a tal:attributes="href python:h.url_for(controller='view',action='destroy', id=task.id)">delete</a>
-
-
+<ul tal:repeat="atask c/tasks">
+<li tal:condition="python:atask.status == 'uncompleted'">
+<metal:do metal:use-macro="here/task_item/macros/view_task" />
 </li>
 </ul>
 
-</metal:macro>
+Completed tasks:
 
-<metal:do metal:use-macro="other_file/macros/item_list">
-<span metal:fill-slot="selected"><input type="checkbox" disabled checked></span>
+<ul tal:repeat="atask c/tasks">
+<li tal:condition="python:atask.status == 'completed'">
+<metal:do metal:use-macro="here/task_item/macros/view_task" />
+</li>
+</ul>
 
-</metal:do>
 
 <p>
 <a tal:attributes="href python:h.url_for(controller='view', action='show_create')">Create a new task.</a>
