@@ -1,6 +1,6 @@
 <a tal:attributes="href python:h.url_for(action='show_update', id=c.task.id)">edit</a>
 |
-<a tal:attributes="href python:h.url_for(controller='view',action='destroy', id=c.task.id)">delete</a>
+<a tal:attributes="href python:h.url_for(action='destroy', id=c.task.id)">delete</a>
 |
 <a tal:attributes="href python:h.url_for(action='index')">list</a>
 
