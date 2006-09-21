@@ -29,6 +29,14 @@ def catches_errors(f):
     new_f.func_name = f.func_name
     return new_f
 
+
+def render_text(text):
+    resp = Response()
+    resp.content_type = "text/plain"
+    resp.content = [text]
+    return resp 
+
+
 class BaseController(WSGIController):
     def __call__(self, environ, start_response):
         # Insert any code to be run per request here. The Routes match

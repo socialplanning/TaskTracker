@@ -20,13 +20,23 @@ def _index(index):
         index += 1
     return index
 
-def _task_sort_index(task_listID):
-    return _index(Task.selectBy(task_listID=task_listID).max('sort_index'))
+def _task_sort_index(task_listID, status='uncompleted', skip=None):
+    """
+    Returns an index which is guaranteed to be greater than all live  indexes in 
+    the same list with the same status.
+
+    """
+    return _index(Task.select(
+            AND(Task.q.task_listID==task_listID, 
+                Task.q.status==status, 
+                Task.q.id != skip,
+                Task.q.live == True
+                )).max('sort_index'))
 
 
 class Task(SQLObject):
     class sqlmeta:
-        defaultOrderBy = 'sort_index'
+        defaultOrder = 'sort_index'
 
     def _create(self, id, **kwargs):
         kwargs['sort_index'] = _task_sort_index(kwargs['task_listID']) or 0
@@ -41,9 +51,26 @@ class Task(SQLObject):
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
 
+    @classmethod
+    def oppositeStatus(cls, status):
+        if status == 'completed':
+            return 'uncompleted'
+        else:
+            return 'completed'
+
+    def toggleStatus(self):
+        self.status = self.oppositeStatus(self.status)
+        return self.status
+
+    def moveToBottom(self):
+        """ Call this *after* toggleStatus """
+        new_index = _task_sort_index(self.task_listID, status=self.status, skip=self.id)
+        self.sort_index = new_index
+
+
 class Comment(SQLObject):
     class sqlmeta:
-        defaultOrderBy = 'date'
+        defaultOrder = 'date'
 
     date = DateTimeCol(default=datetime.datetime.now)
     user = StringCol()
@@ -51,11 +78,11 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    return _index(TaskList.select().max('sort_index'))
+    return _index(TaskList.selectBy(live=True).max('sort_index'))
 
 class TaskList(SQLObject):
     class sqlmeta:
-        defaultOrderBy = 'sort_index'
+        defaultOrder = 'sort_index'
 
     created = DateTimeCol(default=datetime.datetime.now)
     title = StringCol()
