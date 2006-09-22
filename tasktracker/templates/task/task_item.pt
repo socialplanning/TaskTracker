@@ -1,0 +1,25 @@
+<metal:macro metal:define-macro="view_task">
+
+
+<span tal:replace="structure python: h.form_remote_tag(
+html=dict(id='form_%s' % atask.id),
+url=h.url(controller='task',action='complete_task', id=atask.id), 
+complete=h.evaluate_remote_response())" />
+
+
+<span tal:content="structure python: h.check_box('toggle_%s' % atask.id, checked=(atask.status=='completed'))" tal:attributes="id string:button_${atask/id};onclick python:&quot;new Ajax.Request('%s', {asynchronous:true, evalScripts:true});; moveTask('%d');; &quot; % (h.url_for(controller='task',action='complete_task', id=atask.id), atask.id) "/>
+
+<span tal:attributes="id string:handle_${atask/id}" style="display:none;" class="handle">
+<img src="/images/drag.png">
+</span>
+
+
+<a tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id)">
+<div tal:replace="atask/title"/>
+</a>
+
+
+<span tal:replace="structure python: h.end_form()" />
+
+
+</metal:macro>

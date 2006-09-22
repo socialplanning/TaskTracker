@@ -1,0 +1,8 @@
+.handle { 
+	cursor: move; 
+}
+
+.task_list {
+	list-style-type: none;
+
+}

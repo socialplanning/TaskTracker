@@ -90,3 +90,9 @@ class TaskList(SQLObject):
     text = StringCol()
     sort_index = IntCol(default=_task_list_sort_index)
     tasks = MultipleJoin("Task")
+
+    def uncompletedTasks(self):
+        return [x for x in self.tasks if x.status == 'uncompleted']
+
+    def completedTasks(self):
+        return [x for x in self.tasks if x.status == 'completed']

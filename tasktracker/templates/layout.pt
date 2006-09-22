@@ -1,0 +1,19 @@
+<html>
+<head>
+<title tal:condition="c/title" tal:content="c/title" />
+<title tal:condition="not:c/title">
+Todo list
+</title>
+
+<span tal:replace="structure python:h.javascript_include_tag('prototype.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('effects.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('dragdrop.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('task.js')" />
+<span tal:replace="structure python:h.stylesheet_link_tag('list.css')" />
+</head>
+<body>
+
+<span tal:replace="structure c/body_content" />
+
+</body>
+</html>

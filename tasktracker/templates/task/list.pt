@@ -1,0 +1,52 @@
+<span tal:attributes="url python:h.url_for(controller='tasklist',action='order', id=c.tasklist.id)" id="order"/>
+
+This is list <span tal:replace="c/tasklist/title" />.<br />
+
+<div id="uncompleted_section">
+<a href="javascript:modeSwitch();"><span id="modeName">Reorder</span></a><br/><br/>
+
+Uncompleted tasks:
+
+<ul id="uncompleted" class="task_list">
+<tal:for repeat="atask c/tasks">
+<li tal:condition="python:atask.status == 'uncompleted'" tal:attributes="id string:task_${atask/id}">
+<metal:do metal:use-macro="here/task_item/macros/view_task" />
+</li>
+</tal:for>
+</ul>
+</div>
+
+<p id="show_create">
+<a tal:attributes="href python:h.url_for(action='show_create')" onclick="hideCreate();return false;">Add a new task.</a>
+</p>
+
+<a name="create_anchor" id="create_anchor"/>
+<!-- ----------- Create ---------- -->
+<div id="create" style="display:none;">
+<metal:do use-macro="here/_show_create/macros/show_create" />
+
+<p>
+<a href="#nevermind" onclick="$('create').hide(); $('show_create').show(); return false;">Nevermind</a>
+</p>
+</div>
+
+<div id="completed_section">
+<hr />
+
+Completed tasks:
+
+<ul id="completed" class="task_list">
+<tal:for repeat="atask c/tasks">
+<li tal:condition="python:atask.status == 'completed'" tal:attributes="id string:task_${atask/id}">
+<metal:do metal:use-macro="here/task_item/macros/view_task" />
+</li>
+</tal:for>
+</ul>
+
+</div>
+
+<!-- ----------------------------- -->
+<p>
+<hr />
+<a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">Back to list of lists</a>
+</p>
