@@ -2,8 +2,9 @@
 
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
-<div id="uncompleted_section">
-<a href="javascript:modeSwitch();"><span id="modeName">Reorder</span></a><br/><br/>
+<div tal:attributes="style python:test(c.tasklist.uncompletedTasks(), '', 'display:none')" id="uncompleted_section">
+
+<a tal:attributes="style python:test(len(c.tasklist.uncompletedTasks()) > 1, '', 'display:none')" id="reorder_button" href="javascript:modeSwitch();"><span id="modeName">Reorder</span></a><br/><br/>
 
 Uncompleted tasks:
 
@@ -16,6 +17,7 @@ Uncompleted tasks:
 </ul>
 </div>
 
+<div id="create_section">
 <p id="show_create">
 <a tal:attributes="href python:h.url_for(action='show_create')" onclick="hideCreate();return false;">Add a new task.</a>
 </p>
@@ -29,9 +31,11 @@ Uncompleted tasks:
 <a href="#nevermind" onclick="$('create').hide(); $('show_create').show(); return false;">Nevermind</a>
 </p>
 </div>
+</div>
 
-<div id="completed_section">
+<div tal:attributes="style python:test(c.tasklist.completedTasks(), '', 'display:none')" id="completed_section">
 <hr />
+
 
 Completed tasks:
 

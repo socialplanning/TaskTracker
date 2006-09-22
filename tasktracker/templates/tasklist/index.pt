@@ -5,7 +5,12 @@
 <li tal:condition="list/uncompletedTasks">
  <a tal:attributes="href python:h.url_for(action='view', id=list.id)">
      <span tal:replace="list/title" /> 
-     </a> - <small><span tal:replace="python:len(list.uncompletedTasks())"/> uncompleted tasks</small>
+     </a> - <small><span tal:replace="python:len(list.uncompletedTasks())"/> uncompleted 
+
+<span tal:condition="python:len(list.uncompletedTasks())==1" tal:replace="string:task" />
+<span tal:condition="python:len(list.uncompletedTasks())!=1" tal:replace="string:tasks" />
+
+</small>
 </li>
 </tal:for>
 </ul>

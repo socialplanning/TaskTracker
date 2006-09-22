@@ -13,33 +13,14 @@ __connection__ = hub
 
 import datetime
 
-def _index(index):
-    if index is None:
-        index = 0
-    else:
-        index += 1
-    return index
-
-def _task_sort_index(task_listID, status='uncompleted', skip=None):
-    """
-    Returns an index which is guaranteed to be greater than all live  indexes in 
-    the same list with the same status.
-
-    """
-    return _index(Task.select(
-            AND(Task.q.task_listID==task_listID, 
-                Task.q.status==status, 
-                Task.q.id != skip,
-                Task.q.live == True
-                )).max('sort_index'))
-
-
 class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
     def _create(self, id, **kwargs):
-        kwargs['sort_index'] = _task_sort_index(kwargs['task_listID']) or 0
+        if 'task_list' in kwargs:
+            kwargs['task_listID'] = kwargs.pop('task_list').id
+        kwargs['sort_index'] = self._next_sort_index(kwargs['task_listID'])
         SQLObject._create(self, id, **kwargs)
 
     created = DateTimeCol(default=datetime.datetime.now)
@@ -64,9 +45,25 @@ class Task(SQLObject):
 
     def moveToBottom(self):
         """ Call this *after* toggleStatus """
-        new_index = _task_sort_index(self.task_listID, status=self.status, skip=self.id)
+        new_index = self._next_sort_index(self.task_listID, status=self.status, skip=self.id)
         self.sort_index = new_index
 
+    @classmethod
+    def _next_sort_index(cls, task_listID, status='uncompleted', skip=None):
+        """
+        Returns an index which is guaranteed to be greater than all live  indexes in 
+        the same list with the same status.
+        """
+        index = cls.select(
+            AND(cls.q.task_listID==task_listID, 
+                cls.q.status==status, 
+                cls.q.id != skip,
+                cls.q.live == True
+                )).max('sort_index')
+        if index is None:
+            return 0
+        else:
+            return index + 1
 
 class Comment(SQLObject):
     class sqlmeta:
@@ -78,7 +75,11 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    return _index(TaskList.selectBy(live=True).max('sort_index'))
+    index = TaskList.selectBy(live=True).max('sort_index')
+    if index is None:
+        return 0
+    else:
+        return index + 1
 
 class TaskList(SQLObject):
     class sqlmeta:
@@ -96,3 +97,9 @@ class TaskList(SQLObject):
 
     def completedTasks(self):
         return [x for x in self.tasks if x.status == 'completed']
+
+soClasses = [
+    Task,
+    TaskList,
+    Comment,
+    ]
