@@ -19,7 +19,7 @@ Uncompleted tasks:
 
 <div id="create_section">
 <p id="show_create">
-<a tal:attributes="href python:h.url_for(action='show_create')" onclick="hideCreate();return false;">Add a new task.</a>
+<a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)" onclick="hideCreate();return false;">Add a new task.</a>
 </p>
 
 <a name="create_anchor" id="create_anchor"/>

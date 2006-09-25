@@ -24,6 +24,7 @@ class Task(SQLObject):
         SQLObject._create(self, id, **kwargs)
 
     created = DateTimeCol(default=datetime.datetime.now)
+    deadline = DateTimeCol(default=None)
     title = StringCol()
     text = StringCol()
     live = BoolCol(default=True)    

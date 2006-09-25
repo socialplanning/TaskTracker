@@ -54,4 +54,7 @@ def make_app(global_conf, **app_conf):
     # @@@ Establish the Registry for this application @@@
     app = RegistryManager(app)
 
+    if config.app_conf.has_key('openplans_wrapper'):
+        app = ZWSGIFakeEnv(app)
+
     return app

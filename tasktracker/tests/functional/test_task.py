@@ -14,4 +14,32 @@ class TestTaskController(TestController):
         assert task.status == 'uncompleted'
         res2 = self.app.get('/task/complete_task/%s' % task.id)
         assert task.status == 'completed'
-        
+     
+    def test_show_create(self):
+        task_listID = TaskList.select()[0].id
+
+        res = self.app.get(url_for(
+                controller='task', action='show_create', 
+                task_listID = task_listID
+                ))
+
+        form = res.forms[0]
+
+        form['title'] = 'The new task title'
+        form['text'] = 'The new task body'
+        res = form.submit()
+
+        #Creating a new task should redirect you to the list of tasks.
+
+        location = res.header_dict['location']
+        assert location.startswith('/tasklist/view/')
+
+        id = int(location[location.rindex('/') + 1:])
+
+        assert id == task_listID
+
+        res = res.follow()
+
+        res.mustcontain('The new task title')
+    
+
