@@ -59,7 +59,8 @@ class BaseController(WSGIController):
         c.projectID = project.id
 
         if not self._authorize(project, action, params):
-            raise SecurityException("IMPROPER AUTHENTICATION")
+            redirect_to(controller='project', action='show_not_permitted')
+            #raise SecurityException("IMPROPER AUTHENTICATION")
 
     def _authorize(self, project, action, params):
         controller = params['controller']
@@ -68,56 +69,63 @@ class BaseController(WSGIController):
 
         environ = self._req.environ
 
-        level = Role.selectBy(title=environ['topp.role'])[0].level
+        level = Role.selectBy(name=environ['topp.role'])[0].level
 
         username = environ['topp.username']
+        c.username = username
 
-        action_name = getattr(self, action).action + '_' + controller
+        action_name = getattr(self, action).action
+        if action_name == 'open':
+            return True
+        
+        action_name = controller + '_' + action_name
 
         #A few special cases follow, with the general permission case at the end.
 
-        if action_name == 'initialize_project':
+        if action_name == 'project_initialize':
             if level <= Role.getLevel('ProjectAdmin'):
                 return True #OK, let admins initialize the project.
             else:
                 raise NotInitializedException
-        elif action_name == 'show_uninitialized_project':
+        elif action_name == 'project_show_uninitialized':
             return True #always let people see the not initialized message
 
         if not project.initialized:
             if level <= Role.getLevel('ProjectAdmin'):
                 redirect_to(controller='project', action='show_initialize', id=project.id)
             else:
-                redirect_to(controller='project', action='not_initialized', id=project.id)
+                redirect_to(controller='project', action='show_uninitialized', id=project.id)
 
         #now we know the project is initialized
 
         #special case for creating task lists
-        if action_name == 'create_tasklist':
+        if action_name == 'tasklist_create':
             return project.create_list_permission >= level
-
 
         if controller == 'tasklist':
             task_list = TaskList.get(params['id'])
         elif controller == 'task':
-            task = Task.get(int(params['id']))
-            task_list = TaskList.get(int(task.task_listID))
+            if action_name == 'task_create':
+                controller = 'task_list'
+                task_list = TaskList.get(params['id'])
+            else:
+                task = Task.get(int(params['id']))
+                task_list = TaskList.get(task.task_listID)
         else:
             task_list = "I AM BROKEN"
 
-        if level < Role.getLevel('ListOwner'):
+        if level > Role.getLevel('ListOwner'):
             if task_list.isOwnedBy(username):
-                level = role.getLevel('ListOwner')
+                level = Role.getLevel('ListOwner')
 
-        if controller == 'task' and level < Role.getLevel('TaskOwner'):
+        if controller == 'task' and level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(username):
                 level = role.getLevel('TaskOwner')
 
-                
-        permission = Permission.selectBy(action=action_name)[0]
-
-        tl_permission = TaskListPermission.selectBy(task_listID=tasklist.id,
-                                                    permissionID=permission.id)[0]
+        action = Action.selectBy(action=action_name)[0]
+        
+        tl_permission = TaskListPermission.selectBy(task_listID=task_list.id,
+                                                    actionID=action.id)[0]
         return tl_permission.min_level >= level
 
 

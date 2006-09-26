@@ -14,16 +14,20 @@ __connection__ = hub
 import datetime
 
 class Role(SQLObject):
-    title = StringCol()
+    class sqlmeta:
+        defaultOrder = '-level'
+
+    name = StringCol()
+    description = StringCol()
     level = IntCol()
 
     levels = {}
 
     @classmethod
-    def getLevel(cls, title):
-        if not Role.levels.has_key(title):
-            Role.levels[title] = Role.selectBy(title=title)[0].level
-        return Role.levels[title]
+    def getLevel(cls, name):
+        if not Role.levels.has_key(name):
+            Role.levels[name] = Role.selectBy(name=name)[0].level
+        return Role.levels[name]
 
 class Project(SQLObject):
     title = StringCol()
@@ -46,19 +50,20 @@ class TaskListOwner(SQLObject):
 
     index = DatabaseIndex('username', 'task_list', unique=True)
 
-class Permission(SQLObject):
+class Action(SQLObject):
     action = StringCol()
-    min_level = IntCol()
+    roles = RelatedJoin('Role')
 
 class TaskListPermission(SQLObject):
-    permission = ForeignKey("Permission")
+    action = ForeignKey("Action")
     task_list = ForeignKey("TaskList")
     min_level = IntCol()
 
     def _create(self, id, **kwargs):
         if 'min_level' in kwargs:
+            # make sure value is sane
             if kwargs['min_level'] > \
-                    Permission.get(kwargs['permission_ID']).min_level:
+                    Action.get(kwargs['action'].id).roles[0].level:
                 raise ValueError("Invalid permission settings.")
         SQLObject._create(self, id, **kwargs)
 
@@ -82,7 +87,7 @@ class Task(SQLObject):
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
     private = BoolCol(default=False)
-    owner = StringCol()
+    owner = StringCol(default="")
 
     def isOwnedBy(self, username):
         return self.owner == username            
@@ -162,7 +167,7 @@ class TaskList(SQLObject):
 soClasses = [
     Role,
     Project,
-    Permission,
+    Action,
     TaskListPermission,
     Task,
     TaskList,

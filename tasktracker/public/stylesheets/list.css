@@ -6,3 +6,10 @@
 	list-style-type: none;
 
 }
+
+.error-message {
+border: 1px black dashed;
+color: #f00;
+font-weight: bold;
+
+}
