@@ -1,4 +1,6 @@
 <form tal:attributes="action python:h.url_for(action='create')" method="post">
+<input type="hidden" name="projectID" tal:attributes="value c/projectID">
+
 Title: <input name="title" type="text"><br/>
 Text: <textarea name="text" rows=10 cols=80></textarea><br/>
 

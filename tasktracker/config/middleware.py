@@ -10,6 +10,8 @@ import pylons.wsgiapp
 
 from tasktracker.config.environment import load_environment
 
+from tasktracker.lib.fakeenv import ZWSGIFakeEnv
+
 def make_app(global_conf, **app_conf):
     """Create a WSGI application and return it
     
@@ -55,6 +57,13 @@ def make_app(global_conf, **app_conf):
     app = RegistryManager(app)
 
     if config.app_conf.has_key('openplans_wrapper'):
-        app = ZWSGIFakeEnv(app)
+        users = {'anon' : 'Anonymous',
+                 'auth' : 'Authenticated',
+                 'member' : 'ProjectMember',
+                 'contentmanager' : 'ProjectContentManager',
+                 'admin' : 'ProjectAdmin'
+                 }
+
+        app = ZWSGIFakeEnv(app, users)
 
     return app

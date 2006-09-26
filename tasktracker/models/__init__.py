@@ -13,6 +13,55 @@ __connection__ = hub
 
 import datetime
 
+class Role(SQLObject):
+    title = StringCol()
+    level = IntCol()
+
+    levels = {}
+
+    @classmethod
+    def getLevel(cls, title):
+        if not Role.levels.has_key(title):
+            Role.levels[title] = Role.selectBy(title=title)[0].level
+        return Role.levels[title]
+
+class Project(SQLObject):
+    title = StringCol()
+    create_list_permission = IntCol(default=0)
+    initialized = BoolCol(default=False)
+    task_lists = MultipleJoin("TaskList")
+
+    @classmethod
+    def getProject(cls, title):
+        projects = list(Project.selectBy(title=title))
+        if not projects:
+            return Project(title=title)
+        else:
+            return projects[0]
+
+class TaskListOwner(SQLObject):
+    username = StringCol(length=100)
+    task_list = ForeignKey('TaskList')
+    sire = StringCol(length=100)
+
+    index = DatabaseIndex('username', 'task_list', unique=True)
+
+class Permission(SQLObject):
+    action = StringCol()
+    min_level = IntCol()
+
+class TaskListPermission(SQLObject):
+    permission = ForeignKey("Permission")
+    task_list = ForeignKey("TaskList")
+    min_level = IntCol()
+
+    def _create(self, id, **kwargs):
+        if 'min_level' in kwargs:
+            if kwargs['min_level'] > \
+                    Permission.get(kwargs['permission_ID']).min_level:
+                raise ValueError("Invalid permission settings.")
+        SQLObject._create(self, id, **kwargs)
+
 class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
@@ -32,6 +81,11 @@ class Task(SQLObject):
     sort_index = IntCol()
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
+    private = BoolCol(default=False)
+    owner = StringCol()
+
+    def isOwnedBy(self, username):
+        return self.owner == username            
 
     @classmethod
     def oppositeStatus(cls, status):
@@ -92,6 +146,12 @@ class TaskList(SQLObject):
     text = StringCol()
     sort_index = IntCol(default=_task_list_sort_index)
     tasks = MultipleJoin("Task")
+    permissions = MultipleJoin("TaskListPermission")
+    project = ForeignKey("Project")
+    owners = MultipleJoin("TaskListOwner")
+
+    def isOwnedBy(self, username):
+        return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
 
     def uncompletedTasks(self):
         return [x for x in self.tasks if x.status == 'uncompleted']
@@ -100,7 +160,12 @@ class TaskList(SQLObject):
         return [x for x in self.tasks if x.status == 'completed']
 
 soClasses = [
+    Role,
+    Project,
+    Permission,
+    TaskListPermission,
     Task,
     TaskList,
+    TaskListOwner,
     Comment,
     ]

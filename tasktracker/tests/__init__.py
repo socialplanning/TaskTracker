@@ -23,6 +23,7 @@ from tasktracker.models import soClasses, Task, TaskList
 
 class TestController(TestCase):
     def __init__(self, *args):
+        paste.script.appinstall.SetupCommand('setup-app').run(['development.ini'])
         self.conf = appconfig('config:development.ini#test', relative_to=conf_dir)
         CONFIG.push_process_config({'app_conf': self.conf.local_conf,
                                     'global_conf': self.conf.global_conf})

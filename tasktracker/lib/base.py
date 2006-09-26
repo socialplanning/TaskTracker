@@ -3,32 +3,42 @@ from pylons.controllers import WSGIController
 from pylons.decorators import jsonify, rest, validate
 from pylons.templating import render, render_response
 from pylons.helpers import abort, redirect_to, etag_cache
-import tasktracker.models as model
+from tasktracker.models import *
+from tasktracker.controllers import *
 import tasktracker.lib.helpers as h
+
+permission_names = {'task/view': 'task_view',
+                    'task/show_update': 'task_update'}
 
 class NoSuchIdError(Exception):
     pass
 
-class BadArgumentError(Exception):
+class MissingArgumentError(Exception):
     pass
 
 def catches_errors(f):
     def new_f(*args, **kwds):
         try:
             edited_kwds = dict(kwds)
-            del edited_kwds['action']
-            del edited_kwds['controller']
+            edited_kwds.pop('action', None)
+            edited_kwds.pop('controller', None)
             return f(*args, **edited_kwds)
-        except NoSuchIdError:
-            c.error = "No such task"
+        except NoSuchIdError, exception:
+            c.error = "No such task: %s" % exception.args
             return render_response('zpt', 'error')
-        except BadArgumentError:
-            c.error = "Title must be in Spanish"
+        except MissingArgumentError, exception:
+            c.error = "A required argument was not provided: %s" % exception.args
             return render_response('zpt', 'error')
         
     new_f.func_name = f.func_name
     return new_f
 
+def attrs(**kwds):
+    def decorate(f):
+        for k in kwds:
+            setattr(f, k, kwds[k])
+        return f
+    return decorate
 
 def render_text(text):
     resp = Response()
@@ -36,8 +46,81 @@ def render_text(text):
     resp.content = [text]
     return resp 
 
+class SecurityException(Exception):
+    pass
+
+class NotInitializedException(Exception):
+    pass
 
 class BaseController(WSGIController):
+
+    def __before__(self, action, **params):
+        project = Project.getProject(self._req.environ['topp.project'])
+        c.projectID = project.id
+
+        if not self._authorize(project, action, params):
+            raise SecurityException("IMPROPER AUTHENTICATION")
+
+    def _authorize(self, project, action, params):
+        controller = params['controller']
+        if controller == 'error':
+            return True
+
+        environ = self._req.environ
+
+        level = Role.selectBy(title=environ['topp.role'])[0].level
+
+        username = environ['topp.username']
+
+        action_name = getattr(self, action).action + '_' + controller
+
+        #A few special cases follow, with the general permission case at the end.
+
+        if action_name == 'initialize_project':
+            if level <= Role.getLevel('ProjectAdmin'):
+                return True #OK, let admins initialize the project.
+            else:
+                raise NotInitializedException
+        elif action_name == 'show_uninitialized_project':
+            return True #always let people see the not initialized message
+
+        if not project.initialized:
+            if level <= Role.getLevel('ProjectAdmin'):
+                redirect_to(controller='project', action='show_initialize', id=project.id)
+            else:
+                redirect_to(controller='project', action='not_initialized', id=project.id)
+
+        #now we know the project is initialized
+
+        #special case for creating task lists
+        if action_name == 'create_tasklist':
+            return project.create_list_permission >= level
+
+
+        if controller == 'tasklist':
+            task_list = TaskList.get(params['id'])
+        elif controller == 'task':
+            task = Task.get(int(params['id']))
+            task_list = TaskList.get(int(task.task_listID))
+        else:
+            task_list = "I AM BROKEN"
+
+        if level < Role.getLevel('ListOwner'):
+            if task_list.isOwnedBy(username):
+                level = role.getLevel('ListOwner')
+
+        if controller == 'task' and level < Role.getLevel('TaskOwner'):
+            if task.isOwnedBy(username):
+                level = role.getLevel('TaskOwner')
+
+                
+        permission = Permission.selectBy(action=action_name)[0]
+
+        tl_permission = TaskListPermission.selectBy(task_listID=tasklist.id,
+                                                    permissionID=permission.id)[0]
+        return tl_permission.min_level >= level
+
+
     def __call__(self, environ, start_response):
         # Insert any code to be run per request here. The Routes match
         # is under environ['pylons.routes_dict'] should you want to check
