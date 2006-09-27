@@ -69,7 +69,7 @@ class BaseController(WSGIController):
 
         environ = self._req.environ
 
-        level = Role.selectBy(name=environ['topp.role'])[0].level
+        c.level = Role.selectBy(name=environ['topp.role'])[0].level
 
         username = environ['topp.username']
         c.username = username
@@ -83,7 +83,7 @@ class BaseController(WSGIController):
         #A few special cases follow, with the general permission case at the end.
 
         if action_name == 'project_initialize':
-            if level <= Role.getLevel('ProjectAdmin'):
+            if c.level <= Role.getLevel('ProjectAdmin'):
                 return True #OK, let admins initialize the project.
             else:
                 raise NotInitializedException
@@ -91,7 +91,7 @@ class BaseController(WSGIController):
             return True #always let people see the not initialized message
 
         if not project.initialized:
-            if level <= Role.getLevel('ProjectAdmin'):
+            if c.level <= Role.getLevel('ProjectAdmin'):
                 redirect_to(controller='project', action='show_initialize', id=project.id)
             else:
                 redirect_to(controller='project', action='show_uninitialized', id=project.id)
@@ -100,7 +100,7 @@ class BaseController(WSGIController):
 
         #special case for creating task lists
         if action_name == 'tasklist_create':
-            return project.create_list_permission >= level
+            return project.create_list_permission >= c.level
 
         if controller == 'tasklist':
             task_list = TaskList.get(params['id'])
@@ -114,19 +114,19 @@ class BaseController(WSGIController):
         else:
             task_list = "I AM BROKEN"
 
-        if level > Role.getLevel('ListOwner'):
+        if c.level > Role.getLevel('ListOwner'):
             if task_list.isOwnedBy(username):
-                level = Role.getLevel('ListOwner')
+                c.level = Role.getLevel('ListOwner')
 
-        if controller == 'task' and level > Role.getLevel('TaskOwner'):
+        if controller == 'task' and c.level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(username):
-                level = role.getLevel('TaskOwner')
+                c.level = role.getLevel('TaskOwner')
 
         action = Action.selectBy(action=action_name)[0]
         
         tl_permission = TaskListPermission.selectBy(task_listID=task_list.id,
                                                     actionID=action.id)[0]
-        return tl_permission.min_level >= level
+        return tl_permission.min_level >= c.level
 
 
     def __call__(self, environ, start_response):

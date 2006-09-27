@@ -1,9 +1,5 @@
-Update task:<br/>
-<form tal:attributes="action python:h.url_for(controller='view', action='update')" method="get">
-Title: <input name="title" type="text" tal:attributes="value c/task/title"><br/>
-Text: <textarea name="text" rows=10 cols=80><span tal:replace="c/task/text"/></textarea><br/>
+<span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
-<input type="hidden" name="id" tal:attributes="value c/task/id">
+<metal:do use-macro="here/_form/macros/form" />
 
-<input type="submit" name="create" value="edit">
-</form>
+<span tal:replace="structure python: h.end_form()" />

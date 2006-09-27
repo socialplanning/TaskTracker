@@ -44,6 +44,7 @@ class Project(SQLObject):
             return projects[0]
 
 class TaskListOwner(SQLObject):
+    _cacheValue = False
     username = StringCol(length=100)
     task_list = ForeignKey('TaskList')
     sire = StringCol(length=100)
@@ -52,9 +53,11 @@ class TaskListOwner(SQLObject):
 
 class Action(SQLObject):
     action = StringCol()
+    question = StringCol()
     roles = RelatedJoin('Role')
 
 class TaskListPermission(SQLObject):
+    _cacheValue = False
     action = ForeignKey("Action")
     task_list = ForeignKey("TaskList")
     min_level = IntCol()
@@ -142,6 +145,7 @@ def _task_list_sort_index():
         return index + 1
 
 class TaskList(SQLObject):
+    _cacheValue = False
     class sqlmeta:
         defaultOrder = 'sort_index'
 
