@@ -51,6 +51,15 @@ class TaskListOwner(SQLObject):
 
     index = DatabaseIndex('username', 'task_list', unique=True)
 
+class SecurityPolicyAction(SQLObject):
+    simple_security_policy = ForeignKey("SimpleSecurityPolicy")
+    action = ForeignKey("Action")
+    min_level = IntCol()                        
+
+class SimpleSecurityPolicy(SQLObject):
+    name = StringCol()
+    settings = MultipleJoin('SecurityPolicyAction')
+
 class Action(SQLObject):
     action = StringCol()
     question = StringCol()
@@ -243,6 +252,8 @@ soClasses = [
     Role,
     Project,
     Action,
+    SimpleSecurityPolicy,
+    SecurityPolicyAction,
     TaskListPermission,
     Task,
     TaskList,

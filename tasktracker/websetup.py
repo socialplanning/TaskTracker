@@ -22,6 +22,11 @@ def setRoles(action, roles):
     for role in roles:
         action.addRole(role)
 
+def setSecurity(policy, actions):
+    for action_name, role in actions.items():
+        action_obj = Action.selectBy(action=action_name)[0]
+        SecurityPolicyAction(simple_security_policyID = policy.id, action=action_obj, min_level = role.level)
+
 def setup_config(command, filename, section, vars):
     """
     Place any commands to setup tasktracker here.
@@ -82,8 +87,20 @@ def setup_config(command, filename, section, vars):
     setRoles(Action(action="task_claim",
                     question="Who can claim public tasks in the list?"),
              everyone_but_anon)
-
-#    setRoles(Action(action="task_own"), everyone_but_to)
     setRoles(Action(action="task_assign",
                     question="Who can assign public tasks in the list?"),
              members)
+
+    open_policy = SimpleSecurityPolicy(name='open')
+    medium_policy = SimpleSecurityPolicy(name='medium')
+    closed_policy = SimpleSecurityPolicy(name='closed')
+
+    setSecurity(open_policy, {"tasklist_view" : anon, 
+                              "tasklist_update" : pm,
+                              "task_create" : auth,
+                              "task_update" : auth,
+                              "task_comment" : auth,
+                              "task_claim" : auth,
+                              "task_assign" : pm})
+
+    

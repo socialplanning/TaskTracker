@@ -1,5 +1,5 @@
 <span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
-<metal:do use-macro="here/_form/macros/form_update" />
+<metal:do use-macro="here/_form/macros/form" />
 
 <span tal:replace="structure python: h.end_form()" />
