@@ -66,8 +66,14 @@ class TestTaskListController(TestController):
 
         assert 'member list 1' in res
 
-        res.click('member list 1')
+        res = res.click('member list 1')
 
         assert 'member list 1' in res
+
+        #but members cannot create tasks.
+
+        res = res.click('Add a new task')
+
+        assert 'not_permitted' in res.header_dict['location']        
 
         task_list.destroySelf()
