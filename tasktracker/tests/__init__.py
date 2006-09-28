@@ -42,9 +42,9 @@ class TestController(TestCase):
         for table in nonFixedClasses:
             table.createTable(ifNotExists=True)
         
-        project = Project(title='theproject')
+        self.project = Project(title='theproject')
 
-        task_list = TaskList(title="List 1", text="The list", projectID=project.id, username='member')
+        task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
 
         f = open("/tmp/log3", "a")
         print >>f, "perm = "
@@ -54,7 +54,7 @@ class TestController(TestCase):
              sort_index=1, task_list=task_list)
         Task(title="Task 2", text="Another task",
              sort_index=2, task_list=task_list)
-        task_list_complete = TaskList(title="Complete list", text="Another list", projectID=project.id, username='admin')
+        task_list_complete = TaskList(title="Complete list", text="Another list", projectID=self.project.id, username='admin')
         Task(title="Task A", text="more",
              sort_index=1, task_list=task_list_complete,
              status='completed')
