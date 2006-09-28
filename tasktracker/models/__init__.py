@@ -194,7 +194,7 @@ class TaskList(SQLObject):
             if value:
                 role = Role.get(value)
             else:
-                role = action.roles[0]
+                role = action.roles[-1]
             p = TaskListPermission(task_listID=self.id, min_level=role.level, action=action)
             print >>f, "setup action %s on %d : %s" % (action.action, self.id, p)
 
