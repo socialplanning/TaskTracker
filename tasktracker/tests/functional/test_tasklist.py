@@ -4,7 +4,10 @@ from tasktracker.models import *
 class TestTaskListController(TestController):
         
     def test_show_create(self):
-        res = self.app.get(url_for(
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
                 controller='tasklist', action='show_create'))
 
         form = res.forms[0]

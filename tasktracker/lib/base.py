@@ -7,8 +7,6 @@ from tasktracker.models import *
 from tasktracker.controllers import *
 import tasktracker.lib.helpers as h
 
-permission_names = {'task/view': 'task_view',
-                    'task/show_update': 'task_update'}
 
 class NoSuchIdError(Exception):
     pass
@@ -56,7 +54,8 @@ class BaseController(WSGIController):
 
     def __before__(self, action, **params):
         project = Project.getProject(self._req.environ['topp.project'])
-        c.projectID = project.id
+        c.project = project
+
 
         if not self._authorize(project, action, params):
             redirect_to(controller='project', action='show_not_permitted')
@@ -64,21 +63,23 @@ class BaseController(WSGIController):
 
     def _authorize(self, project, action, params):
         controller = params['controller']
+
         if controller == 'error':
             return True
 
         environ = self._req.environ
 
-        c.level = Role.selectBy(name=environ['topp.role'])[0].level
+        role = Role.selectBy(name=environ['topp.role'])
+        if not role.count():
+            raise Exception("No such role %s" % environ['topp.role'])
+        c.level = role[0].level
 
         username = environ['topp.username']
         c.username = username
 
-        action_name = getattr(self, action).action
-        if action_name == 'open':
-            return True
+        action_verb = getattr(self, action).action
         
-        action_name = controller + '_' + action_name
+        action_name = controller + '_' + action_verb
 
         #A few special cases follow, with the general permission case at the end.
 
@@ -90,6 +91,7 @@ class BaseController(WSGIController):
         elif action_name == 'project_show_uninitialized':
             return True #always let people see the not initialized message
 
+
         if not project.initialized:
             if c.level <= Role.getLevel('ProjectAdmin'):
                 redirect_to(controller='project', action='show_initialize', id=project.id)
@@ -97,6 +99,9 @@ class BaseController(WSGIController):
                 redirect_to(controller='project', action='show_uninitialized', id=project.id)
 
         #now we know the project is initialized
+
+        if action_verb == 'open':
+            return True
 
         #special case for creating task lists
         if action_name == 'tasklist_create':
@@ -107,7 +112,7 @@ class BaseController(WSGIController):
         elif controller == 'task':
             if action_name == 'task_create':
                 controller = 'task_list'
-                task_list = TaskList.get(params['id'])
+                task_list = TaskList.get(request.params['task_listID'])
             else:
                 task = Task.get(int(params['id']))
                 task_list = TaskList.get(task.task_listID)
@@ -124,9 +129,20 @@ class BaseController(WSGIController):
 
         action = Action.selectBy(action=action_name)[0]
         
-        tl_permission = TaskListPermission.selectBy(task_listID=task_list.id,
-                                                    actionID=action.id)[0]
-        return tl_permission.min_level >= c.level
+        tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
+                                                    actionID=action.id)
+
+        if not tl_permissions.count():
+            #shouldn't get here, because tasklists should always have
+            #some permission row for each action.  If we do, reset
+            #the permissions to the highest level.
+            task_list.rescuePermissions()
+            tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
+                                                         actionID=action.id)
+            
+
+            
+        return tl_permissions[0].min_level >= c.level
 
 
     def __call__(self, environ, start_response):

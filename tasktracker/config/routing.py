@@ -18,6 +18,9 @@ def make_map():
     # so they may take precedent over the more generic routes. For more information, refer
     # to the routes manual @ http://routes.groovie.org/docs/
     map.connect(':controller/:action/:id')
+
+    map.connect('', controller='tasklist', action='index')
+
     map.connect('*url', controller='template', action='view')
 
     return map

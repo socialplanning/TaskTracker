@@ -4,7 +4,10 @@ from tasktracker.models import *
 class TestTaskController(TestController):
     def test_index(self):
         lists = list(TaskList.select())
-        res = self.app.get(url_for(
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
                 controller='tasklist'))
         for l in lists:
             res.mustcontain(l.title)
@@ -12,13 +15,15 @@ class TestTaskController(TestController):
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
         assert task.status == 'uncompleted'
-        res2 = self.app.get('/task/complete_task/%s' % task.id)
+        res2 = app.get('/task/complete_task/%s' % task.id)
         assert task.status == 'completed'
      
     def test_show_create(self):
         task_listID = TaskList.select()[0].id
 
-        res = self.app.get(url_for(
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
                 controller='task', action='show_create', 
                 task_listID = task_listID
                 ))

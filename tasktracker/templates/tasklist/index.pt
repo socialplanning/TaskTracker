@@ -1,4 +1,4 @@
-<b>Your lists</b>:
+<b><span tal:replace="c/project/title"/>'s lists</b>:
 
 <ul>
 <tal:for repeat="list c/tasklists">

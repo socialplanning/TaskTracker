@@ -61,7 +61,7 @@ class TaskListPermission(SQLObject):
     action = ForeignKey("Action")
     task_list = ForeignKey("TaskList")
     min_level = IntCol()
-
+    
     def _create(self, id, **kwargs):
         if 'min_level' in kwargs:
             # make sure value is sane
@@ -158,6 +158,79 @@ class TaskList(SQLObject):
     permissions = MultipleJoin("TaskListPermission")
     project = ForeignKey("Project")
     owners = MultipleJoin("TaskListOwner")
+
+    def set(self, init=False, **kwargs):
+        if init:
+            SQLObject.set(self, **kwargs)
+            return
+
+        conn = hub.getConnection()
+        trans = conn.transaction()
+
+        params = self._clean_params(kwargs)
+        SQLObject.set(self, **params)
+        self._setup_actions(kwargs)
+
+        trans.commit()
+
+    def _clean_params(self, kwargs):
+
+        params = {}
+        allowed_params = ("title", "text", "projectID")
+        for param in allowed_params:
+            if kwargs.has_key(param):
+                params[param] = kwargs[param]
+
+        return params
+
+    def _setup_actions(self, kwargs):
+
+        for permission in self.permissions:
+            permission.destroySelf()
+
+        f = open("/tmp/log3", "a")
+        for action in Action.select():
+            value = kwargs.get('action_%s' % action.action, None)
+            if value:
+                role = Role.get(value)
+            else:
+                role = action.roles[0]
+            p = TaskListPermission(task_listID=self.id, min_level=role.level, action=action)
+            print >>f, "setup action %s on %d : %s" % (action.action, self.id, p)
+
+
+    def rescuePermissions(self):
+        print "Rescuing permissions.  This is very, very bad."
+        for action in Action.select():
+            TaskListPermission(task_listID=self.id, min_level=action.roles[0].level, action=action)
+
+    def _create(self, id, **kwargs):
+        username = kwargs.pop('username')
+        params = self._clean_params(kwargs)
+
+        conn = hub.getConnection()
+        trans = conn.transaction()
+
+        SQLObject._create(self, id, init=True, **params)
+
+        self._setup_actions(kwargs)
+
+        TaskListOwner(username=username, sire=username, task_listID = self.id)
+
+        trans.commit()
+
+
+
+    @classmethod
+    def getVisibleTaskLists(cls, level):
+        return TaskList.select(
+            AND(TaskList.q.live==True, 
+                TaskListPermission.q.task_listID == TaskList.q.id, 
+                TaskListPermission.q.actionID == Action.q.id, 
+                Action.q.action == 'tasklist_view',
+                TaskListPermission.q.min_level >= level))
+    
+
 
     def isOwnedBy(self, username):
         return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
