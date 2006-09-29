@@ -1,0 +1,51 @@
+<span tal:condition="c/error" style="border:1px black dashed; color:#f00;"> 
+<span tal:replace="c/error" />
+<br/><br/>
+</span>
+
+<span tal:replace="c/project/title" /> has never used the task tracker before.  To get started, please decide some basic security settings:<br/><br/>
+
+<form tal:attributes="action python:h.url_for(controller='project', action='initialize')" method="post">
+
+Once a task list is created, it can have individual security settings
+to control who can create, edit, view, assign or be assigned tasks.
+The security setting on this page is for creating task lists.
+
+<label for="create_list_permission">Who can create new task lists?</label> <select name="create_list_permission">
+<option tal:attributes="value c/adminLevel">Just project administrators</option>
+<option tal:attributes="value c/memberLevel">Project members too</option>
+</select><br/><br/>
+
+<input type="submit" name="submit" value="Set up task tracker" />
+<input type="hidden" value="" id="statuses" name="statuses">
+
+</form>
+
+
+<script language="javascript">
+
+
+function addStatus(status) {
+    var status_list = $('status_list');
+    var statuses = status_list.getElementsByTagName('li')
+    status_name = 'status_' + statuses.length;
+    var check = Builder.node('input', {'id' : status_name, 'type' : 'checkbox', onclick : 'deleteStatus(' + status_name + ')'});
+    var li = Builder.node('li', [check, Builder.node('span', status)]);
+    status_list.appendChild(li);
+
+    var s;
+    for (i in statuses) {
+        s += statuses[i].childNodes[1].childNodes[0].nodeValue
+    }
+    $('statuses').value = s
+}
+</script>
+
+<strong>Statues</strong>
+<form action="#" onsubmit = "addStatus($('new_status').value);$('new_status').value=''; return false;" >
+<ul id="status_list" class="task_list">
+<li><input type="checkbox" disabled="disabled" />Completed</li>
+</ul>
+<label for="new_status">Add a status:</label> <input name="new_status" type="text" id="new_status">
+
+</form>
