@@ -9,6 +9,8 @@ from routes import url_for
 
 from tasktracker.models import Task, TaskList
 
+import imp, os
+
 def oppositeStatus(status):
     return Task.oppositeStatus(status)
 
@@ -38,3 +40,19 @@ def text_area_r(object_name, field_name, **kwargs):
         value = None
 
     return text_area(field_name, content=value, **kwargs)
+
+
+def has_permission(controller_name=None, action=None, **params):
+
+    d = 'tasktracker/controllers/%s' % controller_name
+    module = imp.load_module(d, *imp.find_module(d))
+
+    cap_controller = controller_name[0].upper() + controller_name[1:]
+
+    controller = getattr(module, cap_controller + 'Controller')
+
+    action_verb = getattr(controller, action).action
+        
+    action_name = controller_name + '_' + action_verb
+
+    return controller._has_permission(controller_name, action_name, params)

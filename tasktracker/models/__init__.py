@@ -168,6 +168,8 @@ class TaskList(SQLObject):
     project = ForeignKey("Project")
     owners = MultipleJoin("TaskListOwner")
 
+    security_policy = ForeignKey("SimpleSecurityPolicy")
+
     def set(self, init=False, **kwargs):
         if init:
             SQLObject.set(self, **kwargs)

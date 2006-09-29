@@ -17,7 +17,8 @@ Uncompleted tasks:
 </ul>
 </div>
 
-<div id="create_section">
+<div id="create_section" tal:condition="python: h.has_permission('task', 'create', task_listID=c.tasklist.id)">
+
 <p id="show_create">
 <a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)" onclick="hideCreate();return false;">Add a new task.</a>
 </p>
@@ -52,5 +53,7 @@ Completed tasks:
 <!-- ----------------------------- -->
 <p>
 <hr />
+<a tal:attributes="href python:h.url_for(controller='tasklist', action='show_update', id=c.tasklist.id)">Edit list settings</a>
+|
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">Back to list of lists</a>
 </p>

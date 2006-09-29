@@ -31,6 +31,6 @@
 
 </div>
 
-<p>
+<p tal:condition="python: h.has_permission('tasklist', 'show_create')">
 <a tal:attributes="href python:h.url_for(action='show_create')">Create a new list.</a>
 </p>
