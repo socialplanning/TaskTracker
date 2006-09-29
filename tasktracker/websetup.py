@@ -98,9 +98,31 @@ def setup_config(command, filename, section, vars):
     setSecurity(open_policy, {"tasklist_view" : anon, 
                               "tasklist_update" : pm,
                               "task_create" : auth,
+                              "task_view" : anon,
                               "task_update" : auth,
                               "task_comment" : auth,
+                              "task_change_status" : anon,
                               "task_claim" : auth,
                               "task_assign" : pm})
 
     
+
+    setSecurity(medium_policy, {"tasklist_view" : anon, 
+                              "tasklist_update" : pm,
+                              "task_create" : pm,
+                              "task_view" : anon,
+                              "task_update" : pm,
+                              "task_comment" : auth,
+                              "task_change_status" : pm,
+                              "task_claim" : auth,
+                              "task_assign" : pm})
+
+    setSecurity(closed_policy, {"tasklist_view" : pa, 
+                              "tasklist_update" : pa,
+                              "task_create" : lo,
+                              "task_view" : anon,
+                              "task_update" : lo,
+                              "task_comment" : lo,
+                              "task_change_status" : lo,
+                              "task_claim" : lo,
+                              "task_assign" : lo})

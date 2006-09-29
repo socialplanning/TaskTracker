@@ -58,7 +58,7 @@ class SecurityPolicyAction(SQLObject):
 
 class SimpleSecurityPolicy(SQLObject):
     name = StringCol()
-    settings = MultipleJoin('SecurityPolicyAction')
+    actions = MultipleJoin('SecurityPolicyAction')
 
 class Action(SQLObject):
     action = StringCol()
@@ -197,13 +197,20 @@ class TaskList(SQLObject):
         for permission in self.permissions:
             permission.destroySelf()
 
-        for action in Action.select():
-            value = kwargs.get('action_%s' % action.action, None)
-            if value:
-                role = Role.get(value)
-            else:
-                role = action.roles[-1]
-            p = TaskListPermission(task_listID=self.id, min_level=role.level, action=action)
+        if kwargs.get('mode') == 'simple':
+            ss = SimpleSecurityPolicy.get(int(kwargs['policy']))
+            actions = SecurityPolicyAction.selectBy(simple_security_policy=ss)
+            for action in actions:
+                p = TaskListPermission(task_listID=self.id,
+                                       min_level=action.min_level, action=action.action)
+        else:
+            for action in Action.select():
+                value = kwargs.get('action_%s' % action.action, None)
+                if value:
+                    role = Role.get(value)
+                else:
+                    role = action.roles[-1]
+                p = TaskListPermission(task_listID=self.id, min_level=role.level, action=action)
 
 
     def rescuePermissions(self):

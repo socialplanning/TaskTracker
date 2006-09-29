@@ -77,3 +77,37 @@ class TestTaskListController(TestController):
         assert 'not_permitted' in res.header_dict['location']        
 
         task_list.destroySelf()
+
+    def test_simple_security(self):
+        #log in as a member
+        app = self.getApp('member')
+
+        res = app.get(url_for(
+                controller='tasklist', action='show_create'))
+
+        form = res.forms[0]
+
+        #set a security setting in the complex form
+        #we want to show that this will be overwritten
+        select = form.fields['action_task_change_status'][0]
+        select.value = select.options[-1][0] #most secure
+        
+        form.fields['title'][0].value = 'test simple security'
+        form.fields['mode'][0].value = 'simple'
+        policy = form.fields['policy'][0]
+        policy.value = policy.options[0][0] #open
+        
+        res = form.submit()
+        res = res.follow()
+        
+        path = res.req.path_info
+        new_task_list_id = int(path[path.rindex('/') + 1:])
+
+        task_list = TaskList.get(new_task_list_id)
+
+        for perm in task_list.permissions:
+            if perm.action.action == 'task_change_status':
+                assert perm.min_level >= Role.getLevel('Anonymous')
+
+        
+        task_list.destroySelf()
