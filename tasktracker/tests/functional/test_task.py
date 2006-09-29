@@ -25,7 +25,7 @@ class TestTaskController(TestController):
 
         res = app.get(url_for(
                 controller='task', action='show_create', 
-                task_listID = task_listID
+                task_listID=task_listID
                 ))
 
         form = res.forms[0]

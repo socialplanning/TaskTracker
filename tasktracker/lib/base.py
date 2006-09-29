@@ -149,7 +149,9 @@ class BaseController(WSGIController):
         if action_verb == 'open':
             return True
 
+        params = dict(params)
         params['username'] = username
+        params.update(request.params)
         return self._has_permission(controller, action_name, params)
 
 

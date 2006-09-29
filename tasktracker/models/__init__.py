@@ -168,7 +168,7 @@ class TaskList(SQLObject):
     project = ForeignKey("Project")
     owners = MultipleJoin("TaskListOwner")
 
-    security_policy = ForeignKey("SimpleSecurityPolicy")
+    security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
     def set(self, init=False, **kwargs):
         if init:

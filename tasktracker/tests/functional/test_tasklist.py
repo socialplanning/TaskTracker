@@ -71,8 +71,10 @@ class TestTaskListController(TestController):
         assert 'member list 1' in res
 
         #but members cannot create tasks.
+        assert 'Add a new task' not in res
 
-        res = res.click('Add a new task')
+        res = app.get(url_for(
+                controller='task', action='show_create', task_listID=task_list.id))
 
         assert 'not_permitted' in res.header_dict['location']        
 
