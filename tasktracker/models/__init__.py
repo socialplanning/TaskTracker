@@ -91,7 +91,7 @@ class TaskListPermission(SQLObject):
 
 class Task(SQLObject):
     class sqlmeta:
-        defaultOrder = 'sort_index'
+        defaultOrder = 'left_node'
 
     created = DateTimeCol(default=datetime.datetime.now)
     deadline = DateTimeCol(default=None)
@@ -99,7 +99,7 @@ class Task(SQLObject):
     text = StringCol()
     live = BoolCol(default=True)    
     status = StringCol()
-    sort_index = IntCol()
+
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
     private = BoolCol(default=False)
@@ -112,7 +112,7 @@ class Task(SQLObject):
     def _create(self, id, **kwargs):
 #        if 'task_list' in kwargs:
 #            kwargs['task_listID'] = kwargs.pop('task_list').id
-        kwargs['sort_index'] = self._next_sort_index(kwargs['task_listID'])
+
         if not kwargs.has_key('status'):
             project = TaskList.get(kwargs['task_listID']).project
             assert len(project.statuses)
@@ -219,28 +219,6 @@ class Task(SQLObject):
     def changeStatus(self, newStatus):
         self.status = newStatus
         return self.status
-
-    # BROKEN
-    def moveToBottom(self):
-        return
-        new_index = self._next_sort_index(self.task_listID, status=self.status, skip=self.id)
-        self.sort_index = new_index
-
-    @classmethod
-    def _next_sort_index(cls, task_listID, skip=None):
-        """
-        Returns an index which is guaranteed to be greater than all live  indexes in 
-        the same list
-        """
-        index = cls.select(
-            AND(cls.q.task_listID==task_listID, 
-                cls.q.id != skip,
-                cls.q.live == True
-                )).max('sort_index')
-        if index is None:
-            return 0
-        else:
-            return index + 1
 
 class Comment(SQLObject):
     class sqlmeta:
