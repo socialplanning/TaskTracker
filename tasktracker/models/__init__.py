@@ -118,9 +118,17 @@ class Task(SQLObject):
             assert len(project.statuses)
             kwargs['status'] = project.statuses[0].id
 
-        kwargs['left_node'] = Task.select(task_listID = kwargs['task_list']).max('right_node')
-        kwargs['right_node'] = kwargs['left_node'] + 1
+        right = Task.selectBy(task_listID = kwargs['task_listID']).max('right_node')
+        if not right:
+            right = 1
+
+        kwargs['left_node'] = right + 1
+        kwargs['right_node'] = right + 2
+
         SQLObject._create(self, id, **kwargs)
+
+    def depth(self):
+        return Task.select(Task.q.left_node < self.left_node and Task.q.right_node > self.node.right_node)
 
     def reparent(self, new_parent):
         """Places this node as the last of the parent's childern"""
@@ -266,6 +274,9 @@ class TaskList(SQLObject):
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
     def uncompletedTasks(self):
+        return []
+
+    def completedTasks(self):
         return []
 
     def set(self, init=False, **kwargs):
