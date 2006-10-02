@@ -15,9 +15,7 @@ class TaskController(BaseController):
     @catches_errors
     def change_status(self, id):
         c.task = self.getTask(int(id))
-        c.task.status = params['status']
-
-        c.task.moveToBottom()
+        c.task.status = request.params['status']
 
         return render_text('ok')
 

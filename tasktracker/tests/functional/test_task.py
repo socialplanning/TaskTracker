@@ -15,8 +15,8 @@ class TestTaskController(TestController):
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
         assert task.status == 'not done'
-        res2 = app.get('/task/change_status/%s?new_status=%s' % (task.id, 'done'))
-        assert task.status == done
+        res2 = app.get('/task/change_status/%s?status=%s' % (task.id, 'done'))
+        assert task.status == "done"
      
     def test_show_create(self):
         task_listID = TaskList.select()[0].id
