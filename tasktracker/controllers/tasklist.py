@@ -1,7 +1,6 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
-
 import formencode  
 
 class CreateListForm(formencode.Schema):  

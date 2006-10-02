@@ -11,13 +11,9 @@ from tasktracker.models import Task, TaskList
 
 import imp, os
 
-def oppositeStatus(status):
-    return Task.oppositeStatus(status)
-
 def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True)]
     return select('task_listID', options_for_select(tasklist, selected=id))
-
 
 
 from tasktracker.lib.base import c

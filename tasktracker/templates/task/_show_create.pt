@@ -10,13 +10,21 @@
 </td></tr>
 
 <tr><td>
-<label for="title"><b>Title:</b></label></td><td> <input name="title" id="title" type="text"><br/>
+<label for="title"><b>Title:</b></label></td><td>
+<input name="title" id="title" type="text"><br/>
 </td></tr>
 
 <tr><td>
-<label for="text"><b>Text:</b></label></td><td><textarea name="text" id="text" rows=10 cols=80></textarea><br/>
+<label for="text"><b>Text:</b></label></td><td>
+<textarea name="text" id="text" rows=10 cols=80></textarea><br/>
+</td></tr>
+
+<tr><td>
+<label for="deadline"><b>Date:</b></label></td><td>
+<input name="deadline" id="deadline" type="text"><br/>
 </td></tr>
 </table>
+
 
 <input type="submit" name="create" value="create">
 </form>

@@ -110,8 +110,8 @@ class Task(SQLObject):
     moving = BoolCol(default=False)
 
     def _create(self, id, **kwargs):
-#        if 'task_list' in kwargs:
-#            kwargs['task_listID'] = kwargs.pop('task_list').id
+        if 'task_list' in kwargs:
+            kwargs['task_listID'] = kwargs.pop('task_list').id
 
         if not kwargs.has_key('status'):
             project = TaskList.get(kwargs['task_listID']).project

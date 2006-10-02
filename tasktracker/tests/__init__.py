@@ -40,15 +40,15 @@ class TestController(TestCase):
         task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
 
         Task(title="Task 1", text="This is a task",
-             sort_index=1, task_list=task_list)
+             task_list=task_list)
         Task(title="Task 2", text="Another task",
-             sort_index=2, task_list=task_list)
+             task_list=task_list)
         task_list_complete = TaskList(title="Complete list", text="Another list", projectID=self.project.id, username='admin')
         Task(title="Task A", text="more",
-             sort_index=1, task_list=task_list_complete,
+             task_list=task_list_complete,
              status='completed')
         Task(title="Task B", text="yet more text",
-             sort_index=2, task_list=task_list_complete,
+             task_list=task_list_complete,
              status='completed')
 
     def setup_database(self):
@@ -80,7 +80,6 @@ class TestController(TestCase):
         form['statuses'] = "not done,done,"
 
         res = form.submit()
-        print res
 
 
     def getApp(self, username):

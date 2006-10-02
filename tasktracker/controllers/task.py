@@ -1,6 +1,16 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
+import formencode  
+from formencode.validators import *
+import datetime
+
+class CreateTaskForm(formencode.Schema):  
+    allow_extra_fields = True  
+    title = NotEmpty()
+    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today), 
+                                       DateConverter())
+
 class TaskController(BaseController):
 
     def _clean_params(self, params):
@@ -19,23 +29,6 @@ class TaskController(BaseController):
 
         return render_text('ok')
 
-    @attrs(action='change_status')
-    @catches_errors
-    def complete_task(self, id):
-        pass
-    #self.change_status(id)
-
-    @attrs(action='assign')
-    @catches_errors
-    def assign(self, id):
-        c.task = self.getTask(int(id))
-
-
-        c.task.moveToBottom()
-
-        return render_text('ok')
-
-
     @attrs(action='create')
     @catches_errors
     def show_create(self, id):
@@ -47,8 +40,9 @@ class TaskController(BaseController):
         return render_response('zpt', 'task.show_create')
 
     @attrs(action='create')
+    @validate(schema=CreateTaskForm(), form='show_create')  
     def create(self):
-        c.task = Task(**self._clean_params(request.params))
+        c.task = Task(**self._clean_params(self.form_result))
 
         return redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
 
