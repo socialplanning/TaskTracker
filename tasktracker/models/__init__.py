@@ -102,7 +102,7 @@ class Task(SQLObject):
             assert len(project.statuses)
             kwargs['status'] = project.statuses[0].id
 
-        kwargs['left_node'] = Task.select(Task.task_listID = kwargs['task_list']).max(Task.q.right_node)
+        kwargs['left_node'] = Task.select(task_listID = kwargs['task_list']).max('right_node')
         kwargs['right_node'] = kwargs['left_node'] + 1
         SQLObject._create(self, id, **kwargs)
 
@@ -146,7 +146,8 @@ class Task(SQLObject):
 
         update_self = conn.sqlrepr(Update(Task.q, {
                     left: Task.q.left + subtree_internal_shift,
-                    right: Task.q.right + subtree_internal_shift
+                    right: Task.q.right + subtree_internal_shift,
+                    moving: True
                     }, where=AND(Task.q.left >= self.left, Task.q.right <= self.right)))
         
 
@@ -154,16 +155,29 @@ class Task(SQLObject):
             update_middle_left = conn.sqlrepr(Update(Task.q, {
                         left: Task.q.left + subtree_insert_shift
                         }, where=AND(Task.q.left >= sibling.left, 
-                                     Task.q.left < self.left)))
+                                     Task.q.left < self.left, 
+                                     Task.q.moving == False)))
 
             update_middle_right = conn.sqlrepr(Update(Task.q, {
                         right: Task.q.right + subtree_insert_shift
                         }, where=AND(Task.q.right > sibling.right, 
-                                     Task.q.right < self.left)))
-
-         
+                                     Task.q.right < self.left, 
+                                     Task.q.moving == False)))        
         else:
+            update_middle_left = conn.sqlrepr(Update(Task.q, {
+                        left: Task.q.left - subtree_insert_shift
+                        }, where=AND(Task.q.left >= self.left, 
+                                     Task.q.left < sibling.left, 
+                                     Task.q.moving == False)))
 
+            update_middle_right = conn.sqlrepr(Update(Task.q, {
+                        right: Task.q.right - subtree_insert_shift
+                        }, where=AND(Task.q.right > sibling.right, 
+                                     Task.q.right < self.left, 
+                                     Task.q.moving == False)))
+         
+        
+    
 
     created = DateTimeCol(default=datetime.datetime.now)
     deadline = DateTimeCol(default=None)
@@ -179,6 +193,7 @@ class Task(SQLObject):
 
     left_node = IntCol(default=-1)
     right_node = IntCol(default=-1)
+    moving = BoolCol(default=False)
 
     def isOwnedBy(self, username):
         return self.owner == username            
@@ -239,6 +254,9 @@ class TaskList(SQLObject):
     owners = MultipleJoin("TaskListOwner")
 
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
+
+    def uncompletedTasks(self):
+        return []
 
     def set(self, init=False, **kwargs):
         if init:
