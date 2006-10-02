@@ -52,7 +52,7 @@ class TestController(TestCase):
              status='completed')
 
     def setup_database(self):
-        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment]
+        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status]
 
         for table in nonFixedClasses[::-1]:
             table.dropTable(ifExists=True)
@@ -77,7 +77,7 @@ class TestController(TestCase):
 
         form['create_list_permission'] = 40
 
-        form['statuses'] = "uncompleted,completed,"
+        form['statuses'] = "not done,done,"
 
         res = form.submit()
         print res

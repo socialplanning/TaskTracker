@@ -98,7 +98,7 @@ class Task(SQLObject):
     title = StringCol()
     text = StringCol()
     live = BoolCol(default=True)    
-    status = ForeignKey("Status")
+    status = StringCol()
     sort_index = IntCol()
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
@@ -116,7 +116,7 @@ class Task(SQLObject):
         if not kwargs.has_key('status'):
             project = TaskList.get(kwargs['task_listID']).project
             assert len(project.statuses)
-            kwargs['status'] = project.statuses[0].id
+            kwargs['status'] = project.statuses[0].name
 
         right = Task.selectBy(task_listID = kwargs['task_listID']).max('right_node')
         if not right:
@@ -128,7 +128,7 @@ class Task(SQLObject):
         SQLObject._create(self, id, **kwargs)
 
     def depth(self):
-        return Task.select(Task.q.left_node < self.left_node and Task.q.right_node > self.node.right_node)
+        return len(Task.select(Task.q.left_node < self.left_node and Task.q.right_node > self.node.right_node))
 
     def reparent(self, new_parent):
         """Places this node as the last of the parent's childern"""
@@ -150,7 +150,7 @@ class Task(SQLObject):
         trans.commit()
         conn.cache.clear()
 
-    def childNodes(self):
+    def childTasks(self):
         return ((self.right - self.left) - 1) / 2
 
     def insertBefore(self, sibling):
@@ -274,10 +274,10 @@ class TaskList(SQLObject):
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
     def uncompletedTasks(self):
-        return []
-
+        return list(Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id)))
+    
     def completedTasks(self):
-        return []
+        return list(Task.select(AND(Task.q.status == 'done', Task.q.task_listID == self.id)))
 
     def set(self, init=False, **kwargs):
         if init:

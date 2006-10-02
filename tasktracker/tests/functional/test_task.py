@@ -14,10 +14,9 @@ class TestTaskController(TestController):
         res = res.click(lists[0].title)
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
-        assert task.status.name == 'uncompleted'
-        completed = Status.lookup('completed', self.project.id)
-        res2 = app.get('/task/change_status/%s?new_status=%s' % (task.id, completed.id))
-        assert task.status == completed
+        assert task.status == 'not done'
+        res2 = app.get('/task/change_status/%s?new_status=%s' % (task.id, 'done'))
+        assert task.status == done
      
     def test_show_create(self):
         task_listID = TaskList.select()[0].id
