@@ -1,3 +1,11 @@
+function changeStatus(url, task_id) {
+    url += "?status=" + $('status_' + task_id).value
+
+    new Ajax.Request(url, {asynchronous:true, evalScripts:true}); 
+    moveTask(task_id);
+
+}
+
 function oppositeStatus(status) {
     if (status == "completed") {
 	return "uncompleted";

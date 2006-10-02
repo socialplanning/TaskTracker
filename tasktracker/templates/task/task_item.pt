@@ -1,21 +1,24 @@
 <metal:macro metal:define-macro="view_task">
 
 
-<span tal:replace="structure python: h.form_remote_tag(
+<!--span tal:replace="structure python: h.form_remote_tag(
 html=dict(id='form_%s' % atask.id),
 url=h.url(controller='task',action='complete_task', id=atask.id), 
-complete=h.evaluate_remote_response())" />
+complete=h.evaluate_remote_response())" /-->
 
 
-<span tal:content="structure python: h.check_box('toggle_%s' % atask.id, checked=(atask.status=='completed'))" tal:attributes="id string:button_${atask/id};onclick python:&quot;new Ajax.Request('%s', {asynchronous:true, evalScripts:true});; moveTask('%d');; &quot; % (h.url_for(controller='task',action='complete_task', id=atask.id), atask.id) "/>
+<!--span tal:content="structure python: h.check_box('toggle_%s' % atask.id, checked=(atask.status=='done'))" tal:attributes="id string:button_${atask/id};onclick python:&quot;new Ajax.Request('%s', {asynchronous:true, evalScripts:true});; moveTask('%d');; &quot; % (h.url_for(controller='task',action='complete_task', id=atask.id), atask.id) "/-->
+
+<span tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:replace="structure python: h.select('status_%d' % atask.id, h.options_for_select([(s.name, s.name) for s in c.statuses], atask.status), onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id)) "/>
+
+<span tal:condition="python: not h.has_permission('task', 'change_status', id=atask.id)" tal:replace="atask/status" />
 
 <span tal:attributes="id string:handle_${atask/id}" style="display:none;" class="handle">
 <img src="/images/drag.png">
 </span>
 
-
 <a tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id)">
-<div tal:replace="atask/title"/>
+<span tal:replace="atask/title"/>
 </a>
 
 

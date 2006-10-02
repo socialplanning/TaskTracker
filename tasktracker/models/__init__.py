@@ -110,8 +110,8 @@ class Task(SQLObject):
     moving = BoolCol(default=False)
 
     def _create(self, id, **kwargs):
-        if 'task_list' in kwargs:
-            kwargs['task_listID'] = kwargs.pop('task_list').id
+#        if 'task_list' in kwargs:
+#            kwargs['task_listID'] = kwargs.pop('task_list').id
         kwargs['sort_index'] = self._next_sort_index(kwargs['task_listID'])
         if not kwargs.has_key('status'):
             project = TaskList.get(kwargs['task_listID']).project
@@ -163,7 +163,7 @@ class Task(SQLObject):
         #shift back :    [before new][new][middle][old][after new]
         
         conn = hub.getConnection()
-        trans = conn.transaction()      
+        trans = conn.transaction()
 
         subtree_insert_shift = 1 + self.right - self.left
         subtree_internal_shift = sibling.left - self.left 
@@ -217,10 +217,12 @@ class Task(SQLObject):
         return self.owner == username            
 
     def changeStatus(self, newStatus):
-        self.status = self.newStatus
+        self.status = newStatus
         return self.status
 
+    # BROKEN
     def moveToBottom(self):
+        return
         new_index = self._next_sort_index(self.task_listID, status=self.status, skip=self.id)
         self.sort_index = new_index
 

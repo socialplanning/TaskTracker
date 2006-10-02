@@ -19,6 +19,12 @@ class TaskController(BaseController):
 
         return render_text('ok')
 
+    @attrs(action='change_status')
+    @catches_errors
+    def complete_task(self, id):
+        pass
+    #self.change_status(id)
+
     @attrs(action='assign')
     @catches_errors
     def assign(self, id):
@@ -87,4 +93,3 @@ class TaskController(BaseController):
         c.task.live = False
         c.flash = "Deleted."
         return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
-        

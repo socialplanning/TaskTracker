@@ -92,6 +92,8 @@ class BaseController(WSGIController):
         tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                     actionID=action.id)
 
+        print action_name, tl_permissions
+
         if not tl_permissions.count():
             #shouldn't get here, because tasklists should always have
             #some permission row for each action.  If we do, reset

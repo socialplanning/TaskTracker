@@ -41,8 +41,8 @@ Uncompleted tasks:
 Completed tasks:
 
 <ul id="completed" class="task_list">
-<tal:for repeat="atask c/tasks">
-<li tal:condition="python:atask.status == 'completed'" tal:attributes="id string:task_${atask/id}">
+<tal:for repeat="atask c/tasklist/completedTasks">
+<li tal:attributes="id string:task_${atask/id}">
 <metal:do metal:use-macro="here/task_item/macros/view_task" />
 </li>
 </tal:for>
