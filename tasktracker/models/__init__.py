@@ -93,6 +93,22 @@ class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
+    created = DateTimeCol(default=datetime.datetime.now)
+    deadline = DateTimeCol(default=None)
+    title = StringCol()
+    text = StringCol()
+    live = BoolCol(default=True)    
+    status = ForeignKey("Status")
+    sort_index = IntCol()
+    comments = MultipleJoin("Comment")
+    task_list = ForeignKey("TaskList")
+    private = BoolCol(default=False)
+    owner = StringCol(default="")
+
+    left_node = IntCol(default=-1)
+    right_node = IntCol(default=-1)
+    moving = BoolCol(default=False)
+
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
             kwargs['task_listID'] = kwargs.pop('task_list').id
@@ -112,12 +128,12 @@ class Task(SQLObject):
         conn = hub.getConnection()
         trans = conn.transaction()
 
-        updateright = conn.sqlrepr(Update(Task.q, {right: Task.q.right + 2}, where=Task.q.right > new_parent.right))
+        update_right = conn.sqlrepr(Update(Task.q, {right: Task.q.right + 2}, where=Task.q.right > new_parent.right))
 
-        updateleft = conn.sqlrepr(Update(Task.q, {left:Task.q.left + 2}, where=Task.q.left > new_parent.right))
+        update_left = conn.sqlrepr(Update(Task.q, {left:Task.q.left + 2}, where=Task.q.left > new_parent.right))
 
-        conn.query(updateleft)
-        conn.query(updateright)
+        conn.query(update_left)
+        conn.query(update_right)
 
         self.left_node = new_parent.right_node
         self.right_node = new_parent.right_node + 1
@@ -176,24 +192,18 @@ class Task(SQLObject):
                                      Task.q.right < self.left, 
                                      Task.q.moving == False)))
          
-        
-    
+       
+        update_restore = conn.sqlrepr(Update(Task.q, {
+                        moving: False
+                        }))       
 
-    created = DateTimeCol(default=datetime.datetime.now)
-    deadline = DateTimeCol(default=None)
-    title = StringCol()
-    text = StringCol()
-    live = BoolCol(default=True)    
-    status = ForeignKey("Status")
-    sort_index = IntCol()
-    comments = MultipleJoin("Comment")
-    task_list = ForeignKey("TaskList")
-    private = BoolCol(default=False)
-    owner = StringCol(default="")
+        conn.query(update_self)
+        conn.query(update_middle_left)
+        conn.query(update_middle_right)
+        conn.query(update_restore)
 
-    left_node = IntCol(default=-1)
-    right_node = IntCol(default=-1)
-    moving = BoolCol(default=False)
+        trans.commit()
+        conn.cache.clear()   
 
     def isOwnedBy(self, username):
         return self.owner == username            
