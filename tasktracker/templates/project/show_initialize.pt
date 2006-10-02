@@ -25,12 +25,15 @@ The security setting on this page is for creating task lists.</p>
 
 <p> During its lifetime, a task could have many statuses.  Perhaps it
 starts out as 'new', becomes 'pending' when someone has decided that
-it is worth doing, and then finally becomes 'completed'.  
+it is worth doing, and then finally becomes 'done'.  
 </p>
 
 <form action="#" onsubmit = "addStatus($('new_status').value);$('new_status').value=''; return false;" >
 <ul id="status_list" class="task_list">
-
+<li id="done">
+<input type="checkbox" disabled="disabled"/>
+<span>done</span>
+</li>
 </ul>
 <label for="new_status">Add a status:</label> <input name="new_status" type="text" id="new_status">
 
@@ -43,8 +46,23 @@ it is worth doing, and then finally becomes 'completed'.
 
 <script language="javascript">
 
+function updateStatus() {
+    //update the form variable
+    var status_list = $('status_list');
+    var statuses = status_list.getElementsByTagName('li')
+    var s = '';
+
+    for (i = 0; i < statuses.length; ++i) {
+        s += getStatusName(statuses[i]);
+	s += ',';
+    }
+
+    $('statuses').value = s;
+}
+
 function deleteStatus(status_name) {
     $(status_name).parentNode.remove();
+    updateStatus();
 }
 
 function getStatusName(status_li) {
@@ -73,20 +91,12 @@ function addStatus(status) {
     var del = 'deleteStatus(\'' + status_name + '\');';
     var check = Builder.node('input', {'id' : status_name, 'type' : 'checkbox', 'onclick' : del});
     var li = Builder.node('li', [check, Builder.node('span', status)]);
-    status_list.appendChild(li);
 
-    //update the form variable
-    var statuses = status_list.getElementsByTagName('li')
-    var s = '';
+    done = $('done');
+    status_list.insertBefore(li, done);
 
-    for (i = 0; i < statuses.length; ++i) {
-        s += getStatusName(statuses[i]);
-	s += ',';
-    }
-
-    $('statuses').value = s;
+    updateStatus();
 }
 
-addStatus('open');
-addStatus('completed');
+addStatus('not done');
 </script>

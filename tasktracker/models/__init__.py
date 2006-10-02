@@ -10,8 +10,17 @@ __connection__ = hub
 # You should then import your SQLObject classes
 # from myclass import MyDataClass
 
+# Don't forget to update soClasses, below
 
 import datetime
+
+class Status(SQLObject):
+    name = StringCol()
+    project = ForeignKey("Project")
+
+    @classmethod
+    def lookup(cls, name, project_id):
+        return Status.selectBy(name=name, projectID=project_id)
 
 class Role(SQLObject):
     class sqlmeta:
@@ -34,6 +43,7 @@ class Project(SQLObject):
     create_list_permission = IntCol(default=0)
     initialized = BoolCol(default=False)
     task_lists = MultipleJoin("TaskList")
+    statuses = MultipleJoin("Status")
 
     @classmethod
     def getProject(cls, title):
@@ -87,48 +97,108 @@ class Task(SQLObject):
         if 'task_list' in kwargs:
             kwargs['task_listID'] = kwargs.pop('task_list').id
         kwargs['sort_index'] = self._next_sort_index(kwargs['task_listID'])
+        if not kwargs.has_key('status'):
+            project = TaskList.get(kwargs['task_listID']).project
+            assert len(project.statuses)
+            kwargs['status'] = project.statuses[0].id
+
+        kwargs['left_node'] = Task.select(Task.task_listID = kwargs['task_list']).max(Task.q.right_node)
+        kwargs['right_node'] = kwargs['left_node'] + 1
         SQLObject._create(self, id, **kwargs)
+
+    def reparent(self, new_parent):
+        """Places this node as the last of the parent's childern"""
+
+        conn = hub.getConnection()
+        trans = conn.transaction()
+
+        updateright = conn.sqlrepr(Update(Task.q, {right: Task.q.right + 2}, where=Task.q.right > new_parent.right))
+
+        updateleft = conn.sqlrepr(Update(Task.q, {left:Task.q.left + 2}, where=Task.q.left > new_parent.right))
+
+        conn.query(updateleft)
+        conn.query(updateright)
+
+        self.left_node = new_parent.right_node
+        self.right_node = new_parent.right_node + 1
+        new_parent.right_node += 2
+
+        trans.commit()
+        conn.cache.clear()
+
+    def childNodes(self):
+        return ((self.right - self.left) - 1) / 2
+
+    def insertBefore(self, sibling):
+        """Places this node before another node."""
+
+        #Everything after the old location, but before the new location needs to be shifted.
+        #Everything after the new location, but before the old location needs to be shifted.
+        
+        #shift forward:  [before old][old][middle][new][after new]
+        #shift back :    [before new][new][middle][old][after new]
+        
+        conn = hub.getConnection()
+        trans = conn.transaction()      
+
+        subtree_insert_shift = 1 + self.right - self.left
+        subtree_internal_shift = sibling.left - self.left 
+
+        update_self = conn.sqlrepr(Update(Task.q, {
+                    left: Task.q.left + subtree_internal_shift,
+                    right: Task.q.right + subtree_internal_shift
+                    }, where=AND(Task.q.left >= self.left, Task.q.right <= self.right)))
+        
+
+        if self.left > sibling.left:
+            update_middle_left = conn.sqlrepr(Update(Task.q, {
+                        left: Task.q.left + subtree_insert_shift
+                        }, where=AND(Task.q.left >= sibling.left, 
+                                     Task.q.left < self.left)))
+
+            update_middle_right = conn.sqlrepr(Update(Task.q, {
+                        right: Task.q.right + subtree_insert_shift
+                        }, where=AND(Task.q.right > sibling.right, 
+                                     Task.q.right < self.left)))
+
+         
+        else:
+
 
     created = DateTimeCol(default=datetime.datetime.now)
     deadline = DateTimeCol(default=None)
     title = StringCol()
     text = StringCol()
     live = BoolCol(default=True)    
-    status = EnumCol(default='uncompleted', enumValues=('completed', 'uncompleted'))    
+    status = ForeignKey("Status")
     sort_index = IntCol()
     comments = MultipleJoin("Comment")
     task_list = ForeignKey("TaskList")
     private = BoolCol(default=False)
     owner = StringCol(default="")
 
+    left_node = IntCol(default=-1)
+    right_node = IntCol(default=-1)
+
     def isOwnedBy(self, username):
         return self.owner == username            
 
-    @classmethod
-    def oppositeStatus(cls, status):
-        if status == 'completed':
-            return 'uncompleted'
-        else:
-            return 'completed'
-
-    def toggleStatus(self):
-        self.status = self.oppositeStatus(self.status)
+    def changeStatus(self, newStatus):
+        self.status = self.newStatus
         return self.status
 
     def moveToBottom(self):
-        """ Call this *after* toggleStatus """
         new_index = self._next_sort_index(self.task_listID, status=self.status, skip=self.id)
         self.sort_index = new_index
 
     @classmethod
-    def _next_sort_index(cls, task_listID, status='uncompleted', skip=None):
+    def _next_sort_index(cls, task_listID, skip=None):
         """
         Returns an index which is guaranteed to be greater than all live  indexes in 
-        the same list with the same status.
+        the same list
         """
         index = cls.select(
             AND(cls.q.task_listID==task_listID, 
-                cls.q.status==status, 
                 cls.q.id != skip,
                 cls.q.live == True
                 )).max('sort_index')
@@ -251,13 +321,8 @@ class TaskList(SQLObject):
     def isOwnedBy(self, username):
         return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
 
-    def uncompletedTasks(self):
-        return [x for x in self.tasks if x.status == 'uncompleted']
-
-    def completedTasks(self):
-        return [x for x in self.tasks if x.status == 'completed']
-
 soClasses = [
+    Status,
     Role,
     Project,
     Action,

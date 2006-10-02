@@ -32,23 +32,12 @@ class TestController(TestCase):
         self.wsgiapp = loadapp('config:development.ini#test', relative_to=conf_dir)
         self.setup_database()
         self.setup_project()
+        self.setup_fixtures()
         TestCase.__init__(self, *args)
 
-    def setup_database(self):
-        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment]
-
-        for table in nonFixedClasses[::-1]:
-            table.dropTable(ifExists=True)
-        for table in nonFixedClasses:
-            table.createTable(ifNotExists=True)
-        
-        self.project = Project(title='theproject')
-
+    def setup_fixtures(self):
+    
         task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
-
-        f = open("/tmp/log3", "a")
-        print >>f, "perm = "
-        print >>f, list(TaskListPermission.select())
 
         Task(title="Task 1", text="This is a task",
              sort_index=1, task_list=task_list)
@@ -61,6 +50,16 @@ class TestController(TestCase):
         Task(title="Task B", text="yet more text",
              sort_index=2, task_list=task_list_complete,
              status='completed')
+
+    def setup_database(self):
+        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment]
+
+        for table in nonFixedClasses[::-1]:
+            table.dropTable(ifExists=True)
+        for table in nonFixedClasses:
+            table.createTable(ifNotExists=True)
+        
+        self.project = Project(title='theproject')
 
     def setup_project(self):
         app = self.getApp('admin')
@@ -77,6 +76,8 @@ class TestController(TestCase):
         form = res.forms[0]
 
         form['create_list_permission'] = 40
+
+        form['statuses'] = "uncompleted,completed,"
 
         res = form.submit()
         print res
