@@ -3,6 +3,7 @@
 ##   a starting point for setting up your schema
 
 from sqlobject import *
+from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 hub = PackageHub("tasktracker")
 __connection__ = hub
@@ -89,9 +90,17 @@ class TaskListPermission(SQLObject):
                 raise ValueError("Invalid permission settings.")
         SQLObject._create(self, id, **kwargs)
 
+
+def _task_sort_index():
+    index = Task.selectBy(live=True).max('sort_index')
+    if index is None:
+        return 0
+    else:
+        return index + 1
+
 class Task(SQLObject):
     class sqlmeta:
-        defaultOrder = 'left_node'
+        defaultOrder = 'sort_index'
 
     created = DateTimeCol(default=datetime.datetime.now)
     deadline = DateTimeCol(default=None)
@@ -105,9 +114,10 @@ class Task(SQLObject):
     private = BoolCol(default=False)
     owner = StringCol(default="")
 
-    left_node = IntCol(default=-1)
-    right_node = IntCol(default=-1)
-    moving = BoolCol(default=False)
+    sort_index = IntCol()
+
+    parent = ForeignKey("Task")
+    children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
 
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
@@ -118,128 +128,9 @@ class Task(SQLObject):
             assert len(project.statuses)
             kwargs['status'] = project.statuses[0].name
 
-        right = Task.selectBy(task_listID = kwargs['task_listID']).max('right_node')
-        if not right:
-            right = 1
-
-        kwargs['left_node'] = right + 1
-        kwargs['right_node'] = right + 2
-
+        kwargs['sort_index'] = _task_sort_index()
+        kwargs['parentID'] = 0
         SQLObject._create(self, id, **kwargs)
-
-    def depth(self):
-        return len(Task.select(Task.q.left_node < self.left_node and Task.q.right_node > self.node.right_node))
-
-    def reparent(self, new_parent):
-        """Places this node as the last of the parent's childern"""
-
-        conn = hub.getConnection()
-        trans = conn.transaction()
-
-        update_right = conn.sqlrepr(Update(Task.q, {right: Task.q.right + 2}, where=Task.q.right > new_parent.right))
-
-        update_left = conn.sqlrepr(Update(Task.q, {left:Task.q.left + 2}, where=Task.q.left > new_parent.right))
-
-        conn.query(update_left)
-        conn.query(update_right)
-
-        self.left_node = new_parent.right_node
-        self.right_node = new_parent.right_node + 1
-        new_parent.right_node += 2
-
-        trans.commit()
-        conn.cache.clear()
-
-    def findTasks(self):
-        return ((self.right - self.left) - 1) / 2
-
-    def firstChild(self):
-        firstChild = Task.selectBy(left_node=self.left_node + 1)
-        if not firstChild.count():
-            return None
-        else:
-            return firstChild[0]
-
-    def nextSibling(self):
-        nextSibing = Task.selectBy(left_node=self.right_node + 1)
-        if not nextSibling.count():
-            return None
-        else:
-            return nextSibling[0]
-        
-    def childTasks(self):
-        """ Only the direct children """
-        curChild = self.firstChild()
-        if not curChild:
-            return []
-
-        children = [curChild]
-        while 1:
-            curChild = curChild.nextSibling()
-            if not curChild:
-                break
-            children.append (curChild)
-        return children
-
-    def insertBefore(self, sibling):
-        """Places this node before another node."""
-
-        #Everything after the old location, but before the new location needs to be shifted.
-        #Everything after the new location, but before the old location needs to be shifted.
-        
-        #shift forward:  [before old][old][middle][new][after new]
-        #shift back :    [before new][new][middle][old][after new]
-        
-        conn = hub.getConnection()
-        trans = conn.transaction()
-
-        subtree_insert_shift = 1 + self.right - self.left
-        subtree_internal_shift = sibling.left - self.left 
-
-        update_self = conn.sqlrepr(Update(Task.q, {
-                    left: Task.q.left + subtree_internal_shift,
-                    right: Task.q.right + subtree_internal_shift,
-                    moving: True
-                    }, where=AND(Task.q.left >= self.left, Task.q.right <= self.right)))
-        
-
-        if self.left > sibling.left:
-            update_middle_left = conn.sqlrepr(Update(Task.q, {
-                        left: Task.q.left + subtree_insert_shift
-                        }, where=AND(Task.q.left >= sibling.left, 
-                                     Task.q.left < self.left, 
-                                     Task.q.moving == False)))
-
-            update_middle_right = conn.sqlrepr(Update(Task.q, {
-                        right: Task.q.right + subtree_insert_shift
-                        }, where=AND(Task.q.right > sibling.right, 
-                                     Task.q.right < self.left, 
-                                     Task.q.moving == False)))        
-        else:
-            update_middle_left = conn.sqlrepr(Update(Task.q, {
-                        left: Task.q.left - subtree_insert_shift
-                        }, where=AND(Task.q.left >= self.left, 
-                                     Task.q.left < sibling.left, 
-                                     Task.q.moving == False)))
-
-            update_middle_right = conn.sqlrepr(Update(Task.q, {
-                        right: Task.q.right - subtree_insert_shift
-                        }, where=AND(Task.q.right > sibling.right, 
-                                     Task.q.right < self.left, 
-                                     Task.q.moving == False)))
-         
-       
-        update_restore = conn.sqlrepr(Update(Task.q, {
-                        moving: False
-                        }))       
-
-        conn.query(update_self)
-        conn.query(update_middle_left)
-        conn.query(update_middle_right)
-        conn.query(update_restore)
-
-        trans.commit()
-        conn.cache.clear()   
 
     def isOwnedBy(self, username):
         return self.owner == username            
@@ -280,6 +171,10 @@ class TaskList(SQLObject):
     owners = MultipleJoin("TaskListOwner")
 
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
+
+
+    def topLevelTasks(self):
+        return Task.selectBy(parentID=0, live=True, task_listID=self.id)
 
     def uncompletedTasks(self):
         return list(Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id)))
