@@ -6,9 +6,9 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 
 <ul id="tasks" class="task_list">
 <tal:for repeat="atask c/tasks">
-<li tal:attributes="id string:task_${atask/id}">
+
 <metal:do metal:use-macro="here/task_item/macros/view_task" />
-</li>
+
 </tal:for>
 </ul>
 
@@ -34,10 +34,9 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 <hr />
 <br />
 
-<div id="create_section" tal:condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
+<tal:if condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='show_update', id=c.tasklist.id)">Edit list settings</a>
 |
-</div>
+</tal:if>
 
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">Back to list of lists</a>
-

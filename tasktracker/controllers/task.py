@@ -29,6 +29,15 @@ class TaskController(BaseController):
 
         return render_text('ok')
 
+    @attrs(action='update')
+    def move(self, id):
+        task = self.getTask(int(id))
+        new_parent_id = int(request.params['new_parent'])
+        assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
+        task.parentID = new_parent_id
+
+        return render_text('ok')
+
     @attrs(action='create')
     @catches_errors
     def show_create(self, id):

@@ -2,64 +2,8 @@ function changeStatus(url, task_id) {
     url += "?status=" + $('status_' + task_id).value
 
     new Ajax.Request(url, {asynchronous:true, evalScripts:true}); 
-    moveTask(task_id);
-
 }
 
-function oppositeStatus(status) {
-    if (status == "completed") {
-	return "uncompleted";
-    } else {
-	return "completed";
-    }
-}
-
-function getParentList(task_id) {
-    var parent = $('task_' + task_id);
-    while (parent.nodeName != "UL") {
-	parent = parent.parentNode;
-    }
-    return parent;
-}
-
-function moveTask(task_id) {
-    var task_name = 'task_' + task_id;
-
-    var parent = getParentList(task_id);
-    $('toggle_' + task_id).enable();   /// huh???
-
-    new Effect.Fade($(task_name)); 
-    window.setTimeout(function () {
-	    Effect.Appear(task_name, {duration: 0.3});
-	}, 1000);
-
-    var target = oppositeStatus(parent.getAttribute('id'));
-    
-    window.setTimeout(function () {
-	    appear(target, task_id);
-	}, 1000);
-}
-
-function appear(target, task_id) {
-    $(target).appendChild($('task_' + task_id));
-    $(target + '_section').show();
-    var source = oppositeStatus(target);
-     if($(source).getElementsByTagName('LI').length == 0)
-	$(source + '_section').hide();
-
-     if($('uncompleted').getElementsByTagName('LI').length < 2) {
-	$('reorder_button').hide();
-     } else {
-	$('reorder_button').show();
-     }
-
-    $('toggle_' + task_id).setAttribute('checked', 
-					getParentList(task_id).getAttribute('id') == 'completed');
-    $('toggle_' + task_id).disable();   /// huh????
-    
-}
-
-var mode = 'toggle';
 
 function hideCreate() {
     $('create').show();
@@ -68,36 +12,90 @@ function hideCreate() {
     return false;
 }
 
+mode = 'view';
+
+function resetChildDepths(elem) {
+
+  var children = elem.childNodes;
+  var child_ul;
+  var i;
+  for (i in children) {
+    if (children[i].tagName == 'UL') {
+      child_ul = $A(children[i].childNodes);
+      break;
+    }
+  }
+  if (child_ul.length > 0) {
+    //console.log(child_ul);
+    var new_depth = parseInt(elem.childNodes[1].getAttribute('depth')) + 1;
+    child_ul.each(function(child) {
+      if (child.tagName == 'LI') {
+	var title = child.childNodes[1];
+
+	title.setAttribute('depth', new_depth);
+	left = new_depth * 15;
+	right = 200 - new_depth * 15;
+	title.style.paddingLeft = left + 'px'; 
+	title.style.paddingRight = right + 'px'; 
+
+	resetChildDepths(child);
+      }
+    });
+  }
+
+}
+function drop(child, drop_target) {
+
+  var new_parent = drop_target.parentNode.parentNode.parentNode;
+
+  //find new parent's contained ul
+  var kids = new_parent.childNodes;
+  for (i in kids) {
+    if (kids[i].tagName == 'UL') {
+      kids[i].insertBefore(child, kids[i].childNodes[0]);
+      //set child indent
+      resetChildDepths(new_parent);
+     
+      //tell the server
+      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
+      return;
+    }
+  }
+}
+
+var initialized = false;
+
 function modeSwitch() {
-    var lists = $A(['completed', 'uncompleted']);
-    lists.each(function(list) {
-	    $A($(list).getElementsByTagName('span')).each(function(node) {
-		    if (node.id.match('^(button|handle)')) {
-			node.toggle();
-		    }
-		});
+    $A($('tasks').getElementsByTagName('span')).each(function(node) {
+	    if (node.id.match('^(status|handle|label)')) {
+		node.toggle();
+	    }
 	});
 
-    $('completed_section').toggle();
-    
-    Sortable.create("uncompleted", 
-		    {tag:'li',
-		     handle:'handle', 
-		     onUpdate:function () {
-			    new Ajax.Request($('order').getAttribute('url'), 
-					     {asynchronous:true, 
-					      evalScripts:true, 
-					      parameters:Sortable.serialize("uncompleted")
-						     });
-			}
-		    });
+    if (!initialized) {
+      initialized = true;
+      $A($('tasks').getElementsByTagName('li')).each(function(node) {
+	  id = node.getAttribute('task_id');
+	  new Draggable(node.id, {
+	      handle : 'handle_' + id, 
+	      revert : true,
+	      ghosting : true
+          });
+	
+	  Droppables.add('title_' + id, {
+	      hoverclass : 'drop',
+	      onDrop : drop
+	  });
+       });
+    }
 
-    if (mode == 'toggle') {
+
+    if (mode == 'view') {
 	mode = 'reorder';
 	$('modeName').innerHTML = 'Done reordering';
 	$('create_section').hide();
     } else {
-	mode = 'toggle';
+	mode = 'view';
 	$('modeName').innerHTML = 'Reorder';
 	$('create_section').show();
     }

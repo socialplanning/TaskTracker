@@ -4,7 +4,12 @@
 
 .task_list {
 	list-style-type: none;
+	padding-left: 0px;
 
+}
+
+.drop {
+        border: 2px dashed #0f0;
 }
 
 .error-message {

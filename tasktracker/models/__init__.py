@@ -139,6 +139,14 @@ class Task(SQLObject):
         self.status = newStatus
         return self.status
 
+    def depth(self):
+        depth = 0
+        p_id = self.parentID
+        while p_id:
+            depth += 1
+            p_id = Task.get(p_id).parentID
+        return depth
+
 class Comment(SQLObject):
     class sqlmeta:
         defaultOrder = 'date'
