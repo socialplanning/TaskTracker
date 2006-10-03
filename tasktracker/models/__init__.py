@@ -150,8 +150,36 @@ class Task(SQLObject):
         trans.commit()
         conn.cache.clear()
 
-    def childTasks(self):
+    def findTasks(self):
         return ((self.right - self.left) - 1) / 2
+
+    def firstChild(self):
+        firstChild = Task.selectBy(left_node=self.left_node + 1)
+        if not firstChild.count():
+            return None
+        else:
+            return firstChild[0]
+
+    def nextSibling(self):
+        nextSibing = Task.selectBy(left_node=self.right_node + 1)
+        if not nextSibling.count():
+            return None
+        else:
+            return nextSibling[0]
+        
+    def childTasks(self):
+        """ Only the direct children """
+        curChild = self.firstChild()
+        if not curChild:
+            return []
+
+        children = [curChild]
+        while 1:
+            curChild = curChild.nextSibling()
+            if not curChild:
+                break
+            children.append (curChild)
+        return children
 
     def insertBefore(self, sibling):
         """Places this node before another node."""
