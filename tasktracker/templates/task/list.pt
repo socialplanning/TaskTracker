@@ -2,8 +2,16 @@
 
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
+<tal:if condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
 <a id="reorder_button" href="javascript:modeSwitch();"><span id="modeName">Reorder</span></a><br/><br/>
+</tal:if>
 
+<!-- list headers -->
+Task name
+<span style="position:absolute;left: 200px;">Status</span>
+<span style="position:absolute;left: 300px;">Deadline</span>
+
+<!-- the actual task list -->
 <ul id="tasks" class="task_list">
 <tal:for repeat="atask c/tasks">
 
@@ -12,6 +20,8 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 </tal:for>
 </ul>
 
+<!-- the create setup -->
+
 <div id="create_section" tal:condition="python: h.has_permission('task', 'create', task_listID=c.tasklist.id)">
 
 <p id="show_create">
@@ -19,6 +29,7 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 </p>
 
 <a name="create_anchor" id="create_anchor"/>
+
 <!-- ----------- Create ---------- -->
 <div id="create" style="display:none;">
 <metal:do use-macro="here/_show_create/macros/show_create" />

@@ -34,9 +34,7 @@ function resetChildDepths(elem) {
 
 	title.setAttribute('depth', new_depth);
 	left = new_depth * 15;
-	right = 200 - new_depth * 15;
 	title.style.paddingLeft = left + 'px'; 
-	title.style.paddingRight = right + 'px'; 
 
 	resetChildDepths(child);
       }
