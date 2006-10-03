@@ -24,5 +24,12 @@ complete=h.evaluate_remote_response())" /-->
 
 <span tal:replace="structure python: h.end_form()" />
 
+<ul>
+<tal:for repeat="atask atask/children">
+<li>
+<metal:do metal:use-macro="here/task_item/macros/view_task" />
+</li>
+</tal:for>
+</ul>
 
 </metal:macro>

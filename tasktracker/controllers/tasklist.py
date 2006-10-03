@@ -29,7 +29,7 @@ class TasklistController(BaseController):
     @catches_errors
     def view(self, id):
         c.tasklist = self._getTaskList(int(id))
-        c.tasks = Task.selectBy(live=True, task_listID=c.tasklist.id)
+        c.tasks = c.tasklist.topLevelTasks()
         c.statuses = Status.selectBy(projectID = c.tasklist.projectID)
         return render_response('zpt', 'task.list')
 

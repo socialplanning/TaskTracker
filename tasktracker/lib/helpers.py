@@ -39,6 +39,7 @@ def text_area_r(object_name, field_name, **kwargs):
 
 
 def has_permission(controller_name=None, action=None, **params):
+
     d = 'tasktracker/controllers/%s' % controller_name
     module = imp.load_module(d, *imp.find_module(d))
 

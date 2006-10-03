@@ -30,9 +30,14 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 </div>
 
 <!-- ----------------------------- -->
-<p>
+
 <hr />
+<br />
+
+<div id="create_section" tal:condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='show_update', id=c.tasklist.id)">Edit list settings</a>
 |
+</div>
+
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">Back to list of lists</a>
-</p>
+
