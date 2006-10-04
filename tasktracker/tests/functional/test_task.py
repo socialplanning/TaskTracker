@@ -49,3 +49,40 @@ class TestTaskController(TestController):
         res.mustcontain('The new task title')
     
 
+    def create_tasklist(self, title):
+        app = self.getApp('admin')
+        res = app.get(url_for(
+                controller='tasklist', action='show_create'))
+
+        form = res.forms[0]
+        
+        form.fields['title'][0].value = title
+        form.fields['mode'][0].value = 'simple'
+        policy = form.fields['policy'][0]
+        policy.value = policy.options[1][0] #medium
+        
+        res = form.submit()
+        res = res.follow()
+        
+        path = res.req.path_info
+        new_task_list_id = int(path[path.rindex('/') + 1:])
+
+        task_list = TaskList.get(new_task_list_id)
+        return task_list
+
+    def test_index(self):
+        list = self.create_tasklist('testing the "auth" role')
+
+        #add a task assigned to 'auth'
+        t = Task(title='Fleem', text='x', owner='auth', task_listID=list.id)
+
+        app = self.getApp('auth')
+
+        res = app.get(url_for(
+                controller='tasklist', action='view', id=list.id))
+        
+
+        res.mustcontain('testing the &quot;auth&quot; role')
+
+        t.destroySelf()
+        list.destroySelf()

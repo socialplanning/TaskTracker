@@ -88,7 +88,7 @@ class BaseController(WSGIController):
 
         if controller == 'task' and c.level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
-                c.level = role.getLevel('TaskOwner')
+                c.level = Role.getLevel('TaskOwner')
 
         action = Action.selectBy(action=action_name)
         if not action.count():
