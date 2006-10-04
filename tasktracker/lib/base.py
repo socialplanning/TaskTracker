@@ -86,10 +86,11 @@ class BaseController(WSGIController):
             if task_list.isOwnedBy(params['username']):
                 c.level = Role.getLevel('ListOwner')
 
+        local_level = c.level
         if controller == 'task' and c.level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
-                c.level = Role.getLevel('TaskOwner')
-
+                local_level = Role.getLevel('TaskOwner')
+            
         action = Action.selectBy(action=action_name)
 
         if not action.count():
@@ -109,7 +110,7 @@ class BaseController(WSGIController):
             tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                          actionID=action.id)
             
-        return tl_permissions[0].min_level >= c.level
+        return tl_permissions[0].min_level >= local_level
 
 
     def _initialize_project(self, action_name):

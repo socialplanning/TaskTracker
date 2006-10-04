@@ -135,3 +135,4 @@ class TestTaskController(TestController):
         task1.destroySelf()
         task2.destroySelf()
         tl.destroySelf()
+
