@@ -62,7 +62,7 @@ var initialized = false;
 
 function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
-	    if (node.id.match('^(status|handle|label)')) {
+	    if (node.id.match('^(status-form|handle|label)')) {
 		node.toggle();
 	    }
 	});
