@@ -91,9 +91,11 @@ class BaseController(WSGIController):
                 c.level = Role.getLevel('TaskOwner')
 
         action = Action.selectBy(action=action_name)
+
         if not action.count():
             print "unknown action %s" % action_name
             return False
+
         action = action[0]
         
         tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
@@ -102,12 +104,10 @@ class BaseController(WSGIController):
         if not tl_permissions.count():
             #shouldn't get here, because tasklists should always have
             #some permission row for each action.  If we do, reset
-            #the permissions to the highest level.
+            #the permissions to the strictest level.
             task_list.rescuePermissions()
             tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                          actionID=action.id)
-            
-
             
         return tl_permissions[0].min_level >= c.level
 

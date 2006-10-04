@@ -15,11 +15,9 @@
 
 </span>
 
-
 <!-- the status -->
 
 <span tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:content="structure python: h.select('status', h.options_for_select([(s.name, s.name) for s in c.statuses], atask.status), method='post', onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id), id='status_%d' % atask.id) " tal:attributes="id string:status_${atask/id};style string:position: absolute;; left: 200px;;"/>
-
 
 <span tal:attributes="style python: 'position: absolute;; left: 200px;;' + test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
 

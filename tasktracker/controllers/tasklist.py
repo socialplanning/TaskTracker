@@ -44,6 +44,16 @@ class TasklistController(BaseController):
         c.security_policy_id = 1
         return render_response('zpt', 'tasklist.show_create')
 
+    def _set_security(self, p):
+        if p['mode'] == 'simple':
+            policy = SimpleSecurityPolicy.get(p['policy'])
+            p['security_policy'] = policy.id
+            for action in policy.actions:
+                p['action_%s' % action.action.action] = action.min_level
+        else:
+            p['security_policy'] = 0 #we don't need no steeking referential integrity
+
+
     @attrs(action='create')
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
@@ -52,13 +62,7 @@ class TasklistController(BaseController):
         p['projectID'] = c.project.id
         c.tasklist = TaskList(**p)
 
-        if p['mode'] == 'simple':
-            policy = SimpleSecurityPolicy.get(p['policy'])
-            p['security_policy'] = policy.id
-            for action in policy.actions:
-                p['action_%s' % action.action.action] = action.min_level
-        else:
-            p['security_policy'] = 0 #we don't need no steeking referential integrity
+        self._set_security(p)
 
         return redirect_to(action='view',id=c.tasklist.id)
 
@@ -78,7 +82,10 @@ class TasklistController(BaseController):
     def update(self, id):
         c.tasklist = self._getTaskList(int(id))
 
-        c.tasklist.set(**dict(request.params))
+        p = dict(request.params)
+        self._set_security(p)
+
+        c.tasklist.set(**p)
 
         return redirect_to(action='index')
 

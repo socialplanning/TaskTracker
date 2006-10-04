@@ -70,19 +70,68 @@ class TestTaskController(TestController):
         task_list = TaskList.get(new_task_list_id)
         return task_list
 
-    def test_index(self):
-        list = self.create_tasklist('testing the "auth" role')
+    def _getElementsByTagName(self, body, tagname):
+        elements = []
+        start = -1
+        while 1:
+            start = body.find('<' + tagname, start + 1)
+            if start == -1:
+                break
+            end = body.find('>', start)
+            elements.append(body[start:end+1])
+
+        return elements
+
+
+    def test_auth_role(self):
+        tl = self.create_tasklist('testing the auth role')
+
+
+        #set security such that only task owner can change status
+        found = False
+        for perm in tl.permissions:
+            if perm.action.action == "task_change_status":
+                found = True
+                perm.min_level = Role.getLevel("TaskOwner")
+        assert found
 
         #add a task assigned to 'auth'
-        t = Task(title='Fleem', text='x', owner='auth', task_listID=list.id)
+        task1 = Task(title='Fleem', text='x', owner='auth', task_listID=tl.id)
+        #add a task not assigned to 'auth'
+        task2 = Task(title='Fleem', text='x', owner='admin', task_listID=tl.id)
 
         app = self.getApp('auth')
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=list.id))
-        
+                controller='tasklist', action='view', id=tl.id))
 
-        res.mustcontain('testing the &quot;auth&quot; role')
+        res.mustcontain('testing the auth role')
 
-        t.destroySelf()
-        list.destroySelf()
+        spanTags = self._getElementsByTagName(res.body, 'span')
+
+        found = False
+        for span in spanTags:
+            if 'label_%d' % task1.id in span:
+                #the label for task1 must be hidden
+                assert 'display:none' in span
+                found = True
+                break
+
+
+        assert found
+
+        selectTags = self._getElementsByTagName(res.body, 'select')
+        found = False
+        for select in selectTags:
+            #there is no select for task2, because we can't edit it.
+            assert 'status_%d' % task2.id not in select 
+
+            #but there is one for task1
+            if 'status_%d' % task1.id in select:
+              found = True
+
+        assert found
+
+        task1.destroySelf()
+        task2.destroySelf()
+        tl.destroySelf()
