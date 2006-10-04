@@ -32,10 +32,14 @@
 
 <span style="position: absolute;; left: 300px;;" tal:content="atask/deadline" />
 
+<!-- owner -->
+
+<span style="position: absolute;; left: 450px;;" tal:content="python:test(atask.owner, atask.owner, 'unassigned')" />
+
 <!-- subtasks -->
 
 <ul id="tasks" class="task_list">
-<tal:for repeat="atask atask/children">
+<tal:for repeat="atask atask/liveChildren">
 
 <metal:do metal:use-macro="here/task_item/macros/view_task" />
 

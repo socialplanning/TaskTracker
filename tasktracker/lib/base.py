@@ -55,7 +55,8 @@ class BaseController(WSGIController):
     def __before__(self, action, **params):
         project = Project.getProject(self._req.environ['topp.project'])
         c.project = project
-
+        c.users = 'admin, listowner, member, auth'.split(', ')
+        c.id = params.get('id')
 
         if not self._authorize(project, action, params):
             redirect_to(controller='project', action='show_not_permitted')
@@ -78,6 +79,8 @@ class BaseController(WSGIController):
                 task_list = TaskList.get(task.task_listID)
         else:
             task_list = "I AM BROKEN"
+            print "unknown controller %s" % controller
+            return False
 
         if c.level > Role.getLevel('ListOwner'):
             if task_list.isOwnedBy(params['username']):
@@ -87,7 +90,11 @@ class BaseController(WSGIController):
             if task.isOwnedBy(params['username']):
                 c.level = role.getLevel('TaskOwner')
 
-        action = Action.selectBy(action=action_name)[0]
+        action = Action.selectBy(action=action_name)
+        if not action.count():
+            print "unknown action %s" % action_name
+            return False
+        action = action[0]
         
         tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                     actionID=action.id)

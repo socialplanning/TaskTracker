@@ -5,11 +5,24 @@
 .task_list {
 	list-style-type: none;
 	padding-left: 0px;
-
 }
 
 .drop {
         border: 2px dashed #0f0;
+}
+
+.autocomplete {
+        border: 1px dashed black;
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.autocomplete li{
+        border-bottom: 1px dashed red;
+}
+
+.autocomplete li:hover{
+        background-color: #eee;
 }
 
 .error-message {

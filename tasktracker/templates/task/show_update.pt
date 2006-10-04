@@ -1,9 +1,18 @@
 Update task:<br/>
-<form tal:attributes="action python:h.url_for(action='update')" method="get">
+<form tal:attributes="action python:h.url_for(action='update', id=c.task.id);task_id c/task/id" method="get" id="form">
 Title: <input name="title" type="text" tal:attributes="value c/task/title"><br/>
 Text: <textarea name="text" rows=10 cols=80><span tal:replace="c/task/text"/></textarea><br/>
 
-<input type="hidden" name="id" tal:attributes="value c/task/id">
+<tal:if condition="c/task/owner">
+Assigned to: <span tal:replace="c/task/owner/title" />. Reassign task to: 
+</tal:if>
+<tal:if condition="not: c/task/owner">
+Assign task to: 
+</tal:if>
+
+<input autocomplete="off" id="owner" name="owner" size="30" type="text" value="" /><div class="auto_complete" id="owner_auto_complete"></div><script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
+'/task/auto_complete_for_owner/' + $('form').getAttribute('task_id'),
+ {})</script><br/>
 
 <input type="submit" name="create" value="edit">
 </form>

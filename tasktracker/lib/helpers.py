@@ -6,7 +6,7 @@ All names available in this module will be available under the Pylons h object.
 from webhelpers import *
 from pylons.util import _, log, set_lang, get_lang
 from routes import url_for
-
+from pylons import Response, c, g, cache, request, session
 from tasktracker.models import Task, TaskList
 
 import imp, os
@@ -38,7 +38,8 @@ def text_area_r(object_name, field_name, **kwargs):
     return text_area(field_name, content=value, **kwargs)
 
 
-def has_permission(controller_name=None, action=None, **params):
+def has_permission(controller=None, action=None, **params):
+    controller_name = controller
 
     d = 'tasktracker/controllers/%s' % controller_name
     module = imp.load_module(d, *imp.find_module(d))
@@ -52,5 +53,8 @@ def has_permission(controller_name=None, action=None, **params):
     action_name = controller_name + '_' + action_verb
 
     params['username'] = c.username
+
+    if c.id:
+        params.setdefault('id', c.id)
 
     return controller._has_permission(controller_name, action_name, params)

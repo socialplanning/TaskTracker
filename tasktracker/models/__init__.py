@@ -132,6 +132,9 @@ class Task(SQLObject):
         kwargs['parentID'] = 0
         SQLObject._create(self, id, **kwargs)
 
+    def liveChildren(self):
+        return [c for c in self.children if c.live]
+
     def isOwnedBy(self, username):
         return self.owner == username            
 

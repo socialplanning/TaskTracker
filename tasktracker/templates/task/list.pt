@@ -10,6 +10,7 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 Task name
 <span style="position:absolute;left: 200px;">Status</span>
 <span style="position:absolute;left: 300px;">Deadline</span>
+<span style="position:absolute;left: 450px;">Owner</span>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
