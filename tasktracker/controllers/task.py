@@ -51,6 +51,7 @@ class TaskController(BaseController):
         new_parent_id = int(request.params['new_parent'])
         assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
         task.parentID = new_parent_id
+        task.moveToTop()
 
         return render_text('ok')
 

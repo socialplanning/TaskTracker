@@ -132,6 +132,21 @@ class Task(SQLObject):
         kwargs['parentID'] = 0
         SQLObject._create(self, id, **kwargs)
 
+    def moveToTop(self):
+        #top-level case
+        if self.parentID == 0:
+            tasks = TaskList.topLevelTasks(self.task_listID)
+        else:
+            tasks = self.parent.children
+
+        i = 1
+        for task in tasks:
+            if task == self:
+                task.sort_index = 0
+            else:
+                task.sort_index = i
+                i += 1
+
     def liveChildren(self):
         return [c for c in self.children if c.live]
 
