@@ -1,9 +1,8 @@
 function changeStatus(url, task_id) {
-    url += "?status=" + $('status_' + task_id).value
+    //    url += "?status=" + $('status_' + task_id).value;
 
-    new Ajax.Request(url, {asynchronous:true, evalScripts:true}); 
+    new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + $('status_' + task_id).value});
 }
-
 
 function hideCreate() {
     $('create').show();
@@ -35,7 +34,6 @@ function resetChildDepths(elem) {
 	title.setAttribute('depth', new_depth);
 	left = new_depth * 15;
 	title.style.paddingLeft = left + 'px'; 
-
 	resetChildDepths(child);
       }
     });
@@ -43,7 +41,6 @@ function resetChildDepths(elem) {
 
 }
 function drop(child, drop_target) {
-
   var new_parent = drop_target.parentNode.parentNode.parentNode;
 
   //find new parent's contained ul

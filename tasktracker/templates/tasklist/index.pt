@@ -1,5 +1,6 @@
 <b><span tal:replace="c/project/title"/>'s lists</b>:
 
+<div tal:condition="python:[x for x in c.tasklists if x.uncompletedTasks()]">
 <ul>
 <tal:for repeat="list c/tasklists">
 <li tal:condition="list/uncompletedTasks">
@@ -14,6 +15,7 @@
 </li>
 </tal:for>
 </ul>
+</div>
 
 
 <div tal:condition="python:[x for x in c.tasklists if not x.uncompletedTasks()]">

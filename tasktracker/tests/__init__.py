@@ -46,10 +46,10 @@ class TestController(TestCase):
         task_list_complete = TaskList(title="Complete list", text="Another list", projectID=self.project.id, username='admin')
         Task(title="Task A", text="more",
              task_list=task_list_complete,
-             status='completed')
+             status='done')
         Task(title="Task B", text="yet more text",
              task_list=task_list_complete,
-             status='completed')
+             status='done')
 
     def setup_database(self):
         nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status]

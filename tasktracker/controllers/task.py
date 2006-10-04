@@ -13,6 +13,10 @@ class CreateTaskForm(formencode.Schema):
     deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today), 
                                        DateConverter())
 
+class StatusChangeForm(formencode.Schema):
+    allow_extra_fields = True
+    status = formencode.validators.OneOf([status.name for status in Status.select()])
+
 class TaskController(BaseController):
 
     def _clean_params(self, params):
@@ -23,12 +27,12 @@ class TaskController(BaseController):
                 clean[param] = params[param]
         return clean
 
+    @validate(schema=StatusChangeForm(), form='show_update')
     @attrs(action='change_status')
     @catches_errors
     def change_status(self, id):
         c.task = self.getTask(int(id))
-        c.task.status = request.params['status']
-
+        c.task.status = self.form_result['status']
         return render_text('ok')
 
     @attrs(action='view')

@@ -183,7 +183,6 @@ class TaskList(SQLObject):
 
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
-
     def topLevelTasks(self):
         return Task.selectBy(parentID=0, live=True, task_listID=self.id)
 
