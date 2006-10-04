@@ -72,6 +72,10 @@ function getStatusName(status_li) {
 function addStatus(status) {
     status = status.replace(/[^A-Za-z0-9 ]/g, '');
 
+    if (status.length < 1) {
+        return;
+    }
+
     status = status.toLowerCase();
 
     //prevent duplication

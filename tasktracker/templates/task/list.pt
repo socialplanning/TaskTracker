@@ -2,9 +2,12 @@
 
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
-<tal:if condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
-<a id="reorder_button" href="javascript:modeSwitch();"><span id="modeName">Reorder</span></a><br/><br/>
+<tal:if condition="python: c.tasks.count() > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
+<a id="reorder_button" href="javascript:modeSwitch();">
+<span id="modeName">Reorder</span></a><br/><br/>
 </tal:if>
+
+<span tal:condition="c/tasks/count">
 
 <!-- list headers -->
 Task name
@@ -20,6 +23,8 @@ Task name
 
 </tal:for>
 </ul>
+
+</span>
 
 <!-- the create setup -->
 
