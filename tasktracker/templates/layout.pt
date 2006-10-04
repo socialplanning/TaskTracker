@@ -14,7 +14,9 @@ Todo list
 <span tal:replace="structure python:h.stylesheet_link_tag('list.css')" />
 </head>
 <body>
-
+<div style="background-color:#edf">
+Logged in as: <tal:stuff content="c/username" />
+</div>
 <span tal:replace="structure c/body_content" />
 
 </body>
