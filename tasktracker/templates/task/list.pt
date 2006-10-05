@@ -14,7 +14,7 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 Task name
 <span style="position:absolute;left: 200px;">Status</span>
 <span style="position:absolute;left: 300px;">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span style="position:absolute;left: 450px;">Owner<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<span style="position:absolute;left: 450px;">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">

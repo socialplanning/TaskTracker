@@ -12,7 +12,7 @@
 Deadline: <span tal:replace="c/task/deadline" /><br/>
 
 <tal:if condition="c/task/owner">
-  Owned by <span tal:replace="c/task/owner" />
+  Assigned to <span tal:replace="c/task/owner" />
   <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id) and c.task.owner != c.username">
     -- 
     <a tal:attributes="href python:h.url_for(action='claim', id=c.task.id)">
@@ -21,7 +21,7 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
   </tal:if>
 </tal:if>
 <tal:if condition="not:c/task/owner">
-  Unowned
+  Unassigned
   <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id)">
     -- 
     <a tal:attributes="href python:h.url_for(action='claim', id=c.task.id)">
@@ -51,7 +51,7 @@ Child tasks:<br>
 Task name
 <span style="position:absolute;left: 200px;">Status</span>
 <span style="position:absolute;left: 300px;">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span style="position:absolute;left: 450px;">Owner<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<span style="position:absolute;left: 450px;">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
