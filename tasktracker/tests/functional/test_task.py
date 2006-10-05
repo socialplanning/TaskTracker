@@ -84,10 +84,32 @@ class TestTaskController(TestController):
 
         return elements
 
+    def test_subtask(self):
+        """ Test that subtasks show up on the page for the task they come from. """
+        tl = self.create_tasklist('testing subtasks')
+        top_level_task = Task(title='top level', task_listID = tl.id, text = '')
+        sub_task = Task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='tasklist', action='view', id=tl.id))
+
+        res.mustcontain ('top level')
+        res.mustcontain ('second level')
+
+        res = app.get(url_for(
+                controller='task', action='view', id=top_level_task.id))
+
+        res.mustcontain ('top level')
+        res.mustcontain ('second level')
+
+        sub_task.destroySelf()
+        top_level_task.destroySelf()
+        tl.destroySelf()
 
     def test_auth_role(self):
         tl = self.create_tasklist('testing the auth role')
-
 
         #set security such that only task owner can change status
         found = False

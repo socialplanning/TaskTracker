@@ -129,7 +129,8 @@ class Task(SQLObject):
             kwargs['status'] = project.statuses[0].name
 
         kwargs['sort_index'] = _task_sort_index()
-        kwargs['parentID'] = 0
+        kwargs.setdefault('parentID', 0)
+        kwargs['live'] = True
         SQLObject._create(self, id, **kwargs)
 
 
