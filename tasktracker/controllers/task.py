@@ -133,6 +133,7 @@ class TaskController(BaseController):
     def view(self, id):
         c.task = self.getTask(int(id))
         c.tasklist = c.task.task_list
+        c.depth = c.task.depth() + 1
         return render_response('zpt', 'task.view')
 
     @attrs(action='update')

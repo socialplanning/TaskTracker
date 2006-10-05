@@ -134,8 +134,9 @@ class Task(SQLObject):
 
 
     def _set_live(self, value):
-        for task in self.children:
-            task.live = value
+        if getattr(self, 'id', None):
+            for task in self.children:
+                task.live = value
         self._SO_set_live(value)
 
     def moveToTop(self):

@@ -30,6 +30,7 @@ class TasklistController(BaseController):
     def view(self, id):
         c.tasklist = self._getTaskList(int(id))
         c.tasks = c.tasklist.topLevelTasks()
+        c.depth = 0
         return render_response('zpt', 'task.list')
 
     def _prepare_form(self):
