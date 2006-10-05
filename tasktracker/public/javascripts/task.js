@@ -173,6 +173,22 @@ function sortULBy(ul, column) {
 	});
 }
 
+function toggleCollapse(task_id) {
+    $A($('task_' + task_id).childNodes).each(function(node) {	    
+	    if (node.className) {
+		if (node.className.match('^task_list')) {
+		    node.toggle();
+		}
+	    }
+	});
+    var button = $('collapseButton_' + task_id);
+    if (button.src.match("minus")) {
+	button.src = button.src.replace("minus", "plus");
+    } else {
+	button.src = button.src.replace("plus", "minus");
+    }
+		 
+}
 
 function sortBy(column) {
     sortULBy($('tasks'), column)
