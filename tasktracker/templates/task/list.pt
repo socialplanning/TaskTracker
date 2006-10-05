@@ -2,9 +2,10 @@
 
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
-<tal:if condition="python: c.tasks.count() > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
-<a id="reorder_button" href="javascript:modeSwitch();">
-<span id="modeName">Reorder</span></a><br/><br/>
+<tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
+  <a id="reorder_button" href="javascript:modeSwitch();">
+    <span id="modeName">Reorder</span>
+  </a><br/><br/>
 </tal:if>
 
 <span tal:condition="c/tasks/count">
@@ -17,11 +18,11 @@ Task name
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
-<tal:for repeat="atask c/tasks">
-
-<metal:do metal:use-macro="here/task_item/macros/view_task" />
-
-</tal:for>
+  <tal:for repeat="atask c/tasks">
+    
+    <metal:do metal:use-macro="here/task_item/macros/view_task" />
+    
+  </tal:for>
 </ul>
 
 </span>

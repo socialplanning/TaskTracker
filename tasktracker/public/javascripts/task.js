@@ -36,24 +36,58 @@ function resetChildDepths(elem) {
       }
     });
   }
+}
+
+function insertAfter(new_node, after) {
+
+    if (after.nextSibling) {
+	after.parentNode.insertBefore(new_node, after.nextSibling);
+    } else {
+	after.parentNode.append(new_node);
+    }
 
 }
-function drop(child, drop_target) {
-  var new_parent = drop_target.parentNode.parentNode.parentNode;
 
-  //find new parent's contained ul
-  var kids = new_parent.childNodes;
-  for (i in kids) {
-    if (kids[i].tagName == 'UL') {
-      kids[i].insertBefore(child, kids[i].childNodes[0]);
-      //set child indent
-      resetChildDepths(new_parent);
-     
-      //tell the server
-      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
-      return;
-    }
+function drop(child, drop_target) {
+ 
+  var id;
+
+  if (drop_target.id.match(/^title_/)) {
+      id = parseInt(drop_target.id.replace(/^title_/, ''));
+      var new_parent = $('task_' + id);
+      //find new parent's contained ul
+      var kids = new_parent.childNodes;
+      for (i in kids) {
+	  if (kids[i].tagName == 'UL') {
+	      kids[i].insertBefore(child, kids[i].childNodes[0]);
+	      //set child indent
+	      resetChildDepths(new_parent);
+	      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
+	      return;
+	  }
+      }
+  } else {
+      id = parseInt(drop_target.id.replace(/^handle_/, ''));
+      var new_sibling = $('task_' + id);
+
+      insertAfter(child, new_sibling);
+      if (new_sibling.childNodes[1].getAttribute('depth') > 0) {
+	  var parent = child.parentNode.parentNode;
+	  resetChildDepths(parent);
+      } else {
+	  var title = child.childNodes[1];
+
+	  title.setAttribute('depth', 0);
+	  title.style.paddingLeft = '0px'; 
+	  resetChildDepths(child);
+      }
+      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_sibling=' + new_sibling.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
+
   }
+
+
+
+
 }
 
 var initialized = false;

@@ -47,12 +47,19 @@ class TaskController(BaseController):
 
     @attrs(action='update')
     def move(self, id):
-        print self, id
         task = self.getTask(int(id))
-        new_parent_id = int(request.params['new_parent'])
-        assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
-        task.parentID = new_parent_id
-        task.moveToTop()
+        if request.params.has_key ('new_parent'):
+
+            new_parent_id = int(request.params['new_parent'])
+            assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
+            task.parentID = new_parent_id
+            task.moveToTop()
+        else:
+            new_sibling_id = int(request.params['new_sibling'])
+            new_sibling = Task.get(new_sibling_id)
+            assert new_sibling.task_listID == task.task_listID
+            task.parentID = new_sibling.parentID
+            task.moveBelow(new_sibling)
 
         return render_text('ok')
 

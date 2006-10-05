@@ -147,6 +147,17 @@ class Task(SQLObject):
                 task.sort_index = i
                 i += 1
 
+    def moveBelow(self, new_sibling):
+        tasks = self.parent.children
+
+        new_index = new_sibling.sort_index
+        i = 1
+        for task in tasks:
+            if task == self:
+                task.sort_index = new_index + 1
+            elif task.sort_index > new_index:
+                task.sort_index += 1
+
     def liveChildren(self):
         return [c for c in self.children if c.live]
 
