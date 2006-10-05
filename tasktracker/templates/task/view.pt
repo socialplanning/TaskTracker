@@ -13,7 +13,7 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 
 <tal:if condition="c/task/owner">
   Owned by <span tal:replace="c/task/owner" />
-  <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id)">
+  <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id) and c.task.owner != c.username">
     -- 
     <a tal:attributes="href python:h.url_for(action='claim', id=c.task.id)">
       Steal this task?
