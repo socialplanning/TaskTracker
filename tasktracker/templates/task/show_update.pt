@@ -4,7 +4,7 @@ Title: <input name="title" type="text" tal:attributes="value c/task/title"><br/>
 Text: <textarea name="text" rows=10 cols=80><span tal:replace="c/task/text"/></textarea><br/>
 
 <tal:if condition="c/task/owner">
-Assigned to: <span tal:replace="c/task/owner/title" />. Reassign task to: 
+Assigned to: <span tal:replace="c/task/owner/title" />. <br/> Reassign task to: 
 </tal:if>
 <tal:if condition="not: c/task/owner">
 Assign task to: 

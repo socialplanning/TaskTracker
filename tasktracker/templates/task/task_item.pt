@@ -2,7 +2,7 @@
 
 <li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline">
 
-<span tal:attributes="style python:'padding-left: %dpx;; border-bottom:1px dashed black;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth">
+<span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem">
 
 <!-- drag handle -->
 <span>

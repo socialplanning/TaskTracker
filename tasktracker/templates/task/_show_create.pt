@@ -20,7 +20,7 @@
 </td></tr>
 
 <tr><td>
-<label for="deadline"><b>Date:</b></label></td><td>
+<label for="deadline"><b>Deadline:</b></label></td><td>
 <input name="deadline" id="deadline" type="text"><br/>
 </td></tr>
 </table>

@@ -1,8 +1,8 @@
-<a tal:attributes="href python:h.url_for(action='show_update', id=c.task.id)">edit</a>
+<a tal:attributes="href python:h.url_for(action='show_update', id=c.task.id)">Edit and assign this task</a>
 |
-<tal:nada replace="structure python:h.link_to('delete', url=h.url_for(action='destroy', id=c.task.id), confirm='Are you sure you want to delete this task?')"/>
+<tal:nada replace="structure python:h.link_to('Delete this task', url=h.url_for(action='destroy', id=c.task.id), confirm='Are you sure you want to delete this task?')"/>
 |
-<a tal:attributes="href python:h.url_for(action='view', controller='tasklist', id=c.task.task_listID)">list</a>
+<a tal:attributes="href python:h.url_for(action='view', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a>
 
 <br/><br/>
 
@@ -32,14 +32,16 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 <br/>
 
 <br/>
-<span tal:replace="c/task/text" />
-<br/>
 
+<div tal:content="c/task/text" />
+
+<br/>
+<div style="border: thin solid darkgray; padding:5px;">
 <span tal:condition="python:len(c.task.liveChildren())">
 
 <!-- list headers -->
 Child tasks:<br>
-<tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
+<tal:if condition="python: len(c.task.liveChildren()) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
   <a id="reorder_button" href="javascript:modeSwitch();">
     <span id="modeName">Reorder</span>
   </a><br/><br/>
@@ -60,7 +62,9 @@ Task name
 </ul>
 
 </span>
+</div>
 
+<br/>
 
 <span tal:condition="c/task/comments">
 Here are the comments:
