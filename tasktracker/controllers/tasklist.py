@@ -30,7 +30,6 @@ class TasklistController(BaseController):
     def view(self, id):
         c.tasklist = self._getTaskList(int(id))
         c.tasks = c.tasklist.topLevelTasks()
-        c.statuses = Status.selectBy(projectID = c.tasklist.projectID)
         return render_response('zpt', 'task.list')
 
     def _prepare_form(self):

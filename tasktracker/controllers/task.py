@@ -132,6 +132,7 @@ class TaskController(BaseController):
     @catches_errors
     def view(self, id):
         c.task = self.getTask(int(id))
+        c.tasklist = c.task.task_list
         return render_response('zpt', 'task.view')
 
     @attrs(action='update')

@@ -43,7 +43,7 @@ function insertAfter(new_node, after) {
     if (after.nextSibling) {
 	after.parentNode.insertBefore(new_node, after.nextSibling);
     } else {
-	after.parentNode.append(new_node);
+	after.parentNode.appendChild(new_node);
     }
 
 }
@@ -82,7 +82,20 @@ function doDrop(child, drop_target) {
       var kids = new_parent.childNodes;
       for (i in kids) {
 	  if (kids[i].tagName == 'UL') {
-	      kids[i].insertBefore(child, kids[i].childNodes[0]);
+	      var ul = kids[i];
+	      ul.insertBefore(child, ul.childNodes[0]);
+	      //update sort_index
+	      items = $A(ul.childNodes);
+	      for (j in items) {
+		  if (items[j].tagName == 'LI') {
+		      sort_index = parseInt(items[j].getAttribute('sort_index'));
+		      items[j].setAttribute('sort_index', sort_index + 1);
+		  }
+	      }	      
+
+	      sort_index = parseInt(items[0].getAttribute('sort_index'));
+	      items[0].setAttribute('sort_index', 0);
+
 	      //set child indent
 	      resetChildDepths(new_parent);
 	      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
@@ -94,6 +107,25 @@ function doDrop(child, drop_target) {
       var new_sibling = $('task_' + id);
 
       insertAfter(child, new_sibling);
+
+      new_index = parseInt(new_sibling.getAttribute('sort_index'));
+
+      var ul = child.parentNode;
+
+      //update sort_index
+      items = $A(ul.childNodes);
+      for (j in items) {
+	  if (items[j].tagName == 'LI') {
+	      sort_index = parseInt(items[j].getAttribute('sort_index'));
+	      if (items[j] == child) {
+		  items[j].setAttribute('sort_index', new_index + 1);
+	      } else if (sort_index > new_index) {
+		  items[j].setAttribute('sort_index', sort_index + 1);
+	      }
+	  }
+      }	      
+
+      //update depth
       if (new_sibling.childNodes[1].getAttribute('depth') > 0) {
 	  var parent = child.parentNode.parentNode;
 	  resetChildDepths(parent);
@@ -107,6 +139,43 @@ function doDrop(child, drop_target) {
       new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_sibling=' + new_sibling.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
 
   }
+}
+
+function sortULBy(ul, column) {
+    items = $A(ul.childNodes);
+    items = items.findAll(function(x) {
+	    return x.tagName == "LI"
+	});
+
+    items = items.sort(function (x, y) {
+	    a = x.getAttribute(column);
+	    b = y.getAttribute(column);
+	    if (a > b) 
+		return 1;
+	    else if (b > a) 
+		return -1;
+	    else if (x.getAttribute('sort_index') > y.getAttribute('sort_index')) 
+		return 1;
+	    else if (x.getAttribute('sort_index') < y.getAttribute('sort_index'))
+		return -1;
+	    else
+		return 0;
+	});
+
+    items.each (function (x) { ul.removeChild(x); });
+    items.each (function (x) {
+	    ul.appendChild(x);
+	    child_ul = x.getElementsByTagName('UL');
+	    if (child_ul) {
+		child_ul = child_ul[0];
+		sortULBy(child_ul, column);
+	    }
+	});
+}
+
+
+function sortBy(column) {
+    sortULBy($('tasks'), column)
 }
 
 var initialized = false;
@@ -144,11 +213,14 @@ function modeSwitch() {
 
     if (mode == 'view') {
 	mode = 'reorder';
+	sortBy('sort_index');
 	$('modeName').innerHTML = 'Done reordering';
-	$('create_section').hide();
+	if ($('create_section')) 
+	    $('create_section').hide();
     } else {
 	mode = 'view';
 	$('modeName').innerHTML = 'Reorder';
-	$('create_section').show();
+	if ($('create_section')) 
+	    $('create_section').show();
     }
 }

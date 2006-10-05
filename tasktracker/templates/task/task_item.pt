@@ -1,6 +1,6 @@
 <metal:macro metal:define-macro="view_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline">
 
 <span tal:attributes="style python:'padding-left: %dpx;; border-bottom:1px dashed black;;' % (atask.depth() * 15); depth atask/depth">
 
@@ -17,7 +17,7 @@
 
 <!-- the status -->
 
-<span tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:content="structure python: h.select('status', h.options_for_select([(s.name, s.name) for s in c.statuses], atask.status), method='post', onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id), id='status_%d' % atask.id) " tal:attributes="id string:status-form_${atask/id};style string:position: absolute;; left: 200px;;"/>
+<span tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:content="structure python: h.select('status', h.options_for_select([(s.name, s.name) for s in c.tasklist.project.statuses], atask.status), method='post', onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id), id='status_%d' % atask.id) " tal:attributes="id string:status-form_${atask/id};style string:position: absolute;; left: 200px;;"/>
 
 <span tal:attributes="style python: 'position: absolute;; left: 200px;;' + test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
 
@@ -36,7 +36,7 @@
 
 <!-- subtasks -->
 
-<ul id="tasks" class="task_list">
+<ul id="xtasks" class="task_list">
 <tal:for repeat="atask atask/liveChildren">
 
 <metal:do metal:use-macro="here/task_item/macros/view_task" />
