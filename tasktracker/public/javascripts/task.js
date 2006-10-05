@@ -182,7 +182,7 @@ var initialized = false;
 
 function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
-	    if (node.id.match('^(status-form|handle|label)')) {
+	    if (node.id.match('^(status-form|label)')) {
 		node.toggle();
 	    }
 	});
@@ -212,12 +212,20 @@ function modeSwitch() {
 
 
     if (mode == 'view') {
+	$A($('tasks').getElementsByTagName('IMG')).each(function (x) {
+		if (x.className == "handle") 
+		    x.style['cursor']="move";
+	    });
 	mode = 'reorder';
 	sortBy('sort_index');
 	$('modeName').innerHTML = 'Done reordering';
 	if ($('create_section')) 
 	    $('create_section').hide();
     } else {
+	$A($('tasks').getElementsByTagName('IMG')).each(function (x) {
+		if (x.className == "handle") 
+		    x.style['cursor']="";
+	    });
 	mode = 'view';
 	$('modeName').innerHTML = 'Reorder';
 	if ($('create_section')) 

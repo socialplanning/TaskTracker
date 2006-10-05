@@ -5,8 +5,8 @@
 <span tal:attributes="style python:'padding-left: %dpx;; border-bottom:1px dashed black;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth">
 
 <!-- drag handle -->
-<span tal:attributes="id string:handle_${atask/id}" style="display:none;" class="handle">
-<img src="/images/drag.png">
+<span>
+<img tal:attributes="id string:handle_${atask/id}" src="/images/folder_open.png" class="handle">
 </span>
 
 <!-- title -->
