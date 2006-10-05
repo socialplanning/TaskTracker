@@ -1,6 +1,4 @@
 function changeStatus(url, task_id) {
-    //    url += "?status=" + $('status_' + task_id).value;
-
     new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + $('status_' + task_id).value});
 }
 
@@ -78,6 +76,10 @@ function modeSwitch() {
           });
 	
 	  Droppables.add('title_' + id, {
+	      hoverclass : 'drop',
+	      onDrop : drop
+	  });
+	  Droppables.add('handle_' + id, {
 	      hoverclass : 'drop',
 	      onDrop : drop
 	  });

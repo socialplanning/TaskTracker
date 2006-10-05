@@ -47,6 +47,7 @@ class TaskController(BaseController):
 
     @attrs(action='update')
     def move(self, id):
+        print self, id
         task = self.getTask(int(id))
         new_parent_id = int(request.params['new_parent'])
         assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
