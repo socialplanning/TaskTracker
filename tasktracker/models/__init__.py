@@ -135,7 +135,7 @@ class Task(SQLObject):
     def moveToTop(self):
         #top-level case
         if self.parentID == 0:
-            tasks = TaskList.topLevelTasks(self.task_listID)
+            tasks = self.task_list.topLevelTasks()
         else:
             tasks = self.parent.children
 
@@ -148,7 +148,10 @@ class Task(SQLObject):
                 i += 1
 
     def moveBelow(self, new_sibling):
-        tasks = self.parent.children
+        if self.parentID == 0:
+            tasks = self.task_list.topLevelTasks()
+        else:
+            tasks = self.parent.children
 
         new_index = new_sibling.sort_index
         i = 1

@@ -48,9 +48,32 @@ function insertAfter(new_node, after) {
 
 }
 
-function drop(child, drop_target) {
+var observer = Class.create();
+
+observer.prototype={
+
+    element: null,
+    initialize : function() {
+
+    },
+    onStart : function(event_name, handle) {
+	Droppables.remove (handle.handle);
+    },
+    onEnd : function(event_name, handle) {
+	Droppables.add (handle.handle.id, {
+		hoverclass : 'drop',
+		onDrop : doDrop
+	    });
+    }
+};
+
+function doDrop(child, drop_target) {
  
   var id;
+
+  if (drop_target == child) {
+      return;
+  }
 
   if (drop_target.id.match(/^title_/)) {
       id = parseInt(drop_target.id.replace(/^title_/, ''));
@@ -84,10 +107,6 @@ function drop(child, drop_target) {
       new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_sibling=' + new_sibling.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
 
   }
-
-
-
-
 }
 
 var initialized = false;
@@ -101,21 +120,23 @@ function modeSwitch() {
 
     if (!initialized) {
       initialized = true;
+      Draggables.addObserver(new observer());
+
       $A($('tasks').getElementsByTagName('li')).each(function(node) {
 	  id = node.getAttribute('task_id');
-	  new Draggable(node.id, {
+	  drag = new Draggable(node.id, {
 	      handle : 'handle_' + id, 
 	      revert : true,
-	      ghosting : true
+		      //ghosting : true
           });
 	
 	  Droppables.add('title_' + id, {
 	      hoverclass : 'drop',
-	      onDrop : drop
+	      onDrop : doDrop
 	  });
 	  Droppables.add('handle_' + id, {
 	      hoverclass : 'drop',
-	      onDrop : drop
+	      onDrop : doDrop
 	  });
        });
     }
