@@ -36,8 +36,9 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 <div tal:content="c/task/text" />
 
 <br/>
-<div style="border: thin solid darkgray; padding:5px;">
+
 <span tal:condition="python:len(c.task.liveChildren())">
+<div style="border: thin solid darkgray; padding:5px;">
 
 <!-- list headers -->
 Child tasks:<br>
@@ -61,8 +62,8 @@ Task name
   </tal:for>
 </ul>
 
-</span>
 </div>
+</span>
 
 <br/>
 
