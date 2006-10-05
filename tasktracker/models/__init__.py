@@ -132,6 +132,12 @@ class Task(SQLObject):
         kwargs['parentID'] = 0
         SQLObject._create(self, id, **kwargs)
 
+
+    def _set_live(self, value):
+        for task in self.children:
+            task.live = value
+        self._SO_set_live(value)
+
     def moveToTop(self):
         #top-level case
         if self.parentID == 0:

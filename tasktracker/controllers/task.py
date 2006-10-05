@@ -140,5 +140,4 @@ class TaskController(BaseController):
     def destroy(self, id):
         c.task = self.getTask(int(id))
         c.task.live = False
-        c.flash = "Deleted."
         return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
