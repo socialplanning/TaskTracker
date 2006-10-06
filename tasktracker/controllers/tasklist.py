@@ -102,3 +102,8 @@ class TasklistController(BaseController):
         c.tasklist.live = False
         c.flash = "Deleted."
         return redirect_to(action='index')
+    
+    @attrs(action='private')
+    def private(self):
+        """This is a dummy method to deal with private tasks."""
+        pass

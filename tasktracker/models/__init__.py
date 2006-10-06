@@ -204,7 +204,7 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    index = TaskList.selectBy(live=True).max('sort_index')
+    index = TaskList.select().max('sort_index')
     if index is None:
         return 0
     else:
@@ -228,7 +228,8 @@ class TaskList(SQLObject):
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
     def topLevelTasks(self):
-        return Task.selectBy(parentID=0, live=True, task_listID=self.id)
+        from tasktracker.lib.helpers import has_permission
+        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if has_permission('task', 'view', id=c.id)]
 
     def uncompletedTasks(self):
         return list(Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id)))

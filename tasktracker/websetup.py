@@ -90,6 +90,10 @@ def setup_config(command, filename, section, vars):
     setRoles(Action(action="task_assign",
                     question="Who can assign public tasks in the list?"),
              members)
+    setRoles(Action(action="tasklist_private",
+                    question="Who can view private tasks in the list (don't edit this)"),
+             members)
+
 
     open_policy = SimpleSecurityPolicy(name='open')
     medium_policy = SimpleSecurityPolicy(name='medium')
@@ -103,7 +107,9 @@ def setup_config(command, filename, section, vars):
                               "task_comment" : auth,
                               "task_change_status" : anon,
                               "task_claim" : auth,
-                              "task_assign" : pm})
+                              "task_assign" : pm,
+                              "tasklist_private" : lo,
+                              })
 
     
 
@@ -115,7 +121,9 @@ def setup_config(command, filename, section, vars):
                               "task_comment" : auth,
                               "task_change_status" : pm,
                               "task_claim" : auth,
-                              "task_assign" : pm})
+                              "task_assign" : pm,
+                              "tasklist_private" : lo,
+                                })
 
     setSecurity(closed_policy, {"tasklist_view" : pa, 
                               "tasklist_update" : pa,
@@ -125,4 +133,6 @@ def setup_config(command, filename, section, vars):
                               "task_comment" : lo,
                               "task_change_status" : lo,
                               "task_claim" : lo,
-                              "task_assign" : lo})
+                              "task_assign" : lo,
+                              "tasklist_private" : lo,
+                                })

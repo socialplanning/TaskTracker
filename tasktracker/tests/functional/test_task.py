@@ -51,7 +51,7 @@ class TestTaskController(TestController):
         res.mustcontain('The new task title')
     
 
-    def create_tasklist(self, title):
+    def create_tasklist(self, title, security_level=1):
         app = self.getApp('admin')
         res = app.get(url_for(
                 controller='tasklist', action='show_create'))
@@ -61,7 +61,7 @@ class TestTaskController(TestController):
         form.fields['title'][0].value = title
         form.fields['mode'][0].value = 'simple'
         policy = form.fields['policy'][0]
-        policy.value = policy.options[1][0] #medium
+        policy.value = policy.options[security_level][0] 
         
         res = form.submit()
         res = res.follow()
@@ -190,3 +190,32 @@ class TestTaskController(TestController):
         res = res.follow()
 
         res.mustcontain("This is a test comment.")
+
+        task1.destroySelf()
+
+    def test_private_tasks(self):
+        tl = self.create_tasklist('testing the auth role', security_level=0)
+
+        nonpriv = Task(title='The non-private one', text='x', private=False, task_listID=tl.id)
+        priv = Task(title='The private one', text='x', private=True, task_listID=tl.id)
+
+        #admins can see everything
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='tasklist', action='view', id=tl.id))
+
+        res.mustcontain('The non-private one')
+        res.mustcontain('The private one')
+
+        #but mere members can't see private tasks
+        app = self.getApp('member')
+
+        res = app.get(url_for(
+                controller='tasklist', action='view', id=tl.id))
+
+        res.mustcontain('The non-private one')
+        assert 'The private one' not in res.body
+        
+        nonpriv.destroySelf()
+        priv.destroySelf()

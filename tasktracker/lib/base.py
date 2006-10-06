@@ -82,20 +82,20 @@ class BaseController(WSGIController):
             print "unknown controller %s" % controller
             return False
 
+        local_level = c.level
+
         if c.level > Role.getLevel('ListOwner'):
             if task_list.isOwnedBy(params['username']):
-                c.level = Role.getLevel('ListOwner')
+                local_level = Role.getLevel('ListOwner')
 
         #special case for private tasks
         if controller == 'task':
-            print "here"
             if task.private:
-                if c.level > Role.getLevel('ListOwner'):
+                if local_level > Role.getLevel('ListOwner'):
                     return False
                     
 
-        local_level = c.level
-        if controller == 'task' and c.level > Role.getLevel('TaskOwner'):
+        if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
                 local_level = Role.getLevel('TaskOwner')
             

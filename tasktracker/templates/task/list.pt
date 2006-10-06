@@ -8,7 +8,7 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
   </a><br/><br/>
 </tal:if>
 
-<span tal:condition="c/tasks/count">
+<span tal:condition="python: len(c.tasks)">
 
 <!-- list headers -->
 Task name

@@ -20,7 +20,7 @@ class StatusChangeForm(formencode.Schema):
 class TaskController(BaseController):
 
     def _clean_params(self, params):
-        allowed_params = ("title", "text", "status", "deadline", "task_listID", "owner")
+        allowed_params = ("title", "text", "status", "deadline", "task_listID", "owner", "private")
         clean = {}
         for param in allowed_params:
             if params.has_key(param):
@@ -76,7 +76,11 @@ class TaskController(BaseController):
     @attrs(action='create')
     @validate(schema=CreateTaskForm(), form='show_create')  
     def create(self):
-        c.task = Task(**self._clean_params(self.form_result))
+        p = self._clean_params(self.form_result)
+        if not (c.level <= Role.getLevel('ProjectAdmin') or TaskList.get(p['task_listID']).isOwnedBy(c.username)):
+            p['private'] = False
+
+        c.task = Task(**p)
 
         return redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
 

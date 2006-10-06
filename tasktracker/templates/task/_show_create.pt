@@ -24,11 +24,12 @@
 <input name="deadline" id="deadline" type="text"><br/>
 </td></tr>
 
+<tal:if condition="python: h.has_permission(controller='tasklist', action='private', task_listID=c.tasklist.id)">
 <tr><td>
 <label for="deadline"><b>Private:</b></label></td><td>
-<input name="private" id="private" type="checkbox"><br/>
+<input name="private" id="private" type="checkbox" value="1"><br/>
 </td></tr>
-
+</tal:if>
 
 </table>
 
