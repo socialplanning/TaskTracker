@@ -25,7 +25,8 @@ The security setting on this page is for creating task lists.</p>
 
 <p> During its lifetime, a task could have many statuses.  Perhaps it
 starts out as 'new', becomes 'pending' when someone has decided that
-it is worth doing, and then finally becomes 'done'.  
+it is worth doing, and then finally becomes 'done'.  To remove a
+status, check the box next to it.
 </p>
 
 <form action="#" onsubmit = "addStatus($('new_status').value);$('new_status').value=''; return false;" >
@@ -40,7 +41,7 @@ it is worth doing, and then finally becomes 'done'.
 <input type="submit" name="submit" value="Add a status" />
 
 <p>
-<input type="submit" name="submit" value="Set up the task tracker" onclick="$('theform').submit(); return false;"/>
+<input type="submit" name="submit" value="Set up the task tracker" onclick="updateStatus();$('theform').submit(); return false;"/>
 </p>
 </form>
 
@@ -99,8 +100,11 @@ function addStatus(status) {
     done = $('done');
     status_list.insertBefore(li, done);
 
-    updateStatus();
+    Sortable.destroy('status_list');
+    Sortable.create('status_list');
 }
 
 addStatus('not done');
+Sortable.create('status_list');
+
 </script>
