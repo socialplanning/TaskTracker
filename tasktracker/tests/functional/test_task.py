@@ -216,6 +216,14 @@ class TestTaskController(TestController):
 
         res.mustcontain('The non-private one')
         assert 'The private one' not in res.body
+
+        #they also can't guess urls
+        res = app.get(url_for(
+                controller='task', action='view', id=priv.id))
+
+        location = res.header_dict['location']
+        assert location.startswith('/project/show_not_permitted/')
+
         
         nonpriv.destroySelf()
         priv.destroySelf()
