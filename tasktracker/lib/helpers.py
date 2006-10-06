@@ -21,21 +21,33 @@ from tasktracker.lib.base import c
 def text_field_r(object_name, field_name, **kwargs):
     obj = getattr(c, object_name, None)
     if obj:
-        value = getattr(obj, field_name)
+        value = getattr(obj, field_name, None)
     else:
         value = None
 
     return text_field(field_name, value=value, **kwargs)
 
+def test(*args, **kwargs):
+    oop = c
+    import pdb; pdb.set_trace()
 
 def text_area_r(object_name, field_name, **kwargs):
     obj = getattr(c, object_name, None)
     if obj:
-        value = getattr(obj, field_name)
+        value = getattr(obj, field_name, None)
     else:
         value = None
 
     return text_area(field_name, content=value, **kwargs)
+
+def check_box_r(object_name, field_name, **kwargs):
+    obj = getattr(c, object_name, None)
+    if obj:
+        value = getattr(obj, bool(field_name), None)
+    else:
+        value = None
+
+    return check_box(field_name, checked=value, **kwargs)
 
 
 def has_permission(controller=None, action=None, **params):

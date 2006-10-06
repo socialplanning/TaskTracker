@@ -57,6 +57,9 @@ a.sortarrow:visited {
 
 a.sortarrow:link {
     text-decoration: none;
-     color: #00f;
+    color: #00f;
 }
 
+.row-heading {
+    font-weight: bold;
+}

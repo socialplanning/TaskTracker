@@ -1,1 +1,18 @@
-<metal:do use-macro="here/_show_create/macros/show_create" />
+<metal:macro define-macro="show_create">
+
+<form tal:attributes="action python:h.url_for(action='create', controller='task')" method="post">
+
+<table>
+<tr><td>
+<b>List:</b></td><td>
+<span tal:replace="structure python: h.taskListDropDown(c.tasklist.id)" />
+<br />
+</td></tr>
+
+<metal:do use-macro="here/_form/macros/form" />
+
+</table>
+<input type="submit" name="create" value="create">
+</form>
+
+</metal:macro>

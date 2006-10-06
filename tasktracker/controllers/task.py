@@ -1,17 +1,16 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
-import formencode  
-from formencode.validators import *
-import datetime
-
 from tasktracker.lib import helpers as h
+import formencode
+from formencode.validators import *
+from tasktracker.lib.datetimeconverter import *
 
 class CreateTaskForm(formencode.Schema):  
     allow_extra_fields = True  
     title = NotEmpty()
-    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today), 
-                                       DateConverter())
+    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.datetime.today),
+                                       DateTimeConverter())
 
 class StatusChangeForm(formencode.Schema):
     allow_extra_fields = True
@@ -98,7 +97,6 @@ class TaskController(BaseController):
         c.task.owner = c.username
         return redirect_to(action='view',controller='task', id=id)
 
-
     @attrs(action='comment')
     @catches_errors
     def comment(self, id):
@@ -111,15 +109,19 @@ class TaskController(BaseController):
     @catches_errors
     def show_update(self, id):
         c.task = self.getTask(int(id))
+        c.owner = c.task.owner.title
         return render_response('zpt', 'task.show_update')
 
     @attrs(action='update')
-    @catches_errors
+    @validate(schema=CreateTaskForm(), form='show_update')
     def update(self, id):
         c.task = self.getTask(int(id))
-        p = self._clean_params(request.params)
+        p = self._clean_params(self.form_result)
 
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
+            del p['owner']
+
+        if not p['owner']:
             del p['owner']
 
         c.task.set(**p)

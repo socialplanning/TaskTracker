@@ -1,27 +1,22 @@
-<metal:macro define-macro="show_create">
-
-<form tal:attributes="action python:h.url_for(action='create', controller='task')" method="post">
+<metal:macro define-macro="form">
 
 <table>
 <tr><td>
-<b>List:</b></td><td>
-<span tal:replace="structure python: h.taskListDropDown(c.tasklist.id)" />
-<br />
-</td></tr>
-
-<tr><td>
-<label for="title"><b>Title:</b></label></td><td>
-<input name="title" id="title" type="text"><br/>
+<label for="title"><b>Title:</b></label></td>
+<td>
+<span tal:replace="structure python: h.text_field_r('task', 'title')" />
 </td></tr>
 
 <tr><td>
 <label for="text"><b>Text:</b></label></td><td>
-<textarea name="text" id="text" rows=10 cols=80></textarea><br/>
+<span tal:replace="structure python: h.text_area_r('task', 'text', rows=10, cols=80)" />
 </td></tr>
 
 <tr><td>
 <label for="deadline"><b>Deadline:</b></label></td><td>
-<input name="deadline" id="deadline" type="text"><br/>
+<span tal:replace="structure python: h.text_field_r('task', 'deadline')" />
+
+<!--input name="deadline" id="deadline" type="text"><br/-->
 </td></tr>
 
 <tal:if condition="python: h.has_permission(controller='tasklist', action='private', id=c.tasklist.id)">
@@ -32,10 +27,5 @@
 </tal:if>
 
 </table>
-
-
-
-<input type="submit" name="create" value="create">
-</form>
 
 </metal:macro>
