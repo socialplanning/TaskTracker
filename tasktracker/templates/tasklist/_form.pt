@@ -2,14 +2,18 @@
 
 <input type="hidden" name="mode" id="mode" tal:attributes="value python:test(c.security_policy_id, 'simple', 'complex')">
 
-Title: <span tal:replace="structure python: h.text_field_r('tasklist', 'title')" /> 
+<table>
+<tr><td><label for="title">Title:</label></td>
+<td><span tal:replace="structure python: h.text_field_r('tasklist', 'title')" /> </td>
+</tr>
+
+<tr><td><label for="text">Long description of task list:</label></td>
+<td><span tal:replace="structure python: h.text_area_r('tasklist', 'text', rows=10, cols=80)" /></td>
+</tr>
 
 
-<br/>
-Text: <span tal:replace="structure python: h.text_area_r('tasklist', 'text', rows=10, cols=80)" /> 
-<br />
-
-
+<tr><td><label for="policy">Security:</label></td>
+<td>
 <div id="complex_form" tal:attributes="style python:test(c.security_policy_id, 'display:none;;', '')">
 <tal:for repeat="action c/actions">
 <span tal:replace="action/question" />
@@ -17,15 +21,17 @@ Text: <span tal:replace="structure python: h.text_area_r('tasklist', 'text', row
 <span tal:replace="structure python: h.select('action_' + action.action, h.options_for_select([(a.description, a.id) for a in action.roles], c.permissions[action.id]))" />
 <br/>
 </tal:for>
-<a href="#" onclick="$('complex_form').hide(); $('mode').setAttribute('value', 'simple'); $('simple_form').show(); return false;">Simplify</a>
+<a href="#" onclick="$('complex_form').hide(); $('mode').setAttribute('value', 'simple'); $('simple_form').show(); return false;">Show simple security options</a>
 </div>
 
 <div id="simple_form" tal:attributes="style python:test(c.security_policy_id, '', 'display:none;;')">
 <span tal:replace="structure python: h.select('policy', h.options_for_select([(p.name, p.id) for p in c.policies], c.security_policy_id))" />
 
-<a href="#" onclick="$('simple_form').hide(); $('mode').setAttribute('value', 'complex'); $('complex_form').show(); return false;">Complexify</a>
+<a href="#" onclick="$('simple_form').hide(); $('mode').setAttribute('value', 'complex'); $('complex_form').show(); return false;">Show advanced security options</a>
 </div>
-
+</td>
+</tr>
+</table>
 
 <span tal:replace="structure python: h.submit('Submit')" />
 
