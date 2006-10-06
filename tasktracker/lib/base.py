@@ -86,6 +86,14 @@ class BaseController(WSGIController):
             if task_list.isOwnedBy(params['username']):
                 c.level = Role.getLevel('ListOwner')
 
+        #special case for private tasks
+        if controller == 'task':
+            print "here"
+            if task.private:
+                if c.level > Role.getLevel('ListOwner'):
+                    return False
+                    
+
         local_level = c.level
         if controller == 'task' and c.level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
@@ -100,7 +108,7 @@ class BaseController(WSGIController):
         action = action[0]
         
         tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
-                                                    actionID=action.id)
+                                                     actionID=action.id)
 
         if not tl_permissions.count():
             #shouldn't get here, because tasklists should always have

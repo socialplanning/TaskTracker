@@ -5,6 +5,8 @@
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
+
+
 hub = PackageHub("tasktracker")
 __connection__ = hub
 
@@ -174,7 +176,8 @@ class Task(SQLObject):
                 task.sort_index += 1
 
     def liveChildren(self):
-        return [c for c in self.children if c.live]
+        from tasktracker.lib.helpers import has_permission
+        return [c for c in self.children if c.live and has_permission('task', 'view', id=c.id)]
 
     def isOwnedBy(self, username):
         return self.owner == username            

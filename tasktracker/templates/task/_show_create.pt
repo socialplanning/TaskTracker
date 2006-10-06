@@ -23,7 +23,15 @@
 <label for="deadline"><b>Deadline:</b></label></td><td>
 <input name="deadline" id="deadline" type="text"><br/>
 </td></tr>
+
+<tr><td>
+<label for="deadline"><b>Private:</b></label></td><td>
+<input name="private" id="private" type="checkbox"><br/>
+</td></tr>
+
+
 </table>
+
 
 
 <input type="submit" name="create" value="create">

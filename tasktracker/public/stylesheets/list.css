@@ -3,9 +3,17 @@
 	padding-left: 0px;
 }
 
-.drop {
-        border: 2px dashed #0f0;
+.handle {
+	padding: 0px 4px 0px 4px;
 }
+
+
+.drop {
+//        border: 2px dashed #0f0;
+        border-bottom: 2px solid black;
+	padding-bottom: 2px;
+}
+
 
 .autocomplete {
         border: 1px dashed black;
