@@ -9,28 +9,38 @@
 
 
 .drop {
-//        border: 2px dashed #0f0;
         border-bottom: 2px solid black;
 	padding-bottom: 2px;
 }
 
 
-.autocomplete {
-        border: 1px dashed black;
-	list-style-type: none;
-	padding-left: 0px;
+//from scriptaculous
+span.autocomplete {
+    position:absolute;
+    width:250px;
+    background-color:white;
+    border:1px solid #888;
+    margin:0px;
+    padding:0px;
 }
+span.autocomplete ul {
+    list-style-type:none;
+    margin:0px;
+    padding:0px;
+}
+span.autocomplete ul li.selected { background-color: #ffb;}
+span.autocomplete ul li {
+    list-style-type:none;
+    display:block;
+    margin:0;
+    padding:2px;
+    height:32px;
+    cursor:pointer;
+}
+//end scriptaculous
 
 .taskitem {
 
-}
-
-.autocomplete li{
-        border-bottom: 1px dashed red;
-}
-
-.autocomplete li:hover{
-        background-color: #eee;
 }
 
 .error-message {
