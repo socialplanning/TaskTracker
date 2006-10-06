@@ -36,7 +36,11 @@ class Role(SQLObject):
     @classmethod
     def getLevel(cls, name):
         if not Role.levels.has_key(name):
-            Role.levels[name] = Role.selectBy(name=name)[0].level
+            role = Role.selectBy(name=name)
+            if not role.count():
+                print "Bad role %s" % name
+                return 0
+            Role.levels[name] = role[0].level
         return Role.levels[name]
 
 class Project(SQLObject):

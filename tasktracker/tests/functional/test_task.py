@@ -160,3 +160,33 @@ class TestTaskController(TestController):
         task2.destroySelf()
         tl.destroySelf()
 
+    def test_comments(self):
+        tl = TaskList.select()[0]
+
+        #set security such that any logged-in user can comment and view posts
+        found = False
+        for perm in tl.permissions:
+            if perm.action.action == "task_comment" or perm.action.action == "task_view":
+                found = True
+                perm.min_level = Role.getLevel("Authenticated")
+        assert found
+
+        #add a task assigned to 'fred'
+        task1 = Task(title='Fleem', text='x', owner='fred', task_listID=tl.id)
+
+        #view the task
+        app = self.getApp('auth')
+
+        res = app.get(url_for(
+                controller='task', action='view', id=task1.id))
+
+        res.mustcontain('Fleem')
+        
+        #fill in the form
+        form = res.forms[0]
+        form.fields['text'][0].value = "This is a test comment."
+
+        res = form.submit()
+        res = res.follow()
+
+        res.mustcontain("This is a test comment.")

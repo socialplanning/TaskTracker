@@ -142,3 +142,4 @@ class TaskController(BaseController):
         c.task = self.getTask(int(id))
         c.task.live = False
         return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
+
