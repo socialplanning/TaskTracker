@@ -76,7 +76,8 @@ class TaskController(BaseController):
     @validate(schema=CreateTaskForm(), form='show_create')  
     def create(self):
         p = self._clean_params(self.form_result)
-        if not (c.level <= Role.getLevel('ProjectAdmin') or TaskList.get(p['task_listID']).isOwnedBy(c.username)):
+        if not (c.level <= Role.getLevel('ProjectAdmin') or
+                TaskList.get(p['task_listID']).isOwnedBy(c.username)):
             p['private'] = False
 
         c.task = Task(**p)
