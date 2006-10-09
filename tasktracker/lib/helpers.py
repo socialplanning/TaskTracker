@@ -15,6 +15,9 @@ def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
+def taskDropDown(id, task_list):
+    task = [("No parent task",0)] + [(task.title, task.id) for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
+    return select('parentID', options_for_select(task, selected=id))
 
 from tasktracker.lib.base import c
 
@@ -49,7 +52,6 @@ def check_box_r(object_name, field_name, **kwargs):
         checked = ''
 
     return check_box(field_name, checked=checked, **kwargs)
-
 
 def has_permission(controller=None, action=None, **params):
     controller_name = controller

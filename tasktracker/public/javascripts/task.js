@@ -38,13 +38,11 @@ function resetChildDepths(elem) {
 }
 
 function insertAfter(new_node, after) {
-
     if (after.nextSibling) {
 	after.parentNode.insertBefore(new_node, after.nextSibling);
     } else {
 	after.parentNode.appendChild(new_node);
     }
-
 }
 
 var observer = Class.create();
