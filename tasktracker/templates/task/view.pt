@@ -49,9 +49,9 @@ Child tasks:<br>
 </tal:if>
 
 Task name
-<span style="position:absolute;left: 200px;">Status</span>
-<span style="position:absolute;left: 300px;">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span style="position:absolute;left: 450px;">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<span class="status-column">Status</span>
+<span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
+<span class="assigned-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
@@ -64,8 +64,6 @@ Task name
 
 </div>
 </span>
-
-<br/>
 
 <span tal:condition="c/task/comments">
 Here are the comments:

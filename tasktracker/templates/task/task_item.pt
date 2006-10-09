@@ -13,7 +13,7 @@
 
 <!-- title -->
 <a tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id)">
-<span tal:content="atask/title" tal:attributes="style python: '%s%s' % (test(atask.status=='done', 'text-decoration:line-through;;', ''), test(atask.parentID != 0, 'font-size:0.95em', 'font-size:1.1em')); id string:title_${atask/id}"/></a>
+<span tal:content="atask/title" tal:attributes="style python: '%s%s' % (test(atask.status=='done', 'text-decoration:line-through;;', ''), test(atask.parentID != 0, 'font-size:0.95em', 'font-size:1.1em')); id string:title_${atask/id}"/></a><span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
 
 </span>
 

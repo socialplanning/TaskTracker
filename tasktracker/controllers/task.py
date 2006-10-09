@@ -48,16 +48,21 @@ class TaskController(BaseController):
     def move(self, id):
         task = self.getTask(int(id))
         if request.params.has_key ('new_parent'):
-
             new_parent_id = int(request.params['new_parent'])
+            parent = Task.get(new_parent_id)
             assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
             task.parentID = new_parent_id
+            if parent.private:
+                task.private = True
             task.moveToTop()
         else:
             new_sibling_id = int(request.params['new_sibling'])
             new_sibling = Task.get(new_sibling_id)
             assert new_sibling.task_listID == task.task_listID
             task.parentID = new_sibling.parentID
+            parent = Task.get(new_sibling.parentID)
+            if parent.private:
+                task.private = True
             task.moveBelow(new_sibling)
 
         return render_text('ok')
@@ -118,12 +123,19 @@ class TaskController(BaseController):
     def update(self, id):
         c.task = self.getTask(int(id))
         p = self._clean_params(self.form_result)
-
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
             del p['owner']
 
         if not p['owner']:
             del p['owner']
+
+        if not 'private' in p.keys():
+            p['private'] = False
+
+        if not (c.level <= Role.getLevel('ProjectAdmin') or
+                c.task.task_list.isOwnedBy(c.username) or
+                c.task.owner == c.username):
+            del p['private']
 
         c.task.set(**p)
 
