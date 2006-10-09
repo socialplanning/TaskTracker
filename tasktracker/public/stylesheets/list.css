@@ -63,3 +63,18 @@ a.sortarrow:link {
 .row-heading {
     font-weight: bold;
 }
+
+.status-column {
+    position: absolute;
+    left: 450px;    
+}
+
+.deadline-column {
+    position: absolute;
+    left: 575px;
+}
+
+.assigned-column {
+    position: absolute;
+    left: 700px;
+}

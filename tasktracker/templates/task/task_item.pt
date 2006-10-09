@@ -19,9 +19,9 @@
 
 <!-- the status -->
 
-<span tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:content="structure python: h.select('status', h.options_for_select([(s.name, s.name) for s in c.tasklist.project.statuses], atask.status), method='post', onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id), id='status_%d' % atask.id) " tal:attributes="id string:status-form_${atask/id};style string:position: absolute;; left: 200px;;"/>
+<span class="status-column" tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" tal:content="structure python: h.select('status', h.options_for_select([(s.name, s.name) for s in c.tasklist.project.statuses], atask.status), method='post', onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',action='change_status', id=atask.id), atask.id), id='status_%d' % atask.id) " tal:attributes="id string:status-form_${atask/id};"/>
 
-<span tal:attributes="style python: 'position: absolute;; left: 200px;;' + test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
+<span class="status-column" tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
 
 
 <span tal:replace="structure python: h.end_form()" />
@@ -30,11 +30,11 @@
 
 <!-- deadline -->
 
-<span style="position: absolute;; left: 300px;;" tal:content="atask/deadline" />
+<span class="deadline-column" tal:content="atask/deadline" />
 
 <!-- owner -->
 
-<span style="position: absolute;; left: 450px;;" tal:content="python:test(atask.owner, atask.owner, 'unassigned')" />
+<span class="assigned-column" tal:content="python:test(atask.owner, atask.owner, 'unassigned')" />
 
 <!-- subtasks -->
 
