@@ -13,7 +13,7 @@ This is list <span tal:replace="c/tasklist/title" />.<br />
 <!-- list headers -->
 
 Task name
-<span class="status-column">Status</span>
+<span class="status-column">Status <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('status'); return false;">&#x2193;</a></span>
 <span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
 <span class="assigned-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 

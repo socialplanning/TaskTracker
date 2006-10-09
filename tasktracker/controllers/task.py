@@ -35,13 +35,13 @@ class TaskController(BaseController):
         return render_text('ok')
 
     @attrs(action='view')
-    def auto_complete_for_owner(self, id):
-        c.task = self.getTask(int(id))
+    def auto_complete_for_owner(self):
         partial = request.params['owner']
         users = list(c.users)
 
         users = filter(lambda u: u.lower().startswith(partial.lower()), users)
-
+        
+        print "AUTOCOMP"
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
     @attrs(action='update')

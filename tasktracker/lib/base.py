@@ -63,7 +63,7 @@ class BaseController(WSGIController):
             #raise SecurityException("IMPROPER AUTHENTICATION")
 
     @classmethod
-    def _has_permission(cls, controller, action_name, params):
+    def _has_permission(cls, controller, action_name, params):        
         #special case for creating task lists
         if action_name == 'tasklist_create':
             return c.project.create_list_permission >= c.level
@@ -75,7 +75,10 @@ class BaseController(WSGIController):
                 controller = 'task_list'
                 task_list = TaskList.get(params['task_listID'])
             else:
-                task = Task.get(int(params['id']))
+                try: 
+                    task = Task.get(int(params['id']))
+                except TypeError:
+                    import pdb; pdb.set_trace()
                 task_list = TaskList.get(task.task_listID)
         else:
             task_list = "I AM BROKEN"
@@ -162,6 +165,9 @@ class BaseController(WSGIController):
             return True
 
         if action_verb == 'open':
+            return True
+
+        if action == 'auto_complete_for_owner':
             return True
 
         params = dict(params)

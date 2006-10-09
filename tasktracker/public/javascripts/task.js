@@ -1,4 +1,4 @@
-function changeStatus(url, task_id) {
+function changeStatus(url, task_id) {    
     new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + $('status_' + task_id).value});
 }
 
@@ -23,7 +23,6 @@ function resetChildDepths(elem) {
     }
   }
   if (child_ul.length > 0) {
-    //console.log(child_ul);
     var new_depth = parseInt(elem.childNodes[1].getAttribute('depth')) + 1;
     child_ul.each(function(child) {
       if (child.tagName == 'LI') {
@@ -75,7 +74,6 @@ function doDrop(child, drop_target) {
   }
   var old_parent = child.parentNode.parentNode;
     if (old_parent.id.match(/^task/)) {
-	console.log(old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length);
         if (old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length < 2) {
   	  flattenTask(old_parent.id.split('_')[1]);
         }
@@ -221,7 +219,7 @@ function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
 	    if (node.id.match('^(label)')) {
 		var id = node.id.split('_')[1];
-		node.innerHTML = $('status_' + id).getValue($('status_' + id).selectedIndex);	    
+		node.innerHTML = $('status_' + id).getValue($('status_' + id).selectedIndex);	    // TODO: should this read from the DB instead?
 		node.toggle();
 	    }
 	    else if (node.id.match('^status-form')) {
