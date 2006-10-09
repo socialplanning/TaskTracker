@@ -68,18 +68,26 @@ observer.prototype={
 };
 
 function doDrop(child, drop_target) {
- 
   var id;
 
   if (drop_target == child) {
       return;
   }
+  var old_parent = child.parentNode.parentNode;
+    if (old_parent.id.match(/^task/)) {
+	console.log(old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length);
+        if (old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length < 2) {
+  	  flattenTask(old_parent.id.split('_')[1]);
+        }
+    }
 
+  // drop under a parent node
   if (drop_target.id.match(/^title_/)) {
       id = parseInt(drop_target.id.replace(/^title_/, ''));
       var new_parent = $('task_' + id);
       //find new parent's contained ul
       var kids = new_parent.childNodes;
+      expandTask(id);
       for (i in kids) {
 	  if (kids[i].tagName == 'UL') {
 	      var ul = kids[i];
@@ -102,7 +110,7 @@ function doDrop(child, drop_target) {
 	      return;
 	  }
       }
-  } else {
+  } else { // drop after a sibling node
       id = parseInt(drop_target.id.replace(/^handle_/, ''));
       var new_sibling = $('task_' + id);
 
@@ -182,12 +190,25 @@ function toggleCollapse(task_id) {
 	    }
 	});
     var button = $('collapseButton_' + task_id);
-    if (button.src.match("minus")) {
-	button.src = button.src.replace("minus", "plus");
-    } else {
-	button.src = button.src.replace("plus", "minus");
+    if (button.src.match("minus.png")) {
+	button.src = button.src.replace("minus.png", "plus.png");
+    } else if (button.src.match("plus.png")) {
+	button.src = button.src.replace("plus.png", "minus.png");
     }
-		 
+}
+
+function expandTask(task_id) {
+    var collapse = $('collapseButton_' + task_id);
+    if (collapse.src.match("blank.png")) {
+	collapse.src = collapse.src.replace("blank.png", "plus.png");
+    } else if (collapse.src.match("minus.png")) {
+    	toggleCollapse(task_id);
+    }
+}
+
+function flattenTask(task_id) {
+    var collapse = $('collapseButton_' + task_id);
+    collapse.src = collapse.src.replace(/(plus|minus).png$/, "blank.png");
 }
 
 function sortBy(column) {
@@ -198,7 +219,12 @@ var initialized = false;
 
 function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
-	    if (node.id.match('^(status-form|label)')) {
+	    if (node.id.match('^(label)')) {
+		var id = node.id.split('_')[1];
+		node.innerHTML = $('status_' + id).getValue($('status_' + id).selectedIndex);	    
+		node.toggle();
+	    }
+	    else if (node.id.match('^status-form')) {
 		node.toggle();
 	    }
 	});
@@ -208,7 +234,7 @@ function modeSwitch() {
       Draggables.addObserver(new observer());
 
       $A($('tasks').getElementsByTagName('li')).each(function(node) {
-	  id = node.getAttribute('task_id');
+	  var id = node.getAttribute('task_id');
 	  drag = new Draggable(node.id, {
 	      handle : 'handle_' + id, 
 	      revert : true,

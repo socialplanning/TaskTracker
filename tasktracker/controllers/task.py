@@ -40,7 +40,7 @@ class TaskController(BaseController):
         partial = request.params['owner']
         users = list(c.users)
 
-        users = filter(lambda u: partial.lower() in u.lower(), users)
+        users = filter(lambda u: u.lower().startswith(partial.lower()), users)
 
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 

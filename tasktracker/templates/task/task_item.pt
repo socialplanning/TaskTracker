@@ -4,10 +4,7 @@
 
 <span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem">
 
-<!--
-<img tal:attributes="id string:collapseButton_${atask/id}; onclick string:toggleCollapse(${atask/id});; src python:test(atask.liveChildren(), '/images/plus.png', '/images/blank-plus.png')" />
--->
-
+<img tal:attributes="src python:test(atask.liveChildren(), '/images/plus.png', '/images/blank.png'); id string:collapseButton_${atask/id}; onclick string:toggleCollapse(${atask/id});" />
 
 <!-- drag handle -->
 <span>

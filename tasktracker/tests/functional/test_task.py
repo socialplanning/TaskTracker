@@ -223,6 +223,16 @@ class TestTaskController(TestController):
         location = res.header_dict['location']
         assert location.startswith('/project/show_not_permitted/')
 
+        # but task owners can see their private tasks
+        app = self.getApp('member')
+        priv.owner = "member"
+
+        res = app.get(url_for(
+                controller='tasklist', action='view', id=tl.id))
+
+        res.mustcontain('The non-private one')
+        res.mustcontain('The private one')
+
         
         nonpriv.destroySelf()
         priv.destroySelf()
