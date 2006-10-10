@@ -69,7 +69,6 @@ class TaskController(BaseController):
     @attrs(action='create')
     @catches_errors
     def show_create(self, id):
-        print "here"
         c.task_listID = int(request.params['task_listID'])
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")

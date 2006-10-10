@@ -78,3 +78,18 @@ a.sortarrow:link {
     position: absolute;
     left: 50em;
 }
+
+.completed-task {
+    text-decoration: line-through;
+}
+
+.uncompleted-task {
+}
+
+.root-task {
+  font-size:1.1em;
+}
+
+.sub-task { 
+  font-size:0.95em;  
+}

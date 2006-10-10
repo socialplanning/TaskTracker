@@ -1,7 +1,17 @@
-function changeStatus(url, task_id) {    
+function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
     req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)})
+}
+
+function updateTaskItem(task_id) {
+    var tasktext = $('title_' + task_id);
+    var taskitem = $('task_' + task_id);
+    var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
+    var root = (taskitem.childNodes[1].getAttribute('depth') == 0) ? 'root-task' : 'sub-task';
+    console.log(taskitem.childNodes[1], taskitem.childNodes[1].getAttribute('depth'));
+    tasktext.setAttribute('class', completed + ' ' + root);
+    //    console.log(tasktext);
 }
 
 function doneChangingStatus(req) {
@@ -11,8 +21,10 @@ function doneChangingStatus(req) {
     status.disabled = false;
     status.style.color = "black"; 
     node = document.getElementById('label_' + task_id);
-    node.innerHTML = $('status_' + task_id).getValue(status.selectedIndex);
-
+    var newstatus = $('status_' + task_id).getValue(status.selectedIndex);
+    node.innerHTML = newstatus;
+    $('task_' + task_id).setAttribute('status', newstatus);
+    updateTaskItem(task_id);
 }
 
 function failedChangingStatus(req) {
@@ -124,6 +136,7 @@ function doDrop(child, drop_target) {
 
 	      //set child indent
 	      resetChildDepths(new_parent);
+	      updateTaskItem(child.id.split('_')[1]);
 	      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
 	      return;
 	  }
@@ -155,12 +168,14 @@ function doDrop(child, drop_target) {
       if (new_sibling.childNodes[1].getAttribute('depth') > 0) {
 	  var parent = child.parentNode.parentNode;
 	  resetChildDepths(parent);
+	  updateTaskItem(child.id.split('_')[1]);
       } else {
 	  var title = child.childNodes[1];
 
 	  title.setAttribute('depth', 0);
 	  title.style.paddingLeft = '0px'; 
 	  resetChildDepths(child);
+	  updateTaskItem(child.id.split('_')[1]);
       }
       new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_sibling=' + new_sibling.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
 
@@ -231,6 +246,7 @@ function expandTask(task_id) {
 
 function flattenTask(task_id) {
     var collapse = $('collapseButton_' + task_id);
+    var handle = $('handle_' + task_id);
     collapse.src = collapse.src.replace(/(plus|minus).png$/, "blank.png");
     handle.src = handle.src.replace(/folder_(open|closed).png/, "file.png");
 }
