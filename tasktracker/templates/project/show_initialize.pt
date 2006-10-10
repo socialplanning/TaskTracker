@@ -16,7 +16,7 @@ The security setting on this page is for creating task lists.</p>
 <option tal:attributes="value c/memberLevel">Project members too</option>
 </select><br/><br/>
 
-<input type="hidden" value="" id="statuses" name="statuses">
+<input type="hidden" value="" id="items" name="statuses">
 
 </form>
 
@@ -29,82 +29,20 @@ it is worth doing, and then finally becomes 'done'.  To remove a
 status, check the box next to it.
 </p>
 
-<form action="#" onsubmit = "addStatus($('new_status').value);$('new_status').value=''; return false;" >
-<ul id="status_list" class="task_list">
-<li id="done">
-<input type="checkbox" disabled="disabled"/>
-<span>done</span>
-</li>
-</ul>
+<form action="#" onsubmit = "addItem($('new_status').value);$('new_status').value=''; return false;" >
+
+<span tal:replace="structure python: h.list_with_checkboxes('status_list', [], ['done'])" />
+
 <label for="new_status">Add a status:</label> <input name="new_status" type="text" id="new_status">
 
 <input type="submit" name="submit" value="Add a status" />
 
 <p>
-<input type="submit" name="submit" value="Set up the task tracker" onclick="updateStatus();$('theform').submit(); return false;"/>
+<input type="submit" name="submit" value="Set up the task tracker" onclick="$('theform').submit(); return false;"/>
 </p>
 </form>
 
-<script language="javascript">
-
-function updateStatus() {
-    //update the form variable
-    var status_list = $('status_list');
-    var statuses = status_list.getElementsByTagName('li')
-    var s = '';
-
-    for (i = 0; i < statuses.length; ++i) {
-        s += getStatusName(statuses[i]);
-	s += ',';
-    }
-
-    $('statuses').value = s;
-}
-
-function deleteStatus(status_name) {
-    $(status_name).parentNode.remove();
-    updateStatus();
-}
-
-function getStatusName(status_li) {
-    return status_li.getElementsByTagName('span')[0].childNodes[0].nodeValue;
-}
-
-function addStatus(status) {
-    status = status.replace(/[^A-Za-z0-9 ]/g, '');
-
-    if (status.length < 1) {
-        return;
-    }
-
-    status = status.toLowerCase();
-
-    //prevent duplication
-
-    var status_list = $('status_list');
-    var statuses = status_list.getElementsByTagName('li');
-
-    for (i = 0; i < statuses.length; ++i) {
-
-        if (getStatusName(statuses[i]) == status) {
-            return;
-        }
-    } 
-    //add the html element
-
-    var status_name = 'status_' + statuses.length;
-    var del = 'deleteStatus(\'' + status_name + '\');';
-    var check = Builder.node('input', {'id' : status_name, 'type' : 'checkbox', 'onclick' : del});
-    var li = Builder.node('li', [check, Builder.node('span', status)]);
-
-    done = $('done');
-    status_list.insertBefore(li, done);
-
-    Sortable.destroy('status_list');
-    Sortable.create('status_list');
-}
-
-addStatus('not done');
-Sortable.create('status_list');
-
+<script language="JavaScript">
+   setupEditableList('status_list');
+   addItem('not done');
 </script>

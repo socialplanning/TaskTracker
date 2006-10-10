@@ -31,8 +31,32 @@
 </div>
 </td>
 </tr>
+
+<tr><td><label for="admins">List owners:</label></td>
+<td>
+<input type="hidden" value="" id="items" name="owners">
+
+<span tal:replace="structure python: h.list_with_checkboxes('list_owners', c.owners, c.uneditableOwners)" />
+
+<span class="autocomplete">
+  <label for="owner">Add an owner:</label>   <input autocomplete="off" id="owner" name="owner" size="30" type="text" value="" /><input type="submit" name="submit" value="Add an owner" onclick="addItem($('owner').value);$('owner').value=''; return false;"/>
+
+
+  <div class="auto_complete" id="owner_auto_complete"></div>
+  <script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
+  '/task/auto_complete_for_owner/', {})</script>
+</span>
+
+</td>
+</tr>
+
+
 </table>
 
 <span tal:replace="structure python: h.submit('Submit')" />
+
+<script language="JavaScript">
+   setupEditableList('list_owners');
+</script>
 
 </metal:macro>

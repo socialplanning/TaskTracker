@@ -11,6 +11,27 @@ from tasktracker.models import Task, TaskList, Role
 
 import imp, os
 
+def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
+    updateable_lis = "\n".join([
+            """<li>
+                 <input type="checkbox" id="item_%d" onclick="deleteItem('item_%d');"/>
+                 <span>%s</span>
+               </li>""" % (i, i, updateable_items[i])
+            for i in range(0, len(updateable_items))])
+
+    fixed_lis = "\n".join([
+            """<li id="%s">
+                 <input type="checkbox" disabled="disabled"/>
+                 <span>%s</span>
+               </li>""" % (item, item)
+            for item in fixed_items])
+
+    return """<ul id="%s" class="task_list">
+    %s
+    %s
+    </ul>""" % (id, updateable_lis, fixed_lis);
+
+
 def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True)]
     return select('task_listID', options_for_select(tasklist, selected=id))

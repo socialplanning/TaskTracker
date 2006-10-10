@@ -40,6 +40,8 @@ class TasklistController(BaseController):
     @attrs(action='create')
     def show_create(self):
         self._prepare_form()
+        c.owners = []
+        c.uneditableOwners = [c.username]
         c.permissions = dict([(action.id, action.roles[0].level) for action in c.actions])
         c.security_policy_id = 1
         return render_response('zpt', 'tasklist.show_create')
@@ -62,6 +64,12 @@ class TasklistController(BaseController):
         p['projectID'] = c.project.id
         c.tasklist = TaskList(**p)
 
+        owners = p['owners'].split(",")
+        for owner in owners:
+            if not owner:
+                continue
+            TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
+
         self._set_security(p)
 
         return redirect_to(action='view',id=c.tasklist.id)
@@ -70,6 +78,11 @@ class TasklistController(BaseController):
     @catches_errors
     def show_update(self, id):
         c.tasklist = self._getTaskList(int(id))
+        c.owners = [o.username for o in c.tasklist.owners if not o.username == c.username]
+        if c.tasklist.isOwnedBy(c.username):
+            c.uneditableOwners = [c.username]
+        else:
+            c.uneditableOwners = []
         c.permissions = dict([(perm.action.id, perm.min_level) for perm in c.tasklist.permissions])
         c.security_policy_id = c.tasklist.security_policyID
         self._prepare_form()
@@ -86,6 +99,17 @@ class TasklistController(BaseController):
         self._set_security(p)
 
         c.tasklist.set(**p)
+
+        new_owners = p['owners'].split(",")
+        for owner in c.tasklist.owners:
+            if not owner in new_owners:
+                owner.destroySelf()
+
+        for owner in new_owners:
+            if not owner:
+                continue
+            if not owner in c.tasklist.owners:
+                TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
 
         return redirect_to(action='index')
 

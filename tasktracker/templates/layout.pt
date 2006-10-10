@@ -11,6 +11,7 @@ Todo list
 <span tal:replace="structure python:h.javascript_include_tag('task.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('builder.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('controls.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('editable_list.js')" />
 <span tal:replace="structure python:h.stylesheet_link_tag('list.css')" />
 </head>
 <body>
