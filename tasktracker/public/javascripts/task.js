@@ -10,6 +10,7 @@ function doneChangingStatus(req) {
     status.setAttribute('originalvalue', status.selectedIndex);
     status.disabled = false;
     status.style.color = "black"; 
+    node = document.getElementById('label_' + task_id);
     node.innerHTML = $('status_' + task_id).getValue(status.selectedIndex);
 
 }
