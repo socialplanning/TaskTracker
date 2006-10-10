@@ -62,11 +62,11 @@ class TasklistController(BaseController):
         p = dict(request.params)
         p['username'] = c.username
         p['projectID'] = c.project.id
+        owners = p.pop('owners').split(",")
         c.tasklist = TaskList(**p)
 
-        owners = p['owners'].split(",")
         for owner in owners:
-            if not owner:
+            if not owner or owner == c.username:
                 continue
             TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
 

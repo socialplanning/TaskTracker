@@ -66,7 +66,7 @@ class TaskListOwner(SQLObject):
     task_list = ForeignKey('TaskList')
     sire = StringCol(length=100)
 
-    index = DatabaseIndex('username', 'task_list', unique=True)
+    index = DatabaseIndex(task_list, username, unique=True)
 
 class SecurityPolicyAction(SQLObject):
     simple_security_policy = ForeignKey("SimpleSecurityPolicy")
