@@ -9,9 +9,7 @@ function updateTaskItem(task_id) {
     var taskitem = $('task_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
     var root = (taskitem.childNodes[1].getAttribute('depth') == 0) ? 'root-task' : 'sub-task';
-    console.log(taskitem.childNodes[1], taskitem.childNodes[1].getAttribute('depth'));
     tasktext.setAttribute('class', completed + ' ' + root);
-    //    console.log(tasktext);
 }
 
 function doneChangingStatus(req) {

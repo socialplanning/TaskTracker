@@ -7,7 +7,7 @@ from webhelpers import *
 from pylons.util import _, log, set_lang, get_lang
 from routes import url_for
 from pylons import Response, c, g, cache, request, session
-from tasktracker.models import Task, TaskList
+from tasktracker.models import Task, TaskList, Role
 
 import imp, os
 
@@ -15,9 +15,16 @@ def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
-def taskDropDown(id, task_list):
-    task = [("No parent task",0)] + [(task.title, task.id) for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
-    return select('parentID', options_for_select(task, selected=id))
+def taskDropDown(id, task_list, username, level):
+    tasks = [("No parent task",0)] + [(task.title, task.id) for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
+    priv_tasks = Task.selectBy(private=True)
+    if level <= Role.getLevel('ProjectAdmin'):
+        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]
+    else:
+        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True, live=True) if
+                      (task.task_list.isOwnedBy(username)
+                       or task.owner == username)]
+    return select('parentID', options_for_select(tasks + priv_tasks, selected=id))
 
 from tasktracker.lib.base import c
 
