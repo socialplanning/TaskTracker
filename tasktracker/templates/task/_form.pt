@@ -1,0 +1,33 @@
+<metal:macro define-macro="form">
+
+<tr><td><label class="row-heading" for="title">Title:</label></td>
+<td><span tal:replace="structure python: h.text_field_r('task', 'title')" /></td></tr>
+
+<tr><td><label class="row-heading" for="text">Text:</label></td>
+<td><span tal:replace="structure python: h.text_area_r('task', 'text', rows=10, cols=80)" />
+</td></tr>
+
+<tr><td><label class="row-heading" for="deadline">Deadline:</label></td>
+<td><span tal:replace="structure python: h.text_field_r('task', 'deadline')" />
+</td></tr>
+
+<tr><td><label class="row-heading" for="deadline">Private:</label></td>
+<td><span tal:replace="structure python: h.check_box_r('task', 'private')" />
+<!--input name="private" id="private" type="checkbox"--></td></tr>
+
+<tal:if condition="c/owner">
+<tr><td><span class="row-heading">Assigned to:</span></td>
+<td><span tal:replace="c/owner" /></td>
+</tr></tal:if>
+
+<tr><td>
+<div tal:content="python: test(c.owner, 'Reassign task to:', 'Assign task to:')" 
+     class="row-heading" /></td><td>
+<span class="autocomplete">
+<input autocomplete="off" id="owner" name="owner" size="30" type="text" value="" />
+<div class="auto_complete" id="owner_auto_complete"></div>
+<script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
+'/task/auto_complete_for_owner/', {})</script>
+</span></td></tr>
+
+</metal:macro>
