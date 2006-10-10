@@ -8,7 +8,7 @@
 
 <!-- drag handle -->
 <span>
-<img tal:attributes="id string:handle_${atask/id}" src="/images/folder_open.png" class="handle">
+<img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png')" class="handle">
 </span>
 
 <!-- title -->

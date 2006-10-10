@@ -65,6 +65,24 @@ Task name
 </div>
 </span>
 
+<!-- add a new subtask -->
+<div id="create_section" tal:condition="python: h.has_permission('task', 'create', task_listID=c.tasklist.id)">
+
+<p id="show_create">
+<a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">Add a new subtask.</a>
+</p>
+
+<a name="create_anchor" id="create_anchor"/>
+
+<div id="create" style="display:none;">
+<metal:do use-macro="here/show_create/macros/show_create" />
+<p>
+<a href="#nevermind" onclick="$('create').hide(); $('show_create').show(); return false;">Nevermind</a>
+</p>
+</div>
+</div>
+
+<!-- comments -->
 <span tal:condition="c/task/comments">
 Here are the comments:
 </span>

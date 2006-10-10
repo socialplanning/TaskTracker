@@ -69,11 +69,16 @@ class TaskController(BaseController):
     @attrs(action='create')
     @catches_errors
     def show_create(self, id):
+        print "here"
         c.task_listID = int(request.params['task_listID'])
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")
 
         c.tasklist = TaskList.get(c.task_listID)
+        if 'parentID' in request.params:
+            c.parentID = request.params['parentID']
+        else:
+            c.parentID = 0
         return render_response('zpt', 'task.show_create')
 
     @attrs(action='create')
@@ -113,8 +118,8 @@ class TaskController(BaseController):
     @attrs(action='update')
     @catches_errors
     def show_update(self, id):
-        c.task = self.getTask(int(id))
-        c.owner = c.task.owner.title
+        c.oldtask = self.getTask(int(id))        
+        c.owner = c.oldtask.owner.title
         return render_response('zpt', 'task.show_update')
 
     @attrs(action='update')
@@ -150,6 +155,7 @@ class TaskController(BaseController):
     @catches_errors
     def view(self, id):
         c.task = self.getTask(int(id))
+        c.parentID = int(id)
         c.tasklist = c.task.task_list
         c.depth = c.task.depth() + 1
         return render_response('zpt', 'task.view')

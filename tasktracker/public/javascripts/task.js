@@ -208,17 +208,22 @@ function toggleCollapse(task_id) {
 	    }
 	});
     var button = $('collapseButton_' + task_id);
+    var handle = $('handle_' + task_id);
     if (button.src.match("minus.png")) {
 	button.src = button.src.replace("minus.png", "plus.png");
+	handle.src = handle.src.replace("closed.png", "open.png");
     } else if (button.src.match("plus.png")) {
 	button.src = button.src.replace("plus.png", "minus.png");
+	handle.src = handle.src.replace("open.png", "closed.png");
     }
 }
 
 function expandTask(task_id) {
     var collapse = $('collapseButton_' + task_id);
+    var handle = $('handle_' + task_id);
     if (collapse.src.match("blank.png")) {
 	collapse.src = collapse.src.replace("blank.png", "plus.png");
+	handle.src = handle.src.replace("file.png", "folder_open.png");
     } else if (collapse.src.match("minus.png")) {
     	toggleCollapse(task_id);
     }
@@ -227,6 +232,7 @@ function expandTask(task_id) {
 function flattenTask(task_id) {
     var collapse = $('collapseButton_' + task_id);
     collapse.src = collapse.src.replace(/(plus|minus).png$/, "blank.png");
+    handle.src = handle.src.replace(/folder_(open|closed).png/, "file.png");
 }
 
 function sortBy(column) {

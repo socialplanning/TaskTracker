@@ -1,18 +1,18 @@
 <metal:macro define-macro="form">
 
 <tr><td><label class="row-heading" for="title">Title:</label></td>
-<td><span tal:replace="structure python: h.text_field_r('task', 'title')" /></td></tr>
+<td><span tal:replace="structure python: h.text_field_r('oldtask', 'title')" /></td></tr>
 
 <tr><td><label class="row-heading" for="text">Text:</label></td>
-<td><span tal:replace="structure python: h.text_area_r('task', 'text', rows=10, cols=80)" />
+<td><span tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=10, cols=80)" />
 </td></tr>
 
 <tr><td><label class="row-heading" for="deadline">Deadline:</label></td>
-<td><span tal:replace="structure python: h.text_field_r('task', 'deadline')" />
+<td><span tal:replace="structure python: h.text_field_r('oldtask', 'deadline')" />
 </td></tr>
 
 <tr><td><label class="row-heading" for="deadline">Private:</label></td>
-<td><span tal:replace="structure python: h.check_box_r('task', 'private')" />
+<td><span tal:replace="structure python: h.check_box_r('oldtask', 'private')" />
 <!--input name="private" id="private" type="checkbox"--></td></tr>
 
 <tal:if condition="c/owner">
