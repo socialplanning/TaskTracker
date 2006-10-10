@@ -32,7 +32,7 @@ class TaskController(BaseController):
     def change_status(self, id):
         c.task = self.getTask(int(id))
         c.task.status = self.form_result['status']
-        return render_text('ok')
+        return render_text("ok")
 
     @attrs(action='view')
     def auto_complete_for_owner(self):

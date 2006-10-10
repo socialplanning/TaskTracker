@@ -66,15 +66,15 @@ a.sortarrow:link {
 
 .status-column {
     position: absolute;
-    left: 450px;    
+    left: 30em;    
 }
 
 .deadline-column {
     position: absolute;
-    left: 575px;
+    left: 40em;
 }
 
 .assigned-column {
     position: absolute;
-    left: 700px;
+    left: 50em;
 }

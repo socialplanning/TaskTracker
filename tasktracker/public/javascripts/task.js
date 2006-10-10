@@ -1,5 +1,26 @@
 function changeStatus(url, task_id) {    
-    new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + $('status_' + task_id).value});
+    var status = $('status_' + task_id);
+    status.disabled = true;
+    req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)})
+}
+
+function doneChangingStatus(req) {
+    var task_id = this;
+    var status = $('status_' + task_id);
+    status.setAttribute('originalvalue', status.selectedIndex);
+    status.disabled = false;
+    status.style.color = "black"; 
+    node.innerHTML = $('status_' + task_id).getValue(status.selectedIndex);
+
+}
+
+function failedChangingStatus(req) {
+    var task_id = this;
+    var status = $('status_' + task_id);
+    var orig = status.getAttribute('originalvalue');
+    status.style.color = "red"; 
+    status.disabled = false;
+    status.selectedIndex = orig;
 }
 
 function hideCreate() {
@@ -217,7 +238,6 @@ function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
 	    if (node.id.match('^(label)')) {
 		var id = node.id.split('_')[1];
-		node.innerHTML = $('status_' + id).getValue($('status_' + id).selectedIndex);	    // TODO: should this read from the DB instead?
 		node.toggle();
 	    }
 	    else if (node.id.match('^status-form')) {
