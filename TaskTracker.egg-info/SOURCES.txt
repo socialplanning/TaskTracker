@@ -73,7 +73,6 @@ tasktracker/templates/tasklist/_security.pt
 tasktracker/templates/tasklist/index.pt
 tasktracker/templates/tasklist/show_create.pt
 tasktracker/templates/tasklist/show_update.pt
-tasktracker/templates/user/__init__.py
 tasktracker/tests/__init__.py
 tasktracker/tests/test_models.py
 tasktracker/tests/functional/__init__.py
