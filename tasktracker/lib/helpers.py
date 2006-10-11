@@ -11,6 +11,13 @@ from tasktracker.models import Task, TaskList, Role
 
 import imp, os
 
+def readableDate(date):
+    if date:
+        months = "January February March April May June July August September October November December".split();
+        return "%s %s %s" % (date.day, months[date.month], date.year)
+    else:
+        return None
+
 def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
     updateable_lis = "\n".join([
             """<li>

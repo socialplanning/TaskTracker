@@ -48,20 +48,22 @@ class TaskController(BaseController):
         task = self.getTask(int(id))
         if request.params.has_key ('new_parent'):
             new_parent_id = int(request.params['new_parent'])
-            parent = Task.get(new_parent_id)
             assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
             task.parentID = new_parent_id
-            if parent.private:
-                task.private = True
+            if new_parent_id > 0:
+                parent = Task.get(new_parent_id)
+                if parent.private:
+                    task.private = True
             task.moveToTop()
         else:
             new_sibling_id = int(request.params['new_sibling'])
             new_sibling = Task.get(new_sibling_id)
             assert new_sibling.task_listID == task.task_listID
             task.parentID = new_sibling.parentID
-            parent = Task.get(new_sibling.parentID)
-            if parent.private:
-                task.private = True
+            if new_sibling.parentID > 0:
+                parent = Task.get(new_sibling.parentID)
+                if parent.private:
+                    task.private = True
             task.moveBelow(new_sibling)
 
         return render_text('ok')

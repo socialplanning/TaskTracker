@@ -42,7 +42,7 @@ tal:attributes="id string:status-form_${atask/id};"/>
 
 <!-- deadline -->
 
-<span class="deadline-column" tal:content="atask/deadline" />
+<span class="deadline-column" tal:content="python: h.readableDate(atask.deadline)" />
 
 <!-- owner -->
 

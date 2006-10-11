@@ -1,7 +1,7 @@
 function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
-    req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)})
+    req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)});
 }
 
 function updateTaskItem(task_id) {
@@ -32,6 +32,25 @@ function failedChangingStatus(req) {
     status.style.color = "red"; 
     status.disabled = false;
     status.selectedIndex = orig;
+}
+
+function doneMovingTask(req) {
+    var task_id = this['task_id'];
+    var old_parent_id = this['old_parent_id'];
+    var new_parent_id = this['new_parent_id'];
+
+    if (old_parent_id > 0) {
+	var old_parent = $('task_' + old_parent_id);
+	var child = $('task_' + task_id);
+        if (old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length < 2) {
+	    flattenTask(old_parent_id);
+	}
+    }
+    if (new_parent_id) {
+	expandTask(new_parent_id);
+    }
+
+    updateTaskItem(task_id);
 }
 
 function hideCreate() {
@@ -96,26 +115,25 @@ observer.prototype={
     }
 };
 
+function debugThing() {
+    console.log("FAILED");
+}
+
 function doDrop(child, drop_target) {
   var id;
 
   if (drop_target == child) {
       return;
   }
-  var old_parent = child.parentNode.parentNode;
-    if (old_parent.id.match(/^task/)) {
-        if (old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length < 2) {
-  	  flattenTask(old_parent.id.split('_')[1]);
-        }
-    }
+  var task_id = child.getAttribute('task_id');
+  var old_parent_id = child.parentNode.parentNode.getAttribute('task_id');
 
   // drop under a parent node
   if (drop_target.id.match(/^title_/)) {
-      id = parseInt(drop_target.id.replace(/^title_/, ''));
+      var id = parseInt(drop_target.id.replace(/^title_/, ''));
       var new_parent = $('task_' + id);
       //find new parent's contained ul
       var kids = new_parent.childNodes;
-      expandTask(id);
       for (i in kids) {
 	  if (kids[i].tagName == 'UL') {
 	      var ul = kids[i];
@@ -134,8 +152,9 @@ function doDrop(child, drop_target) {
 
 	      //set child indent
 	      resetChildDepths(new_parent);
-	      updateTaskItem(child.id.split('_')[1]);
-	      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_parent=' + new_parent.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
+	      new Ajax.Request('/task/move/' + child.getAttribute('task_id'), {asynchronous:true, evalScripts:true, method:'post',
+			  parameters:'new_parent=' + new_parent.getAttribute('task_id'),
+			  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}), onFailure:debugThing});
 	      return;
 	  }
       }
@@ -166,16 +185,16 @@ function doDrop(child, drop_target) {
       if (new_sibling.childNodes[1].getAttribute('depth') > 0) {
 	  var parent = child.parentNode.parentNode;
 	  resetChildDepths(parent);
-	  updateTaskItem(child.id.split('_')[1]);
       } else {
 	  var title = child.childNodes[1];
 
 	  title.setAttribute('depth', 0);
 	  title.style.paddingLeft = '0px'; 
 	  resetChildDepths(child);
-	  updateTaskItem(child.id.split('_')[1]);
       }
-      new Ajax.Request('/task/move/' + child.getAttribute('task_id') + '?new_sibling=' + new_sibling.getAttribute('task_id'), {asynchronous:true, evalScripts:true}); 
+      new Ajax.Request('/task/move/' + child.getAttribute('task_id'), {asynchronous:true, evalScripts:true, method:'post',
+		  parameters:'new_sibling=' + new_sibling.getAttribute('task_id'),
+		  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id}), onFailure:debugThing}); 
 
   }
 }
