@@ -1,0 +1,20 @@
+<metal:macro define-macro="show">
+
+<!-- add a new subtask -->
+<div id="create_section" tal:condition="python: h.has_permission('task', 'create', task_listID=c.tasklist.id)">
+
+<p id="show_create">
+<span metal:define-slot="subtask_link"/>
+</p>
+
+<a name="create_anchor" id="create_anchor"/>
+
+<div id="create" style="display:none;">
+<metal:do use-macro="here/show_create/macros/show_create" />
+<p>
+<a href="#nevermind" onclick="$('create').hide(); $('show_create').show(); return false;">Nevermind</a>
+</p>
+</div>
+</div>
+
+</metal:macro>
