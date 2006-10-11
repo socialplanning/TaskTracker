@@ -7,7 +7,7 @@ setup(
     #author="",
     #author_email="",
     #url="",
-    install_requires=["Pylons>=0.9.2", "PasteScript"],
+    install_requires=["Pylons>=0.9.2", "PasteScript", "ZPTKit==dev"],
     packages=find_packages(),
     include_package_data=True,
     test_suite = 'nose.collector',
