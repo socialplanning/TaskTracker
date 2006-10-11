@@ -1,5 +1,3 @@
-<span tal:attributes="url python:h.url_for(controller='tasklist',action='order', id=c.tasklist.id)" id="order"/>
-
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
 <tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
