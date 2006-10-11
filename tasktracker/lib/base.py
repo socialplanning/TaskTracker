@@ -50,6 +50,9 @@ class SecurityException(Exception):
 class NotInitializedException(Exception):
     pass
 
+class MissingSecurityException(Exception):
+    pass
+
 class BaseController(WSGIController):
 
     def __before__(self, action, **params):
@@ -155,7 +158,13 @@ class BaseController(WSGIController):
         username = environ['topp.username']
         c.username = username
 
-        action_verb = getattr(self, action).action
+        func = getattr(self, action)
+        if not getattr(func, 'action', None):
+            raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % (action, controller))
+        action_verb = func.action
+
+        #methods can override controllers (but should do so rarely)
+        controller = getattr(func, 'controller', controller)
         
         action_name = controller + '_' + action_verb
 
