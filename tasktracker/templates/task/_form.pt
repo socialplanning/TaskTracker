@@ -11,7 +11,7 @@
 <td><span tal:replace="structure python: h.text_field_r('oldtask', 'deadline')" />
 </td></tr>
 
-<tr><td><label class="row-heading" for="deadline">Private:</label></td>
+<tr><td><label class="row-heading" for="private">Private:</label></td>
 <td><span tal:replace="structure python: h.check_box_r('oldtask', 'private')" />
 <!--input name="private" id="private" type="checkbox"--></td></tr>
 
