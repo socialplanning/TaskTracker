@@ -67,7 +67,7 @@ function hideCreate() {
 mode = 'view';
 
 function resetChildDepths(elem) {
-    console.log("hello");
+
     var child_ul = elem.getElementsByTagName('UL')[0].childNodes;
     
     if (child_ul.length > 0) {
@@ -156,27 +156,30 @@ function insertTaskUnderParent(child_id, parent_id) {
     //find new parent's contained ul
     var ul = new_parent.getElementsByTagName('UL');
     if (ul.length) {
-	console.log("ul.length")
 	ul = ul[0];
 	ul.insertBefore(child, ul.childNodes[0]);
 
 	var items = ul.getElementsByTagName('LI');
-	console.log("LOOK", items);
 	//update sort_index
 	$A(items).each(function(item) {
-		console.log("HI");
-		console.log(item);
+
 		var sort_index = parseInt(item.getAttribute('sort_index'));
 		item.setAttribute('sort_index', sort_index + 1);
 	    });
 
-	console.log("sort[0]");
 	var sort_index = parseInt(items[0].getAttribute('sort_index'));
 	items[0].setAttribute('sort_index', 0);
 
 	//set child indent
-	console.log("rcd");
-	resetChildDepths(new_parent);
+	
+	var parenttitle = new_parent.childNodes[1];
+	var parentdepth = parseInt(parenttitle.getAttribute('depth'));
+	var title = child.childNodes[1];
+	
+	title.setAttribute('depth', parentdepth + 1);
+	title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
+	console.log("resetting child")
+	resetChildDepths(child);
 	return;
     }
 }
@@ -198,6 +201,7 @@ function doDrop(child, drop_target) {
   } else {   // drop after a sibling node
       var id = parseInt(drop_target.id.replace(/^handle_/, ''));
       var new_sibling = $('task_' + id);
+
       new Ajax.Request('/task/move/' + child.getAttribute('task_id'), {asynchronous:true, evalScripts:true, method:'post',
 		  parameters:'new_sibling=' + id,
 		  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}), onFailure:debugThing}); 
