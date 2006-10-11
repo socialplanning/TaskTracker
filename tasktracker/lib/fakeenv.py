@@ -9,12 +9,15 @@ class ZWSGIFakeEnv(object):
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
             
+
+            environ['topp.project'] = 'theproject'
             if self.users.has_key(username):
                 environ['topp.username'] = username
                 environ['topp.project'] = 'theproject'
                 environ['topp.role'] = self.users[username]
             else:
-                return False
+                environ['topp.username'] = username
+                environ['topp.role'] = 'ProjectMember'
 
             return True
 
