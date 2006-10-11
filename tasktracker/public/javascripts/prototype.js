@@ -2077,13 +2077,28 @@ var Position = {
     return document.body;
   },
 
+  setup_cache: function () {
+     this.cache_setup = 0;
+  },
+
   // caches x/y coordinate pair to use with overlap
   within: function(element, x, y) {
     if (this.includeScrollOffsets)
       return this.withinIncludingScrolloffsets(element, x, y);
     this.xcomp = x;
     this.ycomp = y;
-    this.offset = this.cumulativeOffset(element);
+
+    if (!this.cache_setup) {
+       setTimeout(this.setup_cache.bind(this), 200)
+       this.cache_setup = 1;
+       this.stored_offsets = {}
+    }
+
+    this.offset = this.stored_offsets[element.id];
+    if (!this.offset) {
+          this.offset = this.cumulativeOffset(element);
+          this.stored_offsets[element.id] = this.offset;
+    }
 
     return (y >= this.offset[1] &&
             y <  this.offset[1] + element.offsetHeight &&
