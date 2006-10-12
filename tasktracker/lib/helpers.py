@@ -13,8 +13,7 @@ import imp, os
 
 def readableDate(date):
     if date:
-        months = "January February March April May June July August September October November December".split();
-        return "%s %s %s" % (date.day, months[date.month], date.year)
+        return date.strftime("%d %B, %Y)
     else:
         return None
 
