@@ -303,19 +303,6 @@ class TaskList(SQLObject):
 
         trans.commit()
 
-
-
-    @classmethod
-    def getVisibleTaskLists(cls, level):
-        return TaskList.select(
-            AND(TaskList.q.live==True, 
-                TaskListPermission.q.task_listID == TaskList.q.id, 
-                TaskListPermission.q.actionID == Action.q.id, 
-                Action.q.action == 'tasklist_view',
-                TaskListPermission.q.min_level >= level))
-    
-
-
     def isOwnedBy(self, username):
         return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
 

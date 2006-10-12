@@ -9,8 +9,21 @@ class CreateListForm(formencode.Schema):
     #todo: add validators
     title = formencode.validators.NotEmpty()
 
-class TasklistController(BaseController):
 
+    TaskList.select(
+        AND(TaskList.q.live==True, 
+            TaskListPermission.q.task_listID == TaskList.q.id, 
+            TaskListPermission.q.actionID == Action.q.id, 
+            Action.q.action == 'tasklist_view'))
+    
+#TaskListPermission.q.min_level >= level))    
+
+
+
+class TasklistController(BaseController):
+    @classmethod
+    def getVisibleTaskLists(cls, username):
+        return [t for t in TaskList.select() if cls._has_permission('tasklist', 'tasklist_view', {'id':t.id, 'username':username})]
 
     def _clean_params(self, params):
         allowed_params = ("title", "text", "projectID")
@@ -22,7 +35,7 @@ class TasklistController(BaseController):
 
     @attrs(action='open')    
     def index(self):
-        c.tasklists = TaskList.getVisibleTaskLists(c.level)        
+        c.tasklists = self.getVisibleTaskLists(c.username)
         return render_response('zpt', 'tasklist.index')
 
     @attrs(action='view')
