@@ -44,7 +44,7 @@ class TaskController(BaseController):
         
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
-    @attrs(action='update')
+    @attrs(action='update', watchdog=TaskMoveWatcher)
     def move(self, id):
         task = self.getTask(int(id))
         if request.params.has_key ('new_parent'):
@@ -65,7 +65,7 @@ class TaskController(BaseController):
                 parent = Task.get(new_sibling.parentID)
                 if parent.private:
                     task.private = True
-            task.moveBelow(new_sibling)
+            task.moveBelow(new_sibling)         
 
         return render_text('ok')
 

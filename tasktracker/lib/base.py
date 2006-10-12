@@ -5,6 +5,7 @@ from pylons.templating import render, render_response
 from pylons.helpers import abort, redirect_to, etag_cache
 from tasktracker.models import *
 from tasktracker.controllers import *
+from tasktracker.lib.watchers import *
 import tasktracker.lib.helpers as h
 
 
@@ -65,6 +66,20 @@ class BaseController(WSGIController):
             redirect_to(controller='project', action='show_not_permitted')
             #raise SecurityException("IMPROPER AUTHENTICATION")
 
+        func = getattr(self, action)
+        dog = getattr(func, 'watchdog', None)
+        if dog:
+            self.dog = dog()
+            self.dog.before(params)
+        else:
+            self.dog = None
+
+    def __after__(self, action, **params):
+        if self.dog:
+            self.dog.after(params)
+
+        
+
     @classmethod
     def _has_permission(cls, controller, action_name, params):        
         #special case for creating task lists
@@ -78,10 +93,7 @@ class BaseController(WSGIController):
                 controller = 'task_list'
                 task_list = TaskList.get(params['task_listID'])
             else:
-                try: 
-                    task = Task.get(int(params['id']))
-                except TypeError:
-                    import pdb; pdb.set_trace()
+                task = Task.get(int(params['id'])) 
                 task_list = TaskList.get(task.task_listID)
         else:
             task_list = "I AM BROKEN"
