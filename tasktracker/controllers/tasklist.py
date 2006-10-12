@@ -112,14 +112,14 @@ class TasklistController(BaseController):
         self._set_security(p)
 
         c.tasklist.set(**p)
-
-        new_owners = p['owners'].split(",")
-        print new_owners
-        if new_owners:
+        
+        if p['owners']:
+            new_owners = p['owners'].split(",")
+            print new_owners
             for owner in c.tasklist.owners:
                 if not owner in new_owners:
                     owner.destroySelf()
-
+                    
             for owner in new_owners:
                 if not owner:
                     continue
