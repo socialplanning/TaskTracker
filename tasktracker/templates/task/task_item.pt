@@ -48,6 +48,9 @@ tal:attributes="id string:status-form_${atask/id};"/>
 
 <span class="assigned-column" tal:content="python:test(atask.owner, atask.owner, 'unassigned')" />
 
+<!-- creator -->
+<span class="creator-column" tal:content="atask/creator" />
+
 <!-- subtasks -->
 
 <ul id="xtasks" class="task_list">

@@ -79,6 +79,11 @@ a.sortarrow:link {
     left: 50em;
 }
 
+.creator-column {
+    position: absolute;
+    left: 65em;
+}
+
 .completed-task {
     text-decoration: line-through;
 }

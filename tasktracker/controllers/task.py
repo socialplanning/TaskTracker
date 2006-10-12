@@ -90,6 +90,7 @@ class TaskController(BaseController):
                 TaskList.get(p['task_listID']).isOwnedBy(c.username)):
             p['private'] = False
         
+        p['creator'] = c.username
         c.task = Task(**p)
 
         return redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])

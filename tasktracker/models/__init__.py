@@ -109,6 +109,7 @@ class Task(SQLObject):
         defaultOrder = 'sort_index'
 
     created = DateTimeCol(default=datetime.datetime.now)
+    creator = StringCol(default="")
     deadline = DateTimeCol(default=None)
     title = StringCol()
     text = StringCol()
