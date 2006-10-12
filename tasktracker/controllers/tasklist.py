@@ -114,15 +114,17 @@ class TasklistController(BaseController):
         c.tasklist.set(**p)
 
         new_owners = p['owners'].split(",")
-        for owner in c.tasklist.owners:
-            if not owner in new_owners:
-                owner.destroySelf()
+        print new_owners
+        if new_owners:
+            for owner in c.tasklist.owners:
+                if not owner in new_owners:
+                    owner.destroySelf()
 
-        for owner in new_owners:
-            if not owner:
-                continue
-            if not owner in c.tasklist.owners:
-                TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
+            for owner in new_owners:
+                if not owner:
+                    continue
+                if not owner in c.tasklist.owners:
+                    TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
 
         return redirect_to(action='index')
 
