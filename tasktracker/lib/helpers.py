@@ -15,7 +15,7 @@ import imp, os
 
 def readableDate(date):
     if date:
-        return date.strftime("%d %B, %Y)
+        return date.strftime("%d %B, %Y")
     else:
         return None
 
