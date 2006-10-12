@@ -7,6 +7,7 @@ from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
 
 class CreateTaskForm(formencode.Schema):  
+    pre_validators = [formencode.variabledecode.NestedVariables]
     allow_extra_fields = True  
     title = NotEmpty()
     deadline = formencode.compound.All(DateValidator(earliest_date=datetime.datetime.today),
@@ -127,6 +128,7 @@ class TaskController(BaseController):
     @attrs(action='update')
     @validate(schema=CreateTaskForm(), form='show_update')
     def update(self, id):
+
         c.task = self.getTask(int(id))
         p = self._clean_params(self.form_result)
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):

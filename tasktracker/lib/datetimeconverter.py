@@ -51,10 +51,16 @@ class DateTimeConverter(FancyValidator):
 
     def _to_python(self, value, state):
         """ parse a string and return a datetime object. """
+
+        if (not self.not_empty) and value and not (value['date']) and not(value['time']):
+            return ''
+
         if value and isinstance(value, datetime.datetime):
             return value
         else:
             try:
+                value = value['date'] + ' ' + (value['time'] or '17:00:00')
+
                 tpl = time.strptime(value, self.format)
             except ValueError:
                 raise Invalid(self.message('badFormat', state), value, state)
@@ -69,9 +75,12 @@ class DateTimeConverter(FancyValidator):
         elif isinstance(value, datetime):
             # Python stdlib can only handle dates with year greater than 1900
             if value.year <= 1900:
-                return strftime_before1900(value, self.format)
+                thestr = strftime_before1900(value, self.format)
             else:
-                return value.strftime(self.format)
+                thestr = value.strftime(self.format)
+            out = {}
+            out['date'], out['time'] = thestr.split(" ")
+            return out
         else:
             return value
 # -----

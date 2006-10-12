@@ -9,6 +9,8 @@ from routes import url_for
 from pylons import Response, c, g, cache, request, session
 from tasktracker.models import Task, TaskList, Role
 
+from datebocks_helper import datebocks_field
+
 import imp, os
 
 def readableDate(date):
@@ -55,30 +57,29 @@ def taskDropDown(id, task_list, username, level):
 
 from tasktracker.lib.base import c
 
-def text_field_r(object_name, field_name, **kwargs):
+def get_value(object_name, field_name):
+    key = None
+    if '.' in field_name:
+        field_name, key = field_name.split('.')
+
     obj = getattr(c, object_name, None)
     if obj:
-        value = getattr(obj, field_name, None)
+        if key:
+            return getattr(obj, field_name, None).get(key, None)
+        else:
+            return getattr(obj, field_name, None)
     else:
-        value = None
+        return None
 
-    return text_field(field_name, value=value, **kwargs)
+
+def text_field_r(object_name, field_name, **kwargs):
+    return text_field(field_name, value=get_value(object_name, field_name), **kwargs)
 
 def text_area_r(object_name, field_name, **kwargs):
-    obj = getattr(c, object_name, None)
-    if obj:
-        value = getattr(obj, field_name, None)
-    else:
-        value = None
-
-    return text_area(field_name, content=value, **kwargs)
+    return text_area(field_name, content=get_value(object_name, field_name), **kwargs)
 
 def check_box_r(object_name, field_name, **kwargs):
-    obj = getattr(c, object_name, None)
-    if obj:
-        value = getattr(obj, field_name, None)
-    else:
-        value = None
+    value = get_value(object_name, field_name)
 
     if value:
         checked = 'checked'

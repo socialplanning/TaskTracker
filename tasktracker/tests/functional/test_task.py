@@ -34,7 +34,8 @@ class TestTaskController(TestController):
 
         form['title'] = 'The new task title'
         form['text'] = 'The new task body'
-        form['deadline'] = '2029-10-10 00:00:00'
+        form['deadline.date'] = '2029-10-10'
+        form['deadline.time'] = '00:00:00'
         res = form.submit()
 
         #Creating a new task should redirect you to the list of tasks.

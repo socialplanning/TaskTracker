@@ -12,7 +12,15 @@ Todo list
 <span tal:replace="structure python:h.javascript_include_tag('builder.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('controls.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('editable_list.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('datebocks_engine.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('calendar.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('calendar-setup.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('calendar-en.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('datebocks_window.js')" />
 <span tal:replace="structure python:h.stylesheet_link_tag('list.css')" />
+<span tal:replace="structure python:h.stylesheet_link_tag('datebocks_engine.css')" />
+<span tal:replace="structure python:h.stylesheet_link_tag('calendar-blue.css')" />
+
 </head>
 <body>
 <div style="background-color:#edf">
