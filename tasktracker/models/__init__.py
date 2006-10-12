@@ -17,6 +17,11 @@ __connection__ = hub
 
 import datetime
 
+class Watcher(SQLObject):
+    username = StringCol()
+    task = ForeignKey("Task")
+    tasklist = ForeignKey("TaskList")
+
 class Status(SQLObject):
     name = StringCol()
     project = ForeignKey("Project")
@@ -120,7 +125,7 @@ class Task(SQLObject):
     task_list = ForeignKey("TaskList")
     private = BoolCol(default=False)
     owner = StringCol(default="")
-
+    watchers = MultipleJoin("Watcher")
     sort_index = IntCol()
 
     parent = ForeignKey("Task")
@@ -225,7 +230,7 @@ class TaskList(SQLObject):
     permissions = MultipleJoin("TaskListPermission")
     project = ForeignKey("Project")
     owners = MultipleJoin("TaskListOwner")
-
+    watchers = MultipleJoin("Watchers")
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
 
     def topLevelTasks(self):

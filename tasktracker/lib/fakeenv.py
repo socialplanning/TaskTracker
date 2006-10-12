@@ -1,7 +1,21 @@
+class User:
+    def __init__(self, username, address):
+        self.username = username
+        user, domain = address.split("@")
+        self.email_address = "%s+%s@%s" % (user, username, domain)
+
+class UserMapper:
+    def __init__(self, address):
+        self.address = address
+
+    def __call__(username):
+        return User(username, self.address)
+
 class ZWSGIFakeEnv(object):
-    def __init__(self, app, users):
+    def __init__(self, app, users, test_email_address):
         self.app = app
         self.users = users
+        self.test_email_address = test_email_address
 
     def authenticate (self, environ):
         try:
@@ -9,7 +23,7 @@ class ZWSGIFakeEnv(object):
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
             
-
+            environ['topp.usermapper'] = UserMapper(self.test_email_address)
             environ['topp.project'] = 'theproject'
             if self.users.has_key(username):
                 environ['topp.username'] = username
