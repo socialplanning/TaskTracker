@@ -83,7 +83,7 @@ class TaskController(BaseController):
             c.parentID = 0
         return render_response('zpt', 'task.show_create')
 
-    @attrs(action='create')
+    @attrs(action='create', watchdog=TaskCreateWatcher)
     @validate(schema=CreateTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
@@ -96,7 +96,9 @@ class TaskController(BaseController):
             p['text'] = p['text'].replace('\n', "<br>")
         c.task = Task(**p)
 
-        return redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
+        print "in create:", c.task
+
+        return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors

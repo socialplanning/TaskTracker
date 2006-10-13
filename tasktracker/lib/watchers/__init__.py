@@ -1,5 +1,7 @@
 from tasktracker.models import *
 
+from pylons import c
+
 class Watcher:
     @classmethod
     def snapshotSQLObject(cls, obj):
@@ -16,16 +18,24 @@ class Watcher:
         pass
 
 class TaskWatcher(Watcher):
-    def after(self, params):
-        self.task = Task.get(int(params['id'])) 
-
     def before(self, params):
         task = Task.get(int(params['id'])) 
         self.pre_task = self.snapshotSQLObject(task)
 
 
-class TaskMoveWatcher(TaskWatcher):
+class TaskMoveWatcher(Watcher):
+    pass #we don't actually want to watch moves yet
+
+
+class TaskCreateWatcher(Watcher):
     def after(self, params):
-        TaskWatcher.after(self, params)
-        print "was: %s" % self.pre_task
-        print "is: %s" % self.task
+        report = """
+A new task was created in the task list %s that you were watching. 
+
+Creator: %s
+Title: %s
+%s
+
+        """ % (c.task.task_list.title, c.task.creator, c.task.title, c.task.text)
+
+        print report

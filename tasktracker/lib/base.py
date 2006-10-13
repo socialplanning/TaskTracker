@@ -1,4 +1,8 @@
-from pylons import Response, c, g, cache, request, session
+#fixme: uncomment next line, remove line after, and remove section
+#below when paste includes non-exception redirect_to 
+
+#from pylons import Request, c, g, cache, request, session
+from pylons import c, g, cache, request, session
 from pylons.controllers import WSGIController
 from pylons.decorators import jsonify, rest, validate
 from pylons.templating import render, render_response
@@ -8,6 +12,24 @@ from tasktracker.controllers import *
 from tasktracker.lib.watchers import *
 import tasktracker.lib.helpers as h
 
+#remove this bit when paste includes non-exception redirect_to
+from paste.wsgiwrappers import WSGIResponse
+from routes import url_for
+class Response(WSGIResponse):
+    @classmethod 
+    def redirect_to(cls, *args, **params):
+        if len(args) == 0:
+            url = url_for(**params)
+        elif len(args) == 1:
+            url = args[0]
+        else:
+            raise TypeError("redirect_to() takes at most 1 positional argument (%s given)" % len(args))
+        rparams = {}
+        rparams['code'] = params.get('code', 303)
+
+        resp = WSGIResponse(code=rparams['code'], content="You are now being redirected to <a href=\"%s\">%s</a>.  Do not be alarmed." % (url, url))
+        resp.headers['Location'] = url
+        return resp
 
 class NoSuchIdError(Exception):
     pass
@@ -71,14 +93,14 @@ class BaseController(WSGIController):
         if dog:
             self.dog = dog()
             self.dog.before(params)
+            self.action = action
         else:
             self.dog = None
 
     def __after__(self, action, **params):
         if self.dog:
-            self.dog.after(params)
-
-        
+            if self.action == request.environ['pylons.routes_dict']['action']:
+                self.dog.after(params)
 
     @classmethod
     def _has_permission(cls, controller, action_name, params):        
