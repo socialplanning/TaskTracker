@@ -13,7 +13,6 @@ function updateTaskItem(task_id) {
 }
 
 function doneChangingStatus(req) {
-    console.log("fleem");
     var task_id = this;
     var status = $('status_' + task_id);
     status.setAttribute('originalvalue', status.selectedIndex);
@@ -185,6 +184,23 @@ function insertTaskUnderParent(child_id, parent_id) {
     }
 }
 
+function doneDestroyingTask(req) {
+    var task_id = this;
+    $('task_' + task_id).remove();
+}
+
+function failedDestroyingTask(req) {
+    var task_id = this;
+    $('task_' + task_id).show();
+}
+
+function destroyTask(child, drop_target) {
+    var task_id = child.getAttribute('task_id');
+    $('task_' + task_id).hide();
+    new Ajax.Request('/task/destroy/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+		onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask});
+}
+
 function doDrop(child, drop_target) {
   var id;
   if (drop_target == child) {
@@ -196,14 +212,14 @@ function doDrop(child, drop_target) {
   if (drop_target.id.match(/^title_/)) {   // drop under a parent node
       var id = parseInt(drop_target.id.replace(/^title_/, ''));
       var new_parent = $('task_' + id);
-      new Ajax.Request('/task/move/' + child.getAttribute('task_id'), {asynchronous:true, evalScripts:true, method:'post',
+      new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
 		  parameters:'new_parent=' + id,
 		  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}), onFailure:debugThing});
   } else {   // drop after a sibling node
       var id = parseInt(drop_target.id.replace(/^handle_/, ''));
       var new_sibling = $('task_' + id);
 
-      new Ajax.Request('/task/move/' + child.getAttribute('task_id'), {asynchronous:true, evalScripts:true, method:'post',
+      new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
 		  parameters:'new_sibling=' + id,
 		  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}), onFailure:debugThing}); 
   }
@@ -308,14 +324,18 @@ function modeSwitch() {
           });
 	
 	  Droppables.add('title_' + id, {
-	      hoverclass : 'drop',
-	      onDrop : doDrop
+		  hoverclass : 'drop',
+		      onDrop : doDrop
 	  });
 	  Droppables.add('handle_' + id, {
-	      hoverclass : 'drop',
-	      onDrop : doDrop
+		  hoverclass : 'drop',
+		      onDrop : doDrop
 	  });
        });
+      Droppables.add('trash', {
+	      hoverclass : 'drop',
+		  onDrop : destroyTask
+		  });
     }
 
 

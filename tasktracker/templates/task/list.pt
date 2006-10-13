@@ -28,6 +28,9 @@ Task name
 
 </span>
 
+<!-- the garbage bin -->
+<img id="trash" src="/images/trash.png" />
+
 <!-- the create setup -->
 
 <metal:do use-macro="here/_hideable_show_create/macros/show">

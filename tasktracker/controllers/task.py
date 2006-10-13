@@ -92,6 +92,8 @@ class TaskController(BaseController):
             p['private'] = False
         
         p['creator'] = c.username
+        if p.has_key('text'):
+            p['text'] = p['text'].replace('\n', "<br>")
         c.task = Task(**p)
 
         return redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
@@ -114,7 +116,7 @@ class TaskController(BaseController):
     @catches_errors
     def comment(self, id):
         c.task = Task.get(int(id))
-        comment = Comment(text=request.params["text"], user=c.username, task=c.task)
+        comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
 
         return redirect_to(action='view',id=c.task.id)
 
@@ -139,6 +141,9 @@ class TaskController(BaseController):
 
         if not 'private' in p.keys():
             p['private'] = False
+
+        if p.has_key('text'):
+            p['text'] = p['text'].replace('\n', "<br>")
 
         if not (c.level <= Role.getLevel('ProjectAdmin') or
                 c.task.task_list.isOwnedBy(c.username) or

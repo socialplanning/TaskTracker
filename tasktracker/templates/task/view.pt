@@ -77,12 +77,11 @@ Here are the comments:
 There are no comments.
 </span>
 
-
 <ul tal:repeat="comment c/task/comments">
 <li>
 By: <span tal:replace="comment/user"/><br/>
 On: <span tal:replace="comment/date"/><br/>
-Text: <span tal:replace="comment/text"/><br/>
+Text: <span tal:replace="structure python:h.html2safehtml(comment.text)"/><br/>
 </li>
 </ul>
 

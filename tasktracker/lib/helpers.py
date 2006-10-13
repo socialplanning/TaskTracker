@@ -11,7 +11,12 @@ from tasktracker.models import Task, TaskList, Role
 
 from datebocks_helper import datebocks_field
 
+from stripogram import html2safehtml, html2text
 import imp, os
+
+def debugThings():
+    foo = c
+    import pdb; pdb.set_trace()
 
 def readableDate(date):
     if date:
