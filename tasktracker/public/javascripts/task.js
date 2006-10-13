@@ -178,7 +178,7 @@ function insertTaskUnderParent(child_id, parent_id) {
 	
 	title.setAttribute('depth', parentdepth + 1);
 	title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
-	console.log("resetting child")
+
 	resetChildDepths(child);
 	return;
     }
