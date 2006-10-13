@@ -1,3 +1,7 @@
+var console = {
+    log : function(x) { alert(x); }
+};
+
 function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
