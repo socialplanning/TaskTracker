@@ -1,7 +1,3 @@
-var console = {
-    log : function(x) { alert(x); }
-};
-
 function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
@@ -17,6 +13,7 @@ function updateTaskItem(task_id) {
 }
 
 function doneChangingStatus(req) {
+    console.log("fleem");
     var task_id = this;
     var status = $('status_' + task_id);
     status.setAttribute('originalvalue', status.selectedIndex);
