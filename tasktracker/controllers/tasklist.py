@@ -115,7 +115,6 @@ class TasklistController(BaseController):
         
         if p['owners']:
             new_owners = p['owners'].split(",")
-            print new_owners
             for owner in c.tasklist.owners:
                 if not owner in new_owners:
                     owner.destroySelf()

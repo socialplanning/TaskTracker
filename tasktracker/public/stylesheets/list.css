@@ -14,7 +14,7 @@
 }
 
 
-//from scriptaculous
+/*from scriptaculous*/
 span.autocomplete {
     position:absolute;
     width:250px;
@@ -37,7 +37,7 @@ span.autocomplete ul li {
     height:32px;
     cursor:pointer;
 }
-//end scriptaculous
+/*end scriptaculous*/
 
 .taskitem {
 
