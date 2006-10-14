@@ -1,6 +1,7 @@
 from tasktracker.lib.base import *
 
 class TemplateController(BaseController):
+    @attrs(action='open')
     def view(self, url):
         """
         This is the last place which is tried during a request to try to find a 
