@@ -51,3 +51,37 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 
 openplans_wrapper = ZWSGIFakeEnv
 test_email_address = "novalis@example.org"
+
+
+
+
+############################################################
+## Deliverance-enabled example
+############################################################
+
+[filter-app:deliverance]
+#use = egg:Paste#error_catcher
+use = egg:Paste#evalerror
+next = deliverance_wrapper
+
+[filter-app:deliverance_wrapper] 
+# this version of the configuration uses Deliverance to style the
+# app like NYCSR.org
+
+use = egg:Deliverance
+rule_uri = theme/nycsr.xml
+#theme_uri = theme/nycsr_speed.html
+theme_uri = http://www.nycsr.org
+
+next = deliverance_parts
+
+[composite:deliverance_parts]
+use = egg:Paste#urlmap
+/theme = nycsr_files
+/ = main
+
+[app:nycsr_files]
+use = egg:Paste#pkg_resources
+egg = Deliverance
+resource_name = deliverance/test-data/nycsr
+
