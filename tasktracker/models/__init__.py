@@ -250,10 +250,11 @@ class TaskList(SQLObject):
         return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if has_permission('task', 'view', id=c.id)]
 
     def uncompletedTasks(self):
-        return list(Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id)))
+        from tasktracker.lib.helpers import has_permission
+        return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'view', id=c.id)]
     
     def completedTasks(self):
-        return list(Task.select(AND(Task.q.status == 'done', Task.q.task_listID == self.id)))
+        return list(Task.selectBy(status='done', task_listID=self.id, live=True))
 
     def set(self, init=False, **kwargs):
         if init:

@@ -61,9 +61,7 @@ class TaskController(BaseController):
     def auto_complete_for_owner(self):
         partial = request.params['owner']
         users = list(c.users)
-
         users = filter(lambda u: u.lower().startswith(partial.lower()), users)
-        
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
     @attrs(action='update', watchdog=TaskMoveWatchdog)
@@ -87,8 +85,7 @@ class TaskController(BaseController):
                 parent = Task.get(new_sibling.parentID)
                 if parent.private:
                     task.private = True
-            task.moveBelow(new_sibling)         
-
+            task.moveBelow(new_sibling)
         return render_text('ok')
 
     @attrs(action='create')

@@ -1,6 +1,6 @@
 <metal:macro metal:define-macro="view_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; status atask/status">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem">
 
@@ -8,7 +8,7 @@
 
 <!-- drag handle -->
 <span>
-<img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png')" class="handle">
+<img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png');" class=handle />
 </span>
 
 <!-- title -->
@@ -25,12 +25,12 @@ h.select('status',
          h.options_for_select([(s.name, s.name) for s in c.tasklist.project.statuses], 
                               atask.status), 
          method='post', 
-         originalvalue='%s' % [s.name for s in c.tasklist.project.statuses].index(atask.status), 
+         originalvalue='%s' % [s.name for s in c.tasklist.project.statuses].index(atask.status),
          onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',
-                                                                 action='change_status', 
-                                                                 id=atask.id), 
-                                                       atask.id), 
-                   id='status_%d' % atask.id) " 
+                                                                 action='change_status',
+                                                                 id=atask.id),
+                                                       atask.id),
+                   id='status_%d' % atask.id) "
 tal:attributes="id string:status-form_${atask/id};"/>
 
 <span class="status-column" tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />

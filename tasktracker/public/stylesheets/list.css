@@ -7,10 +7,10 @@
 	padding: 0px 4px 0px 4px;
 }
 
-
 .drop {
-        border-bottom: 2px solid black;
-	padding-bottom: 2px;
+   border-bottom: 2px solid black;
+   padding-bottom: 2px;	
+   background-image: url('images/folder_open.png');
 }
 
 

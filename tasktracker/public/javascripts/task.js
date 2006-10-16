@@ -1,7 +1,7 @@
 function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
-    req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)});
+    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)});
 }
 
 function updateTaskItem(task_id) {
@@ -64,7 +64,7 @@ function hideCreate() {
     return false;
 }
 
-mode = 'view';
+var mode = 'view';
 
 function resetChildDepths(elem) {
 
@@ -192,15 +192,16 @@ function doneDestroyingTask(req) {
 }
 
 function failedDestroyingTask(req) {
+    console.log("Failed to destroy the task " + this);
     var task_id = this;
-    $('task_' + task_id).show();
+    $('task_' + task_id).show();    
 }
 
 function destroyTask(child, drop_target) {
     var task_id = child.getAttribute('task_id');
     $('task_' + task_id).hide();
-    new Ajax.Request('/task/destroy/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
-		onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask});
+    var req = new Ajax.Request('/task/destroy/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+		onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask.bind(task_id)});
 }
 
 function doDrop(child, drop_target) {
@@ -319,7 +320,7 @@ function modeSwitch() {
 
       $A($('tasks').getElementsByTagName('li')).each(function(node) {
 	  var id = node.getAttribute('task_id');
-	  drag = new Draggable(node.id, {
+	  var drag = new Draggable(node.id, {
 	      handle : 'handle_' + id, 
 	      revert : true
 		      //ghosting : true
@@ -336,7 +337,8 @@ function modeSwitch() {
        });
       Droppables.add('trash', {
 	      hoverclass : 'drop',
-		  onDrop : destroyTask
+		  onDrop : destroyTask,
+		  accept : 'deletable'
 		  });
     }
 
