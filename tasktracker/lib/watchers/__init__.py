@@ -1,6 +1,7 @@
 from tasktracker.models import *
 
 from pylons import c
+from routes.util import url_for
 
 class Watchdog:
     @classmethod
@@ -58,7 +59,8 @@ Subject: %s: New comment on %s
 %s commented on the task entitled '%s':
 %s
 
-        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text)
+To reply, go to %s
+        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text, url_for(action="view", controller="task", id=c.task.id, qualified=True))
 
         for watcher in c.task.watchers:
             self.sendMail(watcher.username, message)
