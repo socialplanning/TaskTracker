@@ -8,7 +8,7 @@ class UserMapper:
     def __init__(self, address):
         self.address = address
 
-    def __call__(username):
+    def __call__(self, username):
         return User(username, self.address)
 
 class ZWSGIFakeEnv(object):

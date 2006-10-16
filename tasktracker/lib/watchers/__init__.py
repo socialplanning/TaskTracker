@@ -2,7 +2,7 @@ from tasktracker.models import *
 
 from pylons import c
 
-class Watcher:
+class Watchdog:
     @classmethod
     def snapshotSQLObject(cls, obj):
         out = {}
@@ -12,30 +12,39 @@ class Watcher:
 
         return out
 
+    @classmethod
+    def sendMail(cls, username, message):
+        to = c.usermapper(username).email_address
+        OutgoingEmail(envelope_to_address = to, envelope_from_address = 'test@example.com', message=message)
+
+
     def before(self, params):
         pass
     def after(self, params):
         pass
 
-class TaskWatcher(Watcher):
+class TaskWatchdog(Watchdog):
     def before(self, params):
         task = Task.get(int(params['id'])) 
         self.pre_task = self.snapshotSQLObject(task)
 
 
-class TaskMoveWatcher(Watcher):
+class TaskMoveWatchdog(Watchdog):
     pass #we don't actually want to watch moves yet
 
 
-class TaskCreateWatcher(Watcher):
+class TaskCreateWatchdog(Watchdog):
     def after(self, params):
-        report = """
+        message = """
+Subject: %s: Task created in list %s
+
 A new task was created in the task list %s that you were watching. 
 
 Creator: %s
 Title: %s
 %s
 
-        """ % (c.task.task_list.title, c.task.creator, c.task.title, c.task.text)
+        """ % (c.project, c.task.task_list.title, c.task.task_list.title, c.task.creator, c.task.title, c.task.text)
 
-        print report
+        for watcher in c.task.task_list.watchers:
+            self.sendMail(watcher.username, message)

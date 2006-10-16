@@ -2,11 +2,17 @@
 |
 <tal:nada replace="structure python:h.link_to('Delete this task', url=h.url_for(action='destroy', id=c.task.id), confirm='Are you sure you want to delete this task?')"/>
 |
+<span tal:condition="python: not c.task.isWatchedBy(c.username)">
+<tal:nada replace="structure python:h.link_to('Watch this task', url=h.url_for(action='watch', id=c.task.id))"/>
+</span>
+<span tal:condition="python: c.task.isWatchedBy(c.username)">
+You are watching this task.  
+<tal:nada replace="structure python:h.link_to('Stop watching this task', url=h.url_for(action='stopwatch', id=c.task.id))"/>
+</span>
+|
 <a tal:attributes="href python:h.url_for(action='view', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a>
 
 <br/><br/>
-
-<span tal:condition="c/flash"><span style="color: red;" tal:content="c/flash" /></span>
 
 <b><span tal:replace="c/task/title" /><br/></b>
 Deadline: <span tal:replace="c/task/deadline" /><br/>

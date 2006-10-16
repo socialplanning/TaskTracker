@@ -22,7 +22,7 @@ class CreateListForm(formencode.Schema):
 
 class TasklistController(BaseController):
     @classmethod
-    def getVisibleTaskLists(cls, username):
+    def _getVisibleTaskLists(cls, username):
         return [t for t in TaskList.select() if cls._has_permission('tasklist', 'tasklist_view', {'id':t.id, 'username':username})]
 
     def _clean_params(self, params):
@@ -35,8 +35,23 @@ class TasklistController(BaseController):
 
     @attrs(action='open')    
     def index(self):
-        c.tasklists = self.getVisibleTaskLists(c.username)
+        c.tasklists = self._getVisibleTaskLists(c.username)
         return render_response('zpt', 'tasklist.index')
+
+
+    @attrs(action='open')
+    def watch(self, id):
+        c.task_list = self._getTaskList(int(id))
+        if not c.task_list.isWatchedBy(c.username):
+            Watcher(username=c.username, task_listID=c.task_list.id, taskID=0)
+        return Response.redirect_to(action='view',controller='tasklist', id=c.task_list.id)
+
+    @attrs(action='open')
+    def stopwatch(self, id):
+        c.task_list = self._getTaskList(int(id))
+        Watcher.selectBy(username=c.username, task_list=int(id))[0].destroySelf()
+        return Response.redirect_to(action='view',controller='tasklist', id=c.task_list.id)
+
 
     @attrs(action='view')
     @catches_errors

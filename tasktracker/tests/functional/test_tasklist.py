@@ -113,3 +113,55 @@ class TestTaskListController(TestController):
 
         
         task_list.destroySelf()
+
+    def test_watchers(self):
+        #log in as a member
+        app = self.getApp('member')
+
+
+    def _set_security(self, p):
+
+        task_list = TaskList(title="member list 1", text="The list", projectID=self.project.id, username='member')
+
+        policy = SimpleSecurityPolicy.selectBy(name='open')
+        for action in policy.actions:
+            TaskListPermission(task_listID=task_list.id, action = action.id, min_level = action.min_level)
+
+
+        task_list_view_url = url_for(
+                controller='tasklist', action='view', id=task_list.id)
+
+        res = app.get(task_list_view_url)
+        
+        #add self as watcher
+        res = res.click("Watch this")
+        
+        assert res.header_dict['location'] == task_list_view_url
+
+        res = res.follow()
+
+        res.mustcontain("You are watching this tasklist")
+
+        #we're back at the task list page.  Let's create a new task *via this page*
+
+        print res
+
+        form = res.forms[0]
+
+        form['title'] = 'The new tl title'
+        form['text'] = 'The new tl body'
+        res = form.submit()
+
+        #make sure the email was created
+
+        mails = list(OutgoingEmail.select())
+
+        import re
+        found = False
+        for mail in mails:
+            if re.match('Subject: .*member list 1', mail.message):
+                found = True
+                break
+
+        assert found
+            

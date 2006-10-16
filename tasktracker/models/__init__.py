@@ -17,10 +17,16 @@ __connection__ = hub
 
 import datetime
 
+class OutgoingEmail(SQLObject):
+    envelope_from_address = StringCol()
+    envelope_to_address = StringCol()
+    message = StringCol()
+    created = DateTimeCol(default=datetime.datetime.now)
+
 class Watcher(SQLObject):
     username = StringCol()
     task = ForeignKey("Task")
-    tasklist = ForeignKey("TaskList")
+    task_list = ForeignKey("TaskList")
 
 class Status(SQLObject):
     name = StringCol()
@@ -131,6 +137,9 @@ class Task(SQLObject):
     parent = ForeignKey("Task")
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
 
+    def isWatchedBy(self, username):
+        return Watcher.selectBy(username=username, task=self.id).count() > 0
+
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
             kwargs['task_listID'] = kwargs.pop('task_list').id
@@ -230,8 +239,11 @@ class TaskList(SQLObject):
     permissions = MultipleJoin("TaskListPermission")
     project = ForeignKey("Project")
     owners = MultipleJoin("TaskListOwner")
-    watchers = MultipleJoin("Watchers")
+    watchers = MultipleJoin("Watcher")
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
+
+    def isWatchedBy(self, username):
+        return Watcher.selectBy(username=username, task_list=self.id).count() > 0
 
     def topLevelTasks(self):
         from tasktracker.lib.helpers import has_permission
@@ -323,4 +335,6 @@ soClasses = [
     TaskList,
     TaskListOwner,
     Comment,
+    Watcher,
+    OutgoingEmail
     ]

@@ -1,5 +1,14 @@
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
+<span tal:condition="python: not c.tasklist.isWatchedBy(c.username)">
+<tal:nada replace="structure python:h.link_to('Watch this tasklist', url=h.url_for(action='watch', id=c.tasklist.id))"/>
+</span>
+<span tal:condition="python: c.tasklist.isWatchedBy(c.username)">
+You are watching this tasklist.  
+<tal:nada replace="structure python:h.link_to('Stop watching this tasklist', url=h.url_for(action='stopwatch', id=c.tasklist.id))"/>
+</span>
+|
+
 <tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
   <a id="reorder_button" href="javascript:modeSwitch();">
     <span id="modeName">Reorder</span>

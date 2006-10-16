@@ -31,7 +31,29 @@ class TaskController(BaseController):
     @attrs(action='change_status')
     @catches_errors
     def change_status(self, id):
-        c.task = self.getTask(int(id))
+        c.task = self._getTask(int(id))
+        c.task.status = self.form_result['status']
+        return render_text("ok")
+
+    @attrs(action='open')
+    def watch(self, id):
+        c.task = self._getTask(int(id))
+        if not c.task.isWatchedBy(c.username):
+            Watcher(username=c.username, taskID=c.task.id, task_listID=0)
+        return Response.redirect_to(action='view',controller='task', id=c.task.id)
+
+    @attrs(action='open')
+    def stopwatch(self, id):
+        c.task = self._getTask(int(id))
+        Watcher.selectBy(username=c.username, task=int(id))[0].destroySelf()
+        return Response.redirect_to(action='view',controller='task', id=c.task.id)
+
+
+    @validate(schema=StatusChangeForm(), form='show_update')
+    @attrs(action='change_status')
+    @catches_errors
+    def change_status(self, id):
+        c.task = self._getTask(int(id))
         c.task.status = self.form_result['status']
         return render_text("ok")
 
@@ -44,9 +66,9 @@ class TaskController(BaseController):
         
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
-    @attrs(action='update', watchdog=TaskMoveWatcher)
+    @attrs(action='update', watchdog=TaskMoveWatchdog)
     def move(self, id):
-        task = self.getTask(int(id))
+        task = self._getTask(int(id))
         if request.params.has_key ('new_parent'):
             new_parent_id = int(request.params['new_parent'])
             assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
@@ -83,7 +105,7 @@ class TaskController(BaseController):
             c.parentID = 0
         return render_response('zpt', 'task.show_create')
 
-    @attrs(action='create', watchdog=TaskCreateWatcher)
+    @attrs(action='create', watchdog=TaskCreateWatchdog)
     @validate(schema=CreateTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
@@ -96,21 +118,19 @@ class TaskController(BaseController):
             p['text'] = p['text'].replace('\n', "<br>")
         c.task = Task(**p)
 
-        print "in create:", c.task
-
         return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors
     def claim(self, id):
-        c.task = self.getTask(id)
+        c.task = self._getTask(id)
         c.task.owner = c.username
         return redirect_to(action='view',controller='task', id=id)
 
     @attrs(action='assign')
     @catches_errors
     def assign(self, id):
-        c.task = self.getTask(id)
+        c.task = self._getTask(id)
         c.task.owner = c.username
         return redirect_to(action='view',controller='task', id=id)
 
@@ -125,7 +145,7 @@ class TaskController(BaseController):
     @attrs(action='update')
     @catches_errors
     def show_update(self, id):
-        c.oldtask = self.getTask(int(id))        
+        c.oldtask = self._getTask(int(id))        
         c.owner = c.oldtask.owner.title
         return render_response('zpt', 'task.show_update')
 
@@ -133,7 +153,7 @@ class TaskController(BaseController):
     @validate(schema=CreateTaskForm(), form='show_update')
     def update(self, id):
 
-        c.task = self.getTask(int(id))
+        c.task = self._getTask(int(id))
         p = self._clean_params(self.form_result)
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
             del p['owner']
@@ -156,7 +176,7 @@ class TaskController(BaseController):
 
         return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
 
-    def getTask(self, id):
+    def _getTask(self, id):
         try:
             return Task.get(int(id))
         except LookupError:
@@ -165,7 +185,7 @@ class TaskController(BaseController):
     @attrs(action='view')
     @catches_errors
     def view(self, id):
-        c.task = self.getTask(int(id))
+        c.task = self._getTask(int(id))
         c.parentID = int(id)
         c.tasklist = c.task.task_list
         c.depth = c.task.depth() + 1
@@ -174,7 +194,7 @@ class TaskController(BaseController):
     @attrs(action='update')
     @catches_errors
     def destroy(self, id):
-        c.task = self.getTask(int(id))
+        c.task = self._getTask(int(id))
         c.task.live = False
         return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
 

@@ -12,6 +12,8 @@ from tasktracker.controllers import *
 from tasktracker.lib.watchers import *
 import tasktracker.lib.helpers as h
 
+from threading import local
+
 #remove this bit when paste includes non-exception redirect_to
 from paste.wsgiwrappers import WSGIResponse
 from routes import url_for
@@ -90,17 +92,19 @@ class BaseController(WSGIController):
 
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
+        self.watchdog = local()
+
         if dog:
-            self.dog = dog()
-            self.dog.before(params)
-            self.action = action
+            self.watchdog.dog = dog()
+            self.watchdog.dog.before(params)
+            self.watchdog.action = action
         else:
-            self.dog = None
+            self.watchdog.dog = None
 
     def __after__(self, action, **params):
-        if self.dog:
-            if self.action == request.environ['pylons.routes_dict']['action']:
-                self.dog.after(params)
+        if self.watchdog.dog:
+            if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
+                self.watchdog.dog.after(params)
 
     @classmethod
     def _has_permission(cls, controller, action_name, params):        
@@ -191,6 +195,8 @@ class BaseController(WSGIController):
 
         username = environ['topp.username']
         c.username = username
+
+        c.usermapper = environ['topp.usermapper']
 
         func = getattr(self, action)
         if not getattr(func, 'action', None):
