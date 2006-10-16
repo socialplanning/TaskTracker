@@ -47,10 +47,10 @@ def setup_config(command, filename, section, vars):
                 description="Anyone at all", level=100)
     auth = Role(name="Authenticated",
                 description="Any logged-in OpenPlans user", level=60)
-    to = Role(name="TaskOwner",
-              description="The person who owns the task", level=50)
     pm = Role(name="ProjectMember",
-              description="Any project member", level=40)
+              description="Any project member", level=50)
+    to = Role(name="TaskOwner",
+              description="The person who owns the task", level=40)
     lo = Role(name="ListOwner",
               description="Any person who owns the list", level=30)
     pa = Role(name="ProjectAdmin",

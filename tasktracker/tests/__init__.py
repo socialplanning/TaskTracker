@@ -75,7 +75,7 @@ class TestController(TestCase):
 
         form = res.forms[0]
 
-        form['create_list_permission'] = 40
+        form['create_list_permission'] = 50
 
         form['statuses'] = "not done,done,"
 
