@@ -8,7 +8,7 @@ function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
-    var root = (taskitem.childNodes[1].getAttribute('depth') == 0) ? 'root-task' : 'sub-task';
+    var root = (parseInt(taskitem.childNodes[1].getAttribute('depth')) === 0) ? 'root-task' : 'sub-task';
     tasktext.setAttribute('class', completed + ' ' + root);
 }
 
@@ -18,7 +18,7 @@ function doneChangingStatus(req) {
     status.setAttribute('originalvalue', status.selectedIndex);
     status.disabled = false;
     status.style.color = "black"; 
-    node = document.getElementById('label_' + task_id);
+    var node = $('label_' + task_id);
     var newstatus = $('status_' + task_id).getValue(status.selectedIndex);
     node.innerHTML = newstatus;
     $('task_' + task_id).setAttribute('status', newstatus);
@@ -77,7 +77,7 @@ function resetChildDepths(elem) {
 		    var title = child.childNodes[1];
 		    
 		    title.setAttribute('depth', new_depth);
-		    left = new_depth * 15;
+		    var left = new_depth * 15;
 		    title.style.paddingLeft = left + 'px'; 
 		    resetChildDepths(child);
 		}
@@ -130,9 +130,11 @@ function insertTaskAfterSibling(task_id, sibling_id) {
     $A(items).each(function(item) {
 	    if (item == child) {
 		item.setAttribute('sort_index', new_index + 1);
-	    } else if (sort_index > new_index) {
+	    } else {
 		var sort_index = parseInt(item.getAttribute('sort_index'));
-		item.setAttribute('sort_index', sort_index + 1);
+		if (sort_index > new_index) {
+		    item.setAttribute('sort_index', sort_index + 1);
+		}
 	    }
 	});
 
@@ -210,13 +212,13 @@ function doDrop(child, drop_target) {
   var old_parent_id = child.parentNode.parentNode.getAttribute('task_id');
 
   if (drop_target.id.match(/^title_/)) {   // drop under a parent node
-      var id = parseInt(drop_target.id.replace(/^title_/, ''));
+      id = parseInt(drop_target.id.replace(/^title_/, ''));
       var new_parent = $('task_' + id);
       new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
 		  parameters:'new_parent=' + id,
 		  onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}), onFailure:debugThing});
   } else {   // drop after a sibling node
-      var id = parseInt(drop_target.id.replace(/^handle_/, ''));
+      id = parseInt(drop_target.id.replace(/^handle_/, ''));
       var new_sibling = $('task_' + id);
 
       new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
@@ -228,7 +230,7 @@ function doDrop(child, drop_target) {
 function sortULBy(ul, column) {
     items = $A(ul.childNodes);
     items = items.findAll(function(x) {
-	    return x.tagName == "LI"
+	    return x.tagName == "LI";
 	});
 
     items = items.sort(function (x, y) {
@@ -295,7 +297,7 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column) {
-    sortULBy($('tasks'), column)
+    sortULBy($('tasks'), column);
 }
 
 var initialized = false;
@@ -319,7 +321,7 @@ function modeSwitch() {
 	  var id = node.getAttribute('task_id');
 	  drag = new Draggable(node.id, {
 	      handle : 'handle_' + id, 
-	      revert : true,
+	      revert : true
 		      //ghosting : true
           });
 	
