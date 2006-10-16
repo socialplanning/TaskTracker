@@ -100,7 +100,7 @@ class TasklistController(BaseController):
 
         self._set_security(p)
 
-        return redirect_to(action='view',id=c.tasklist.id)
+        return Response.redirect_to(action='view',id=c.tasklist.id)
 
     @attrs(action='update')
     @catches_errors
@@ -140,7 +140,7 @@ class TasklistController(BaseController):
                 if not owner in c.tasklist.owners:
                     TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
 
-        return redirect_to(action='index')
+        return Response.redirect_to(action='index')
 
     def _getTaskList(self, id):
         try:
@@ -154,7 +154,7 @@ class TasklistController(BaseController):
         c.tasklist = self.getTaskList(int(id))
         c.tasklist.live = False
         c.flash = "Deleted."
-        return redirect_to(action='index')
+        return Response.redirect_to(action='index')
     
     @attrs(action='private')
     def private(self):

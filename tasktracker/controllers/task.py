@@ -122,22 +122,22 @@ class TaskController(BaseController):
     def claim(self, id):
         c.task = self._getTask(id)
         c.task.owner = c.username
-        return redirect_to(action='view',controller='task', id=id)
+        return Response.redirect_to(action='view',controller='task', id=id)
 
     @attrs(action='assign')
     @catches_errors
     def assign(self, id):
         c.task = self._getTask(id)
         c.task.owner = c.username
-        return redirect_to(action='view',controller='task', id=id)
+        return Response.redirect_to(action='view',controller='task', id=id)
 
-    @attrs(action='comment')
+    @attrs(action='comment', watchdog=TaskCommentWatchdog)
     @catches_errors
     def comment(self, id):
         c.task = Task.get(int(id))
-        comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
+        c.comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
 
-        return redirect_to(action='view',id=c.task.id)
+        return Response.redirect_to(action='view',id=c.task.id)
 
     @attrs(action='update')
     @catches_errors
@@ -171,7 +171,7 @@ class TaskController(BaseController):
 
         c.task.set(**p)
 
-        return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
+        return Response.redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
 
     def _getTask(self, id):
         try:
@@ -193,5 +193,5 @@ class TaskController(BaseController):
     def destroy(self, id):
         c.task = self._getTask(int(id))
         c.task.live = False
-        return redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
+        return Response.redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
 

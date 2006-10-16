@@ -48,3 +48,20 @@ Title: %s
 
         for watcher in c.task.task_list.watchers:
             self.sendMail(watcher.username, message)
+
+class TaskCommentWatchdog(Watchdog):
+    def after(self, params):
+
+        message = """
+Subject: %s: New comment on %s
+
+%s commented on the task entitled '%s':
+%s
+
+        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text)
+
+        for watcher in c.task.watchers:
+            self.sendMail(watcher.username, message)
+
+        for watcher in c.task.task_list.watchers:
+            self.sendMail(watcher.username, message)
