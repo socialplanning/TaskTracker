@@ -67,3 +67,19 @@ To reply, go to %s
 
         for watcher in c.task.task_list.watchers:
             self.sendMail(watcher.username, message)
+
+class TaskUpdateWatchdog(TaskWatchdog):
+    def after(self, params):
+        message = """
+Subject: %s: Task %s changed
+
+The task named %s has been altered. 
+
+To view the changes, go to %s
+        """ % (c.project, c.task.title, c.task.title, url_for(action="view", controller="task", id=c.task.id, qualified=True))
+
+        for watcher in c.task.watchers:
+            self.sendMail(watcher.username, message)
+
+        for watcher in c.task.task_list.watchers:
+            self.sendMail(watcher.username, message)

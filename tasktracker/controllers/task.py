@@ -146,7 +146,7 @@ class TaskController(BaseController):
         c.owner = c.oldtask.owner.title
         return render_response('zpt', 'task.show_update')
 
-    @attrs(action='update')
+    @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @validate(schema=CreateTaskForm(), form='show_update')
     def update(self, id):
 
