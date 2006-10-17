@@ -38,7 +38,6 @@ class TasklistController(BaseController):
         c.tasklists = self._getVisibleTaskLists(c.username)
         return render_response('zpt', 'tasklist.index')
 
-
     @attrs(action='open')
     def watch(self, id):
         c.task_list = self._getTaskList(int(id))
@@ -160,3 +159,10 @@ class TasklistController(BaseController):
     def private(self):
         """This is a dummy method to deal with private tasks."""
         pass
+
+    @attrs(action='open')
+    @catches_errors
+    def create_tasks(self, id):
+        c.task_listID = id
+        return render_response('zpt', 'tasklist.create_tasks')
+

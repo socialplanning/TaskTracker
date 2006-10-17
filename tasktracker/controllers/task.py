@@ -2,6 +2,7 @@ from tasktracker.lib.base import *
 from tasktracker.models import *
 
 from tasktracker.lib import helpers as h
+from tasktracker.lib.taskparser import *
 import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
@@ -36,7 +37,7 @@ class TaskController(BaseController):
         return render_text("ok")
 
     @attrs(action='open')
-    def watch(self, id):
+    def watch(self, id):        
         c.task = self._getTask(int(id))
         if not c.task.isWatchedBy(c.username):
             Watcher(username=c.username, taskID=c.task.id, task_listID=0)
@@ -106,6 +107,9 @@ class TaskController(BaseController):
     @validate(schema=CreateTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
+        return self._create_task(**p)
+
+    def _create_task(self, **p):
         if not (c.level <= Role.getLevel('ProjectAdmin') or
                 TaskList.get(p['task_listID']).isOwnedBy(c.username)):
             p['private'] = False
@@ -114,6 +118,10 @@ class TaskController(BaseController):
         if p.has_key('text'):
             p['text'] = p['text'].replace('\n', "<br>")
         c.task = Task(**p)
+
+        # some ugly error checking
+        assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
+        assert int(p['parentID']) == 0 or Task.get(p['parentID']).id == int(p['parentID'])
 
         return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
 
@@ -195,3 +203,11 @@ class TaskController(BaseController):
         c.task.live = False
         return Response.redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
 
+    @attrs(action='create')
+    def create_batch(self):
+        batch = request.params['tasks']
+        tasks = TaskParser.parse(batch)
+        
+        for task in tasks:
+            self._create_task(task_listID=request.params['task_listID'], parentID=0, private=False, text='', **task)
+        return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
