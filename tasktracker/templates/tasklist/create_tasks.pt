@@ -1,0 +1,7 @@
+Create a bunch of tasks by entering them in this text field.
+
+<form tal:attributes="action python:h.url_for(controller='task', action='create_batch', task_listID=c.task_listID)" method="post">
+<span tal:replace="structure python: h.text_area('tasks', rows=10, cols=80)" />
+
+<input type="submit" name="create" value="create" />
+</form>
