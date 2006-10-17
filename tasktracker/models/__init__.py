@@ -5,7 +5,7 @@
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
-
+from pylons import c
 
 hub = PackageHub("tasktracker")
 __connection__ = hub
@@ -17,16 +17,69 @@ __connection__ = hub
 
 import datetime
 
+def create_version(klass, obj):
+    args = {}
+    columns = klass.sqlmeta.columns
+    for column in columns.keys():
+        if column not in ["version", "id", "origID"]:
+            args[column] = getattr(obj, column)
+
+    args['version'] = obj.updated
+    args['orig'] = obj.id
+
+    return klass(**args)
+
 class OutgoingEmail(SQLObject):
     envelope_from_address = StringCol()
     envelope_to_address = StringCol()
     message = StringCol()
     created = DateTimeCol(default=datetime.datetime.now)
 
+class Notification(SQLObject):
+    username = StringCol()
+    task = ForeignKey("Task")
+    task_list = ForeignKey("TaskList")
+    created = DateTimeCol(default=datetime.datetime.now)
+    notified = BoolCol(default=False)
+    importance = IntCol()
+    regardingTaskVersion = ForeignKey("TaskVersion")
+    regardingTaskListVersion = ForeignKey("TaskListVersion")
+
+class TaskVersion(SQLObject):
+
+    orig = ForeignKey("Task")
+
+    version = DateTimeCol(default=datetime.datetime.now)
+
+    updated = DateTimeCol()
+    updated_by = StringCol()
+    deadline = DateTimeCol()
+    title = StringCol()
+    text = StringCol()
+    live = BoolCol(default=True)    
+    status = StringCol()
+    task_list = ForeignKey("TaskList")
+    private = BoolCol()
+    owner = StringCol()
+    sort_index = IntCol()
+
+class TaskListVersion(SQLObject):
+    orig = ForeignKey("TaskList")
+
+    version = DateTimeCol(default=datetime.datetime.now)
+
+    updated = DateTimeCol()
+    updated_by = StringCol()
+    title = StringCol()
+    live = BoolCol()
+    text = StringCol()
+    sort_index = IntCol()
+
 class Watcher(SQLObject):
     username = StringCol()
     task = ForeignKey("Task")
     task_list = ForeignKey("TaskList")
+    interest_level = IntCol()
 
 class Status(SQLObject):
     name = StringCol()
@@ -119,23 +172,26 @@ class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
+
+
+    children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
+    comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
     creator = StringCol(default="")
     deadline = DateTimeCol(default=None)
-    title = StringCol()
-    text = StringCol()
     live = BoolCol(default=True)    
-    status = StringCol()
-
-    comments = MultipleJoin("Comment")
-    task_list = ForeignKey("TaskList")
-    private = BoolCol(default=False)
     owner = StringCol(default="")
-    watchers = MultipleJoin("Watcher")
-    sort_index = IntCol()
-
     parent = ForeignKey("Task")
-    children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
+    private = BoolCol(default=False)
+    sort_index = IntCol()
+    status = StringCol()
+    task_list = ForeignKey("TaskList")
+    text = StringCol()
+    title = StringCol()
+    updated = DateTimeCol(default=datetime.datetime.now)
+    updated_by = StringCol()
+    versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
+    watchers = MultipleJoin("Watcher")
 
     def isWatchedBy(self, username):
         return Watcher.selectBy(username=username, task=self.id).count() > 0
@@ -149,11 +205,18 @@ class Task(SQLObject):
             assert len(project.statuses)
             kwargs['status'] = project.statuses[0].name
 
+        kwargs['updated_by'] = c.username
         kwargs['sort_index'] = _task_sort_index()
         kwargs.setdefault('parentID', 0)
         kwargs['live'] = True
         SQLObject._create(self, id, **kwargs)
 
+    def set(self, **kwargs):
+        kwargs['updated_by'] = c.username
+        kwargs['updated'] = datetime.datetime.now()
+        if getattr(self, 'id', None):
+            create_version(TaskVersion, self)
+        SQLObject.set(self, **kwargs)
 
     def _set_live(self, value):
         if getattr(self, 'id', None):
@@ -203,10 +266,10 @@ class Task(SQLObject):
 
     def depth(self):
         depth = 0
-        p_id = self.parentID
+        p_id = int(self.parentID)
         while p_id:
             depth += 1
-            p_id = Task.get(p_id).parentID
+            p_id = int(Task.get(p_id).parentID)
         return depth
 
 class Comment(SQLObject):
@@ -230,17 +293,20 @@ class TaskList(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
-    created = DateTimeCol(default=datetime.datetime.now)
-    title = StringCol()
     live = BoolCol(default=True)
-    text = StringCol()
-    sort_index = IntCol(default=_task_list_sort_index)
-    tasks = MultipleJoin("Task")
+    owners = MultipleJoin("TaskListOwner")
     permissions = MultipleJoin("TaskListPermission")
     project = ForeignKey("Project")
-    owners = MultipleJoin("TaskListOwner")
-    watchers = MultipleJoin("Watcher")
     security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
+    sort_index = IntCol(default=_task_list_sort_index)
+    tasks = MultipleJoin("Task")
+    text = StringCol()
+    title = StringCol()
+    updated = DateTimeCol(default=datetime.datetime.now)
+    updated_by = StringCol()
+    versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
+    watchers = MultipleJoin("Watcher")
+    created = DateTimeCol(default=datetime.datetime.now)
 
     def isWatchedBy(self, username):
         return Watcher.selectBy(username=username, task_list=self.id).count() > 0
@@ -256,8 +322,12 @@ class TaskList(SQLObject):
     def completedTasks(self):
         return list(Task.selectBy(status='done', task_listID=self.id, live=True))
 
-    def set(self, init=False, **kwargs):
-        if init:
+    def set(self, **kwargs):
+        kwargs['updated_by'] = c.username
+        kwargs['updated'] = datetime.datetime.now()
+        if getattr(self, 'id', None):
+            create_version(TaskListVersion, self)
+        else:
             SQLObject.set(self, **kwargs)
             return
 
@@ -309,11 +379,11 @@ class TaskList(SQLObject):
     def _create(self, id, **kwargs):
         username = kwargs.pop('username')
         params = self._clean_params(kwargs)
-
+        params['updated_by'] = c.username
         conn = hub.getConnection()
         trans = conn.transaction()
 
-        SQLObject._create(self, id, init=True, **params)
+        SQLObject._create(self, id, **params)
 
         self._setup_actions(kwargs)
 
@@ -325,17 +395,20 @@ class TaskList(SQLObject):
         return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
 
 soClasses = [
-    Status,
-    Role,
-    Project,
     Action,
-    SimpleSecurityPolicy,
+    Comment,
+    Notification,
+    OutgoingEmail,
+    Project,
+    Role,
     SecurityPolicyAction,
-    TaskListPermission,
+    SimpleSecurityPolicy,
+    Status,
     Task,
     TaskList,
     TaskListOwner,
-    Comment,
+    TaskListPermission,
+    TaskListVersion,
+    TaskVersion,
     Watcher,
-    OutgoingEmail
     ]

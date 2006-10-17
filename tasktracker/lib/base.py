@@ -90,6 +90,8 @@ class BaseController(WSGIController):
             redirect_to(controller='project', action='show_not_permitted')
             #raise SecurityException("IMPROPER AUTHENTICATION")
 
+        params['username'] = c.username
+
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
         self.watchdog = local()

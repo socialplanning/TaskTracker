@@ -22,6 +22,13 @@ from routes import request_config, url_for
 
 from tasktracker.models import *
 
+from threading import *
+
+from pylons import c
+from pylons.util import AttribSafeContextObj
+d = AttribSafeContextObj()
+c._push_object(d)
+
 
 class TestController(TestCase):
     def __init__(self, *args):

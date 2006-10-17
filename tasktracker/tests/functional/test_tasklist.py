@@ -144,8 +144,6 @@ class TestTaskListController(TestController):
 
         #we're back at the task list page.  Let's create a new task *via this page*
 
-        print res
-
         form = res.forms[0]
 
         form['title'] = 'The new tl title'

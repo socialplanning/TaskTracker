@@ -24,7 +24,7 @@ class TestImport(TestController):
             data = f.read()
             f.close()
             tasks = TaskParser.parse(data)
-            print tasks
+
             assert len(tasks) == len(expected_tasks)
             for i in range(len(tasks)):
                 assert tasks[i].title == expected_tasks[i].title

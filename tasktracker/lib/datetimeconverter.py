@@ -52,7 +52,7 @@ class DateTimeConverter(FancyValidator):
     def _to_python(self, value, state):
         """ parse a string and return a datetime object. """
 
-        if (not self.not_empty) and value and not (value['date']) and not(value['time']):
+        if (not self.not_empty) and value and not (value.get('date', None)) and not(value.get('time',None)):
             return ''
 
         if value and isinstance(value, datetime.datetime):
