@@ -1,3 +1,7 @@
+function toggle(obj) {
+    obj.style.display = (obj.style.display != 'none' ? 'none' : '');
+}
+
 function changeStatus(url, task_id) {
     var status = $('status_' + task_id);
     status.disabled = true;
@@ -264,7 +268,7 @@ function toggleCollapse(task_id) {
     $A($('task_' + task_id).childNodes).each(function(node) {	    
 	    if (node.className) {
 		if (node.className.match('^task_list')) {
-		    node.toggle();
+		    toggle(node);
 		}
 	    }
 	});
@@ -307,10 +311,10 @@ function modeSwitch() {
     $A($('tasks').getElementsByTagName('span')).each(function(node) {
 	    if (node.id.match('^(label)')) {
 		var id = node.id.split('_')[1];
-		node.toggle();
+		toggle(node);
 	    }
 	    else if (node.id.match('^status-form')) {
-		node.toggle();
+		toggle(node);
 	    }
 	});
 
