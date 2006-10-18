@@ -51,17 +51,18 @@ class TaskVersion(SQLObject):
 
     version = DateTimeCol(default=datetime.datetime.now)
 
-    updated = DateTimeCol()
-    updated_by = StringCol()
     deadline = DateTimeCol()
-    title = StringCol()
-    text = StringCol()
     live = BoolCol(default=True)    
+    owner = StringCol()
+    priority = StringCol(default="None")
+    private = BoolCol()
+    sort_index = IntCol()
     status = StringCol()
     task_list = ForeignKey("TaskList")
-    private = BoolCol()
-    owner = StringCol()
-    sort_index = IntCol()
+    text = StringCol()
+    title = StringCol()
+    updated = DateTimeCol()
+    updated_by = StringCol()
 
 class TaskListVersion(SQLObject):
     orig = ForeignKey("TaskList")
@@ -182,6 +183,7 @@ class Task(SQLObject):
     live = BoolCol(default=True)    
     owner = StringCol(default="")
     parent = ForeignKey("Task")
+    priority = StringCol(default="None")
     private = BoolCol(default=False)
     sort_index = IntCol()
     status = StringCol()

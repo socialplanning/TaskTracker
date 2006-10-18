@@ -62,10 +62,10 @@ def taskDropDown(id, task_list, username, level):
 
 from tasktracker.lib.base import c
 
-def get_value(object_name, field_name):
+def get_value(object_name, field_name, default=None):
     key = None
     if '.' in field_name:
-        field_name, key = field_name.split('.')
+        field_name, key = field_name.split('.') # TODO only works for one level deep
 
     obj = getattr(c, object_name, None)
     if obj:
@@ -74,7 +74,7 @@ def get_value(object_name, field_name):
         else:
             return getattr(obj, field_name, None)
     else:
-        return None
+        return default
 
 
 def text_field_r(object_name, field_name, **kwargs):
@@ -113,3 +113,14 @@ def has_permission(controller=None, action=None, **params):
         params.setdefault('id', c.id)
 
     return controller._has_permission(controller_name, action_name, params)
+
+def priority_as_int(priority):
+    if priority == 'High':
+        return 1
+    if priority == 'Medium':
+        return 2
+    if priority == 'Low':
+        return 3
+    if priority == 'None':
+        return 9999;
+    raise ValueError("priority must be one of 'High', 'Medium', 'Low', or 'None'")

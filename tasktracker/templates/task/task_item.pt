@@ -1,6 +1,6 @@
 <metal:macro metal:define-macro="view_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem">
 
@@ -43,6 +43,10 @@ tal:attributes="id string:status-form_${atask/id};"/>
 <!-- deadline -->
 
 <span class="deadline-column" tal:content="python: h.readableDate(atask.deadline)" />
+
+<!-- priority -->
+
+<span class="priority-column" tal:content="atask/priority" />
 
 <!-- owner -->
 

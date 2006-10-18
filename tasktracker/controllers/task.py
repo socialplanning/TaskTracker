@@ -21,7 +21,7 @@ class StatusChangeForm(formencode.Schema):
 class TaskController(BaseController):
 
     def _clean_params(self, params):
-        allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "owner", "private")
+        allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "owner", "private", "priority")
         clean = {}
         for param in allowed_params:
             if params.has_key(param):
