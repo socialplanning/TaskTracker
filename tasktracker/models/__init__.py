@@ -290,6 +290,10 @@ def _task_list_sort_index():
     else:
         return index + 1
 
+class User(SQLObject):
+    username = StringCol()
+    password = StringCol()
+
 class TaskList(SQLObject):
     _cacheValue = False
     class sqlmeta:
@@ -412,5 +416,6 @@ soClasses = [
     TaskListPermission,
     TaskListVersion,
     TaskVersion,
+    User,
     Watcher,
     ]
