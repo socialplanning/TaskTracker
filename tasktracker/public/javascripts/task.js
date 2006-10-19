@@ -99,20 +99,23 @@ function insertAfter(new_node, after) {
 
 var observer = Class.create();
 
-observer.prototype={
-        element: null,
-        initialize : function() {
+observer.prototype = {
+    element: null,
+    
+    initialize : function() {
+    },
 
-},
-onStart : function(event_name, handle) {
-    Droppables.remove (handle.handle);
-},
-onEnd : function(event_name, handle) {
-    Droppables.add (handle.handle.id, {
-        hoverclass : 'drop',
-        onDrop : doDrop
-    });
-}
+    onStart : function(event_name, handle) {
+        Droppables.remove (handle.handle);
+    },
+
+    onEnd : function(event_name, handle) {
+        Droppables.add (handle.handle.id, {
+            hoverclass : 'drop',
+            onDrop : doDrop
+        });
+        // TODO consume the event so it doesn't trigger a click on mouse-up
+    }
 };
 
 function debugThing() { 
@@ -221,14 +224,16 @@ function doDrop(child, drop_target) {
         var new_parent = $('task_' + id);
         new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
-            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}), onFailure:debugThing});
+            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}),
+            onFailure:debugThing});
     } else {   // drop after a sibling node
         id = parseInt(drop_target.id.replace(/^handle_/, ''));
         var new_sibling = $('task_' + id);
 
         new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
-            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}), onFailure:debugThing}); 
+            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}),
+            onFailure:debugThing}); 
     }
 }
 

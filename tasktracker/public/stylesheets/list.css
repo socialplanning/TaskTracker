@@ -18,6 +18,10 @@ td {
    background-image: url('images/folder_open.png');
 }
 
+.treewidget {
+    display: none;
+}
+
 
 /*from scriptaculous*/
 span.autocomplete {
@@ -33,7 +37,9 @@ span.autocomplete ul {
     margin:0px;
     padding:0px;
 }
-span.autocomplete ul li.selected { background-color: #ffb;}
+span.autocomplete ul li.selected {
+    background-color: #ffb;
+}
 span.autocomplete ul li {
     list-style-type:none;
     display:block;

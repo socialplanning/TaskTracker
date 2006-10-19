@@ -4,17 +4,17 @@
 
 <span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem">
 
-<img tal:attributes="src python:test(atask.liveChildren(), '/images/plus.png', '/images/blank.png'); id string:collapseButton_${atask/id}; onclick string:toggleCollapse(${atask/id});" />
+    <img class="treewidget" tal:attributes="src python:test(atask.liveChildren(), '/images/plus.png', '/images/blank.png'); id string:collapseButton_${atask/id}; " />
 
-<!-- drag handle -->
-<span>
-<img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png');" class=handle />
-</span>
+    <span tal:attributes="id string:draggable_${atask/id};">
+        <img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'); onclick string:toggleCollapse(${atask/id});" class=handle />
 
-<!-- title -->
-<a tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id); title atask/text">
-<span tal:content="atask/title" tal:attributes="class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}"/></a><span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
-
+        <!-- title -->
+        <a tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id); title atask/text">
+            <span tal:content="atask/title" tal:attributes="class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}"/>
+        </a>
+        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+    </span>
 </span>
 
 <!-- the status -->
