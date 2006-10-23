@@ -50,7 +50,9 @@ def taskListDropDown(id):
     return select('task_listID', options_for_select(tasklist, selected=id))
 
 def taskDropDown(id, task_list, username, level):
-    tasks = [("No parent task",0)] + [(task.title, task.id) for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
+    tasks = [("No parent task",0)] + \
+            [("%s%s" % ('%s%s' % (' ' * (task.depth() - 1), '\-->' * (task.depth() == True)), task.title), task.id) \
+             for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
     priv_tasks = Task.selectBy(private=True)
     if level <= Role.getLevel('ProjectAdmin'):
         priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]

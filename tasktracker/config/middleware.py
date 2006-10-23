@@ -63,7 +63,7 @@ def make_app(global_conf, **app_conf):
                  'contentmanager' : 'ProjectContentManager',
                  'admin' : 'ProjectAdmin'
                  }
-
-        app = ZWSGIFakeEnv(app, users, config.app_conf.get('test_email_address', 'foo@example.com'), config)
+        
+        app = ZWSGIFakeEnv(app, users, config.app_conf.get('test_email_address', 'foo@example.com'))
 
     return app

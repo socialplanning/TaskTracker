@@ -37,9 +37,29 @@ def setup_config(command, filename, section, vars):
     conf = appconfig('config:%s#%s' % (filename, sect), relative_to=conf_dir)
     CONFIG.push_process_config({'app_conf': conf.local_conf,
                                 'global_conf': conf.global_conf})
+
+    def makeuser(usename, password="topp"):
+        return User(username=usename, password=password.encode("base64"))
+             
+    makeuser("magicbronson")
+    makeuser("rmarianski")
+    makeuser("jhammel")
+    makeuser("cabraham")
+    makeuser("ltucker")
+    makeuser("novalis")
+    makeuser("rob")
+    makeuser("whit")
+    makeuser("ian")
+    makeuser("smk")
+    makeuser("jarasi")
+    makeuser("cholmes")
+    makeuser("bryan")
+    makeuser("vanessa")
+    
+    return   # just put this in for now because i'm deathly afraid of wiping the database
+
     for table in soClasses[::-1]:
         table.dropTable(ifExists=True)
-
     for table in soClasses:
         table.createTable(ifNotExists=True)
 

@@ -109,11 +109,12 @@ observer.prototype = {
         Droppables.remove (handle.handle);
     },
 
-    onEnd : function(event_name, handle) {
+    onEnd : function(event_name, handle, event) {
         Droppables.add (handle.handle.id, {
             hoverclass : 'drop',
             onDrop : doDrop
         });
+	delete(event);
         // TODO consume the event so it doesn't trigger a click on mouse-up
     }
 };

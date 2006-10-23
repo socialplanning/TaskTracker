@@ -19,7 +19,7 @@ class UserMapper:
         return UserFoo(username, self.address)
 
 class ZWSGIFakeEnv(object):
-    def __init__(self, app, users, test_email_address, config=None):
+    def __init__(self, app, users, test_email_address):
         self.app = app
         self.users = users
         self.test_email_address = test_email_address
@@ -44,13 +44,9 @@ class ZWSGIFakeEnv(object):
             
             environ['topp.usermapper'] = UserMapper(self.test_email_address)
             environ['topp.project'] = 'theproject'
-            if self.users.has_key(username):
-                environ['topp.username'] = username
-                environ['topp.project'] = 'theproject'
-                environ['topp.role'] = self.users[username]
-            else:
-                environ['topp.username'] = username
-                environ['topp.role'] = 'ProjectMember'
+
+            environ['topp.username'] = username
+            environ['topp.role'] = 'ProjectMember'
 
             return True
 
