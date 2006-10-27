@@ -67,7 +67,7 @@ class TestController(TestCase):
             table.createTable(ifNotExists=True)
         
         for username in ['admin', 'member', 'auth']:
-            User(username=username, password='bm9wYXNzd29yZA==')
+            User(username=username, password='nopassword'.encode("base64"))
 
         self.project = Project(title='theproject')
 

@@ -32,7 +32,7 @@ class ZWSGIFakeEnv(object):
             basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
-            password = password.encode("base64")[:-1]
+            password = password.encode("base64")
 
             try:
                 userquery = User.selectBy(username=username)[0]
