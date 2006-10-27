@@ -59,13 +59,16 @@ class TestController(TestCase):
              status='done')
 
     def setup_database(self):
-        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status]
+        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status, User]
 
         for table in nonFixedClasses[::-1]:
             table.dropTable(ifExists=True)
         for table in nonFixedClasses:
             table.createTable(ifNotExists=True)
         
+        for username in ['admin', 'member', 'auth']:
+            User(username=username, password='bm9wYXNzd29yZA==')
+
         self.project = Project(title='theproject')
 
     def setup_project(self):

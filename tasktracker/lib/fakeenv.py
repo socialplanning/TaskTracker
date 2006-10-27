@@ -32,8 +32,7 @@ class ZWSGIFakeEnv(object):
             basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
-            password = password.encode("base64")
-
+            password = password.encode("base64")[:-1]
 
             try:
                 userquery = User.selectBy(username=username)[0]
@@ -41,12 +40,18 @@ class ZWSGIFakeEnv(object):
                     return False
             except IndexError:
                 return False
-            
+
             environ['topp.usermapper'] = UserMapper(self.test_email_address)
             environ['topp.project'] = 'theproject'
 
             environ['topp.username'] = username
             environ['topp.role'] = 'ProjectMember'
+
+            #these are needed for tests
+            if username == 'admin':
+                environ['topp.role'] = 'ProjectAdmin'
+            if username == 'auth':
+                environ['topp.role'] = 'Authenticated'
 
             return True
 
