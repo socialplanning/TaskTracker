@@ -113,8 +113,7 @@ observer.prototype = {
         Droppables.add (handle.handle.id, {
             hoverclass : 'drop',
             onDrop : doDrop
-        });
-	delete(event);
+        });	
         // TODO consume the event so it doesn't trigger a click on mouse-up
     }
 };

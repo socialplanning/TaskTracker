@@ -101,6 +101,7 @@ a.sortarrow:link {
 
 .completed-task {
     text-decoration: line-through;
+    color: gray
 }
 
 .uncompleted-task {

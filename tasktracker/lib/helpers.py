@@ -46,21 +46,22 @@ def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
 
 
 def taskListDropDown(id):
-    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True)]
+    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'view', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
 def taskDropDown(id, task_list, username, level):
     tasks = [("No parent task",0)] + \
-            [("%s%s" % ('%s%s' % (' ' * (task.depth() - 1), '\-->' * (task.depth() == True)), task.title), task.id) \
-             for task in Task.selectBy(live=True, task_listID=task_list, private=False)]
-    priv_tasks = Task.selectBy(private=True)
-    if level <= Role.getLevel('ProjectAdmin'):
-        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]
-    else:
-        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True, live=True) if
-                      (task.task_list.isOwnedBy(username)
-                       or task.owner == username)]
-    return select('parentID', options_for_select(tasks + priv_tasks, selected=id))
+            [("%s%s" % ('%s%s' % (' ' * (task.depth() - 1), '\-->' * (task.depth() == True)), task.title), task.id)
+             for task in Task.selectBy(live=True, task_listID=task_list)
+             if has_permission('task', 'view', id=task_list)]
+#    priv_tasks = Task.selectBy(private=True)
+#    if level <= Role.getLevel('ProjectAdmin'):
+#        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]
+#    else:
+#        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True, live=True) if
+#                      (task.task_list.isOwnedBy(username)
+#                       or task.owner == username)]
+    return select('parentID', options_for_select(tasks, selected=id))
 
 from tasktracker.lib.base import c
 
