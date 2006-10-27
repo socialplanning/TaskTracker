@@ -24,6 +24,10 @@ class ProjectController(BaseController):
     @catches_errors
     def initialize(self, id):
         c.project = Project.get(id)
+
+        if c.project.initialized:
+            return redirect_to(controller='tasklist', action='index')
+
         try:
             c.project.create_list_permission = int(request.params['create_list_permission']) 
         except KeyError:
@@ -40,10 +44,9 @@ class ProjectController(BaseController):
     @attrs(action='initialize')
     @catches_errors
     def show_initialize(self, id):
+        c.project = Project.get(id) 
         if c.project.initialized:
-            #redirect_to(controller='tasklist', action='index')
-            pass
-        c.project = Project.get(id)
+            return redirect_to(controller='tasklist', action='index')
         c.adminLevel = Role.getLevel('ProjectAdmin')
         c.memberLevel = Role.getLevel('ProjectMember')
         c.anonymousLevel = Role.getLevel('Anonymous')
