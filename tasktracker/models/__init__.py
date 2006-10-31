@@ -277,7 +277,7 @@ class Task(SQLObject):
 
     def liveChildren(self):
         from tasktracker.lib.helpers import has_permission
-        return [c for c in self.children if c.live and has_permission('task', 'view', id=c.id)]
+        return [c for c in self.children if c.live and has_permission('task', 'show', id=c.id)]
 
     def isOwnedBy(self, username):
         return self.owner == username            
@@ -339,11 +339,11 @@ class TaskList(SQLObject):
 
     def topLevelTasks(self):
         from tasktracker.lib.helpers import has_permission
-        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if has_permission('task', 'view', id=c.id)]
+        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if has_permission('task', 'show', id=c.id)]
 
     def uncompletedTasks(self):
         from tasktracker.lib.helpers import has_permission
-        return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'view', id=c.id)]
+        return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
         return list(Task.selectBy(status='done', task_listID=self.id, live=True))

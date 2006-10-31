@@ -22,12 +22,12 @@ from tasktracker.lib.base import *
 
 class TemplateController(BaseController):
     @attrs(action='open')
-    def view(self, url):
+    def show(self, url):
         """
         This is the last place which is tried during a request to try to find a 
         file to serve. It could be used for example to display a template::
         
-            def view(self, url):
+            def show(self, url):
                 return render_response(url)
         
         Or, if you're using Myghty and would like to catch the component not
@@ -37,7 +37,7 @@ class TemplateController(BaseController):
         
             import myghty.exception
             
-            def view(self, url):
+            def show(self, url):
                 try:
                     return render_response('/'+url)
                 except myghty.exception.ComponentNotFound:

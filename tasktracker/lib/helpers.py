@@ -66,7 +66,7 @@ def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
 
 
 def taskListDropDown(id):
-    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'view', id=tasklist.id)]
+    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
 def taskDropDown(id, task_list, username, level):
@@ -74,7 +74,7 @@ def taskDropDown(id, task_list, username, level):
             [("%s%s%s" % (' ' * (task.depth() - 1), '\-->' * (task.depth() == True), task.title), task.id)
              for task in Task.selectBy(live=True, task_listID=task_list)
 
-             if has_permission('task', 'view', id=task.id)]
+             if has_permission('task', 'show', id=task.id)]
 #    priv_tasks = Task.selectBy(private=True)
 #    if level <= Role.getLevel('ProjectAdmin'):
 #        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]

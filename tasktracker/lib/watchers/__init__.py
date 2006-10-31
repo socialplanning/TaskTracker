@@ -80,7 +80,7 @@ Subject: %s: New comment on %s
 %s
 
 To reply, go to %s
-        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text, url_for(action="view", controller="task", id=c.task.id, qualified=True))
+        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text, url_for(action="show", controller="task", id=c.task.id, qualified=True))
 
         for watcher in c.task.watchers:
             self.sendMail(watcher.username, message)
@@ -95,8 +95,8 @@ Subject: %s: Task %s changed
 
 The task named %s has been altered. 
 
-To view the changes, go to %s
-        """ % (c.project, c.task.title, c.task.title, url_for(action="view", controller="task", id=c.task.id, qualified=True))
+To show the changes, go to %s
+        """ % (c.project, c.task.title, c.task.title, url_for(action="show", controller="task", id=c.task.id, qualified=True))
 
         for watcher in c.task.watchers:
             self.sendMail(watcher.username, message)

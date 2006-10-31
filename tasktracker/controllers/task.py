@@ -61,13 +61,13 @@ class TaskController(BaseController):
         c.task = self._getTask(int(id))
         if not c.task.isWatchedBy(c.username):
             Watcher(username=c.username, taskID=c.task.id, task_listID=0)
-        return Response.redirect_to(action='view',controller='task', id=c.task.id)
+        return Response.redirect_to(action='show',controller='task', id=c.task.id)
 
     @attrs(action='open')
     def stopwatch(self, id):
         c.task = self._getTask(int(id))
         Watcher.selectBy(username=c.username, task=int(id))[0].destroySelf()
-        return Response.redirect_to(action='view',controller='task', id=c.task.id)
+        return Response.redirect_to(action='show',controller='task', id=c.task.id)
 
 
     @validate(schema=StatusChangeForm(), form='show_update')
@@ -78,7 +78,7 @@ class TaskController(BaseController):
         c.task.status = self.form_result['status']
         return render_text("ok")
 
-    @attrs(action='view')
+    @attrs(action='show')
     def auto_complete_for_owner(self):
         partial = request.params['owner']
         users = list(c.users)
@@ -143,21 +143,21 @@ class TaskController(BaseController):
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).id == int(p['parentID'])
 
-        return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
+        return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors
     def claim(self, id):
         c.task = self._getTask(id)
         c.task.owner = c.username
-        return Response.redirect_to(action='view',controller='task', id=id)
+        return Response.redirect_to(action='show',controller='task', id=id)
 
     @attrs(action='assign')
     @catches_errors
     def assign(self, id):
         c.task = self._getTask(id)
         c.task.owner = c.username
-        return Response.redirect_to(action='view',controller='task', id=id)
+        return Response.redirect_to(action='show',controller='task', id=id)
 
     @attrs(action='comment', watchdog=TaskCommentWatchdog)
     @catches_errors
@@ -165,7 +165,7 @@ class TaskController(BaseController):
         c.task = Task.get(int(id))
         c.comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
 
-        return Response.redirect_to(action='view',id=c.task.id)
+        return Response.redirect_to(action='show',id=c.task.id)
 
     @attrs(action='update')
     @catches_errors
@@ -199,7 +199,7 @@ class TaskController(BaseController):
 
         c.task.set(**p)
 
-        return Response.redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
+        return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
     def _getTask(self, id):
         try:
@@ -207,21 +207,21 @@ class TaskController(BaseController):
         except LookupError:
             raise NoSuchIdError("No such task ID: %s" % id)
 
-    @attrs(action='view')
+    @attrs(action='show')
     @catches_errors
-    def view(self, id):
+    def show(self, id):
         c.task = self._getTask(int(id))
         c.parentID = int(id)
         c.tasklist = c.task.task_list
         c.depth = c.task.depth() + 1
-        return render_response('zpt', 'task.view')
+        return render_response('zpt', 'task.show')
 
     @attrs(action='update')
     @catches_errors
     def destroy(self, id):
         c.task = self._getTask(int(id))
         c.task.live = False
-        return Response.redirect_to(action='view', controller='tasklist', id=c.task.task_listID)
+        return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
     @attrs(action='create')
     def create_batch(self):
@@ -230,4 +230,4 @@ class TaskController(BaseController):
         
         for task in tasks:
             self._create_task(task_listID=request.params['task_listID'], parentID=0, private=False, text='', **task)
-        return Response.redirect_to(action='view',controller='tasklist', id=request.params['task_listID'])
+        return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])

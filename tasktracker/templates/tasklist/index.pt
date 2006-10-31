@@ -4,7 +4,7 @@
 <ul>
 <tal:for repeat="list c/tasklists">
 <li tal:condition="list/uncompletedTasks">
- <a tal:attributes="href python:h.url_for(action='view', id=list.id)">
+ <a tal:attributes="href python:h.url_for(action='show', id=list.id)">
      <span tal:replace="list/title" /> 
      </a> - <small><span tal:replace="python:len(list.uncompletedTasks())"/> uncompleted 
 
@@ -17,14 +17,13 @@
 </ul>
 </div>
 
-
 <div tal:condition="python:[x for x in c.tasklists if not x.uncompletedTasks()]">
 <b>Completed lists:</b>
 <ul>
 <tal:for repeat="list c/tasklists">
 <li tal:condition="not:list/uncompletedTasks">
 
-  <a tal:attributes="href python:h.url_for(action='view', id=list.id)">
+  <a tal:attributes="href python:h.url_for(action='show', id=list.id)">
      <span tal:replace="list/title" /> 
      </a>
 </li>

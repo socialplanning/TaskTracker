@@ -1,4 +1,4 @@
-<metal:macro metal:define-macro="view_task">
+<metal:macro metal:define-macro="show_task">
 
 <li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
@@ -10,7 +10,7 @@
         <img tal:attributes="id string:handle_${atask/id}; src python: test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'); onclick string:toggleCollapse(${atask/id});" class=handle />
 
         <!-- title -->
-        <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='view', id=atask.id); title atask/text; class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+        <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
     </span>
 </span>
 
@@ -57,7 +57,7 @@ tal:attributes="id string:status-form_${atask/id};"/>
 <ul id="xtasks" class="task_list">
 <tal:for repeat="atask atask/liveChildren">
 
-<metal:do metal:use-macro="here/task_item/macros/view_task" />
+<metal:do metal:use-macro="here/task_item/macros/show_task" />
 
 </tal:for>
 </ul>

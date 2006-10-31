@@ -34,7 +34,7 @@ class CreateListForm(formencode.Schema):
         AND(TaskList.q.live==True, 
             TaskListPermission.q.task_listID == TaskList.q.id, 
             TaskListPermission.q.actionID == Action.q.id, 
-            Action.q.action == 'tasklist_view'))
+            Action.q.action == 'tasklist_show'))
     
 #TaskListPermission.q.min_level >= level))    
 
@@ -43,7 +43,7 @@ class CreateListForm(formencode.Schema):
 class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
-        return [t for t in TaskList.select() if cls._has_permission('tasklist', 'tasklist_view', {'id':t.id, 'username':username})]
+        return [t for t in TaskList.select() if cls._has_permission('tasklist', 'tasklist_show', {'id':t.id, 'username':username})]
 
     def _clean_params(self, params):
         allowed_params = ("title", "text", "projectID")
@@ -63,18 +63,18 @@ class TasklistController(BaseController):
         c.task_list = self._getTaskList(int(id))
         if not c.task_list.isWatchedBy(c.username):
             Watcher(username=c.username, task_listID=c.task_list.id, taskID=0)
-        return Response.redirect_to(action='view',controller='tasklist', id=c.task_list.id)
+        return Response.redirect_to(action='show',controller='tasklist', id=c.task_list.id)
 
     @attrs(action='open')
     def stopwatch(self, id):
         c.task_list = self._getTaskList(int(id))
         Watcher.selectBy(username=c.username, task_list=int(id))[0].destroySelf()
-        return Response.redirect_to(action='view',controller='tasklist', id=c.task_list.id)
+        return Response.redirect_to(action='show',controller='tasklist', id=c.task_list.id)
 
 
-    @attrs(action='view')
+    @attrs(action='show')
     @catches_errors
-    def view(self, id):
+    def show(self, id):
         c.tasklist = self._getTaskList(int(id))
         c.tasks = c.tasklist.topLevelTasks()
         c.depth = 0
@@ -119,7 +119,7 @@ class TasklistController(BaseController):
 
         self._set_security(p)
 
-        return Response.redirect_to(action='view',id=c.tasklist.id)
+        return Response.redirect_to(action='show',id=c.tasklist.id)
 
     @attrs(action='update')
     @catches_errors

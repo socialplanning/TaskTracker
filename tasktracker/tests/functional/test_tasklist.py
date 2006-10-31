@@ -37,7 +37,7 @@ class TestTaskListController(TestController):
         res = form.submit()
 
         location = res.header_dict['location']
-        assert location.startswith('/tasklist/view/')
+        assert location.startswith('/tasklist/show/')
 
         id = int(location[location.rindex('/') + 1:])
 
@@ -66,17 +66,17 @@ class TestTaskListController(TestController):
 
         assert 'admin list 1' not in res
 
-        #make sure we can't view it.
+        #make sure we can't show it.
         res = app.get(url_for(
-                controller='tasklist', action='view', id=task_list.id))
+                controller='tasklist', action='show', id=task_list.id))
 
         assert 'not_permitted' in res.header_dict['location']
 
         task_list.destroySelf()
 
-    def test_member_viewable_list(self):
-        #create a new list that members can view
-        task_list = TaskList(title="member list 1", text="The list", projectID=self.project.id, username='member', action_tasklist_view=Role.selectBy(name='ProjectMember')[0].id)
+    def test_member_showable_list(self):
+        #create a new list that members can show
+        task_list = TaskList(title="member list 1", text="The list", projectID=self.project.id, username='member', action_tasklist_show=Role.selectBy(name='ProjectMember')[0].id)
 
         #log in as a member
         app = self.getApp('member')        
@@ -148,15 +148,15 @@ class TestTaskListController(TestController):
             TaskListPermission(task_listID=task_list.id, action = action.id, min_level = action.min_level)
 
 
-        task_list_view_url = url_for(
-                controller='tasklist', action='view', id=task_list.id)
+        task_list_show_url = url_for(
+                controller='tasklist', action='show', id=task_list.id)
 
-        res = app.get(task_list_view_url)
+        res = app.get(task_list_show_url)
         
         #add self as watcher
         res = res.click("Watch this")
         
-        assert res.header_dict['location'] == task_list_view_url
+        assert res.header_dict['location'] == task_list_show_url
 
         res = res.follow()
 

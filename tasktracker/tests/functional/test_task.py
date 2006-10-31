@@ -60,7 +60,7 @@ class TestTaskController(TestController):
 
         #Creating a new task should redirect you to the list of tasks.
         location = res.header_dict['location']
-        assert location.startswith('/tasklist/view/')
+        assert location.startswith('/tasklist/show/')
 
         id = int(location[location.rindex('/') + 1:])
 
@@ -113,13 +113,13 @@ class TestTaskController(TestController):
         app = self.getApp('admin')
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=tl.id))
+                controller='tasklist', action='show', id=tl.id))
 
         res.mustcontain ('top level')
         res.mustcontain ('second level')
 
         res = app.get(url_for(
-                controller='task', action='view', id=top_level_task.id))
+                controller='task', action='show', id=top_level_task.id))
 
         res.mustcontain ('top level')
         res.mustcontain ('second level')
@@ -147,7 +147,7 @@ class TestTaskController(TestController):
         app = self.getApp('auth')
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=tl.id))
+                controller='tasklist', action='show', id=tl.id))
 
         res.mustcontain('testing the auth role')
 
@@ -183,10 +183,10 @@ class TestTaskController(TestController):
     def test_comments(self):
         tl = TaskList.select()[0]
 
-        #set security such that any logged-in user can comment and view posts
+        #set security such that any logged-in user can comment and show posts
         found = False
         for perm in tl.permissions:
-            if perm.action.action == "task_comment" or perm.action.action == "task_view":
+            if perm.action.action == "task_comment" or perm.action.action == "task_show":
                 found = True
                 perm.min_level = Role.getLevel("Authenticated")
         assert found
@@ -194,11 +194,11 @@ class TestTaskController(TestController):
         #add a task assigned to 'fred'
         task1 = Task(title='Fleem', text='x', owner='fred', task_listID=tl.id)
 
-        #view the task
+        #show the task
         app = self.getApp('auth')
 
         res = app.get(url_for(
-                controller='task', action='view', id=task1.id))
+                controller='task', action='show', id=task1.id))
 
         res.mustcontain('Fleem')
         
@@ -223,7 +223,7 @@ class TestTaskController(TestController):
         app = self.getApp('admin')
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=tl.id))
+                controller='tasklist', action='show', id=tl.id))
 
         res.mustcontain('The non-private one')
         res.mustcontain('The private one')
@@ -232,14 +232,14 @@ class TestTaskController(TestController):
         app = self.getApp('member')
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=tl.id))
+                controller='tasklist', action='show', id=tl.id))
 
         res.mustcontain('The non-private one')
         assert 'The private one' not in res.body
 
         #they also can't guess urls
         res = app.get(url_for(
-                controller='task', action='view', id=priv.id))
+                controller='task', action='show', id=priv.id))
 
         location = res.header_dict['location']
         assert location.startswith('/project/show_not_permitted/')
@@ -249,7 +249,7 @@ class TestTaskController(TestController):
         priv.owner = "member"
 
         res = app.get(url_for(
-                controller='tasklist', action='view', id=tl.id))
+                controller='tasklist', action='show', id=tl.id))
 
         res.mustcontain('The non-private one')
         res.mustcontain('The private one')
@@ -274,7 +274,7 @@ class TestTaskController(TestController):
         res = form.submit()
 
         res = app.get(url_for(
-                controller='task', action='view', id=task.id))
+                controller='task', action='show', id=task.id))
         
         res.mustcontain("The updated task")
 

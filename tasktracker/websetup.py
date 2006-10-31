@@ -90,7 +90,7 @@ def setup_config(command, filename, section, vars):
     members_but_not_to = [pm, lo, pa]
     members = [pm, to, lo, pa]
 
-    setRoles(Action(action="tasklist_view", 
+    setRoles(Action(action="tasklist_show", 
                     question="Who can view the task list?"),
              everyone)
     setRoles(Action(action="tasklist_update",
@@ -100,7 +100,7 @@ def setup_config(command, filename, section, vars):
     setRoles(Action(action="task_create",
                     question="Who can create tasks in the list?"),
              everyone_but_anon)
-    setRoles(Action(action="task_view",
+    setRoles(Action(action="task_show",
                     question="Who can view public tasks in the list?"),
              everyone)
     setRoles(Action(action="task_update",
@@ -127,10 +127,10 @@ def setup_config(command, filename, section, vars):
     medium_policy = SimpleSecurityPolicy(name='medium')
     closed_policy = SimpleSecurityPolicy(name='closed')
 
-    setSecurity(open_policy, {"tasklist_view" : anon, 
+    setSecurity(open_policy, {"tasklist_show" : anon, 
                               "tasklist_update" : pm,
                               "task_create" : auth,
-                              "task_view" : anon,
+                              "task_show" : anon,
                               "task_update" : auth,
                               "task_comment" : auth,
                               "task_change_status" : anon,
@@ -141,10 +141,10 @@ def setup_config(command, filename, section, vars):
 
     
 
-    setSecurity(medium_policy, {"tasklist_view" : anon, 
+    setSecurity(medium_policy, {"tasklist_show" : anon, 
                               "tasklist_update" : pm,
                               "task_create" : pm,
-                              "task_view" : anon,
+                              "task_show" : anon,
                               "task_update" : pm,
                               "task_comment" : auth,
                               "task_change_status" : pm,
@@ -153,10 +153,10 @@ def setup_config(command, filename, section, vars):
                               "tasklist_private" : lo,
                                 })
 
-    setSecurity(closed_policy, {"tasklist_view" : pa, 
+    setSecurity(closed_policy, {"tasklist_show" : pa, 
                               "tasklist_update" : pa,
                               "task_create" : lo,
-                              "task_view" : anon,
+                              "task_show" : anon,
                               "task_update" : lo,
                               "task_comment" : lo,
                               "task_change_status" : lo,
