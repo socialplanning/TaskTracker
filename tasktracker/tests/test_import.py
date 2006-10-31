@@ -44,7 +44,7 @@ class TestImport(TestController):
 
             assert len(tasks) == len(expected_tasks)
             for i in range(len(tasks)):
-                assert tasks[i].title == expected_tasks[i]['title']
-                assert tasks[i].deadline.month == expected_tasks[i]['deadline'].month
-                assert tasks[i].deadline.day == expected_tasks[i]['deadline'].day
-                assert tasks[i].deadline.year == expected_tasks[i]['deadline'].year or expected_tasks[i]['deadline'].year == 2006
+                assert tasks[i]['title'] == expected_tasks[i]['title']
+                assert tasks[i]['deadline'].month == expected_tasks[i]['deadline'].month
+                assert tasks[i]['deadline'].day == expected_tasks[i]['deadline'].day
+                assert tasks[i]['deadline'].year == expected_tasks[i]['deadline'].year or expected_tasks[i]['deadline'].year == 2006
