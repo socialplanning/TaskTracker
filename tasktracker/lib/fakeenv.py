@@ -61,17 +61,19 @@ class ZWSGIFakeEnv(object):
             except IndexError:
                 return False
 
-            environ['topp.usermapper'] = UserMapper(self.test_email_address)
-            environ['topp.project'] = 'theproject'
+            environ['topp.project_members'] = UserMapper(self.test_email_address)
+            environ['topp.project_name'] = 'theproject'
 
-            environ['topp.username'] = username
-            environ['topp.role'] = 'ProjectMember'
+            environ['REMOTE_USER'] = username
+
+            environ['topp.user_info'] = dict(username = username, 
+                                         roles = ['ProjectMember'])
 
             #these are needed for tests
             if username == 'admin':
-                environ['topp.role'] = 'ProjectAdmin'
+                environ['topp.user_info']['roles'] = ['ProjectAdmin']
             if username == 'auth':
-                environ['topp.role'] = 'Authenticated'
+                environ['topp.user_info']['roles'] = ['Authenticated']
 
             return True
 

@@ -98,10 +98,29 @@ class NotInitializedException(Exception):
 class MissingSecurityException(Exception):
     pass
 
+def _getRole(environ):
+    if not environ.get('REMOTE_USER', None):
+        return 'Anonymous'
+    roles = environ['topp.user_info']['roles']
+    roles = dict(zip(roles, roles))
+    interestingRoles = ['Authenticated', 'ProjectMember', 'ProjectAdmin']
+    best = 'Anonymous'
+    for role in interestingRoles:
+        if roles.has_key(role):
+            best = role
+
+    return best
+
 class BaseController(WSGIController):
 
     def __before__(self, action, **params):
-        project = Project.getProject(self._req.environ['topp.project'])
+        if not self._req.environ.has_key('topp.user_info'):
+            print "ERROR: no user, but auth", self._req.environ.get("HTTP_AUTHORIZATION", None)
+
+        if not self._req.environ.get("HTTP_AUTHORIZATION", None):
+            print "Possible ERROR: no Authorization"
+
+        project = Project.getProject(self._req.environ['topp.project_name'])
         c.project = project
         c.users = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
         c.id = params.get('id')
@@ -141,6 +160,7 @@ class BaseController(WSGIController):
                 controller = 'task_list'
                 task_list = TaskList.get(params['task_listID'])
             else:
+                print params['id'], action_name, controller, params
                 task = Task.get(int(params['id'])) 
                 task_list = TaskList.get(task.task_listID)
         else:
@@ -210,15 +230,15 @@ class BaseController(WSGIController):
 
         environ = self._req.environ
 
-        role = Role.selectBy(name=environ['topp.role'])
+        role = Role.selectBy(name=_getRole(environ))
         if not role.count():
             raise Exception("No such role %s" % environ['topp.role'])
         c.level = role[0].level
 
-        username = environ['topp.username']
+        username = environ.get('REMOTE_USER', 'anonymous')
         c.username = username
 
-        c.usermapper = environ['topp.usermapper']
+        c.usermapper = environ['topp.project_members']
 
         func = getattr(self, action)
         if not getattr(func, 'action', None):
