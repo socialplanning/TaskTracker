@@ -64,12 +64,19 @@ def setup_config(command, filename, section, vars):
     for table in soClasses:
         table.createTable(ifNotExists=True)
 
-    def makeuser(usename, password="topp"):
+    #in any event, we want to delete all the old actions, roles, policies, etc
+
+    conn = hub.getConnection()
+    for table in [Role, Action, SimpleSecurityPolicy, SecurityPolicyAction]:
+        delquery = conn.sqlrepr(Delete(table.q, where=None))
+        conn.query(delquery)
+
+    def make_user(usename, password="topp"):
         return User(username=usename, password=password.encode("base64"))
 
     for user in """magicbronson rmarianski jhammel cabraham ltucker novais
                  rob whit ian smk jarasi cholmes bryan vanessa""".split():
-        makeuser(user)
+        make_user(user)
 
     anon = Role(name="Anonymous",
                 description="Anyone at all", level=100)
