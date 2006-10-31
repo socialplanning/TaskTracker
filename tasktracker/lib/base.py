@@ -115,10 +115,7 @@ class BaseController(WSGIController):
 
     def __before__(self, action, **params):
         if not self._req.environ.has_key('topp.user_info'):
-            print "ERROR: no user, but auth", self._req.environ.get("HTTP_AUTHORIZATION", None)
-
-        if not self._req.environ.get("HTTP_AUTHORIZATION", None):
-            print "Possible ERROR: no Authorization"
+            print "NO USER: ", self._req.environ['PATH_INFO']
 
         project = Project.getProject(self._req.environ['topp.project_name'])
         c.project = project
@@ -229,9 +226,10 @@ class BaseController(WSGIController):
 
         environ = self._req.environ
 
-        role = Role.selectBy(name=_getRole(environ))
+        role_name = _getRole(environ)
+        role = Role.selectBy(name=role_name)
         if not role.count():
-            raise Exception("No such role %s" % environ['topp.role'])
+            raise Exception("No such role %s" % role_name)
         c.level = role[0].level
 
         username = environ.get('REMOTE_USER', 'anonymous')
