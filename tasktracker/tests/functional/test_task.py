@@ -110,8 +110,6 @@ class TestTaskController(TestController):
         top_level_task = Task(title='top level', task_listID = tl.id, text = '')
         sub_task = Task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
 
-        print tl
-
         app = self.getApp('admin')
 
         res = app.get(url_for(

@@ -160,7 +160,6 @@ class BaseController(WSGIController):
                 controller = 'task_list'
                 task_list = TaskList.get(params['task_listID'])
             else:
-                print params['id'], action_name, controller, params
                 task = Task.get(int(params['id'])) 
                 task_list = TaskList.get(task.task_listID)
         else:
