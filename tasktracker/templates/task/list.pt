@@ -39,7 +39,7 @@ Task name
 </span>
 
 <!-- the garbage bin -->
-<img id="trash" src="/images/trash.png" />
+<span tal:replace="structure python: h.image_tag('/images/trash.png', id='trash')" />
 
 <!-- the create setup -->
 
