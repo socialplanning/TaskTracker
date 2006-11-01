@@ -74,7 +74,7 @@ def setup_config(command, filename, section, vars):
     def make_user(usename, password="topp"):
         return User(username=usename, password=password.encode("base64"))
 
-    for user in """magicbronson rmarianski jhammel cabraham ltucker novais
+    for user in """admin magicbronson rmarianski jhammel cabraham ltucker novais
                  rob whit ian smk jarasi cholmes bryan vanessa""".split():
         make_user(user)
 
