@@ -67,7 +67,8 @@ class ZWSGIFakeEnv(object):
             environ['REMOTE_USER'] = username
 
             environ['topp.user_info'] = dict(username = username, 
-                                         roles = ['ProjectMember'])
+                                             roles = ['ProjectMember'],
+                                             email = '%s@example.com' % username)
 
             #these are needed for tests
             if username == 'admin':

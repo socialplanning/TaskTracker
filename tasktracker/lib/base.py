@@ -156,6 +156,9 @@ class BaseController(WSGIController):
             else:
                 task = Task.get(int(params['id'])) 
                 task_list = TaskList.get(task.task_listID)
+        elif controller == 'watcher':
+            watcher = Watcher.get(params['id'])
+            return watcher.username == c.username                
         else:
             task_list = "I AM BROKEN"
             print "unknown controller %s" % controller

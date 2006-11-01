@@ -184,7 +184,7 @@ class TestTaskListController(TestController):
         assert found
             
 
-    def test_task_watch(self):
+    def test_tasklist_watch(self):
         """Tests adding self as a watcher for a task list"""
         tl = TaskList(title="list", text="The list", projectID=self.project.id, username='member')
 

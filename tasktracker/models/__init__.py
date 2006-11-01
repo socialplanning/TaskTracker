@@ -102,6 +102,12 @@ class Watcher(SQLObject):
     task_list = ForeignKey("TaskList")
     interest_level = IntCol()
 
+    def target(self):
+        if self.taskID:
+            return self.task
+        else:
+            return self.task_list
+
 class Status(SQLObject):
     name = StringCol()
     project = ForeignKey("Project")
@@ -194,7 +200,6 @@ class Task(SQLObject):
         defaultOrder = 'sort_index'
 
 
-
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
@@ -214,6 +219,9 @@ class Task(SQLObject):
     updated_by = StringCol()
     versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
     watchers = MultipleJoin("Watcher")
+
+    def getWatcher(self, username):
+        return Watcher.selectBy(username=username, taskID=self.id)[0]
 
     def isWatchedBy(self, username):
         return Watcher.selectBy(username=username, task=self.id).count() > 0
@@ -333,6 +341,9 @@ class TaskList(SQLObject):
     versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
+
+    def getWatcher(self, username):
+        return Watcher.selectBy(username=username, task_listID=self.id)[0]
 
     def isWatchedBy(self, username):
         return Watcher.selectBy(username=username, task_list=self.id).count() > 0

@@ -55,28 +55,31 @@ class WatcherController(BaseController):
         else:
             return None
 
+    def check_email(self):
+        if not c.user_info.get('email', None):
+            redirect_to(action='missing_email', controller='watcher')
+
+    @attrs(action='open')
+    def missing_email(self):
+        return render_response('zpt', 'watcher.missing_email')
+
     @attrs(action='loggedin')
     def show_create(self, id):
-        self.check_anon()
         c.target = self._get_watcher_target()
         return render_response('zpt', 'watcher.show_create')
 
-    @attrs(action='loggedin')
+    @attrs(action='edit')
     def show_update(self, id):
-        self.check_anon()
-        c.target = self._get_watcher_target()
-        watcher = self._get_watcher()
-        if watcher:
-            c.interest_level = watcher.interest_level
-            c.watcher_id = watcher.id
-            return render_response('zpt', 'watcher.show_update')
-        else:
-            #really you meant to create one, right?
-            return render_response('zpt', 'watcher.show_create')
-
+        self.check_email()
+        watcher = Watcher.get(int(id))
+        c.target = watcher.target()
+        c.interest_level = watcher.interest_level
+        c.watcher_id = watcher.id
+        return render_response('zpt', 'watcher.show_update')
+        
     @attrs(action='loggedin')
     def create(self, id):
-        self.check_anon()
+        self.check_email()
         c.target = self._get_watcher_target()
         if c.target.isWatchedBy(c.username):
             watcher = self._get_watcher()
@@ -91,19 +94,21 @@ class WatcherController(BaseController):
             return self._show_watcher_target(watcher)
 
         
-    @attrs(action='loggedin')
+    @attrs(action='edit')
     @validate(schema=WatcherUpdateForm(), form='show_update')
     def update(self, id):
-        self.check_anon()
+        self.check_email()
         watcher = Watcher.get(int(id))
         p = dict(self.form_result)
         p['username'] = c.username
         watcher.set(**p)
         return self._show_watcher_target(watcher)
 
-    @attrs(action='loggedin')
+    @attrs(action='edit')
     def destroy(self, id):
-        self.check_anon()
-        self._get_watcher().destroySelf()
-        return Response.redirect_to(action='show', controller='task', id=c.task.id)
+        self.check_email()
+        watcher = Watcher.get(int(id))
+        c.task_id = watcher.taskID
+        watcher.destroySelf()
+        return Response.redirect_to(action='show', controller='task', id=c.task_id)
 

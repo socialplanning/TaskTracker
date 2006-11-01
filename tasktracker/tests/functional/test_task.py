@@ -301,22 +301,42 @@ class TestTaskController(TestController):
 
         res = app.get(url_for(controller='task', action='show', id=task.id))
         
+        task_path = '/task/show/%s' % task.id
+
         res = res.click("Watch this task")
         res.mustcontain("Just the highlights")
         res = res.forms[0].submit()
-        assert res.header_dict['location'].startswith('/task/show/%s' % task.id)
+        assert res.header_dict['location'].startswith(task_path)
         res = res.follow()
-        res.click("Edit your watch settings")
-        res = res.forms[0].submit()
-        assert res.header_dict['location'].startswith('/task/show/%s' % task.id)
-        res = res.follow()
+
+        res.mustcontain("Edit your watch settings")
 
         #let's check if notifications actually work
 
         res = app.get(url_for(controller='task', action='show_update', id=task.id))
         form = res.forms[0]
-        form.fields['title'][0] = "Changed"
+        form.fields['title'][0].value = "Changed"
         res = form.submit()
+       
+        email = 'admin@example.com' #this is hard-coded in fakeenv
+        og = OutgoingEmail.selectBy(envelope_to_address = email)
+        assert og.count()
+        print list(og)
 
-        #fixme: need to find email address
-        #og = OutgoingEmail.selectBy()
+        from datetime import datetime, timedelta
+
+        found = False
+        now = datetime.now()
+        for mail in og:
+            if mail.created - now < timedelta(0,5,0):
+                if task_path in mail.message:
+                    found = True
+
+        assert found
+
+        #delete watcher
+
+        res = app.get(url_for(controller='task', action='show', id=task.id))
+        res = res.click("Edit your watch settings")
+        res = res.click("Stop watching")
+        assert Watcher.selectBy(username='admin').count() == 0
