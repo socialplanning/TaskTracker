@@ -299,12 +299,24 @@ class TestTaskController(TestController):
         
         app = self.getApp('admin')
 
-        res = app.get(url_for(
-                controller='task', action='show', id=task.id))
+        res = app.get(url_for(controller='task', action='show', id=task.id))
         
         res = res.click("Watch this task")
         res.mustcontain("Just the highlights")
         res = res.forms[0].submit()
         assert res.header_dict['location'].startswith('/task/show/%s' % task.id)
         res = res.follow()
-        res.mustcontain("Edit your watch settings")
+        res.click("Edit your watch settings")
+        res = res.forms[0].submit()
+        assert res.header_dict['location'].startswith('/task/show/%s' % task.id)
+        res = res.follow()
+
+        #let's check if notifications actually work
+
+        res = app.get(url_for(controller='task', action='show_update', id=task.id))
+        form = res.forms[0]
+        form.fields['title'][0] = "Changed"
+        res = form.submit()
+
+        #fixme: need to find email address
+        #og = OutgoingEmail.selectBy()
