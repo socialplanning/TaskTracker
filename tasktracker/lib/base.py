@@ -114,9 +114,6 @@ def _getRole(environ):
 class BaseController(WSGIController):
 
     def __before__(self, action, **params):
-        if not self._req.environ.has_key('topp.user_info'):
-            print "NO USER: ", self._req.environ['PATH_INFO']
-
         project = Project.getProject(self._req.environ['topp.project_name'])
         c.project = project
         c.users = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
@@ -235,6 +232,8 @@ class BaseController(WSGIController):
         username = environ.get('REMOTE_USER', 'anonymous')
         c.username = username
 
+        c.user_info = self._req.environ.get('topp.user_info', None)
+
         c.usermapper = environ['topp.project_members']
 
         func = getattr(self, action)
@@ -254,6 +253,14 @@ class BaseController(WSGIController):
 
         if action_verb == 'open':
             return True
+
+        if action_verb == 'loggedin':
+            if c.username == 'anonymous':
+                #FIXME: this www-authenticate header is unnecessary.
+                abort(401, 'Not Authorized', headers=[('WWW-Authenticate', 'dummy')])
+            else:
+                return True
+
 
         if action == 'auto_complete_for_owner':
             return True
