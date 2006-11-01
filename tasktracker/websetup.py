@@ -40,7 +40,8 @@ from tasktracker.models import *
 
 def setRoles(action, roles):
     for role in roles:
-        action.addRole(role)
+        if not role in action.roles:
+            action.addRole(role)
 
 def setSecurity(policy, actions):
     for action_name, role in actions.items():
@@ -64,13 +65,6 @@ def setup_config(command, filename, section, vars):
     for table in soClasses:
         table.createTable(ifNotExists=True)
 
-    #in any event, we want to delete all the old actions, roles, policies, etc
-
-    conn = hub.getConnection()
-    for table in [Role, Action, SimpleSecurityPolicy, SecurityPolicyAction]:
-        delquery = conn.sqlrepr(Delete(table.q, where=None))
-        conn.query(delquery)
-
     def make_user(usename, password="topp"):
         return User(username=usename, password=password.encode("base64"))
 
@@ -78,18 +72,38 @@ def setup_config(command, filename, section, vars):
                  rob whit ian smk jarasi cholmes bryan vanessa""".split():
         make_user(user)
 
-    anon = Role(name="Anonymous",
-                description="Anyone at all", level=100)
-    auth = Role(name="Authenticated",
-                description="Any logged-in OpenPlans user", level=60)
-    pm = Role(name="ProjectMember",
-              description="Any project member", level=50)
-    to = Role(name="TaskOwner",
-              description="The person who owns the task", level=40)
-    lo = Role(name="ListOwner",
-              description="Any person who owns the list", level=30)
-    pa = Role(name="ProjectAdmin",
-              description="Any project administrator", level=20)
+
+    def makeRole(**kwargs):
+        role = Role.selectBy(name = kwargs['name'])
+        if role.count():
+            role = role[0]
+            role.set(**kwargs)
+            return role
+        else:
+            return Role(**kwargs)
+
+    def makeAction(**kwargs):
+        action = Action.selectBy(action = kwargs['action'])
+        if action.count():
+            action = action[0]
+            action.set(**kwargs)
+            return action
+        else:
+            return Action(**kwargs)
+            
+
+    anon = makeRole(name="Anonymous",
+                    description="Anyone at all", level=100)
+    auth = makeRole(name="Authenticated",
+                    description="Any logged-in OpenPlans user", level=60)
+    pm = makeRole(name="ProjectMember",
+                  description="Any project member", level=50)
+    to = makeRole(name="TaskOwner",
+                  description="The person who owns the task", level=40)
+    lo = makeRole(name="ListOwner",
+                  description="Any person who owns the list", level=30)
+    pa = makeRole(name="ProjectAdmin",
+                  description="Any project administrator", level=20)
 
     everyone = [anon, auth, pm, to, lo, pa]
     everyone_but_anon = [anon, auth, pm, to, lo, pa]
@@ -97,35 +111,35 @@ def setup_config(command, filename, section, vars):
     members_but_not_to = [pm, lo, pa]
     members = [pm, to, lo, pa]
 
-    setRoles(Action(action="tasklist_show", 
+    setRoles(makeAction(action="tasklist_show", 
                     question="Who can view the task list?"),
              everyone)
-    setRoles(Action(action="tasklist_update",
+    setRoles(makeAction(action="tasklist_update",
                     question="Who can update the task list?"),
              members_but_not_to)
 
-    setRoles(Action(action="task_create",
+    setRoles(makeAction(action="task_create",
                     question="Who can create tasks in the list?"),
              everyone_but_anon)
-    setRoles(Action(action="task_show",
+    setRoles(makeAction(action="task_show",
                     question="Who can view public tasks in the list?"),
              everyone)
-    setRoles(Action(action="task_update",
+    setRoles(makeAction(action="task_update",
                     question="Who can edit public tasks in the list?"),
              everyone_but_anon)
-    setRoles(Action(action="task_comment",
+    setRoles(makeAction(action="task_comment",
                     question="Who can comment on public tasks in the list?"),
              everyone)
-    setRoles(Action(action="task_change_status",
+    setRoles(makeAction(action="task_change_status",
                     question="Who can change the status of public tasks in the list?"),
              everyone)
-    setRoles(Action(action="task_claim",
+    setRoles(makeAction(action="task_claim",
                     question="Who can claim public tasks in the list?"),
              everyone_but_anon)
-    setRoles(Action(action="task_assign",
+    setRoles(makeAction(action="task_assign",
                     question="Who can assign public tasks in the list?"),
              members)
-    setRoles(Action(action="tasklist_private",
+    setRoles(makeAction(action="tasklist_private",
                     question="Who can view private tasks in the list (don't edit this)"),
              members)
 

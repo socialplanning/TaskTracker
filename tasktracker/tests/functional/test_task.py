@@ -291,3 +291,20 @@ class TestTaskController(TestController):
         task.destroySelf()
         tl.destroySelf()
         
+    def test_task_watch(self):
+        """Tests adding self as a watcher for a task"""
+        tl = self.create_tasklist('testing task watching', security_level=0)
+
+        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+        
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='task', action='show', id=task.id))
+        
+        res = res.click("Watch this task")
+        res.mustcontain("Just the highlights")
+        res = res.forms[0].submit()
+        assert res.header_dict['location'].startswith('/task/show/%s' % task.id)
+        res = res.follow()
+        res.mustcontain("Edit your watch settings")

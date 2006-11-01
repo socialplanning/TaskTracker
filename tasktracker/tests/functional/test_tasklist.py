@@ -183,3 +183,19 @@ class TestTaskListController(TestController):
 
         assert found
             
+
+    def test_task_watch(self):
+        """Tests adding self as a watcher for a task list"""
+        tl = TaskList(title="list", text="The list", projectID=self.project.id, username='member')
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='tasklist', action='show', id=tl.id))
+        
+        res = res.click("Watch this task list")
+        res.mustcontain("Just the highlights")
+        res = res.forms[0].submit()
+        assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
+        res = res.follow()
+        res.mustcontain("Edit your watch settings")

@@ -58,20 +58,6 @@ class TasklistController(BaseController):
         c.tasklists = self._getVisibleTaskLists(c.username)
         return render_response('zpt', 'tasklist.index')
 
-    @attrs(action='open')
-    def watch(self, id):
-        c.task_list = self._getTaskList(int(id))
-        if not c.task_list.isWatchedBy(c.username):
-            Watcher(username=c.username, task_listID=c.task_list.id, taskID=0)
-        return Response.redirect_to(action='show',controller='tasklist', id=c.task_list.id)
-
-    @attrs(action='open')
-    def stopwatch(self, id):
-        c.task_list = self._getTaskList(int(id))
-        Watcher.selectBy(username=c.username, task_list=int(id))[0].destroySelf()
-        return Response.redirect_to(action='show',controller='tasklist', id=c.task_list.id)
-
-
     @attrs(action='show')
     @catches_errors
     def show(self, id):

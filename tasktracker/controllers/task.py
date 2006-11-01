@@ -56,20 +56,6 @@ class TaskController(BaseController):
         c.task.status = self.form_result['status']
         return render_text("ok")
 
-    @attrs(action='open')
-    def watch(self, id):        
-        c.task = self._getTask(int(id))
-        if not c.task.isWatchedBy(c.username):
-            Watcher(username=c.username, taskID=c.task.id, task_listID=0)
-        return Response.redirect_to(action='show',controller='task', id=c.task.id)
-
-    @attrs(action='open')
-    def stopwatch(self, id):
-        c.task = self._getTask(int(id))
-        Watcher.selectBy(username=c.username, task=int(id))[0].destroySelf()
-        return Response.redirect_to(action='show',controller='task', id=c.task.id)
-
-
     @validate(schema=StatusChangeForm(), form='show_update')
     @attrs(action='change_status')
     @catches_errors

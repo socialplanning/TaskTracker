@@ -63,6 +63,10 @@ class TestController(TestCase):
         TestCase.__init__(self, *args)
 
     def setup_fixtures(self):
+        conn = hub.getConnection()
+        for table in [Watcher, TaskListPermission]:
+            delquery = conn.sqlrepr(Delete(table.q, where=None))
+            conn.query(delquery)
     
         task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
 
@@ -77,6 +81,7 @@ class TestController(TestCase):
         Task(title="Task B", text="yet more text",
              task_list=task_list_complete,
              status='done')
+
 
     def setup_database(self):
         nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status, User]

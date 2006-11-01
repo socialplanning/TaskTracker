@@ -138,13 +138,12 @@ def has_permission(controller=None, action=None, **params):
 
     return controller._has_permission(controller_name, action_name, params)
 
-def priority_as_int(priority):
-    if priority == 'High':
-        return 1
-    if priority == 'Medium':
-        return 2
-    if priority == 'Low':
-        return 3
-    if priority == 'None':
-        return 9999;
-    raise ValueError("priority must be one of 'High', 'Medium', 'Low', or 'None'")
+def priority_as_int(priority_name):
+    priorities = {'High' : 1, 'Medium' : 2, 'Low' : 3, 'None' : 9999}
+    priority = priorities.get(priority_name, None)
+    if not priority:
+        raise ValueError("priority must be one of 'High', 'Medium', 'Low', or 'None'")
+    return priority
+
+def interest_levels():
+    return [('Just the highlights', 0), ('The works', 1)]
