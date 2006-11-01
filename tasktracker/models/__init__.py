@@ -163,7 +163,7 @@ class SimpleSecurityPolicy(SQLObject):
     actions = MultipleJoin('SecurityPolicyAction')
 
 class Action(SQLObject):
-    action = StringCol(unique=True)
+    action = StringCol(unique=True, length=100)
     question = StringCol()
     roles = RelatedJoin('Role')
 
