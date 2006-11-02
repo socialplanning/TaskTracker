@@ -431,6 +431,12 @@ class TaskList(SQLObject):
     def isOwnedBy(self, username):
         return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
 
+    def destroySelf(self):
+        for permission in self.permissions:
+            permission.destroySelf()
+
+        SQLObject.destroySelf(self)
+
 soClasses = [
     Action,
     Comment,

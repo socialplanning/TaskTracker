@@ -130,9 +130,11 @@ class TestTaskListController(TestController):
         for perm in task_list.permissions:
             if perm.action.action == 'task_change_status':
                 assert perm.min_level >= Role.getLevel('Anonymous')
-
         
         task_list.destroySelf()
+        #test that permissions are gone
+        permissions = TaskListPermission.selectBy(task_listID = new_task_list_id)
+        assert permissions.count() == 0
 
     def test_watchers(self):
         #log in as a member
@@ -199,3 +201,33 @@ class TestTaskListController(TestController):
         assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
         res = res.follow()
         res.mustcontain("Edit your watch settings")
+        tl.destroySelf()
+
+    def test_tasklist_add_bunch(self):
+        """Tests adding self as a watcher for a task list"""
+        tl = TaskList(title="list", text="The list", projectID=self.project.id, username='member')
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='tasklist', action='show', id=tl.id))
+        
+        res = res.click("Add a bunch of new tasks")
+
+        res.forms[0].fields['tasks'][0].value = """
+test task one
+test task dos
+test task harom
+test task shi
+test task cinq
+test task vi
+test task sheva
+"""
+
+        res = res.forms[0].submit()
+        res = res.follow()
+        assert len(tl.tasks) == 7
+        assert "test task shi" in [task.title for task in tl.tasks]
+
+        tl.destroySelf()
+        
