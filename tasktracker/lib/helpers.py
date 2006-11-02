@@ -75,13 +75,7 @@ def taskDropDown(id, task_list, username, level):
              for task in Task.selectBy(live=True, task_listID=task_list)
 
              if has_permission('task', 'show', id=task.id)]
-#    priv_tasks = Task.selectBy(private=True)
-#    if level <= Role.getLevel('ProjectAdmin'):
-#        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True,live=True)]
-#    else:
-#        priv_tasks = [(task.title, task.id) for task in Task.selectBy(private=True, live=True) if
-#                      (task.task_list.isOwnedBy(username)
-#                       or task.owner == username)]
+
     return select('parentID', options_for_select(tasks, selected=id))
 
 from tasktracker.lib.base import c

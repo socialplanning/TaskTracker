@@ -1,4 +1,5 @@
 import re, time, datetime
+from subprocess import Popen, PIPE
 
 class TaskParser:
     @classmethod
@@ -7,8 +8,8 @@ class TaskParser:
         Determine the format of the input to parse and
         pass it on to the appropriate parser to be parsed
         """
-        import os
-        format = os.popen("file %s" % stuff)
+
+        format, dummy = Popen(["file", stuff], stdout=PIPE).stdout
         format_output = format.read()        
         format.close()
         print "FORMAT: ", format_output
@@ -19,7 +20,7 @@ class TaskParser:
             return ICalParser()._parse(data)
     
         elif len([x in format_output for x in ("Microsoft Office", "OpenDocument Text", "Rich Text Format")]):
-            conversion = os.popen("abiword --to txt %s" % stuff)
+            conversion = Popen(["abiword", "--to", "txt", stuff], stdout=PIPE).stdout
             conversion.close()
             converted_file = open("%s.txt" % stuff.split('.')[0], 'rb')
             stuff = converted_file.read()

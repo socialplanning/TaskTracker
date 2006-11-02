@@ -280,6 +280,7 @@ class TestTaskController(TestController):
 
         #find the old version
         versions = task.versions
+        print list(versions)
         assert len(versions) == 1
         version = versions[0]
 

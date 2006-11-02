@@ -166,9 +166,4 @@ class TasklistController(BaseController):
         """This is a dummy method to deal with private tasks."""
         pass
 
-    @attrs(action='open')
-    @catches_errors
-    def create_tasks(self, id):
-        c.task_listID = id
-        return render_response('zpt', 'tasklist.create_tasks')
 

@@ -127,7 +127,7 @@ class TaskController(BaseController):
 
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
-        assert int(p['parentID']) == 0 or Task.get(p['parentID']).id == int(p['parentID'])
+        assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
 
         return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
@@ -210,11 +210,18 @@ class TaskController(BaseController):
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
     @attrs(action='create')
-    def create_batch(self):
-        batch = request.params['tasks']
+    def create_tasks(self):
+        tasks = request.params['tasks']
         import re
         okay = re.compile("\w")
-        for line in batch.split("\n"):
+        for line in tasks.split("\n"):
             if okay.search(line):
-                self._create_task(task_listID=request.params['task_listID'], parentID=0, private=False, text='', title=line.strip())
+                self._create_task(task_listID=request.params['task_listID'], private=False, text='', title=line.strip(), parentID = int(request.params['parentID']))
         return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
+
+    @attrs(action='open')
+    @catches_errors
+    def show_create_tasks(self, id):
+        c.tasklist = TaskList.get(int(id))
+        c.task_listID = id
+        return render_response('zpt', 'task.show_create_tasks')
