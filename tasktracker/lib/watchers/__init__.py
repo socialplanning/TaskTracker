@@ -35,7 +35,7 @@ class Watchdog:
 
     @classmethod
     def sendMail(cls, username, message):
-        to = c.usermapper(username).email_address
+        to = c.usermapper(username).email_address #START HERE TO FIXME
         mail = OutgoingEmail(envelope_to_address = to, envelope_from_address = 'test@example.com', message=message)
         return mail
 

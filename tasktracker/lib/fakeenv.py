@@ -26,23 +26,19 @@ import os, sys
 conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 class UserFoo:
-    def __init__(self, username, address):
+    def __init__(self, username):
         self.username = username
-        user, domain = address.split("@")
-        self.email_address = "%s+%s@%s" % (user, username, domain)
+        self.email_address = "%s@topp.example.com" % username
 
 class UserMapper:
-    def __init__(self, address):
-        self.address = address
 
     def __call__(self, username):
-        return UserFoo(username, self.address)
+        return UserFoo(username)
 
 class ZWSGIFakeEnv(object):
-    def __init__(self, app, users, test_email_address):
+    def __init__(self, app, users):
         self.app = app
         self.users = users
-        self.test_email_address = test_email_address
         self.conf = appconfig('config:development.ini', relative_to=conf_dir)
         CONFIG.push_process_config({'app_conf': self.conf.local_conf,
                                     'global_conf': self.conf.global_conf})
@@ -61,7 +57,7 @@ class ZWSGIFakeEnv(object):
             except IndexError:
                 return False
 
-            environ['topp.project_members'] = UserMapper(self.test_email_address)
+            environ['topp.project_members'] = UserMapper()
             environ['topp.project_name'] = 'theproject'
 
             environ['REMOTE_USER'] = username

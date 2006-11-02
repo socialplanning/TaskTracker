@@ -318,7 +318,7 @@ class TestTaskController(TestController):
         form.fields['title'][0].value = "Changed"
         res = form.submit()
        
-        email = 'admin@example.com' #this is hard-coded in fakeenv
+        email = 'admin@topp.example.com' #this is hard-coded in fakeenv
         og = OutgoingEmail.selectBy(envelope_to_address = email)
         assert og.count()
         print list(og)
