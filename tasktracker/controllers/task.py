@@ -212,8 +212,9 @@ class TaskController(BaseController):
     @attrs(action='create')
     def create_batch(self):
         batch = request.params['tasks']
-        tasks = TaskParser.parse(batch)
-        
-        for task in tasks:
-            self._create_task(task_listID=request.params['task_listID'], parentID=0, private=False, text='', **task)
+        import re
+        okay = re.compile("\w")
+        for line in batch.split("\n"):
+            if okay.search(line):
+                self._create_task(task_listID=request.params['task_listID'], parentID=0, private=False, text='', title=line.strip())
         return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
