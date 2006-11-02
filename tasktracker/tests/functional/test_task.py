@@ -280,7 +280,6 @@ class TestTaskController(TestController):
 
         #find the old version
         versions = task.versions
-        print list(versions)
         assert len(versions) == 1
         version = versions[0]
 
@@ -322,7 +321,6 @@ class TestTaskController(TestController):
         email = 'admin@topp.example.com' #this is hard-coded in fakeenv
         og = OutgoingEmail.selectBy(envelope_to_address = email)
         assert og.count()
-        print list(og)
 
         from datetime import datetime, timedelta
 
