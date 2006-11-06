@@ -1,6 +1,3 @@
-This file is for you to describe the TaskTracker application. Typically
-you would include information such as the information below:
-
 Installation and Setup
 ======================
 
@@ -8,9 +5,11 @@ Install ``TaskTracker`` using easy_install::
 
     easy_install TaskTracker
 
+You need to manually install MySQLdb, since there is no easy_install for it.  
+
 Make a config file as follows::
 
-    paster make-config TaskTracker config.ini
+     cp development.example config.ini
     
 Tweak the config file as appropriate and then setup the applicaiton::
 
