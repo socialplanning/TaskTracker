@@ -50,9 +50,6 @@ sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 
 openplans_wrapper = ZWSGIFakeEnv
-test_email_address = "novalis@example.org"
-
-
 
 
 ############################################################
