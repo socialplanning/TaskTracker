@@ -39,18 +39,20 @@ pkg_resources.working_set.add_entry(conf_dir)
 from tasktracker.models import *
 
 def setRoles(action, roles):
+    """Sets the allowed roles for an action"""
     for role in roles:
         if not role in action.roles:
             action.addRole(role)
 
 def setSecurity(policy, actions):
+    """SSets up a security policy's actions"""
     for action_name, role in actions.items():
         action_obj = Action.selectBy(action=action_name)[0]
         SecurityPolicyAction(simple_security_policyID = policy.id, action=action_obj, min_level = role.level)
 
 def setup_config(command, filename, section, vars):
     """
-    Place any commands to setup tasktracker here.
+    Set up the task tracker's fixtures
     """
 
     dummy, sect = section.split(':')
@@ -66,6 +68,7 @@ def setup_config(command, filename, section, vars):
         table.createTable(ifNotExists=True)
 
     def make_user(usename, password="topp"):
+        """Makes a user."""
         return User(username=usename, password=password.encode("base64"))
 
     for user in """admin magicbronson rmarianski jhammel cabraham ltucker novais
@@ -74,6 +77,7 @@ def setup_config(command, filename, section, vars):
 
 
     def makeRole(**kwargs):
+        """Makes a role if it doesn't already exist."""
         role = Role.selectBy(name = kwargs['name'])
         if role.count():
             role = role[0]
@@ -83,6 +87,7 @@ def setup_config(command, filename, section, vars):
             return Role(**kwargs)
 
     def makeAction(**kwargs):
+        """Makes an action if it doesn't already exist."""
         action = Action.selectBy(action = kwargs['action'])
         if action.count():
             action = action[0]
