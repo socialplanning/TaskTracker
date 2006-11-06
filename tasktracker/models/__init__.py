@@ -23,6 +23,7 @@
 ##   a starting point for setting up your schema
 
 from sqlobject import *
+from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 from pylons import c
@@ -41,11 +42,12 @@ def create_version(klass, obj):
     args = {}
     columns = klass.sqlmeta.columns
     for column in columns.keys():
-        if column not in ["version", "id", "origID"]:
+        if column not in ["updated", "id", "origID"]:
             args[column] = getattr(obj, column)
 
-    args['version'] = obj.updated
-    args['orig'] = obj.id
+    args['updated'] = obj.updated
+    args['updated_by'] = c.username
+    args['origID'] = obj.id
 
     return klass(**args)
 
@@ -56,20 +58,33 @@ class OutgoingEmail(SQLObject):
     created = DateTimeCol(default=datetime.datetime.now)
 
 class Notification(SQLObject):
+    class sqlmeta:
+        defaultOrder = 'created'
+
     username = StringCol()
     task = ForeignKey("Task")
     task_list = ForeignKey("TaskList")
     created = DateTimeCol(default=datetime.datetime.now)
     notified = BoolCol(default=False)
     importance = IntCol()
-    regardingTaskVersion = ForeignKey("TaskVersion")
-    regardingTaskListVersion = ForeignKey("TaskListVersion")
+    oldVersion = ForeignKey("Version")
+    triggering_watcher = ForeignKey("Watcher")
+    handled = BoolCol(default=False)
+    
+    def targetType(self):
+        if self.taskID:
+            return "task"
+        else:
+            return "task_list"
 
-class TaskVersion(SQLObject):
+class Version(InheritableSQLObject):
+    version = DateTimeCol(default=datetime.datetime.now)    
+    updated = DateTimeCol()
+    updated_by = StringCol()
+
+class TaskVersion(Version):
 
     orig = ForeignKey("Task")
-
-    version = DateTimeCol(default=datetime.datetime.now)
 
     deadline = DateTimeCol()
     live = BoolCol(default=True)    
@@ -81,16 +96,13 @@ class TaskVersion(SQLObject):
     task_list = ForeignKey("TaskList")
     text = StringCol()
     title = StringCol()
-    updated = DateTimeCol()
-    updated_by = StringCol()
 
-class TaskListVersion(SQLObject):
+    def equals(self, version):
+        important_columns = "deadline live owner priority private sort_index status task_list text title".split()
+
+class TaskListVersion(Version):
     orig = ForeignKey("TaskList")
 
-    version = DateTimeCol(default=datetime.datetime.now)
-
-    updated = DateTimeCol()
-    updated_by = StringCol()
     title = StringCol()
     live = BoolCol()
     text = StringCol()
@@ -455,4 +467,5 @@ soClasses = [
     TaskVersion,
     User,
     Watcher,
+    Version,
     ]
