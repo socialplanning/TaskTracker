@@ -27,12 +27,12 @@ setup(
     #author="",
     #author_email="",
     #url="",
-    install_requires=["Pylons=0.9.2", "PasteScript", "ZPTKit==dev,>=0.4.2a", "SQLObject", "Routes==dev,>=1.5.2dev"],
+    install_requires=["Pylons==0.9.2", "PasteScript", "ZPTKit==dev,>=0.4.2a", "SQLObject", "Routes==dev,>=1.5.2dev"],
     packages=find_packages(),
     include_package_data=True,
     test_suite = 'nose.collector',
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
-    dependency_links = ["http://pythonpaste.org/package_index.html"],
+    dependency_links = ["http://pythonpaste.org/package_index.html","http://cheeseshop.python.org/pypi/Pylons/0.9.2"],
     entry_points="""
     [paste.app_factory]
     main=tasktracker:make_app
