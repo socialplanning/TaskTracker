@@ -1,0 +1,6 @@
+<form tal:attributes="action python:h.url_for(action='update', controller='watcher')" method="post">
+
+<metal:do use-macro="here/_form/macros/form" />
+</form>
+<br/>
+<a tal:attributes="href python: h.url_for(controller = 'watcher', action = 'destroy', id = c.watcher_id)">Stop watching this task</a>

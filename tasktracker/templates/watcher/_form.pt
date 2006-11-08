@@ -1,0 +1,14 @@
+<metal:macro define-macro="form">
+
+Watch: <span tal:replace="c/target/title" />.  You will be notified of changes in task status, comments, etc.<br/>
+
+<input type="hidden" name="targetID" tal:attributes="value c/target/id">
+<input type="hidden" name="type" tal:attributes="value c/type">
+<input type="hidden" name="id" tal:attributes="value c/watcher_id">
+
+What do you want to see? 
+<span tal:replace="structure python: h.select('interest_level', h.options_for_select(h.interest_levels(), c.interest_level))" />
+
+<input name="submit" value="submit" type="submit">
+
+</metal:macro>
