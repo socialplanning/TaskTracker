@@ -62,6 +62,7 @@ class TasklistController(BaseController):
     @catches_errors
     def show(self, id):
         c.tasklist = self._getTaskList(int(id))
+        c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
         c.depth = 0
         return render_response('zpt', 'task.list')
