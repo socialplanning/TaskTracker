@@ -77,6 +77,7 @@ class TaskController(BaseController):
         if request.params.has_key ('new_parent'):
             new_parent_id = int(request.params['new_parent'])
             assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
+            assert new_parent_id != task.id
             task.parentID = new_parent_id
             if new_parent_id > 0:
                 parent = Task.get(new_parent_id)
@@ -166,6 +167,10 @@ class TaskController(BaseController):
 
         c.task = self._getTask(int(id))
         p = self._clean_params(self.form_result)
+        new_parent_id = int(p['parentID'])
+        assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == c.task.task_listID
+        assert new_parent_id != c.task.id
+
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
             del p['owner']
 

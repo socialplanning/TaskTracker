@@ -69,13 +69,18 @@ def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
-def taskDropDown(id, task_list, username, level):
-    tasks = [("No parent task",0)] + \
-            [("%s%s%s" % (' ' * (task.depth() - 1), '\-->' * (task.depth() == True), task.title), task.id)
-             for task in Task.selectBy(live=True, task_listID=task_list)
+def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
+    tasks = []
+    for task in Task.selectBy(task_listID=task_list_id, parentID=parent_id):
+        if has_permission('task', 'show', id=task.id) and not task.id == this_task_id:
+            item = ("%s %s" % ('...' * (depth), task.title), task.id)
+            tasks.append(item)
+            tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
+    return tasks
 
-             if has_permission('task', 'show', id=task.id)]
-
+def taskDropDown(id, task_list):
+    tasks = [("No parent task",0)]
+    tasks += _childTasksForTaskDropDown(id, task_list)
     return select('parentID', options_for_select(tasks, selected=id))
 
 from tasktracker.lib.base import c

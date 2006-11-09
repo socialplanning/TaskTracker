@@ -8,7 +8,7 @@
 
 <tr><td>
 <span class="row-heading">Parent: </span></td><td>
-<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id, c.username, c.level)" /></td></tr>
+<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id)" /></td></tr>
 
 <metal:do use-macro="here/_form/macros/form" />
 
