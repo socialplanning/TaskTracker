@@ -44,7 +44,7 @@
 
   <div class="auto_complete" id="owner_auto_complete"></div>
   <script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
-  '/task/auto_complete_for_owner/', {})</script>
+  '../../../task/auto_complete_for_owner/', {})</script>
 </span>
 
 </td>
