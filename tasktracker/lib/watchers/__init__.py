@@ -36,7 +36,6 @@ class Watchdog:
     @classmethod
     def sendMail(cls, username, message):
         member = filter(lambda x: x['username'] == username, c.usermapper.project_members())[0]
-        import pdb; pdb.set_trace();
         to = member['email'] #START HERE TO FIXME
         mail = OutgoingEmail(envelope_to_address = to, envelope_from_address = 'test@example.com', message=message)
         return mail
