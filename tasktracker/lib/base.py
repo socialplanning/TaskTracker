@@ -114,9 +114,9 @@ def _getRole(environ):
 class BaseController(WSGIController):
 
     def __before__(self, action, **params):
+
         project = Project.getProject(self._req.environ['topp.project_name'])
         c.project = project
-        c.users = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
         c.id = params.get('id')
 
         if not self._authorize(project, action, params):

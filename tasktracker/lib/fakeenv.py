@@ -25,15 +25,17 @@ from pylons import c
 import os, sys
 conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
-class UserFoo:
-    def __init__(self, username):
-        self.username = username
-        self.email_address = "%s@topp.example.com" % username
+
+def _user_dict(name):
+    return dict(username = name,
+                email = "%s@topp.example.com" % name, 
+                roles=('Authenticated, ProjectMember'),
+                )
 
 class UserMapper:
-
-    def __call__(self, username):
-        return UserFoo(username)
+    def project_members(self):
+        names = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
+        return map (_user_dict, names)
 
 class ZWSGIFakeEnv(object):
     def __init__(self, app, users):
