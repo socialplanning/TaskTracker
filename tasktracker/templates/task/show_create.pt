@@ -2,13 +2,11 @@
 
 <form tal:attributes="action python:h.url_for(action='create', controller='task')" method="post">
 
-<input type="hidden" name="task_listID" tal:attributes="value c/task_listID">
-
 <table>
 
 <tr><td>
 <span class="row-heading">Parent: </span></td><td>
-<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id)" /></td></tr>
+<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id, initial_value=c.task, include_this_task=True)" /></td></tr>
 
 <metal:do use-macro="here/_form/macros/form" />
 

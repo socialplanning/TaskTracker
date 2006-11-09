@@ -1,6 +1,8 @@
 <metal:macro define-macro="form">
 
-<tr><td><label class="row-heading" for="title">Title:</label></td>
+<tr><td>
+<input type="hidden" name="task_listID" tal:attributes="value c/task_listID" />
+<label class="row-heading" for="title">Title:</label></td>
 <td><span tal:replace="structure python: h.text_field_r('oldtask', 'title')" /></td></tr>
 
 <tr><td><label class="row-heading" for="text">Description:</label></td>

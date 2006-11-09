@@ -78,10 +78,14 @@ def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0)
             tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
     return tasks
 
-def taskDropDown(id, task_list):
+def taskDropDown(id, task_list, initial_value=0, include_this_task=False):
     tasks = [("No parent task",0)]
+    if include_this_task:
+        id=None
     tasks += _childTasksForTaskDropDown(id, task_list)
-    return select('parentID', options_for_select(tasks, selected=id))
+    if hasattr(initial_value, 'id'):
+        initial_value = initial_value.id
+    return select('parentID', options_for_select(tasks, selected=initial_value))
 
 from tasktracker.lib.base import c
 

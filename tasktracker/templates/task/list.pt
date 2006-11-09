@@ -10,7 +10,7 @@ You are watching this task list.
 <br/>
 <br/>
 
-<tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
+<tal:if condition="python: len(c.tasklist.tasks) > 1 and h.has_permission('task', 'update', id=c.tasklist.tasks[0].id)">
   <a id="reorder_button" href="javascript:modeSwitch();">
     <span id="modeName">Reorder</span>
   </a><br/><br/>
