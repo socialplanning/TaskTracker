@@ -1,5 +1,6 @@
 # bugs: 
 #  -- reloading adds another "datebocks" to class.  class="datebocks datebocks datebocks ....."
+#  -- do something about the text messages that appear below the box (they break the list page format.. are they even necessary?)
 
 # Copyright (C) 2006 The Open Planning Project
 
@@ -139,10 +140,7 @@ def datebocks_field(object_name, field_name, options = {}, calendar_options = {}
       </ul>
       <div id=\"""", calendar_ref, """Message"><div id=\"""", calendar_ref, """Msg"></div></div>
       <script type="text/javascript">
-        """, calendar_ref,"""Obj.setDefaultFormatMessage();
-        
-        Calendar.setup(""",options_for_javascript(calendar_options), """);
-        
+        Calendar.setup(""",options_for_javascript(calendar_options), """);        
       </script>
     </span>"""])
 
