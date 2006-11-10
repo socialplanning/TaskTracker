@@ -68,13 +68,6 @@ class TaskController(BaseController):
         c.task.priority = self.form_result['priority']
         return render_text("ok")
 
-    @attrs(action='assign')
-    @catches_errors
-    def change_owner(self, id):
-        c.task = self._getTask(int(id))
-        c.task.owner = request.params['owner']
-        return render_text("ok")
-
     @attrs(action='show')
     def auto_complete_for_owner(self):
         partial = request.params['owner']
@@ -154,7 +147,7 @@ class TaskController(BaseController):
     @catches_errors
     def assign(self, id):
         c.task = self._getTask(id)
-        c.task.owner = c.username
+        c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
     @attrs(action='comment', watchdog=TaskCommentWatchdog)
