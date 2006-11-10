@@ -23,7 +23,7 @@ h.select('status',
                               atask.status), 
          method='post', 
          originalvalue='%s' % [s.name for s in c.tasklist.project.statuses].index(atask.status),
-         onchange='changeStatus(&quot;%s&quot;,%d)' % (h.url_for(controller='task',
+         onchange='changeField(&quot;%s&quot;,%d, &quot;status&quot;)' % (h.url_for(controller='task',
                                                                  action='change_status',
                                                                  id=atask.id),
                                                        atask.id),
@@ -31,7 +31,6 @@ h.select('status',
 tal:attributes="id string:status-form_${atask/id};"/>
 
 <span class="status-column" tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
-
 
 <span tal:replace="structure python: h.end_form()" />
 
@@ -43,7 +42,24 @@ tal:attributes="id string:status-form_${atask/id};"/>
 
 <!-- priority -->
 
-<span class="priority-column" tal:content="atask/priority" />
+<span class="priority-column" tal:condition="python: h.has_permission('task', 'change_priority', id=atask.id)" 
+tal:content="structure python:
+h.select('priority',
+         h.options_for_select([(s, s) for s in 'High Medium Low None'.split()], 
+                              atask.priority),
+         method='post',
+         originalvalue=atask.priority,
+         onchange='changeField(&quot;%s&quot;,%d, &quot;priority&quot;)' % (h.url_for(controller='task',
+                                                                 	 action='change_priority',
+                                                                 	 id=atask.id),
+                                                       			 atask.id),
+                   id='priority_%d' % atask.id) "
+tal:attributes="id string:priority-form_${atask/id};"/>
+
+<span class="priority-column" tal:attributes="style python: test(h.has_permission('task', 'change_priority', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/priority" />
+
+<span tal:replace="structure python: h.end_form()" />
+<!--span class="priority-column" tal:content="atask/priority" /-->
 
 <!-- owner -->
 

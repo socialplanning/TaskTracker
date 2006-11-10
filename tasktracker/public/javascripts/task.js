@@ -9,10 +9,6 @@ function changeField(url, task_id, fieldname) {
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
-function changeStatus(url, task_id) {
-    changeField(url, task_id, 'status');
-}
-
 function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);

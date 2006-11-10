@@ -38,6 +38,10 @@ class StatusChangeForm(formencode.Schema):
     allow_extra_fields = True
     status = formencode.validators.OneOf([status.name for status in Status.select()])
 
+class PriorityChangeForm(formencode.Schema):
+    allow_extra_fields = True
+    priority = formencode.validators.OneOf("High Medium Low None".split())
+
 class TaskController(BaseController):
 
     def _clean_params(self, params):
@@ -56,12 +60,12 @@ class TaskController(BaseController):
         c.task.status = self.form_result['status']
         return render_text("ok")
 
-    @validate(schema=StatusChangeForm(), form='show_update')
-    @attrs(action='change_status')
+    @validate(schema=PriorityChangeForm(), form='show_update')
+    @attrs(action='update')
     @catches_errors
-    def change_status(self, id):
+    def change_priority(self, id):
         c.task = self._getTask(int(id))
-        c.task.status = self.form_result['status']
+        c.task.priority = self.form_result['priority']
         return render_text("ok")
 
     @attrs(action='show')
