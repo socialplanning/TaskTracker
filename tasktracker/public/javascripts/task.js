@@ -2,10 +2,15 @@ function toggle(obj) {
     obj.style.display = (obj.style.display != 'none' ? 'none' : '');
 }
 
+function changeField(url, task_id, fieldname) {
+    var field = $(fieldname + '_' + task_id);
+    field.disabled = true;
+    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + field.value,
+				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
+}
+
 function changeStatus(url, task_id) {
-    var status = $('status_' + task_id);
-    status.disabled = true;
-    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'status=' + status.value, onSuccess:doneChangingStatus.bind(task_id), onFailure:failedChangingStatus.bind(task_id)});
+    changeField(url, task_id, 'status');
 }
 
 function updateTaskItem(task_id) {
@@ -16,26 +21,28 @@ function updateTaskItem(task_id) {
     tasktext.setAttribute('class', completed + ' ' + root);
 }
 
-function doneChangingStatus(req) {
-    var task_id = this;
-    var status = $('status_' + task_id);
-    status.setAttribute('originalvalue', status.selectedIndex);
-    status.disabled = false;
-    status.style.color = "black"; 
+function doneChangingField(req) {
+    var task_id = this[0];
+    var fieldname = this[1];
+    var field = $(fieldname + '_' + task_id);
+    field.setAttribute('originalvalue', field.selectedIndex);
+    field.disabled = false;
+    field.style.color = "black"; 
     var node = $('label_' + task_id);
-    var newstatus = $('status_' + task_id).getValue(status.selectedIndex);
-    node.innerHTML = newstatus;
-    $('task_' + task_id).setAttribute('status', newstatus);
+    var newfield = $(fieldname + '_' + task_id).getValue(field.selectedIndex);
+    node.innerHTML = newfield;
+    $('task_' + task_id).setAttribute(fieldname, newfield);
     updateTaskItem(task_id);
 }
 
-function failedChangingStatus(req) {
-    var task_id = this;
-    var status = $('status_' + task_id);
-    var orig = status.getAttribute('originalvalue');
-    status.style.color = "red"; 
-    status.disabled = false;
-    status.selectedIndex = orig;
+function failedChangingField(req) {
+    var task_id = this[0];
+    var fieldname = this[1];
+    var field = $(fieldname + '_' + task_id);
+    var orig = field.getAttribute('originalvalue');
+    field.style.color = "red";
+    field.disabled = false;
+    field.selectedIndex = orig;
 }
 
 function doneMovingTask(req) {
