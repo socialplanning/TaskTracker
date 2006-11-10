@@ -66,7 +66,7 @@ tal:attributes="id string:priority-form_${atask/id};"/>
 <span class="assigned-column" tal:content="python:test(atask.owner, atask.owner, 'unassigned')" />
 
 <!-- creator -->
-<span class="creator-column" tal:content="atask/creator" />
+<!-- span class="creator-column" tal:content="atask/creator" / -->
 
 <!-- subtasks -->
 

@@ -25,7 +25,7 @@ Task name
 <span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
 <span class="priority-column">Priority <a href="#sortbypriority" class="sortarrow" onclick="sortBy('priority'); return false;">&#x2193;</a></span>
 <span class="assigned-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
-<span class="creator-column">Created by</span>
+<!-- span class="creator-column">Created by</span -->
 
 <!-- the actual task list -->
 
