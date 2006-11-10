@@ -170,6 +170,7 @@ class TaskController(BaseController):
         new_parent_id = int(p['parentID'])
         assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == c.task.task_listID
         assert new_parent_id != c.task.id
+        p['task_listID'] = c.task.task_listID
 
         if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
             del p['owner']

@@ -58,6 +58,7 @@ class TaskMoveWatchdog(Watchdog):
 
 class TaskCreateWatchdog(Watchdog):
     def after(self, params):
+        task = Task.get(params['id'])
         message = """
 Subject: %s: Task created in list %s
 
@@ -67,14 +68,14 @@ Creator: %s
 Title: %s
 %s
 
-        """ % (c.project, c.task.task_list.title, c.task.task_list.title, c.task.creator, c.task.title, c.task.text)
+        """ % (c.project, task.task_list.title, task.task_list.title, task.creator, task.title, task.text)
 
-        for watcher in c.task.task_list.watchers:
+        for watcher in task.task_list.watchers:
             self.sendMail(watcher.username, message)
 
 class TaskCommentWatchdog(Watchdog):
     def after(self, params):
-
+        task = Task.get(params['id'])
         message = """
 Subject: %s: New comment on %s
 
@@ -82,26 +83,28 @@ Subject: %s: New comment on %s
 %s
 
 To reply, go to %s
-        """ % (c.project, c.task.title, c.comment.user, c.task.title, c.comment.text, url_for(action="show", controller="task", id=c.task.id, qualified=True))
+        """ % (c.project, task.title, c.comment.user, task.title, c.comment.text, url_for(action="show", controller="task", id=task.id, qualified=True))
 
-        for watcher in c.task.watchers:
+        for watcher in task.watchers:
             self.sendMail(watcher.username, message)
 
-        for watcher in c.task.task_list.watchers:
+        for watcher in task.task_list.watchers:
             self.sendMail(watcher.username, message)
 
 class TaskUpdateWatchdog(TaskWatchdog):
     def after(self, params):
+        task = Task.get(params['id'])
+
         message = """
 Subject: %s: Task %s changed
 
 The task named %s has been altered. 
 
 To show the changes, go to %s
-        """ % (c.project, c.task.title, c.task.title, url_for(action="show", controller="task", id=c.task.id, qualified=True))
+        """ % (c.project, task.title, task.title, url_for(action="show", controller="task", id=task.id, qualified=True))
 
-        for watcher in c.task.watchers:
+        for watcher in task.watchers:
             self.sendMail(watcher.username, message)
 
-        for watcher in c.task.task_list.watchers:
+        for watcher in task.task_list.watchers:
             self.sendMail(watcher.username, message)
