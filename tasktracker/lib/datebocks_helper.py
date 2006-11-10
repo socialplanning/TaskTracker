@@ -1,7 +1,5 @@
 # bugs: 
 #  -- reloading adds another "datebocks" to class.  class="datebocks datebocks datebocks ....."
-# help and calendar now broken
-
 
 # Copyright (C) 2006 The Open Planning Project
 
