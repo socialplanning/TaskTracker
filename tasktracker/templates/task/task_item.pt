@@ -37,7 +37,11 @@ tal:attributes="id string:status-form_${atask/id};"/>
 
 <!-- deadline -->
 
-<span class="deadline-column" tal:content="python: h.readableDate(atask.deadline)" />
+<span tal:condition="python: h.has_permission('task', 'update', id=atask.id)"
+      tal:replace="structure python: h.datebocks_field('atask', 'deadline', attributes={'id':'deadline_%d' % atask.id, 'class':'deadline-column'}, value=atask.deadline)" />
+
+
+<span tal:attributes="style python: test(h.has_permission('task', 'update', id=atask.id), 'display:none;;', '')" class="deadline-column" tal:content="python: h.readableDate(atask.deadline)" />
 
 <!-- priority -->
 
@@ -62,16 +66,15 @@ tal:attributes="id string:priority-form_${atask/id};"/>
 <!--span class="priority-column" tal:content="atask/priority" /-->
 
 <!-- owner -->
-<span class="autocomplete; assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)">
-<!-- <form tal:attributes="onSubmit python:; task_id atask/id" method="post" id="form"> -->
+<span class="autocomplete assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)">
 <input autocomplete="off" name="owner" size="30" type="text"
        tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
        onchange python:'changeField(&quot;%s&quot;,%d, &quot;owner&quot;)' % (h.url_for(controller='task', action='assign', id=atask.id), atask.id)" />
 <div class="auto_complete" id="owner_auto_complete"></div>
 <script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
 '../../../task/auto_complete_for_owner/', {})</script>
-<!-- </form> -->
 </span>
+
 <span class="assigned-column" tal:attributes="style python: test(h.has_permission('task', 'assign', id=atask.id), 'display:none;;', '');"
       tal:content="atask/owner" />
 

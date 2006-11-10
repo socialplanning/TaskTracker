@@ -40,7 +40,7 @@ def debugThings():
 
 def readableDate(date):
     if date:
-        return date.strftime("%d %B, %Y")
+        return date.strftime("%Y-%m-%d")
     else:
         return None
 

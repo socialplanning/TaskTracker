@@ -1,3 +1,7 @@
+# bugs: 
+#  -- reloading adds another "datebocks" to class.  class="datebocks datebocks datebocks ....."
+# help and calendar now broken
+
 
 # Copyright (C) 2006 The Open Planning Project
 
@@ -74,17 +78,26 @@ def options_for_javascript(dict):
         items.append('%s : %s' % (k, v))
     return '{%s}' % ",".join(items)
 
-def datebocks_field(object_name, field_name, options = {}, calendar_options = {}):
-
-    calendar_ref = object_name + field_name.capitalize() + 'DateBocks'
-    
-    options['dateBocksElementId'] = "'%s'" % calendar_ref
+def datebocks_field(object_name, field_name, options = {}, calendar_options = {}, attributes = {}, value = None):
     if not options.has_key('name'):
         options['name'] =  field_name + ".date"
-    
+
+    attribute_str = str()
+    keys = attributes.keys()
+    if 'class' in keys:
+        attributes['class'] = '%s dateBocks' % attributes['class']
+    else:
+        attributes['class'] = 'dateBocks'
+    if not 'id' in keys:
+        attributes['id'] = 'dateBocks'    
+    for key in keys:
+        attribute_str = attribute_str + '%s="%s" ' % (key, attributes[key])
+
+    calendar_ref = "%s_input" % attributes['id']
+    options['dateBocksElementId'] = "'%s'" % calendar_ref
     datebocks_options = dict(options)
     del datebocks_options['name']
-    
+
     calendar_options['inputField']     = "'%s'" % calendar_ref                          # id of the input field
     calendar_options['button']         = "'%sButton'" % calendar_ref               # trigger for the calendar (button ID)
     calendar_options['help']           = "'%sHelp'" % calendar_ref                # trigger for the help menu
@@ -98,24 +111,25 @@ def datebocks_field(object_name, field_name, options = {}, calendar_options = {}
     if not calendar_options.has_key('singleClick'):
         calendar_options['singleClick']  = 'true'
 
-    obj = getattr(c, object_name, None)
-    if obj:
-        value = getattr(obj, field_name, None)
-    else:
-        value =  None
+    if not value:
+        obj = getattr(c, object_name, None)
+        if obj:
+            value = getattr(obj, field_name, None)
+        else:
+            value =  None
 
     if value:
         value = value.strftime("%Y-%m-%d")
-  
+      
     retval = "".join(["""
-    <div id="dateBocks">
+    <span """, attribute_str, """>
       <script type="text/javascript">
         var """, calendar_ref, """Obj = new DateBocks(
           """, options_for_javascript(datebocks_options), """
         );
       </script>
       <ul>
-        <li class="dateBocksInput">""", 
+        <li class="dateBocksInput">""",
                      text_field(options['name'], 
                                  value=value, 
                                   id=calendar_ref, 
@@ -125,13 +139,13 @@ def datebocks_field(object_name, field_name, options = {}, calendar_options = {}
         <li class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</li>
         <li class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</li>
       </ul>
-      <div id="dateBocksMessage"><div id=\"""", calendar_ref, """Msg"></div></div>
+      <div id=\"""", calendar_ref, """Message"><div id=\"""", calendar_ref, """Msg"></div></div>
       <script type="text/javascript">
         """, calendar_ref,"""Obj.setDefaultFormatMessage();
         
         Calendar.setup(""",options_for_javascript(calendar_options), """);
         
       </script>
-    </div>"""])
+    </span>"""])
 
     return retval

@@ -10,26 +10,26 @@
   color: red;
 }
 
-#dateBocks input.error {
+.dateBocks input.error {
   background-color: pink;
 }
  
-#dateBocks ul {
+.dateBocks ul {
 	list-style: none;
 	padding: 0 5px 0 0;
 	margin: 0;
 }
 
-#dateBocks ul li {
+.dateBocks ul li {
 	display: inline;
 }
 
-#dateBocks ul a {
+.dateBocks ul a {
 	padding: 5px;
 	display: block;
 	float: left;
 }
 
-#dateBocks input {
+.dateBocks input {
 	width: 100px;
 }

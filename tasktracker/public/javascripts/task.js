@@ -4,6 +4,7 @@ function toggle(obj) {
 
 function changeField(url, task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
+    alert(fieldname);
     field.disabled = true;
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + field.value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
