@@ -131,16 +131,19 @@ class TestTaskController(TestController):
 
         spanTags = self._getElementsByTagName(res.body, 'span')
 
-        found = False
+        found = 0
         for span in spanTags:
-            if 'label_%d' % task1.id in span:
-                #the label for task1 must be hidden
-                assert 'display:none' in span
-                found = True
-                break
+            if 'status-label_%d' % task1.id in span:
+                #the label for task1 must be clickable
+                print span
+                assert 'onclick="viewChangeableField(%d, &quot;status&quot;)"' % task1.id in span
+                found += 1
+            elif 'status-label_%d' % task2.id in span:
+                #the label for task2 must not be clickable
+                assert 'onclick="viewChangeableField(%d, &quot;status&quot;)"' % task1.id not in span
+                found += 1
 
-
-        assert found
+        assert found == 2
 
         selectTags = self._getElementsByTagName(res.body, 'select')
         found = False

@@ -1,7 +1,5 @@
 <metal:macro metal:define-macro="show_task">
 
-
-
 <li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem" tal:condition="not: c/flat">
@@ -22,10 +20,16 @@
 
 <span class="status-column" tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" 
 tal:content="structure python: h.statusSelect(atask)"
-tal:attributes="id string:status-form_${atask/id};"/>
+tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
 
-<span class="status-column" tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; " tal:content="atask/status" />
+<span class="status-column"
+      tal:attributes="id string:status-label_${atask/id};
+      onclick python:test(h.has_permission('task', 'change_status', id=atask.id), 'viewChangeableField(%d, &quot;status&quot;)' % atask.id, '');;"
+      tal:content="atask/status" />
 
+<!--span class="status-column"
+      tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', '');
+      id string:status-label_${atask/id}; " tal:content="atask/status" /-->
 
 <!-- end status -->
 

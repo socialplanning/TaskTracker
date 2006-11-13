@@ -83,9 +83,12 @@ def statusSelect(task):
     status_names = [(s.name, s.name) for s in statuses]
     index = 0
     for status in statuses:
-        if s.name == task.status:
+#        print status.name, task.status, index
+        if status.name == task.status:
+#            print "oh boy!"
             break
         index += 1
+#    print "final index: ", index
     
     status_change_url = url_for(controller='task',
                                   action='change_status',
