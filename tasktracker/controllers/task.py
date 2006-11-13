@@ -53,7 +53,7 @@ class TaskController(BaseController):
         return clean
 
     @validate(schema=StatusChangeForm(), form='show_update')
-    @attrs(action='change_status')
+    @attrs(action='change_status', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_status(self, id):
         c.task = self._getTask(int(id))
@@ -61,7 +61,7 @@ class TaskController(BaseController):
         return render_text("ok")
 
     @validate(schema=PriorityChangeForm(), form='show_update')
-    @attrs(action='update')
+    @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_priority(self, id):
         c.task = self._getTask(int(id))
