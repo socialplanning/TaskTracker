@@ -2,7 +2,7 @@
 
 <metal:do use-macro="here/task_item/macros/show_task">
 
-<ul id="xtasks" class="task_list" metal:fill-slot="additional_task_info">
+<ul id="xtasks" class="task_list" metal:fill-slot="post_task">
 <tal:for repeat="atask atask/liveChildren">
 
 <metal:do use-macro="here/task_list_item/macros/show_task" />

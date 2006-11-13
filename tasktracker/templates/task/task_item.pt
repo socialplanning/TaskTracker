@@ -75,7 +75,7 @@ tal:attributes="id string:priority-form_${atask/id};"/>
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
 
-<span metal:define-slot="additional_task_info" />
+<span metal:define-slot="post_task" />
 
 </li>
 </metal:macro>
