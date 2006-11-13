@@ -64,12 +64,12 @@
       	      tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
        onchange python:'changeField(&quot;%s&quot;,%d, &quot;owner&quot;)' % (h.url_for(controller='task', action='assign', id=atask.id), atask.id)" />
 
-     <!-- somehow this div breaks things
-       <div class="auto_complete" id="owner_auto_complete" />
-     -->
-       <script type="text/javascript">
-       	       new Ajax.Autocompleter('owner', 'owner_auto_complete', '../../../task/auto_complete_for_owner/', {})
-       </script>
+     <!-- somehow this elemnt breaks things -->
+     <span class="auto_complete" tal:attributes="id string:owner_auto_complete_${atask/id}" />
+
+     <!-- this javascript is errorful -->
+       <script type="text/javascript"
+       tal:content="string: new Ajax.Autocompleter('owner_${atask/id}', 'owner_auto_complete_${atask/id}', '../../../task/auto_complete_for_owner/', {});" />
 </span>
 
 <span class="assigned-column"
