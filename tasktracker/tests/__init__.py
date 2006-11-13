@@ -68,12 +68,12 @@ class TestController(TestCase):
             delquery = conn.sqlrepr(Delete(table.q, where=None))
             conn.query(delquery)
     
-        task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
+        self.task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
 
         Task(title="Task 1", text="This is a task",
-             task_list=task_list)
+             task_list=self.task_list)
         Task(title="Task 2", text="Another task",
-             task_list=task_list)
+             task_list=self.task_list)
         task_list_complete = TaskList(title="Complete list", text="Another list", projectID=self.project.id, username='admin')
         Task(title="Task A", text="more",
              task_list=task_list_complete,

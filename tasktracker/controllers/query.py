@@ -47,6 +47,5 @@ class QueryController(BaseController):
     @attrs(action='open')
     def tasklist_tasks(self, id):
         c.list_name = "All tasks in a task list"
-        results = Task.select(Task.q.task_listID == id & 
-                              Task.q.live == True)
+        results = Task.selectBy(task_listID = id, live = True)
         return self._render(results)
