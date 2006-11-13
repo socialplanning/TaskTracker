@@ -109,10 +109,10 @@ class TestTaskController(TestController):
     def test_auth_role(self):
         tl = self.create_tasklist('testing the auth role')
 
-        #set security such that only task owner can change status
+        #set security such that only task owner can change status and update
         found = False
         for perm in tl.permissions:
-            if perm.action.action == "task_change_status":
+            if perm.action.action == "task_change_status" or perm.action.action == "task_update":
                 found = True
                 perm.min_level = Role.getLevel("TaskOwner")
         assert found
@@ -133,29 +133,30 @@ class TestTaskController(TestController):
 
         found = 0
         for span in spanTags:
-            if 'status-label_%d' % task1.id in span:
+            for field in 'status deadline priority owner'.split():
+                if '%s-label_%d' % (field, task1.id) in span:
                 #the label for task1 must be clickable
-                print span
-                assert 'onclick="viewChangeableField(%d, &quot;status&quot;)"' % task1.id in span
-                found += 1
-            elif 'status-label_%d' % task2.id in span:
+                    assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
+                    found += 1
+                elif '%s-label_%d' % (field, task2.id) in span:
                 #the label for task2 must not be clickable
-                assert 'onclick="viewChangeableField(%d, &quot;status&quot;)"' % task1.id not in span
-                found += 1
+                    assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) not in span
+                    found += 1
 
-        assert found == 2
+        assert found == 8
 
         selectTags = self._getElementsByTagName(res.body, 'select')
-        found = False
+        found = 0
         for select in selectTags:
             #there is no select for task2, because we can't edit it.
             assert 'status_%d' % task2.id not in select 
+            assert 'priority_%d' % task2.id not in select
 
             #but there is one for task1
-            if 'status_%d' % task1.id in select:
-              found = True
+            if 'status_%d' % task1.id in select or 'priority_%d' % task1.id in select:
+              found += 1
 
-        assert found
+        assert found == 2
 
         task1.destroySelf()
         task2.destroySelf()
