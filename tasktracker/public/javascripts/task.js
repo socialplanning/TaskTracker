@@ -4,7 +4,7 @@ function toggle(obj) {
 
 function changeField(url, task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
-    alert(fieldname);
+    console.log('changed: ', fieldname);
     field.disabled = true;
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + field.value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
@@ -14,7 +14,12 @@ function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
-    var root = (parseInt(taskitem.childNodes[1].getAttribute('depth')) === 0) ? 'root-task' : 'sub-task';
+    var root;
+    if (taskitem.childNodes[1].nodeType == 1) {
+	root = (parseInt(taskitem.childNodes[1].getAttribute('depth')) === 0) ? 'root-task' : 'sub-task';
+    } else {
+	root = 'root-task';
+    }
     tasktext.setAttribute('class', completed + ' ' + root);
 }
 

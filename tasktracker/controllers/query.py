@@ -25,6 +25,8 @@ class QueryController(BaseController):
 
     def _render(self, results):
         c.results = results
+        c.depth = 0
+        c.flat = True
         return render_response('zpt', 'task.flat_list')
 
     @attrs(action='loggedin')
