@@ -38,14 +38,15 @@ class QueryController(BaseController):
     @attrs(action='open')
     def project_tasks(self):
         c.list_name = "All tasks in a project"
-        results = Task.select(TaskList.q.project == c.project & 
-                              Task.q.task_list_id == TaskList.q.id & 
+        results = Task.select(TaskList.q.projectID == Project.q.id & 
+                              Project.q.title == c.project & 
+                              Task.q.task_listID == TaskList.q.id & 
                               Task.q.live == True)
         return self._render(results)
 
     @attrs(action='open')
     def tasklist_tasks(self, id):
         c.list_name = "All tasks in a task list"
-        results = Task.select(Task.q.task_list_id == id & 
+        results = Task.select(Task.q.task_listID == id & 
                               Task.q.live == True)
         return self._render(results)

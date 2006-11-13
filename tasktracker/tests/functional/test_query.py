@@ -38,3 +38,15 @@ class TestTaskController(TestController):
         for x in [my_task, her_task, tl]:
             x.destroySelf()
 
+    def test_project(self):
+        tl = self.create_tasklist('testing task watching', security_level=0)
+
+        task = Task(title='A task', text='x', private=False, task_listID=tl.id)
+        
+        app = self.getApp('admin')
+
+        res = app.get(url_for(controller='query', action='project_tasks'))
+        res.mustcontain('A task')
+
+        for x in [task, tl]:
+            x.destroySelf()
