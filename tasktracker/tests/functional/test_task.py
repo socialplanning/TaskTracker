@@ -70,28 +70,6 @@ class TestTaskController(TestController):
 
         res.mustcontain('The new task title')
     
-
-    def create_tasklist(self, title, security_level=1):
-        app = self.getApp('admin')
-        res = app.get(url_for(
-                controller='tasklist', action='show_create'))
-
-        form = res.forms[0]
-        
-        form.fields['title'][0].value = title
-        form.fields['mode'][0].value = 'simple'
-        policy = form.fields['policy'][0]
-        policy.value = policy.options[security_level][0] 
-        
-        res = form.submit()
-        res = res.follow()
-        
-        path = res.req.path_info
-        new_task_list_id = int(path[path.rindex('/') + 1:])
-
-        task_list = TaskList.get(new_task_list_id)
-        return task_list
-
     def _getElementsByTagName(self, body, tagname):
         elements = []
         start = -1
