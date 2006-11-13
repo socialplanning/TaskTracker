@@ -1,0 +1,8 @@
+<strong tal:content="c/list_name"></strong><br/>
+<ul id="xtasks" class="task_list">
+<tal:for repeat="atask c/results">
+
+<metal:do metal:use-macro="here/task_item/macros/show_task" />
+
+</tal:for>
+</ul>
