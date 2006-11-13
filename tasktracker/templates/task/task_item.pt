@@ -19,45 +19,38 @@
 <!-- the status -->
 
 <span class="status-column" tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" 
-tal:content="structure python: h.statusSelect(atask)"
-tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
+      tal:content="structure python: h.statusSelect(atask)"
+      tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
 
 <span class="status-column"
       tal:attributes="id string:status-label_${atask/id};
       onclick python:test(h.has_permission('task', 'change_status', id=atask.id), 'viewChangeableField(%d, &quot;status&quot;)' % atask.id, '');;"
       tal:content="atask/status" />
 
-<!--span class="status-column"
-      tal:attributes="style python: test(h.has_permission('task', 'change_status', id=atask.id), 'display:none;;', '');
-      id string:status-label_${atask/id}; " tal:content="atask/status" /-->
-
 <!-- end status -->
 
 <!-- deadline -->
 
-<span tal:condition="python: h.has_permission('task', 'update', id=atask.id)"
-      tal:replace="structure python: h.datebocks_field('atask', 'deadline', attributes={'id':'deadline_%d' % atask.id, 'class':'deadline-column'}, value=atask.deadline)" />
+<span class="deadline-column" tal:condition="python: h.has_permission('task', 'update', id=atask.id)"
+      tal:content="structure python: h.datebocks_field('atask', 'deadline', attributes={'id':'deadline_%d' % atask.id}, value=atask.deadline)"
+      tal:attributes="id string:deadline-form_${atask/id}; style string:display:none" />
 
+<span class="deadline-column"
+      tal:attributes="id string:deadline-label_${atask/id};
+      onclick python:test(h.has_permission('task', 'update', id=atask.id), 'viewChangeableField(%d, &quot;deadline&quot;)' % atask.id, '')"
+      tal:content="python: h.readableDate(atask.deadline)" />
 
-<span tal:attributes="style python: test(h.has_permission('task', 'update', id=atask.id), 'display:none;;', '')" class="deadline-column" tal:content="python: h.readableDate(atask.deadline)" />
+<!-- end deadline -->
 
 <!-- priority -->
 
 <span class="priority-column" tal:condition="python: h.has_permission('task', 'change_priority', id=atask.id)" 
-tal:content="structure python:
-h.select('priority',
-         h.options_for_select([(s, s) for s in 'High Medium Low None'.split()], 
-                              atask.priority),
-         method='post',
-         originalvalue=atask.priority,
-         onchange='changeField(&quot;%s&quot;,%d, &quot;priority&quot;)' % (h.url_for(controller='task',
-                                                                 	 action='change_priority',
-                                                                 	 id=atask.id),
-                                                       			 atask.id),
-                   id='priority_%d' % atask.id) "
-tal:attributes="id string:priority-form_${atask/id};"/>
+      tal:content="structure python:h.prioritySelect(atask)"
+      tal:attributes="id string:priority-form_${atask/id}; style string:display:none"/>
 
-<span class="priority-column" tal:attributes="style python: test(h.has_permission('task', 'change_priority', id=atask.id), 'display:none;;', ''); id string:label_${atask/id}; "
+<span class="priority-column"
+      tal:attributes="id string:priority-label_${atask/id};
+      onclick python: test(h.has_permission('task', 'change_priority', id=atask.id), 'viewChangeableField(%d, &quot;priority&quot;)' % atask.id, '')"
       tal:content="atask/priority" />
 
 

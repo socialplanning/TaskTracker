@@ -42,7 +42,7 @@ def readableDate(date):
     if date:
         return date.strftime("%Y-%m-%d")
     else:
-        return None
+        return "No deadline"
 
 def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
     updateable_lis = "\n".join([
@@ -77,6 +77,15 @@ def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0)
             tasks.append(item)
             tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
     return tasks
+
+def prioritySelect(task):
+    priority = task.priority
+    id = task.id
+    return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
+                  method='post', originalvalue=priority,
+                  onchange='changeField("%s", %d, "priority")' % \
+                      (url_for(controller='task', action='change_priority', id=id), id), \
+                      id='priority_%d' % id)
 
 def statusSelect(task):
     statuses = task.task_list.project.statuses
