@@ -2,9 +2,8 @@ function toggle(obj) {
     obj.style.display = (obj.style.display != 'none' ? 'none' : '');
 }
 
-function changeField(url, task_id, fieldname) {
+function changeField(url, task_id, fieldname) {    
     var field = $(fieldname + '_' + task_id);
-    console.log('changed: ', fieldname);
     field.disabled = true;
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + field.value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
@@ -18,7 +17,6 @@ function viewChangeableField(task_id, fieldname) {
 function hideChangeableField(task_id, fieldname) {
     $(fieldname + '-form_' + task_id).hide();
     $(fieldname + '-label_' + task_id).show();
-    console.log("hid field", fieldname);
 }
 
 function updateTaskItem(task_id) {
@@ -223,7 +221,6 @@ function doneDestroyingTask(req) {
 }
 
 function failedDestroyingTask(req) {
-    console.log("Failed to destroy the task " + this);
     var task_id = this;
     $('task_' + task_id).show();    
 }

@@ -53,21 +53,31 @@
       onclick python: test(h.has_permission('task', 'change_priority', id=atask.id), 'viewChangeableField(%d, &quot;priority&quot;)' % atask.id, '')"
       tal:content="atask/priority" />
 
-
-<!--span class="priority-column" tal:content="atask/priority" /-->
+<!-- end priority -->
 
 <!-- owner -->
-<span class="autocomplete assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)">
-<input autocomplete="off" name="owner" size="30" type="text"
-       tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
+
+<span class="autocomplete assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)"
+      tal:attributes="id string:owner-form_${atask/id}; style string:display:none">
+
+      <input autocomplete="off" name="owner" size="30" type="text"
+      	      tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
        onchange python:'changeField(&quot;%s&quot;,%d, &quot;owner&quot;)' % (h.url_for(controller='task', action='assign', id=atask.id), atask.id)" />
-<div class="auto_complete" id="owner_auto_complete"></div>
-<script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
-'../../../task/auto_complete_for_owner/', {})</script>
+
+     <!-- somehow this div breaks things
+       <div class="auto_complete" id="owner_auto_complete" />
+     -->
+       <script type="text/javascript">
+       	       new Ajax.Autocompleter('owner', 'owner_auto_complete', '../../../task/auto_complete_for_owner/', {})
+       </script>
 </span>
 
-<span class="assigned-column" tal:attributes="style python: test(h.has_permission('task', 'assign', id=atask.id), 'display:none;;', '');"
-      tal:content="atask/owner" />
+<span class="assigned-column"
+      tal:attributes="id string:owner-label_${atask/id};
+      onclick python: test(h.has_permission('task', 'assign', id=atask.id), 'viewChangeableField(%d, &quot;owner&quot;)' % atask.id, '')"
+      tal:content="python: test(atask.owner, atask.owner, 'Unassigned')" />
+
+<!-- end owner --> 
 
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
