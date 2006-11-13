@@ -31,11 +31,13 @@ class QueryController(BaseController):
 
     @attrs(action='loggedin')
     def my_tasks(self):
+        c.list_name = "My tasks"
         results = Task.selectBy(owner=c.username, live=True)
         return self._render(results)
 
     @attrs(action='open')
     def project_tasks(self):
+        c.list_name = "All tasks in a project"
         results = Task.select(TaskList.q.project == c.project & 
                               Task.q.task_list_id == TaskList.q.id & 
                               Task.q.live == True)
@@ -43,6 +45,7 @@ class QueryController(BaseController):
 
     @attrs(action='open')
     def tasklist_tasks(self, id):
+        c.list_name = "All tasks in a task list"
         results = Task.select(Task.q.task_list_id == id & 
                               Task.q.live == True)
         return self._render(results)
