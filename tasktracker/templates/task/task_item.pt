@@ -57,6 +57,11 @@
 
 <!-- owner -->
 
+<span class="assigned-column"
+      tal:attributes="id string:owner-label_${atask/id};
+      onclick python: test(h.has_permission('task', 'assign', id=atask.id), 'viewChangeableField(%d, &quot;owner&quot;)' % atask.id, '')"
+      tal:content="python: test(atask.owner, atask.owner, 'Unassigned')" />
+
 <span class="autocomplete assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)"
       tal:attributes="id string:owner-form_${atask/id}; style string:display:none">
 
@@ -72,17 +77,13 @@
        tal:content="string: new Ajax.Autocompleter('owner_${atask/id}', 'owner_auto_complete_${atask/id}', '../../../task/auto_complete_for_owner/', {});" />
 </span>
 
-<span class="assigned-column"
-      tal:attributes="id string:owner-label_${atask/id};
-      onclick python: test(h.has_permission('task', 'assign', id=atask.id), 'viewChangeableField(%d, &quot;owner&quot;)' % atask.id, '')"
-      tal:content="python: test(atask.owner, atask.owner, 'Unassigned')" />
-
 <!-- end owner --> 
 
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
 
 <span metal:define-slot="post_task" />
+
 
 </li>
 </metal:macro>
