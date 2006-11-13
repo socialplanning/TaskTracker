@@ -29,23 +29,25 @@ class QueryController(BaseController):
         c.flat = True
         return render_response('zpt', 'task.flat_list')
 
+    def _sorted_select(self, query):
+        return Task.select(query, orderBy='task_list_id')
+
     @attrs(action='loggedin')
     def my_tasks(self):
         c.list_name = "My tasks"
-        results = Task.selectBy(owner=c.username, live=True)
+        results = self._sorted_select(AND(Task.q.owner == c.username, Task.q.live == True))
         return self._render(results)
 
     @attrs(action='open')
     def project_tasks(self):
         c.list_name = "All tasks in a project"
-        results = Task.select(TaskList.q.projectID == Project.q.id & 
-                              Project.q.title == c.project & 
-                              Task.q.task_listID == TaskList.q.id & 
-                              Task.q.live == True)
+        results = self._sorted_select(AND(TaskList.q.projectID == c.project.id,
+                              Task.q.task_listID == TaskList.q.id,
+                              Task.q.live == True))
         return self._render(results)
 
     @attrs(action='open')
     def tasklist_tasks(self, id):
         c.list_name = "All tasks in a task list"
-        results = Task.selectBy(task_listID = id, live = True)
+        results = self._sorted_select(AND(Task.q.task_listID == id, Task.q.live == True))
         return self._render(results)
