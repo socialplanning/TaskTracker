@@ -32,7 +32,7 @@ Task name
 <ul id="tasks" class="task_list">
   <tal:for repeat="atask c/tasks">
     
-    <metal:do metal:use-macro="here/task_item/macros/show_task" />
+    <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
     
   </tal:for>
 </ul>

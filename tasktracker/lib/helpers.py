@@ -78,6 +78,25 @@ def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0)
             tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
     return tasks
 
+def statusSelect(task):
+    statuses = task.task_list.project.statuses
+    status_names = [(s.name, s.name) for s in statuses]
+    index = 0
+    for status in statuses:
+        if s.name == task.status:
+            break
+        index += 1
+    
+    status_change_url = url_for(controller='task',
+                                  action='change_status',
+                                  id=task.id)
+    return select('status', 
+                  options_for_select(status_names, task.status), 
+                  method='post', 
+                  originalvalue=index,
+                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
+                  id='status_%d' % task.id) 
+
 def taskDropDown(id, task_list, initial_value=0, include_this_task=False):
     tasks = [("No parent task",0)]
     if include_this_task:
