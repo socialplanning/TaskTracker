@@ -73,7 +73,7 @@ def possiblyEditableSpan(task, type, permission, contents):
     else:
         out.append("""<span class="%s-column" """ % type)
 
-    out.append("""id="priority-label_%d" """ % task.id)
+    out.append("""id="%s-label_%d" """ % (type, task.id))
     if editable:
         out.append ("""onclick="viewChangeableField(%d, '%s')" """ % (task.id, type))
 

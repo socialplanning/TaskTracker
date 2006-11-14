@@ -136,7 +136,7 @@ class TestTaskController(TestController):
             for field in 'status deadline priority owner'.split():
                 if '%s-label_%d' % (field, task1.id) in span:
                 #the label for task1 must be clickable
-                    assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
+                    assert 'onclick="viewChangeableField(%d, \'%s\')"' % (task1.id, field) in span
                     found += 1
                 elif '%s-label_%d' % (field, task2.id) in span:
                 #the label for task2 must not be clickable
