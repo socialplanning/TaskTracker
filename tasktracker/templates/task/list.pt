@@ -1,5 +1,7 @@
 This is list <span tal:replace="c/tasklist/title" />.<br />
 
+<p tal:content="c/tasklist/text" />
+
 <span tal:condition="python: not c.tasklist.isWatchedBy(c.username)">
 <tal:nada replace="structure python:h.link_to('Watch this task list', url=h.url_for(action='show_create', controller='watcher', targetID=c.tasklist.id, type='tasklist'))"/>
 </span>
