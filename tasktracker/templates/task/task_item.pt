@@ -1,19 +1,25 @@
 <metal:macro metal:define-macro="show_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: 'taskrow %s' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<span tal:attributes="style python:'padding-left: %dpx;;' % ((atask.depth() - c.depth) * 15); depth python: atask.depth() - c.depth" class="taskitem" tal:condition="not: c/flat">
+<span tal:attributes="depth python: atask.depth() - c.depth" class="taskitem">
 
+  <span tal:condition="not: c/flat">
     <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'), class_='treewidget', id='collapseButton_%d' % atask.id)" />
 
     <span tal:attributes="id string:draggable_${atask/id};">
-        <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'), id = 'handle_%s' % atask.id, onclick = 'toggleCollapse(%s)' % atask.id, class_='handle')" />
+        <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'), id = 'handle_%s' % atask.id, 
+	style = 'padding-left: %dpx;' % ((atask.depth() - c.depth) * 15), 
+	onclick = 'toggleCollapse(%s)' % atask.id, class_='handle')" />
 
     </span>
+  </span>
+
+    <!-- title -->
+    <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
 </span>
 
-<!-- title -->
-<a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: '%s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+
 
 
 <!-- the status -->

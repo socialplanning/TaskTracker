@@ -54,16 +54,13 @@ Child tasks:<br>
   </a><br/><br/>
 </tal:if>
 
-Task name
-<span class="status-column">Status</span>
-<span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span class="owner-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
   <tal:for repeat="atask c/task/liveChildren">
     
-    <metal:do metal:use-macro="here/task_item/macros/show_task" />
+    <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
     
   </tal:for>
 </ul>

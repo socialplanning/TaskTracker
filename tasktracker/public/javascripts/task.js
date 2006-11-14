@@ -103,8 +103,9 @@ function resetChildDepths(elem) {
                 var title = child.childNodes[1];
 
                 title.setAttribute('depth', new_depth);
-                var left = new_depth * 15;
-                title.style.paddingLeft = left + 'px'; 
+                //var left = new_depth * 15;
+                //title.style.paddingLeft = left + 'px'; 
+                indentTaskItem(title,new_depth)
                 resetChildDepths(child);
             }
         });
@@ -144,6 +145,21 @@ function debugThing() {
     console.log("FAILED");
 }
 
+
+function indentTaskItem(task, depth) {
+    var children = task.getElementsByTagName('IMG');
+
+    var target; 
+    for (var child in children) {
+	if (child.getAttribute('class').match('handle')) {
+	    target = child; 
+	    break; 
+	}
+    }
+
+    target.style.paddingLeft = 15*depth + 'px'; 
+}
+
 function insertTaskAfterSibling(task_id, sibling_id) {
     var child = $('task_' + task_id);
     var new_sibling = $('task_' + sibling_id);
@@ -175,7 +191,8 @@ function insertTaskAfterSibling(task_id, sibling_id) {
         var title = child.childNodes[1];
 
         title.setAttribute('depth', 0);
-        title.style.paddingLeft = '0px'; 
+        //title.style.paddingLeft = '0px'; 
+        indentTaskItem(title,0); 
         resetChildDepths(child);
     }
 }
@@ -208,8 +225,8 @@ function insertTaskUnderParent(child_id, parent_id) {
         var title = child.childNodes[1];
 
         title.setAttribute('depth', parentdepth + 1);
-        title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
-
+        //title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
+        indentTaskItem(title,parentdepth+1); 
         resetChildDepths(child);
         return;
     }

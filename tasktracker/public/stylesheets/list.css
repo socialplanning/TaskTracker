@@ -5,6 +5,7 @@ td {
 
 .task_list {
 	list-style-type: none;
+        list-style-image: none; 
 	padding-left: 0px;
 }
 
@@ -48,9 +49,6 @@ span.autocomplete ul li {
 }
 /*end scriptaculous*/
 
-.taskitem {
-
-}
 
 .error-message {
      border: 1px black dashed;
@@ -73,29 +71,39 @@ a.sortarrow:link {
     font-weight: bold;
 }
 
+.taskrow {
+  clear: both; 
+}
+
+.taskitem {
+   float: left; 
+   width: 20%; 
+}
+
+
 .status-column {
-    position: absolute;
-    left: 20em;    
+   float: left; 
+   width: 20%; 
 }
 
 .deadline-column {
-    position: absolute;
-    left: 30em;
+   float: left; 
+   width: 20%;    
 }
 
 .priority-column {
-    position: absolute;
-    left: 40em;
+   float: left; 
+   width: 20%;    
 }
 
 .owner-column {
-    position: absolute;
-    left: 50em;
+   float: left; 
+   width: 20%;    
 }
 
 .creator-column {
-    position: absolute;
-    left: 65em;
+   float: left; 
+   width: 20%;    
 }
 
 .completed-task {
