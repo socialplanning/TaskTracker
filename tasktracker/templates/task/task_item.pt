@@ -69,8 +69,7 @@
       	      tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
        onchange python:'changeField(&quot;%s&quot;,%d, &quot;owner&quot;)' % (h.url_for(controller='task', action='assign', id=atask.id), atask.id)" />
 
-     <!-- somehow this elemnt breaks things -->
-     <span class="auto_complete" tal:attributes="id string:owner_auto_complete_${atask/id}" />
+     <span class="auto_complete" tal:attributes="id string:owner_auto_complete_${atask/id}"></span>
 
      <!-- this javascript is errorful -->
        <script type="text/javascript"
