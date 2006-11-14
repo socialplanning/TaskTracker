@@ -24,19 +24,19 @@ from tasktracker.models import *
 class NamedList(list):
     pass
 
+def _make_path_key(task):
+    key = []
+    cur = task
+    while cur.parentID:
+        key.append(cur.parentID)
+        cur = cur.parent
+    return key
+
 def _sorted_by_parent(list, parent=0):
-    #first, we want the direct children of the passed-in list
-    #then we want to replace each by a list consisting of them and their descendents
-    out = []
-    children = []
-    for x in list:
-        if x.parentID == parent:
-            #TODO: wait, isn't this just a BFS?  
-            #
-            out.append(x)
-            children += _sorted_by_parent(list, x.id)
-    
-    return out + children
+    #Schwartzian transform
+    sort = [(_make_path_key(task), task) for task in list]
+    return [x[1] for x in sorted(sort)]
+
 
 class QueryController(BaseController):
 
