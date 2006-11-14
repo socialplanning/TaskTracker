@@ -35,7 +35,7 @@ You are watching this task list.
 </ul>
 
 </span>
-
+<br clear="both" />
 <!-- the garbage bin -->
 <span tal:replace="structure python: h.image_tag('/images/trash.png', id='trash')" />
 

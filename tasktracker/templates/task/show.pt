@@ -64,10 +64,10 @@ Child tasks:<br>
     
   </tal:for>
 </ul>
+<br clear="both" />
 
 </div>
 </span>
-
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">Add a new subtask.</a>
 </metal:do>
