@@ -64,6 +64,22 @@ def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
     %s
     </ul>""" % (id, updateable_lis, fixed_lis);
 
+def possiblyEditableSpan(task, type, permission, contents):
+    editable = has_permission('task', permission, id=task.id)
+
+    out = []
+    if editable:        
+        out.append("""<span class="%s-column editable" """ % type)
+    else:
+        out.append("""<span class="%s-column" """ % type)
+
+    out.append("""id="priority-label_%d" """ % task.id)
+    if editable:
+        out.append ("""onclick="viewChangeableField(%d, '%s')" """ % (task.id, type))
+
+    out.append(">%s</span>" % contents)
+    
+    return " ".join(out)
 
 def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]

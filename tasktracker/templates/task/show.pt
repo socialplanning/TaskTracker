@@ -57,7 +57,7 @@ Child tasks:<br>
 Task name
 <span class="status-column">Status</span>
 <span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span class="assigned-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<span class="owner-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">

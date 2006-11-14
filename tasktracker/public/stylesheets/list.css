@@ -88,7 +88,7 @@ a.sortarrow:link {
     left: 40em;
 }
 
-.assigned-column {
+.owner-column {
     position: absolute;
     left: 50em;
 }
@@ -112,4 +112,9 @@ a.sortarrow:link {
 
 .sub-task { 
   font-size:0.95em;  
+}
+
+span.editable:hover {
+  font-style: italic;
+  background-color: #ddffdd;
 }

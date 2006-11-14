@@ -22,7 +22,7 @@
       tal:content="structure python: h.statusSelect(atask)"
       tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
 
-<span class="status-column"
+<span class="status-column editable"
       tal:attributes="id string:status-label_${atask/id};
       onclick python:test(h.has_permission('task', 'change_status', id=atask.id), 'viewChangeableField(%d, &quot;status&quot;)' % atask.id, '');;"
       tal:content="atask/status" />
@@ -35,7 +35,7 @@
       tal:content="structure python: h.datebocks_field('atask', 'deadline', attributes={'id':'deadline_%d' % atask.id}, value=atask.deadline)"
       tal:attributes="id string:deadline-form_${atask/id}; style string:display:none" />
 
-<span class="deadline-column"
+<span class="deadline-column editable"
       tal:attributes="id string:deadline-label_${atask/id};
       onclick python:test(h.has_permission('task', 'update', id=atask.id), 'viewChangeableField(%d, &quot;deadline&quot;)' % atask.id, '')"
       tal:content="python: h.readableDate(atask.deadline)" />
@@ -48,21 +48,15 @@
       tal:content="structure python:h.prioritySelect(atask)"
       tal:attributes="id string:priority-form_${atask/id}; style string:display:none"/>
 
-<span class="priority-column"
-      tal:attributes="id string:priority-label_${atask/id};
-      onclick python: test(h.has_permission('task', 'change_priority', id=atask.id), 'viewChangeableField(%d, &quot;priority&quot;)' % atask.id, '')"
-      tal:content="atask/priority" />
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'priority', 'change_priority', atask.priority)" />
 
 <!-- end priority -->
 
 <!-- owner -->
 
-<span class="assigned-column"
-      tal:attributes="id string:owner-label_${atask/id};
-      onclick python: test(h.has_permission('task', 'assign', id=atask.id), 'viewChangeableField(%d, &quot;owner&quot;)' % atask.id, '')"
-      tal:content="python: test(atask.owner, atask.owner, 'Unassigned')" />
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'owner', 'assign', test(atask.owner, atask.owner, 'Unassigned'))" />
 
-<span class="autocomplete assigned-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)"
+<span class="autocomplete owner-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)"
       tal:attributes="id string:owner-form_${atask/id}; style string:display:none">
 
       <input autocomplete="off" name="owner" size="30" type="text"
