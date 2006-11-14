@@ -71,7 +71,6 @@
 
      <span class="auto_complete" tal:attributes="id string:owner_auto_complete_${atask/id}"></span>
 
-     <!-- this javascript is errorful -->
        <script type="text/javascript"
        tal:content="string: new Ajax.Autocompleter('owner_${atask/id}', 'owner_auto_complete_${atask/id}', '../../../task/auto_complete_for_owner/', {});" />
 </span>
