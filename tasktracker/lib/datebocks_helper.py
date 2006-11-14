@@ -77,7 +77,16 @@ def options_for_javascript(dict):
         items.append('%s : %s' % (k, v))
     return '{%s}' % ",".join(items)
 
-def datebocks_field(object_name, field_name, options = {}, calendar_options = {}, attributes = {}, value = None):
+def datebocks_field(object_name, field_name, options = None, calendar_options = None, attributes = None, value = None):
+    if options is None:
+        options = dict()
+
+    if calendar_options is None:
+        calendar_options = dict()
+
+    if attributes is None:
+        attributes = dict()
+    
     if not options.has_key('name'):
         options['name'] =  field_name + ".date"
 
@@ -89,6 +98,7 @@ def datebocks_field(object_name, field_name, options = {}, calendar_options = {}
         attributes['class'] = 'dateBocks'
     if not 'id' in keys:
         attributes['id'] = 'dateBocks'    
+    keys = attributes.keys()
     for key in keys:
         attribute_str = attribute_str + '%s="%s" ' % (key, attributes[key])
 
