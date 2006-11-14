@@ -39,7 +39,7 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 
 <br/>
 
-<div tal:content="c/task/text" />
+<div tal:content="structure c/task/text" />
 
 <br/>
 
