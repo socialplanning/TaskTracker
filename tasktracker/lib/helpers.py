@@ -69,14 +69,6 @@ def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
-def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
-    tasks = []
-    for task in Task.selectBy(task_listID=task_list_id, parentID=parent_id):
-        if has_permission('task', 'show', id=task.id) and not task.id == this_task_id:
-            item = ("%s %s" % ('...' * (depth), task.title), task.id)
-            tasks.append(item)
-            tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
-    return tasks
 
 def prioritySelect(task):
     priority = task.priority
@@ -108,6 +100,15 @@ def statusSelect(task):
                   originalvalue=index,
                   onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
                   id='status_%d' % task.id) 
+
+def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
+    tasks = []
+    for task in Task.selectBy(task_listID=task_list_id, parentID=parent_id):
+        if has_permission('task', 'show', id=task.id) and not task.id == this_task_id:
+            item = ("%s %s" % ('...' * (depth), task.title), task.id)
+            tasks.append(item)
+            tasks += _childTasksForTaskDropDown(this_task_id, task_list_id, task.id, depth + 1)
+    return tasks
 
 def taskDropDown(id, task_list, initial_value=0, include_this_task=False):
     tasks = [("No parent task",0)]

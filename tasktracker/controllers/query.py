@@ -21,10 +21,56 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
+class NamedList(list):
+    pass
+
+def _sorted_by_parent(list, parent=0):
+    #first, we want the direct children of the passed-in list
+    #then we want to replace each by a list consisting of them and their descendents
+    out = []
+    children = []
+    for x in list:
+        if x.parentID == parent:
+            #TODO: wait, isn't this just a BFS?  
+            #
+            out.append(x)
+            children += _sorted_by_parent(list, x.id)
+    
+    return out + children
+
 class QueryController(BaseController):
 
     def _render(self, results):
-        c.results = results
+        lists = []
+        task_list_id = 0
+        parent_id = -1
+
+        results = _sorted_by_parent(results)
+
+        for result in results:
+            if result.task_listID != task_list_id or result.parentID != parent_id: 
+                task_list_id = result.task_listID
+                parent_id = result.parentID
+                l = NamedList()
+                lists.append (l)
+
+                parents = []
+                cur = result
+                while cur.parentID:
+                    parents.insert(0, cur.parent.title)
+                    cur = cur.parent
+                    
+                if parents:
+                    parent_path = "- %s" % " - ".join(parents)
+                else:
+                    parent_path = ''
+
+                l.path = "%s - %s %s" % (result.task_list.project.title, result.task_list.title, parent_path)
+
+
+            lists[-1].append(result)
+
+        c.results = lists
         c.depth = 0
         c.flat = True
         return render_response('zpt', 'task.flat_list')
