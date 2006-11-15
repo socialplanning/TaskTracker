@@ -78,7 +78,7 @@ def options_for_javascript(dict):
         items.append('%s : %s' % (k, v))
     return '{%s}' % ",".join(items)
 
-def datebocks_field(object_name, field_name, options = None, calendar_options = None, attributes = None, value = None):
+def datebocks_field(object_name, field_name, options = None, calendar_options = None, attributes = None, input_attributes = None, value = None):
     if options is None:
         options = dict()
 
@@ -87,6 +87,9 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
 
     if attributes is None:
         attributes = dict()
+
+    if input_attributes is None:
+        input_attributes = dict()
     
     attribute_str = str()
     keys = attributes.keys()
@@ -147,7 +150,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
                                   id=calendar_ref, 
                                   onChange=calendar_ref + "Obj.magicDate();", 
                                   onKeyPress=calendar_ref + "Obj.keyObserver(event, 'parse'); return " + calendar_ref + "Obj.keyObserver(event, 'return');", 
-                                  onClick="this.select();"), """</li>
+                                  onClick="this.select();", **input_attributes), """</li>
         <li class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</li>
         <li class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</li>
       </ul>

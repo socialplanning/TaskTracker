@@ -9,15 +9,6 @@ function changeField(url, task_id, fieldname) {
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
-function revertField(task_id, fieldname) {
-    var field = $(fieldname + '_' + task_id);
-    var orig = field.getAttribute('originalvalue');
-    var fieldlabel = $(fieldname + '-label_' + task_id);
-    field.selectedIndex = orig;    
-    fieldlabel.innerHTML = field.getValue(orig);
-    hideChangeableField(task_id, fieldname);
-}
-
 function viewChangeableField(task_id, fieldname) {
     $(fieldname + '-label_' + task_id).hide();
     $(fieldname + '-form_' + task_id).show();
@@ -26,6 +17,8 @@ function viewChangeableField(task_id, fieldname) {
 function hideChangeableField(task_id, fieldname) {
     $(fieldname + '-form_' + task_id).hide();
     $(fieldname + '-label_' + task_id).show();
+    console.log($(fieldname + '-form_' + task_id));
+    console.log($(fieldname + '-label_' + task_id));
 }
 
 function updateTaskItem(task_id) {
@@ -41,17 +34,26 @@ function updateTaskItem(task_id) {
     tasktext.setAttribute('class', completed + ' ' + root);
 }
 
+function revertField(task_id, fieldname) {
+    var field = $(fieldname + '_' + task_id);
+    var orig = field.getAttribute('originalvalue');
+    var fieldlabel = $(fieldname + '-label_' + task_id);
+    field.value = orig;
+    fieldlabel.innerHTML = orig;
+    hideChangeableField(task_id, fieldname);
+}
+
 function doneChangingField(req) {
     var task_id = this[0];
     var fieldname = this[1];
     var field = $(fieldname + '_' + task_id);
-    field.setAttribute('originalvalue', field.selectedIndex);
+    var newvalue = (field.value ? field.value : "No " + fieldname);
+    field.setAttribute('originalvalue', newvalue);
     field.disabled = false;
     field.style.color = "black"; 
-    var node = $(fieldname + '-label_' + task_id);
-    var newfield = $(fieldname + '_' + task_id).getValue(field.selectedIndex);
-    node.innerHTML = newfield;
-    $('task_' + task_id).setAttribute(fieldname, newfield);
+    var label = $(fieldname + '-label_' + task_id);
+    label.innerHTML = newvalue;
+    $('task_' + task_id).setAttribute(fieldname, field.value);
     updateTaskItem(task_id);
     hideChangeableField(task_id, fieldname);
 }

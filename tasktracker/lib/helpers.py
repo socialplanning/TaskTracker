@@ -104,8 +104,12 @@ def editableField(task, field):
     return "%s %s </span>" % (span, span_contents)
 
 def _ownerInput(task):
-    input = """<input autocomplete="off" name="owner" size="15" type="text"
-              id="owner_%d" value="%s"/>""" % (task.id, task.owner)
+    orig = "No owner"
+    if task.owner:
+        orig = task.owner    
+
+    input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
+              id="owner_%d" value="%s"/>""" % (orig, task.id, task.owner)
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
     script = """<script type="text/javascript">new Ajax.Autocompleter('owner_%d', 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
     return "%s\n%s\n%s" % (input, span, script)
@@ -115,11 +119,14 @@ def _prioritySelect(task):
     id = task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
                   method='post', originalvalue=priority, id='priority_%d' % id)
-#                  onchange='changeField("%s", %d, "priority")' % (url_for(controller='task', action='change_priority', id=id), id), \
 
 
 def _deadlineInput(task):
-    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, value=task.deadline)
+    orig = "No deadline"
+    if task.deadline:
+        orig = task.deadline
+    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
+                           input_attributes={'originalvalue': "%s" % orig}, value=task.deadline)
                         
 def _statusSelect(task):
     statuses = task.task_list.project.statuses
@@ -136,7 +143,7 @@ def _statusSelect(task):
     return select('status', 
                   options_for_select(status_names, task.status), 
                   method='post', 
-                  originalvalue=index,
+                  originalvalue=task.status,
                   id='status_%d' % task.id)
 #                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
 
