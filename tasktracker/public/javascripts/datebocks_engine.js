@@ -594,7 +594,7 @@ DateBocks.prototype = {
 		    input.value = year + '-' + month + '-' + day;
                     break;
             }
-	    console
+
             input.className = '';
             
             // Human readable date
