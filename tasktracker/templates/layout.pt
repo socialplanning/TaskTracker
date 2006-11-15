@@ -4,7 +4,7 @@
 <title tal:condition="not:c/title">
 Todo list
 </title>
-
+<link rel="Shortcut Icon" href="/favicon.ico">
 <span tal:replace="structure python:h.javascript_include_tag('prototype.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('effects.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('dragdrop.js')" />
