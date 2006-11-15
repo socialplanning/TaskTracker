@@ -20,60 +20,35 @@
 </span>
 
 
-
-
 <!-- the status -->
 
-<span class="status-column" tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" 
-      tal:content="structure python: h.statusField(atask)"
-      tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
+<span tal:replace="structure python:h.editableField(atask, 'status')"/>
 
-<span class="status-column editable"
-      tal:attributes="id string:status-label_${atask/id};
-      onclick python:test(h.has_permission('task', 'change_status', id=atask.id), 'viewChangeableField(%d, &quot;status&quot;)' % atask.id, '');;"
-      tal:content="atask/status" />
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'status')" />
 
 <!-- end status -->
 
 <!-- deadline -->
 
-<span class="deadline-column" tal:condition="python: h.has_permission('task', 'update', id=atask.id)"
-      tal:content="structure python: h.deadlineField(atask)"
-      tal:attributes="id string:deadline-form_${atask/id}; style string:display:none" />
+<span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
 
-<span class="deadline-column editable"
-      tal:attributes="id string:deadline-label_${atask/id};
-      onclick python:test(h.has_permission('task', 'update', id=atask.id), 'viewChangeableField(%d, &quot;deadline&quot;)' % atask.id, '')"
-      tal:content="python: h.readableDate(atask.deadline)" />
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'deadline')" />
 
 <!-- end deadline -->
 
 <!-- priority -->
 
-<span class="priority-column" tal:condition="python: h.has_permission('task', 'change_priority', id=atask.id)" 
-      tal:content="structure python:h.prioritySelect(atask)"
-      tal:attributes="id string:priority-form_${atask/id}; style string:display:none"/>
+<span tal:replace="structure python:h.editableField(atask, 'priority')"/>
 
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'priority', 'change_priority', atask.priority)" />
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'priority')" />
 
 <!-- end priority -->
 
 <!-- owner -->
 
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'owner', 'assign', test(atask.owner, atask.owner, 'Unassigned'))" />
+<span tal:replace="structure python:h.editableField(atask, 'owner')"/>
 
-<span class="autocomplete owner-column" tal:condition="python: h.has_permission('task', 'assign', id=atask.id)"
-      tal:attributes="id string:owner-form_${atask/id}; style string:display:none">
-
-      <input autocomplete="off" name="owner" size="30" type="text"
-      	      tal:attributes="id python:'owner_%s' % atask.id; value atask/owner;
-       onchange python:'changeField(&quot;%s&quot;,%d, &quot;owner&quot;)' % (h.url_for(controller='task', action='assign', id=atask.id), atask.id)" />
-
-     <span class="auto_complete" tal:attributes="id string:owner_auto_complete_${atask/id}"></span>
-
-       <script type="text/javascript"
-       tal:content="string: new Ajax.Autocompleter('owner_${atask/id}', 'owner_auto_complete_${atask/id}', '../../../task/auto_complete_for_owner/', {});" />
-</span>
+<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'owner')" />
 
 <!-- end owner --> 
 

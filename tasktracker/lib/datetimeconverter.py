@@ -72,22 +72,15 @@ class DateTimeConverter(FancyValidator):
     def _to_python(self, value, state):
         """ parse a string and return a datetime object. """
 
-        print value
         if (not self.not_empty) and value and not (value.get('date', None)) and not(value.get('time',None)):
             return ''
 
-        print "goodie"
         if value and isinstance(value, datetime.datetime):
-            print "bye!"
             return value
         else:
             try:
-                print "tying"
                 value = value['date'] + ' ' + (value['time'] or '17:00:00')
-                print value
-                print self.format
                 tpl = time.strptime(value, self.format)
-                print tpl
             except ValueError:
                 raise Invalid(self.message('badFormat', state), value, state)
             # shoudn't use time.mktime() because it can give OverflowError,

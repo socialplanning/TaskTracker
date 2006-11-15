@@ -79,7 +79,6 @@ class TaskController(BaseController):
     def change_deadline(self, id):
         c.task = self._getTask(int(id))
         c.task.deadline = self.form_result['deadline']
-        print c.task.deadline
         return render_text("ok")
     
     @attrs(action='show')
@@ -132,7 +131,6 @@ class TaskController(BaseController):
     @validate(schema=CreateTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
-        print "HELKO"
         return self._create_task(**p)
 
     def _create_task(self, **p):
@@ -157,6 +155,13 @@ class TaskController(BaseController):
         c.task.owner = c.username
         return Response.redirect_to(action='show',controller='task', id=id)
 
+    @attrs(action='assign')
+    @catches_errors
+    def change_owner(self, id):
+        c.task = self._getTask(id)
+        c.task.owner = request.params["owner"]
+        return Response.redirect_to(action='show',controller='task', id=id)
+        
     @attrs(action='assign')
     @catches_errors
     def assign(self, id):

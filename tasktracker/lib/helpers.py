@@ -40,7 +40,7 @@ def debugThings():
 
 def readableDate(date):
     if date:
-        return date.strftime("%m-%d-%Y")
+        return date.strftime("%m/%d/%Y")
     else:
         return "No deadline"
 
@@ -64,49 +64,63 @@ def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
     %s
     </ul>""" % (id, updateable_lis, fixed_lis);
 
-def possiblyEditableSpan(task, type, permission, contents):
-    editable = has_permission('task', permission, id=task.id)
+def taskListDropDown(id):
+    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
+    return select('task_listID', options_for_select(tasklist, selected=id))
+
+def possiblyEditableSpan(task, field, contents=None):
+    editable = has_permission('task', 'change_%s' % field, id=task.id)
+
+    if contents is None:        
+        contents = getattr(task, field)
+    
+    if not contents:
+        contents = "No %s" % field
 
     out = []
     if editable:        
-        out.append("""<span class="%s-column editable" """ % type)
+        out.append("""<span class="%s-column editable" """ % field)
     else:
-        out.append("""<span class="%s-column" """ % type)
+        out.append("""<span class="%s-column" """ % field)
 
-    out.append("""id="%s-label_%d" """ % (type, task.id))
+    out.append("""id="%s-label_%d" """ % (field, task.id))
     if editable:
-        out.append ("""onclick="viewChangeableField(%d, &quot;%s&quot;)" """ % (task.id, type))
+        out.append ("""onclick="viewChangeableField(%d, &quot;%s&quot;)" """ % (task.id, field))
 
     out.append(">%s</span>" % contents)
     
     return " ".join(out)
 
-def taskListDropDown(id):
-    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
-    return select('task_listID', options_for_select(tasklist, selected=id))
+def editableField(task, field):
+    if not has_permission('task', 'change_%s' % field, id=task.id):
+        return None
 
+    span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
-def prioritySelect(task):
+    save_img = image_tag('save.png', onclick='changeField("%s", %d, "%s");' % (url_for(controller='task', action='change_%s' % field, id=task.id), task.id, field))
+    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
+
+    span_contents = "%s %s %s" % (_fieldHelpers[field](task), save_img, cancel_img)
+    return "%s %s </span>" % (span, span_contents)
+
+def _ownerInput(task):
+    input = """<input autocomplete="off" name="owner" size="15" type="text"
+              id="owner_%d" value="%s"/>""" % (task.id, task.owner)
+    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
+    script = """<script type="text/javascript">new Ajax.Autocompleter('owner_%d', 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
+    return "%s\n%s\n%s" % (input, span, script)
+
+def _prioritySelect(task):
     priority = task.priority
     id = task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority,
-                  onchange='changeField("%s", %d, "priority")' % \
-                      (url_for(controller='task', action='change_priority', id=id), id), \
-                      id='priority_%d' % id)
+                  method='post', originalvalue=priority, id='priority_%d' % id)
+#                  onchange='changeField("%s", %d, "priority")' % (url_for(controller='task', action='change_priority', id=id), id), \
 
-def statusField(task):
-    save_img = image_tag('save.png', onclick='changeField("%s", %d, "status");' % (url_for(controller='task', action='change_status', id=task.id), task.id))
-    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "status");' % task.id)
-    
-    return "%s <br/> %s %s" % (_statusSelect(task), save_img, cancel_img)
 
-def deadlineField(task):
-    save_img = image_tag('save.png', onclick='changeField("%s", %d, "deadline");' % (url_for(controller='task', action='change_deadline', id=task.id), task.id))
-    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "deadline");' % task.id)
-    
-    return "%s <br/> %s %s" % (datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, value=task.deadline), save_img, cancel_img)
-
+def _deadlineInput(task):
+    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, value=task.deadline)
+                        
 def _statusSelect(task):
     statuses = task.task_list.project.statuses
     status_names = [(s.name, s.name) for s in statuses]
@@ -125,6 +139,8 @@ def _statusSelect(task):
                   originalvalue=index,
                   id='status_%d' % task.id)
 #                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
+
+_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
     
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []
