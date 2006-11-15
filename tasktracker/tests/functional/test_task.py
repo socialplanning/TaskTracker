@@ -54,11 +54,12 @@ class TestTaskController(TestController):
 
         form['title'] = 'The new task title'
         form['text'] = 'The new task body'
-        form['deadline.date'] = '2029-10-10'
+        form['deadline.date'] = '10/10/2029'
         form['deadline.time'] = '00:00:00'
         res = form.submit()
 
         #Creating a new task should redirect you to the list of tasks.
+        print res.header_dict
         location = res.header_dict['location']
         assert location.startswith('/tasklist/show/')
 

@@ -132,6 +132,7 @@ class TaskController(BaseController):
     @validate(schema=CreateTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
+        print "HELKO"
         return self._create_task(**p)
 
     def _create_task(self, **p):
@@ -147,7 +148,6 @@ class TaskController(BaseController):
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
-
         return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')

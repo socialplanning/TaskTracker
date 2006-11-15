@@ -562,15 +562,18 @@ DateBocks.prototype = {
 
     /* Try to make sense of the date in id.value . */
     magicDate: function() {
-        var input = document.getElementById(this.dateBocksElementId);
+	var input = document.getElementById(this.dateBocksElementId);
         var messageSpan = document.getElementById(input.id + this.messageSpanSuffix);
 
+	console.log("1");
         try {
             var d = this.parseDateString(input.value);
+	    console.log(d);
 
             var day = this.zeroPad(d.getDate());
             var month = this.zeroPad(d.getMonth() + 1);
             var year = d.getFullYear();
+	    console.log(day, month, year);
 
             switch (this.dateType) {
                 case 'dd/mm/yyyy':
@@ -594,7 +597,7 @@ DateBocks.prototype = {
 		    input.value = year + '-' + month + '-' + day;
                     break;
             }
-
+	    console
             input.className = '';
             
             // Human readable date

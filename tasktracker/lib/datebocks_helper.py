@@ -88,9 +88,6 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
     if attributes is None:
         attributes = dict()
     
-    if not options.has_key('name'):
-        options['name'] =  field_name + ".date"
-
     attribute_str = str()
     keys = attributes.keys()
     if 'class' in keys:
@@ -98,12 +95,17 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
     else:
         attributes['class'] = 'dateBocks'
     if not 'id' in keys:
-        attributes['id'] = 'dateBocks'    
+        attributes['id'] = 'dateBocks'
+
     keys = attributes.keys()
     for key in keys:
-        attribute_str = attribute_str + '%s="%s" ' % (key, attributes[key])
+        if key != 'id':
+            attribute_str = attribute_str + '%s="%s" ' % (key, attributes[key])
 
     calendar_ref = attributes['id']
+    if not options.has_key('name'):
+        options['name'] =  calendar_ref + ".date"
+
     options['dateBocksElementId'] = "'%s'" % calendar_ref
     datebocks_options = dict(options)
     del datebocks_options['name']
