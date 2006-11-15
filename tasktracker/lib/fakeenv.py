@@ -86,7 +86,13 @@ class ZWSGIFakeEnv(object):
 
         environ['topp.memberlist'] = self.memberlist
 
-        if self.authenticate(environ):
+        safe = False
+        if environ['PATH_INFO'] == '/favicon.ico':
+            safe = True
+        if environ['PATH_INFO'].startswith("/stylesheets"):
+            safe = True
+
+        if safe or self.authenticate(environ):
             return self.app(environ, start_response)
         else:
             status = "401 Authorization Required"
