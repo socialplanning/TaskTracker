@@ -148,7 +148,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
         <li class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</li>
         <li class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</li>
       </ul>
-      <div id=\"""", calendar_ref, """Message"><div id=\"""", calendar_ref, """Msg"></div></div>
+      <div id=\"""", calendar_ref, """Message" style="display:none"><div id=\"""", calendar_ref, """Msg"></div></div>
       <script type="text/javascript">
         Calendar.setup(""",options_for_javascript(calendar_options), """);        
       </script>
