@@ -42,6 +42,11 @@ class PriorityChangeForm(formencode.Schema):
     allow_extra_fields = True
     priority = formencode.validators.OneOf("High Medium Low None".split())
 
+class DeadlineChangeForm(formencode.Schema):
+    allow_extra_fields = True
+    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today),
+                                       DateConverter())
+
 class TaskController(BaseController):
 
     def _clean_params(self, params):
@@ -68,6 +73,15 @@ class TaskController(BaseController):
         c.task.priority = self.form_result['priority']
         return render_text("ok")
 
+    @validate(schema=DeadlineChangeForm(), form='show_update')
+    @attrs(action='update', watchdog=TaskUpdateWatchdog)
+    @catches_errors
+    def change_deadline(self, id):
+        c.task = self._getTask(int(id))
+        c.task.deadline = self.form_result['deadline']
+        print c.task.deadline
+        return render_text("ok")
+    
     @attrs(action='show')
     def auto_complete_for_owner(self):
         partial = request.params['owner']

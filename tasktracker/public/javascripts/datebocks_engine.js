@@ -458,7 +458,7 @@ DateBocks.prototype = {
           case 'yyyy-mm-dd':
           case 'iso':
           case 'default':
-          default:
+          default:	      
               this.calendarIfFormat = '%Y-%m-%d';
               this.calendarFormatString = 'yyyy-mm-dd';
               break;
@@ -591,7 +591,7 @@ DateBocks.prototype = {
                 case 'iso':
                 case 'yyyy-mm-dd':
                 default:
-                    input.value = year + '-' + month + '-' + day;
+		    input.value = year + '-' + month + '-' + day;
                     break;
             }
 

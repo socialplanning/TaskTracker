@@ -25,7 +25,7 @@
 <!-- the status -->
 
 <span class="status-column" tal:condition="python: h.has_permission('task', 'change_status', id=atask.id)" 
-      tal:content="structure python: h.statusSelect(atask)"
+      tal:content="structure python: h.statusField(atask)"
       tal:attributes="id string:status-form_${atask/id}; style string:display:none"/>
 
 <span class="status-column editable"
@@ -38,7 +38,7 @@
 <!-- deadline -->
 
 <span class="deadline-column" tal:condition="python: h.has_permission('task', 'update', id=atask.id)"
-      tal:content="structure python: h.datebocks_field('atask', 'deadline', attributes={'id':'deadline_%d' % atask.id}, value=atask.deadline)"
+      tal:content="structure python: h.deadlineField(atask)"
       tal:attributes="id string:deadline-form_${atask/id}; style string:display:none" />
 
 <span class="deadline-column editable"

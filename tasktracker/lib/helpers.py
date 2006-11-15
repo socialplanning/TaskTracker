@@ -40,7 +40,7 @@ def debugThings():
 
 def readableDate(date):
     if date:
-        return date.strftime("%Y-%m-%d")
+        return date.strftime("%m-%d-%Y")
     else:
         return "No deadline"
 
@@ -95,17 +95,26 @@ def prioritySelect(task):
                       (url_for(controller='task', action='change_priority', id=id), id), \
                       id='priority_%d' % id)
 
-def statusSelect(task):
+def statusField(task):
+    save_img = image_tag('save.png', onclick='changeField("%s", %d, "status");' % (url_for(controller='task', action='change_status', id=task.id), task.id))
+    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "status");' % task.id)
+    
+    return "%s <br/> %s %s" % (_statusSelect(task), save_img, cancel_img)
+
+def deadlineField(task):
+    save_img = image_tag('save.png', onclick='changeField("%s", %d, "deadline");' % (url_for(controller='task', action='change_deadline', id=task.id), task.id))
+    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "deadline");' % task.id)
+    
+    return "%s <br/> %s %s" % (datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, value=task.deadline), save_img, cancel_img)
+
+def _statusSelect(task):
     statuses = task.task_list.project.statuses
     status_names = [(s.name, s.name) for s in statuses]
     index = 0
     for status in statuses:
-#        print status.name, task.status, index
         if status.name == task.status:
-#            print "oh boy!"
             break
         index += 1
-#    print "final index: ", index
     
     status_change_url = url_for(controller='task',
                                   action='change_status',
@@ -114,9 +123,9 @@ def statusSelect(task):
                   options_for_select(status_names, task.status), 
                   method='post', 
                   originalvalue=index,
-                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
-                  id='status_%d' % task.id) 
-
+                  id='status_%d' % task.id)
+#                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
+    
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []
     for task in Task.selectBy(task_listID=task_list_id, parentID=parent_id):

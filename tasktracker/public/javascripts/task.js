@@ -9,6 +9,15 @@ function changeField(url, task_id, fieldname) {
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
+function revertField(task_id, fieldname) {
+    var field = $(fieldname + '_' + task_id);
+    var orig = field.getAttribute('originalvalue');
+    var fieldlabel = $(fieldname + '-label_' + task_id);
+    field.selectedIndex = orig;    
+    fieldlabel.innerHTML = field.getValue(orig);
+    hideChangeableField(task_id, fieldname);
+}
+
 function viewChangeableField(task_id, fieldname) {
     $(fieldname + '-label_' + task_id).hide();
     $(fieldname + '-form_' + task_id).show();
@@ -51,13 +60,10 @@ function failedChangingField(req) {
     var task_id = this[0];
     var fieldname = this[1];
     var field = $(fieldname + '_' + task_id);
-    var orig = field.getAttribute('originalvalue');
     var fieldlabel = $(fieldname + '-label_' + task_id);
+    revertField(task_id, fieldname);
     field.disabled = false;
-    field.selectedIndex = orig;
     fieldlabel.style.color = "red";
-    fieldlabel.innerHTML = field.getValue(orig);
-    hideChangeableField(task_id, fieldname);
 }
 
 function doneMovingTask(req) {

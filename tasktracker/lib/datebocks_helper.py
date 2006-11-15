@@ -22,6 +22,7 @@
 # USA
 
 #datebocks helper ported from ruby by David Turner <novalis@gnu.org>
+#w/modifications by Ethan Jucovy <ejucovy@openplans.org>
 
 #include CalendarHelper
 
@@ -102,7 +103,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
     for key in keys:
         attribute_str = attribute_str + '%s="%s" ' % (key, attributes[key])
 
-    calendar_ref = "%s_input" % attributes['id']
+    calendar_ref = attributes['id']
     options['dateBocksElementId'] = "'%s'" % calendar_ref
     datebocks_options = dict(options)
     del datebocks_options['name']
@@ -128,7 +129,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
             value =  None
 
     if value:
-        value = value.strftime("%Y-%m-%d")
+        value = value.strftime("%m-%d-%Y")
       
     retval = "".join(["""
     <span """, attribute_str, """>
