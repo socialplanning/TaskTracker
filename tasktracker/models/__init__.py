@@ -28,7 +28,7 @@ from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 from pylons import c
 
-hub = PackageHub("tasktracker")
+hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
 
 # You should then import your SQLObject classes
