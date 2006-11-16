@@ -106,7 +106,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
 
     calendar_ref = attributes['id']
     if not options.has_key('name'):
-        options['name'] =  calendar_ref + ".date"
+        options['name'] =  calendar_ref
 
     options['dateBocksElementId'] = "'%s'" % calendar_ref
     datebocks_options = dict(options)

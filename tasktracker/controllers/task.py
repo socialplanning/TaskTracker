@@ -27,26 +27,16 @@ import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
 
-class CreateTaskForm(formencode.Schema):  
+class EditTaskForm(formencode.Schema):  
     pre_validators = [formencode.variabledecode.NestedVariables]
     allow_extra_fields = True
     ignore_key_missing = True
     title = NotEmpty()
-    deadline = formencode.compound.Any(formencode.compound.All(
-            DateValidator(earliest_date=datetime.datetime.today), DateTimeConverter()))
-
-class StatusChangeForm(formencode.Schema):
-    allow_extra_fields = True
-    status = formencode.validators.OneOf([status.name for status in Status.select()])
-
-class PriorityChangeForm(formencode.Schema):
-    allow_extra_fields = True
-    priority = formencode.validators.OneOf("High Medium Low None".split())
-
-class DeadlineChangeForm(formencode.Schema):
-    allow_extra_fields = True
     deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today),
                                        DateConverter())
+    status = formencode.validators.OneOf([status.name for status in Status.select()]) # TODO this is not true
+    priority = formencode.validators.OneOf("High Medium Low None".split())
+    owner = formencode.compound.Any(NotEmpty(), Empty())
 
 class TaskController(BaseController):
 
@@ -58,7 +48,7 @@ class TaskController(BaseController):
                 clean[param] = params[param]
         return clean
 
-    @validate(schema=StatusChangeForm(), form='show_update')
+    @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action='change_status', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_status(self, id, *args, **kwargs):
@@ -66,7 +56,7 @@ class TaskController(BaseController):
         c.task.status = self.form_result['status']
         return render_text("ok")
 
-    @validate(schema=PriorityChangeForm(), form='show_update')
+    @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_priority(self, id, *args, **kwargs):
@@ -74,21 +64,21 @@ class TaskController(BaseController):
         c.task.priority = self.form_result['priority']
         return render_text("ok")
 
-    @validate(schema=DeadlineChangeForm(), form='show_update')
+    @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_deadline(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.task.deadline = self.form_result['deadline']
-        print "Deadline changed to ", c.task.deadline
         return render_text("ok")
 
-    @attrs(action='assign')
+    @validate(schema=EditTaskForm(), form='show_update')
+    @attrs(action='assign', watchdog=TaskUpdateWatchdog)
     @catches_errors
     def change_owner(self, id, *args, **kwargs):
         c.task = self._getTask(id)
-        c.task.owner = request.params["owner"]
-        return Response.redirect_to(action='show',controller='task', id=id)
+        c.task.owner = self.form_result['owner']
+        return render_text("ok")
     
     @attrs(action='show')
     def auto_complete_for_owner(self):
@@ -137,7 +127,7 @@ class TaskController(BaseController):
         return render_response('zpt', 'task.show_create')
 
     @attrs(action='create', watchdog=TaskCreateWatchdog)
-    @validate(schema=CreateTaskForm(), form='show_create')
+    @validate(schema=EditTaskForm(), form='show_create')
     def create(self):
         p = self._clean_params(self.form_result)
         return self._create_task(**p)
@@ -187,7 +177,7 @@ class TaskController(BaseController):
         return render_response('zpt', 'task.show_update')
 
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
-    @validate(schema=CreateTaskForm(), form='show_update')
+    @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
 
         c.task = self._getTask(int(id))

@@ -9,11 +9,11 @@
 <td><span tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=10, cols=80)" />
 </td></tr>
 
-<tr><td><label class="row-heading" for="deadline.date">Deadline:</label></td>
+<tr><td><label class="row-heading" for="deadline">Deadline:</label></td>
 <td>
 <span tal:replace="structure python: h.datebocks_field('oldtask', 'deadline', attributes={'id':'deadline'})" />
-<span tal:condition="python: c.oldtask and c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value=c.oldtask.deadline.strftime('%H:%M:%S'))" />
-<span tal:condition="python: not c.oldtask or not c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value='')" /><br/>
+<!-- <span tal:condition="python: c.oldtask and c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value=c.oldtask.deadline.strftime('%H:%M:%S'))" />
+<span tal:condition="python: not c.oldtask or not c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value='')" /><br/> -->
 <small> hh:mm:ss</small>
 </td></tr>
 
