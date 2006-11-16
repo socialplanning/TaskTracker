@@ -17,8 +17,6 @@ function viewChangeableField(task_id, fieldname) {
 function hideChangeableField(task_id, fieldname) {
     $(fieldname + '-form_' + task_id).hide();
     $(fieldname + '-label_' + task_id).show();
-    console.log($(fieldname + '-form_' + task_id));
-    console.log($(fieldname + '-label_' + task_id));
 }
 
 function updateTaskItem(task_id) {
@@ -44,8 +42,17 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
+    if (req.responseText == "ok") {
+	succeededChangingField.bind(this)(req);
+    } else {
+	failedChangingField.bind(this)(req);
+    }
+}
+
+function succeededChangingField(req) {
     var task_id = this[0];
     var fieldname = this[1];
+    console.log("successed! " + fieldname);
     var field = $(fieldname + '_' + task_id);
     var newvalue = (field.value ? field.value : "No " + fieldname);
     field.setAttribute('originalvalue', newvalue);
@@ -58,9 +65,10 @@ function doneChangingField(req) {
     hideChangeableField(task_id, fieldname);
 }
 
-function failedChangingField(req) {
+function failedChangingField(req) {    
     var task_id = this[0];
     var fieldname = this[1];
+    console.log("FAILED " + fieldname);
     var field = $(fieldname + '_' + task_id);
     var fieldlabel = $(fieldname + '-label_' + task_id);
     revertField(task_id, fieldname);

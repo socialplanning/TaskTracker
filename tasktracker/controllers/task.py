@@ -79,7 +79,15 @@ class TaskController(BaseController):
     def change_deadline(self, id):
         c.task = self._getTask(int(id))
         c.task.deadline = self.form_result['deadline']
+        print "Deadline changed to ", c.task.deadline
         return render_text("ok")
+
+    @attrs(action='assign')
+    @catches_errors
+    def change_owner(self, id):
+        c.task = self._getTask(id)
+        c.task.owner = request.params["owner"]
+        return Response.redirect_to(action='show',controller='task', id=id)
     
     @attrs(action='show')
     def auto_complete_for_owner(self):
@@ -153,13 +161,6 @@ class TaskController(BaseController):
     def claim(self, id):
         c.task = self._getTask(id)
         c.task.owner = c.username
-        return Response.redirect_to(action='show',controller='task', id=id)
-
-    @attrs(action='assign')
-    @catches_errors
-    def change_owner(self, id):
-        c.task = self._getTask(id)
-        c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
         
     @attrs(action='assign')
