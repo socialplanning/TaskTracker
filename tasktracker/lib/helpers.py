@@ -97,10 +97,11 @@ def editableField(task, field):
 
     span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
-    save_img = image_tag('save.png', onclick='changeField("%s", %d, "%s");' % (url_for(controller='task', action='change_%s' % field, id=task.id), task.id, field))
+    save_img = image_tag('save.png', onclick='changeField("%s", %d, "%s");' \
+                             % (url_for(controller='task', action='change_%s' % field, id=task.id), task.id, field))
     cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
 
-    span_contents = "%s %s %s" % (_fieldHelpers[field](task), save_img, cancel_img)
+    span_contents = "%s <div>%s %s</div>" % (_fieldHelpers[field](task), save_img, cancel_img)
     return "%s %s </span>" % (span, span_contents)
 
 def _ownerInput(task):
