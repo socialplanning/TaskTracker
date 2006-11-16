@@ -103,6 +103,7 @@ function hideCreate() {
     $('create').show();
     $('show_create').hide();
     $('create_anchor').scrollTo();
+    $('title').focus();
     return false;
 }
 

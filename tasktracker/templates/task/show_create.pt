@@ -3,14 +3,19 @@
 <form tal:attributes="action python:h.url_for(action='create', controller='task')" method="post">
 
 <table>
-
 <tr><td>
-<span class="row-heading">Parent: </span></td><td>
-<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id, initial_value=c.task, include_this_task=True)" /></td></tr>
+<input type="hidden" name="task_listID" tal:attributes="value c/task_listID" />
+<label class="row-heading" for="title">Title:</label></td><td>
+<span tal:replace="structure python: h.text_field_r('oldtask', 'title')" />
 
-<metal:do use-macro="here/_form/macros/form" />
+<span class="row-heading">Parent: </span>
+<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id, initial_value=c.task, include_this_task=True)" />
+</td></tr>
+<br/>
+<tr><td>
+<label class="row-heading" for="text">Description:</label></td><td>
+<span tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=10, cols=80)" /></tr></table>
 
-</table>
 <input type="submit" name="create" value="create">
 </form>
 

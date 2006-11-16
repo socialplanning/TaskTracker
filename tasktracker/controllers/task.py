@@ -29,10 +29,11 @@ from tasktracker.lib.datetimeconverter import *
 
 class CreateTaskForm(formencode.Schema):  
     pre_validators = [formencode.variabledecode.NestedVariables]
-    allow_extra_fields = True  
+    allow_extra_fields = True
+    ignore_key_missing = True
     title = NotEmpty()
-    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.datetime.today),
-                                       DateTimeConverter())
+    deadline = formencode.compound.Any(formencode.compound.All(
+            DateValidator(earliest_date=datetime.datetime.today), DateTimeConverter()))
 
 class StatusChangeForm(formencode.Schema):
     allow_extra_fields = True
