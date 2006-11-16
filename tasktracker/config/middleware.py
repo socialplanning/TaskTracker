@@ -31,6 +31,8 @@ import pylons.wsgiapp
 from tasktracker.config.environment import load_environment
 
 from tasktracker.lib.fakeenv import ZWSGIFakeEnv
+import tasktracker.lib.app_globals as app_globals
+import tasktracker.lib.helpers
 
 def make_app(global_conf, **app_conf):
     """Create a WSGI application and return it
@@ -45,7 +47,9 @@ def make_app(global_conf, **app_conf):
     config.init_app(global_conf, app_conf, package='tasktracker')
     config.add_template_engine('zpt','tasktracker.templates',{})        
     # Load our default Pylons WSGI app and make g available
-    app = pylons.wsgiapp.PylonsApp(config)
+    app = pylons.wsgiapp.PylonsApp(config, 
+	helpers=tasktracker.lib.helpers,
+	g=app_globals.Globals)
     g = app.globals
     app = ConfigMiddleware(app, {'app_conf':app_conf,
         'global_conf':global_conf})

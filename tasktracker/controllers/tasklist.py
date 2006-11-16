@@ -60,7 +60,7 @@ class TasklistController(BaseController):
 
     @attrs(action='show')
     @catches_errors
-    def show(self, id):
+    def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
@@ -110,7 +110,7 @@ class TasklistController(BaseController):
 
     @attrs(action='update')
     @catches_errors
-    def show_update(self, id):
+    def show_update(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
         c.owners = [o.username for o in c.tasklist.owners if not o.username == c.username]
         if c.tasklist.isOwnedBy(c.username):
@@ -126,7 +126,7 @@ class TasklistController(BaseController):
     @validate(schema=CreateListForm(), form='show_update')  
     @attrs(action='update')
     @catches_errors
-    def update(self, id):
+    def update(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
 
         p = dict(request.params)
@@ -156,7 +156,7 @@ class TasklistController(BaseController):
 
     @attrs(action='create')
     @catches_errors
-    def destroy(self, id):
+    def destroy(self, id, *args, **kwargs):
         c.tasklist = self.getTaskList(int(id))
         c.tasklist.live = False
         c.flash = "Deleted."

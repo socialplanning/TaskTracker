@@ -42,7 +42,7 @@ class ProjectController(BaseController):
     @attrs(action='initialize')
     @validate(schema=CreateProjectForm(), form='show_initialize')
     @catches_errors
-    def initialize(self, id):
+    def initialize(self, id, *args, **kwargs):
         c.project = Project.get(id)
 
         if c.project.initialized:
@@ -63,7 +63,7 @@ class ProjectController(BaseController):
 
     @attrs(action='initialize')
     @catches_errors
-    def show_initialize(self, id):
+    def show_initialize(self, id, *args, **kwargs):
         c.project = Project.get(id) 
         if c.project.initialized:
             return redirect_to(controller='tasklist', action='index')

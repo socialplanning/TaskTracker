@@ -69,7 +69,6 @@
 #   showOthers    | if "true" (but default: "false") it will show days from other months too
 
 from webhelpers.rails import *
-
 from tasktracker.lib.base import c
 
 def options_for_javascript(dict):

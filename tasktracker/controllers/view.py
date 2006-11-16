@@ -67,12 +67,12 @@ class ViewController(BaseController):
             raise NoSuchIdError("No such task ID: %s" % id)
 
     @catches_errors
-    def view(self, id):
+    def view(self, id, *args, **kwargs):
         c.task = self.getTask(int(id))
         return render_response('zpt', 'view')
 
     @catches_errors
-    def destroy(self, id):
+    def destroy(self, id, *args, **kwargs):
             c.task = Task.get(int(id))
             c.task.live = False
             c.flash = "Deleted."

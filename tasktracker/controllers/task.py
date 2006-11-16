@@ -60,7 +60,7 @@ class TaskController(BaseController):
     @validate(schema=StatusChangeForm(), form='show_update')
     @attrs(action='change_status', watchdog=TaskUpdateWatchdog)
     @catches_errors
-    def change_status(self, id):
+    def change_status(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.task.status = self.form_result['status']
         return render_text("ok")
@@ -68,7 +68,7 @@ class TaskController(BaseController):
     @validate(schema=PriorityChangeForm(), form='show_update')
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @catches_errors
-    def change_priority(self, id):
+    def change_priority(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.task.priority = self.form_result['priority']
         return render_text("ok")
@@ -76,7 +76,7 @@ class TaskController(BaseController):
     @validate(schema=DeadlineChangeForm(), form='show_update')
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @catches_errors
-    def change_deadline(self, id):
+    def change_deadline(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.task.deadline = self.form_result['deadline']
         print "Deadline changed to ", c.task.deadline
@@ -84,7 +84,7 @@ class TaskController(BaseController):
 
     @attrs(action='assign')
     @catches_errors
-    def change_owner(self, id):
+    def change_owner(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
@@ -123,7 +123,7 @@ class TaskController(BaseController):
 
     @attrs(action='create')
     @catches_errors
-    def show_create(self, id):
+    def show_create(self, id, *args, **kwargs):
         c.task_listID = int(request.params['task_listID'])
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")
@@ -158,21 +158,21 @@ class TaskController(BaseController):
 
     @attrs(action='claim')
     @catches_errors
-    def claim(self, id):
+    def claim(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = c.username
         return Response.redirect_to(action='show',controller='task', id=id)
         
     @attrs(action='assign')
     @catches_errors
-    def assign(self, id):
+    def assign(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
     @attrs(action='comment', watchdog=TaskCommentWatchdog)
     @catches_errors
-    def comment(self, id):
+    def comment(self, id, *args, **kwargs):
         c.task = Task.get(int(id))
         c.comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
 
@@ -180,7 +180,7 @@ class TaskController(BaseController):
 
     @attrs(action='update')
     @catches_errors
-    def show_update(self, id):
+    def show_update(self, id, *args, **kwargs):
         c.oldtask = self._getTask(int(id))        
         c.owner = c.oldtask.owner.title
         return render_response('zpt', 'task.show_update')
@@ -225,7 +225,7 @@ class TaskController(BaseController):
 
     @attrs(action='show')
     @catches_errors
-    def show(self, id):
+    def show(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.parentID = int(id)
         c.tasklist = c.task.task_list
@@ -235,7 +235,7 @@ class TaskController(BaseController):
 
     @attrs(action='update')
     @catches_errors
-    def destroy(self, id):
+    def destroy(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
@@ -252,7 +252,7 @@ class TaskController(BaseController):
 
     @attrs(action='open')
     @catches_errors
-    def show_create_tasks(self, id):
+    def show_create_tasks(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(int(id))
         c.task_listID = id
         return render_response('zpt', 'task.show_create_tasks')

@@ -30,7 +30,7 @@ from pylons.helpers import abort, redirect_to, etag_cache
 from tasktracker.models import *
 from tasktracker.controllers import *
 from tasktracker.lib.watchers import *
-import tasktracker.lib.helpers as h
+#import tasktracker.lib.helpers as h
 
 from threading import local
 
@@ -114,8 +114,7 @@ def _getRole(environ):
 class BaseController(WSGIController):
 
     def __before__(self, action, **params):
-
-        project = Project.getProject(self._req.environ['topp.project_name'])
+        project = Project.getProject(request.environ['topp.project_name'])
         c.project = project
         c.id = params.get('id')
 
@@ -224,7 +223,7 @@ class BaseController(WSGIController):
         if controller == 'error':
             return True
 
-        environ = self._req.environ
+        environ = request.environ
 
         role_name = _getRole(environ)
         role = Role.selectBy(name=role_name)
@@ -235,7 +234,7 @@ class BaseController(WSGIController):
         username = environ.get('REMOTE_USER', 'anonymous')
         c.username = username
 
-        c.user_info = self._req.environ.get('topp.user_info', None)
+        c.user_info = request.environ.get('topp.user_info', None)
 
         c.usermapper = environ['topp.project_members']
 
