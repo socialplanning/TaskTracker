@@ -52,12 +52,4 @@ You are watching this task list.
 
 <!-- ----------------------------- -->
 
-<hr />
-<br />
-
-<tal:if condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
-<a tal:attributes="href python:h.url_for(controller='tasklist', action='show_update', id=c.tasklist.id)">Edit list settings</a>
-|
-</tal:if>
-
-<a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">Back to list of lists</a>
+<metal:do use-macro="here/task_list_footer/macros/show_footer" />

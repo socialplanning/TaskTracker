@@ -98,3 +98,5 @@ Make your own comment?
 <input type="submit" value="comment" name="comment">
 </form>
 </tal:if>
+
+<metal:do use-macro="here/task_list_footer/macros/show_footer" />

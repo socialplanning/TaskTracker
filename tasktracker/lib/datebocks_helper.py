@@ -143,17 +143,17 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
           """, options_for_javascript(datebocks_options), """
         );
       </script>
-      <ul>
-        <li class="dateBocksInput">""",
+      <span>
+        <span class="dateBocksInput">""",
                      text_field(options['name'], 
                                  value=value, 
                                   id=calendar_ref, 
                                   onChange=calendar_ref + "Obj.magicDate();", 
                                   onKeyPress=calendar_ref + "Obj.keyObserver(event, 'parse'); return " + calendar_ref + "Obj.keyObserver(event, 'return');", 
-                                  onClick="this.select();", **input_attributes), """</li>
-        <li class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</li>
-        <li class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</li>
-      </ul>
+                                  onClick="this.select();", **input_attributes), """</span>
+        <span class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</span>
+        <span class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</span>
+      </span>
       <!-- div id=\"""", calendar_ref, """Message" style="display:none"><div id=\"""", calendar_ref, """Msg"></div></div -->
       <script type="text/javascript">
         Calendar.setup(""",options_for_javascript(calendar_options), """);        
