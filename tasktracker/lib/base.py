@@ -38,7 +38,7 @@ from threading import local
 from paste.wsgiwrappers import WSGIResponse
 from routes import url_for
 class Response(WSGIResponse):
-    @classmethod 
+    @classmethod
     def redirect_to(cls, *args, **params):
         if len(args) == 0:
             url = url_for(**params)
@@ -141,7 +141,11 @@ class BaseController(WSGIController):
                 self.watchdog.dog.after(params)
 
     @classmethod
-    def _has_permission(cls, controller, action_name, params):        
+    def _has_permission(cls, controller, action_verb, params):
+        if callable(action_verb):
+            action_verb = action_verb(params)
+
+        action_name = controller + '_' + action_verb
         #special case for creating task lists
         if action_name == 'tasklist_create':
             return c.project.create_list_permission >= c.level
@@ -201,7 +205,12 @@ class BaseController(WSGIController):
         return tl_permissions[0].min_level >= local_level
 
 
-    def _initialize_project(self, action_name):
+    def _initialize_project(self, controller, action_verb, params):
+        
+        if callable(action_verb):  #TODO: this isn't a good solution!
+            return True
+
+        action_name = controller + '_' + action_verb
         if action_name == 'project_initialize':
             if c.level <= Role.getLevel('ProjectAdmin'):
                 return True #OK, let admins initialize the project.
@@ -246,11 +255,9 @@ class BaseController(WSGIController):
         #methods can override controllers (but should do so rarely)
         controller = getattr(func, 'controller', controller)
         
-        action_name = controller + '_' + action_verb
-
         #A few special cases follow, with the general permission case at the end.
 
-        if self._initialize_project(action_name):
+        if self._initialize_project(controller, action_verb, params):
             return True
 
         if action_verb == 'open':
@@ -263,14 +270,13 @@ class BaseController(WSGIController):
             else:
                 return True
 
-
         if action == 'auto_complete_for_owner':
             return True
 
         params = dict(params)
         params['username'] = username
         params.update(request.params)
-        return self._has_permission(controller, action_name, params)
+        return self._has_permission(controller, action_verb, params)
 
 
     def __call__(self, environ, start_response):

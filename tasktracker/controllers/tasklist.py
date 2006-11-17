@@ -43,7 +43,8 @@ class CreateListForm(formencode.Schema):
 class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
-        return [t for t in TaskList.selectBy(projectID = c.project.id) if cls._has_permission('tasklist', 'tasklist_show', {'id':t.id, 'username':username})]
+        return [t for t in TaskList.selectBy(projectID = c.project.id)
+                if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
 
     def _clean_params(self, params):
         allowed_params = ("title", "text", "projectID")

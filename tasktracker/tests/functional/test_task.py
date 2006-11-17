@@ -35,9 +35,9 @@ class TestTaskController(TestController):
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
         assert task.status == 'not done'
-        res2 = app.post('/task/change_status/%s' % task.id, params={'status':'done'})
+        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'done'})
         assert task.status == "done"
-        res2 = app.post('/task/change_status/%s' % task.id, params={'status':'__no_such_status__'})
+        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'__no_such_status__'})
         assert task.status == "done"
      
     def test_show_create(self):

@@ -65,11 +65,13 @@ def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
     </ul>""" % (id, updateable_lis, fixed_lis);
 
 def taskListDropDown(id):
-    tasklist = [(tasklist.title, tasklist.id) for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) if has_permission('tasklist', 'show', id=tasklist.id)]
+    tasklist = [(tasklist.title, tasklist.id) 
+                for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) 
+                if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
 def possiblyEditableSpan(task, field, contents=None):
-    editable = has_permission('task', 'change_%s' % field, id=task.id)
+    editable = has_permission('task', 'change_field', id=task.id, field=field)
 
     if contents is None:        
         contents = getattr(task, field)
@@ -92,13 +94,13 @@ def possiblyEditableSpan(task, field, contents=None):
     return " ".join(out)
 
 def editableField(task, field):
-    if not has_permission('task', 'change_%s' % field, id=task.id):
+    if not has_permission('task', 'change_field', id=task.id, field=field):
         return None
 
     span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
     save_img = image_tag('save.png', onclick='changeField("%s", %d, "%s");' \
-                             % (url_for(controller='task', action='change_%s' % field, id=task.id), task.id, field))
+                             % (url_for(controller='task', action='change_field', id=task.id, field=field), task.id, field))
     cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
 
     span_contents = "%s <div>%s %s</div>" % (_fieldHelpers[field](task), save_img, cancel_img)
@@ -138,9 +140,9 @@ def _statusSelect(task):
             break
         index += 1
     
-    status_change_url = url_for(controller='task',
-                                  action='change_status',
-                                  id=task.id)
+#    status_change_url = url_for(controller='task',
+#                                  action='change_field',
+#                                  id=task.id, field=field)
     return select('status', 
                   options_for_select(status_names, task.status), 
                   method='post', 
@@ -201,7 +203,12 @@ def check_box_r(object_name, field_name, **kwargs):
 
     return check_box(field_name, checked=checked, **kwargs)
 
-def has_permission(controller=None, action=None, **params):
+
+def has_permission(controller, action, **params):
+#    if action is None:
+#        module = imp.load_module('tasktracker/lib/base', *imp.find_module('tasktracker/lib/base'))
+#        controller = getattr(module, 'BaseController')
+
     controller_name = controller
 
     d = 'tasktracker/controllers/%s' % controller_name
@@ -211,16 +218,15 @@ def has_permission(controller=None, action=None, **params):
 
     controller = getattr(module, cap_controller + 'Controller')
 
-    action_verb = getattr(controller, action).action
-        
-    action_name = controller_name + '_' + action_verb
+    action_verb = getattr(controller, action)
+    action_verb = action_verb.action
 
     params['username'] = c.username
 
     if c.id:
         params.setdefault('id', c.id)
 
-    return controller._has_permission(controller_name, action_name, params)
+    return controller._has_permission(controller_name, action_verb, params)
 
 def priority_as_int(priority_name):
     priorities = {'High' : 1, 'Medium' : 2, 'Low' : 3, 'None' : 9999}

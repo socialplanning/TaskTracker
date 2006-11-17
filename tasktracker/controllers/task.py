@@ -38,8 +38,15 @@ class EditTaskForm(formencode.Schema):
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
 
-class TaskController(BaseController):
+def _field_permission(param):
+    actions = dict(status='change_status', owner='assign', priority='update', deadline='update')
+    try:
+        return actions[param['field']]
+    except KeyError:
+        print param
 
+class TaskController(BaseController):
+    
     def _clean_params(self, params):
         allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "owner", "private", "priority")
         clean = {}
@@ -47,39 +54,16 @@ class TaskController(BaseController):
             if params.has_key(param):
                 clean[param] = params[param]
         return clean
-
-    @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action='change_status', watchdog=TaskUpdateWatchdog)
-    @catches_errors
-    def change_status(self, id, *args, **kwargs):
-        c.task = self._getTask(int(id))
-        c.task.status = self.form_result['status']
-        return render_text("ok")
-
-    @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action='update', watchdog=TaskUpdateWatchdog)
-    @catches_errors
-    def change_priority(self, id, *args, **kwargs):
-        c.task = self._getTask(int(id))
-        c.task.priority = self.form_result['priority']
-        return render_text("ok")
-
-    @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action='update', watchdog=TaskUpdateWatchdog)
-    @catches_errors
-    def change_deadline(self, id, *args, **kwargs):
-        c.task = self._getTask(int(id))
-        c.task.deadline = self.form_result['deadline']
-        return render_text("ok")
-
-    @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action='assign', watchdog=TaskUpdateWatchdog)
-    @catches_errors
-    def change_owner(self, id, *args, **kwargs):
-        c.task = self._getTask(id)
-        c.task.owner = self.form_result['owner']
-        return render_text("ok")
     
+    @validate(schema=EditTaskForm(), form='show_update')
+    @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog)
+    @catches_errors
+    def change_field(self, id, *args, **kwargs):
+        field = request.params['field']
+        c.task = self._getTask(int(id))
+        setattr(c.task, field, self.form_result[field])
+        return render_text("ok")
+        
     @attrs(action='show')
     def auto_complete_for_owner(self):
         partial = request.params['owner']
