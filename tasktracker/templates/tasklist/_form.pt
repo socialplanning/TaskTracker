@@ -14,6 +14,8 @@
 
 <tr><td><label for="policy">Security:</label></td>
 <td>
+
+<!-- Complex security settings -->
 <div id="complex_form" tal:attributes="style python:test(c.security_policy_id, 'display:none;;', '')">
 <tal:for repeat="action c/actions">
 <span tal:replace="action/question" />
@@ -24,6 +26,7 @@
 <a href="#" onclick="$('complex_form').hide(); $('mode').setAttribute('value', 'simple'); $('simple_form').show(); return false;">Show simple security options</a>
 </div>
 
+<!-- Simple security settings -->
 <div id="simple_form" tal:attributes="style python:test(c.security_policy_id, '', 'display:none;;')">
 <span tal:replace="structure python: h.select('policy', h.options_for_select([(p.name, p.id) for p in c.policies], c.security_policy_id))" />
 

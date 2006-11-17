@@ -79,7 +79,6 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
-
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
@@ -93,7 +92,6 @@ function doneMovingTask(req) {
     } else if (new_sibling_id) {
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
-
     updateTaskItem(task_id);
 }
 
@@ -108,7 +106,6 @@ function hideCreate() {
 var mode = 'view';
 
 function resetChildDepths(elem) {
-
     var child_ul = elem.getElementsByTagName('UL')[0].childNodes;
 
     if (child_ul.length > 0) {
@@ -160,18 +157,16 @@ function debugThing() {
     console.log("FAILED");
 }
 
-
 function indentTaskItem(task, depth) {
     var children = task.getElementsByTagName('IMG');
-
     var target; 
-    for (var child in children) {
+    for (var i = 0; i < children.length; i++) {
+	var child = children[i];
 	if (child.getAttribute('class').match('handle')) {
 	    target = child; 
 	    break; 
 	}
     }
-
     target.style.paddingLeft = 15*depth + 'px'; 
 }
 
@@ -215,30 +210,25 @@ function insertTaskAfterSibling(task_id, sibling_id) {
 function insertTaskUnderParent(child_id, parent_id) {
     var child = $('task_' + child_id);
     var new_parent = $('task_' + parent_id);
-
     //find new parent's contained ul
     var ul = new_parent.getElementsByTagName('UL');
     if (ul.length) {
         ul = ul[0];
         ul.insertBefore(child, ul.childNodes[0]);
-
         var items = ul.getElementsByTagName('LI');
         //update sort_index
         $A(items).each(function(item) {
-
             var sort_index = parseInt(item.getAttribute('sort_index'));
             item.setAttribute('sort_index', sort_index + 1);
         });
-
+	
         var sort_index = parseInt(items[0].getAttribute('sort_index'));
         items[0].setAttribute('sort_index', 0);
-
         //set child indent
 
         var parenttitle = new_parent.childNodes[1];
         var parentdepth = parseInt(parenttitle.getAttribute('depth'));
         var title = child.childNodes[1];
-
         title.setAttribute('depth', parentdepth + 1);
         //title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
         indentTaskItem(title,parentdepth+1); 
@@ -366,16 +356,6 @@ function sortBy(column) {
 var initialized = false;
 
 function modeSwitch() {
-    $A($('tasks').getElementsByTagName('span')).each(function(node) {
-        if (node.id.match('^(label)')) {
-            var id = node.id.split('_')[1];
-            toggle(node);
-        }
-        else if (node.id.match('^status-form')) {
-            toggle(node);
-        }
-    });
-
     if (!initialized) {
         initialized = true;
         Draggables.addObserver(new observer());
