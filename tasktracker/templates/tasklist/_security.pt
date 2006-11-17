@@ -1,9 +1,0 @@
-<metal:macro define-macro="security">
-
-<span tal:replace="structure python: h.form(h.url(action='create'), method='post')" />
-
-Email Address: <span tal:replace="structure python: h.text_field('email')" />  
-                <span tal:replace="structure python: h.submit('Submit')" />
-<span tal:replace="structure python: h.end_form()" />
-
-</metal:macro>

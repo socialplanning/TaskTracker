@@ -38,13 +38,11 @@ class EditTaskForm(formencode.Schema):
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
 
-def _field_permission(param):
-    actions = dict(status='change_status', owner='assign', priority='update', deadline='update')
-    try:
-        return actions[param['field']]
-    except KeyError:
-        print param
 
+_actions = dict(status='change_status', owner='assign', priority='update', deadline='update')
+def _field_permission(param):    
+    return _actions[param['field']]
+    
 class TaskController(BaseController):
     
     def _clean_params(self, params):
