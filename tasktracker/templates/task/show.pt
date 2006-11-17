@@ -14,6 +14,14 @@ You are watching this task.
 
 <br/><br/>
 
+<div style="border: thin solid darkgray; padding:5px;">
+<metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
+
+<ul style="list-style:none; padding:0px;" tal:define="atask c/task" >
+  <metal:do metal:use-macro="here/task_item/macros/show_task" />
+</ul>
+
+<!-- 
 <b><span tal:replace="c/task/title" /><br/></b>
 Deadline: <span tal:replace="c/task/deadline" /><br/>
 
@@ -36,15 +44,14 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
   </tal:if>
 </tal:if>
 <br/>
+-->
 
 <br/>
-
-<div tal:content="structure c/task/text" />
 
 <br/>
 
 <span tal:condition="python:len(c.task.liveChildren())">
-<div style="border: thin solid darkgray; padding:5px;">
+<!-- <div style="border: thin solid darkgray; padding:5px;"> -->
 
 <!-- list headers -->
 Child tasks:<br>
@@ -53,8 +60,6 @@ Child tasks:<br>
     <span id="modeName">Reorder</span>
   </a><br/><br/>
 </tal:if>
-
-<metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
@@ -66,12 +71,14 @@ Child tasks:<br>
 </ul>
 <br clear="both" />
 
-</div>
 </span>
+</div>
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">Add a new subtask.</a>
 </metal:do>
 
+<div tal:content="structure c/task/text" />
+<br/>
 <!-- comments -->
 <span tal:condition="c/task/comments">
 Here are the comments:
