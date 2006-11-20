@@ -9,8 +9,6 @@
 You are watching this task.  
 <tal:nada replace="structure python:h.link_to('Edit your watch settings', url=h.url_for(action='show_update', controller='watcher', id=c.task.getWatcher(c.username).id))"/>
 </span>
-|
-<a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a>
 
 <br/><br/>
 
@@ -55,11 +53,6 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 
 <!-- list headers -->
 Child tasks:<br>
-<tal:if condition="python: len(c.task.liveChildren()) > 1 and h.has_permission('tasklist', 'update', id=c.tasklist.id)">
-  <a id="reorder_button" href="javascript:modeSwitch();">
-    <span id="modeName">Reorder</span>
-  </a><br/><br/>
-</tal:if>
 
 <!-- the actual task list -->
 <ul id="tasks" class="task_list">
@@ -106,4 +99,7 @@ Make your own comment?
 </form>
 </tal:if>
 
-<metal:do use-macro="here/task_list_footer/macros/show_footer" />
+<metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
+<span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
+</metal:do>
+

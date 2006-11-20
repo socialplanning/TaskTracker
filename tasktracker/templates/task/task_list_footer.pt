@@ -3,6 +3,7 @@
 <hr />
 <br />
 
+<span metal:define-slot="pre_footer"></span>
 <tal:if condition="python: h.has_permission('tasklist', 'update', id=c.tasklist.id)">
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='show_update', id=c.tasklist.id)">Edit list settings</a>
 |
