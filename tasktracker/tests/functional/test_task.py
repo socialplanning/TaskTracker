@@ -268,7 +268,7 @@ class TestTaskController(TestController):
 
         assert version.title == "The task"
         assert version.text == "x"
-        assert version.version == task.created
+        assert version.updated == task.created
 
         version.destroySelf()
         task.destroySelf()

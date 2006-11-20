@@ -39,6 +39,7 @@ __connection__ = hub
 import datetime
 
 def create_version(klass, obj):
+    """Stores the old version of an item before it's updated."""
     args = {}
     columns = klass.sqlmeta.columns
     for column in columns.keys():
@@ -78,7 +79,7 @@ class Notification(SQLObject):
             return "task_list"
 
 class Version(InheritableSQLObject):
-    version = DateTimeCol(default=datetime.datetime.now)    
+    """Represents an old version of an item."""
     updated = DateTimeCol()
     updated_by = StringCol()
 
@@ -254,10 +255,11 @@ class Task(SQLObject):
         SQLObject._create(self, id, **kwargs)
 
     def set(self, **kwargs):
-        kwargs['updated_by'] = c.username
-        kwargs['updated'] = datetime.datetime.now()
         if getattr(self, 'id', None):
             create_version(TaskVersion, self)
+        kwargs['updated_by'] = c.username
+        kwargs['updated'] = datetime.datetime.now()
+
         SQLObject.set(self, **kwargs)
 
     def _set_live(self, value):
@@ -372,12 +374,17 @@ class TaskList(SQLObject):
         return list(Task.selectBy(status='done', task_listID=self.id, live=True))
 
     def set(self, **kwargs):
-        kwargs['updated_by'] = c.username
-        kwargs['updated'] = datetime.datetime.now()
+
+        started = True
         if getattr(self, 'id', None):
             create_version(TaskListVersion, self)
         else:
+            started = False
             SQLObject.set(self, **kwargs)
+            
+        kwargs['updated_by'] = c.username
+        kwargs['updated'] = datetime.datetime.now()
+        if not started:
             return
 
         conn = hub.getConnection()
