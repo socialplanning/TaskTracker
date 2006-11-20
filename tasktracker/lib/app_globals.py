@@ -18,6 +18,17 @@
 # Boston, MA  02110-1301
 # USA
 
+from tasktracker.lib.store_notes import AtomStoreLink
+from tasktracker.config.notify import setup_notify
+
+import imp
+
+def require(*libs):
+    for lib in libs:
+        #attempt to load module
+        module = imp.load_module(lib, *imp.find_module(lib))        
+
+
 class Globals(object):
 
     def __init__(self, global_conf, app_conf, **extra):
@@ -43,8 +54,12 @@ class Globals(object):
             your global variables.
             
         """
-        pass
-        
+        self.events = {}
+        if app_conf.has_key('atom_store_link'):
+            require('atomixlib', 'httplib2')
+            self.atom_store_link = AtomStoreLink(app_conf['atom_store_link'])
+            setup_notify(self.events)
+
     def __del__(self):
         """
         Put any cleanup code to be run when the application finally exits 

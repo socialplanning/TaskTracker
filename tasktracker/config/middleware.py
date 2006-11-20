@@ -51,6 +51,7 @@ def make_app(global_conf, **app_conf):
 	helpers=tasktracker.lib.helpers,
 	g=app_globals.Globals)
     g = app.globals
+    g.config = config
     app = ConfigMiddleware(app, {'app_conf':app_conf,
         'global_conf':global_conf})
     

@@ -42,7 +42,8 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 #set debug = false
 
 openplans_wrapper = ZWSGIFakeEnv
-test_email_address = "novalis@example.org"
+
+atom_store_link = http://localhost:8080
 
 [app:test]
 use = main

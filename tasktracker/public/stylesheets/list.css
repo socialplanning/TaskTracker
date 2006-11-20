@@ -32,6 +32,7 @@ span.autocomplete ul {
     list-style-type:none;
     margin:0px;
     padding:0px;
+    border: 1px dashed black;
 }
 span.autocomplete ul li.selected {
     background-color: #ffb;
