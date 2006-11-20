@@ -1,3 +1,53 @@
+// http://simon.incutio.com/archive/2004/05/26/addLoadEvent
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+function createDragDrop() {
+    if (!initialized) {
+        initialized = true;
+        Draggables.addObserver(new observer());
+
+        $A($('tasks').getElementsByTagName('li')).each(function(node) {
+            var id = node.getAttribute('task_id');
+            var drag = new Draggable(node.id, {
+                handle : 'handle_' + id, 
+                revert : true
+                //ghosting : true
+            });
+	    console.log("about to observe handle_" + id);
+	    //	    Event.observe('handle_' + id, 'onclick', function() {console.log("boo"); Element.addClassName('treewidget'); } );
+	    console.log("success");
+	    
+            Droppables.add('title_' + id, {
+                hoverclass : 'drop',
+                onDrop : doDrop
+            });
+            Droppables.add('handle_' + id, {
+                hoverclass : 'drop',
+                onDrop : doDrop
+            });
+        });
+        Droppables.add('trash', {
+            hoverclass : 'drop',
+            onDrop : destroyTask,
+            accept : 'deletable'
+        });
+    }
+}
+
+addLoadEvent(createDragDrop);
+
 function toggle(obj) {
     obj.style.display = (obj.style.display != 'none' ? 'none' : '');
 }
@@ -362,37 +412,6 @@ function sortBy(column) {
 var initialized = false;
 
 function modeSwitch() {
-    if (!initialized) {
-        initialized = true;
-        Draggables.addObserver(new observer());
-
-        $A($('tasks').getElementsByTagName('li')).each(function(node) {
-            var id = node.getAttribute('task_id');
-            var drag = new Draggable(node.id, {
-                handle : 'handle_' + id, 
-                revert : true
-                //ghosting : true
-            });
-	    console.log("about to observe handle_" + id);
-	    //	    Event.observe('handle_' + id, 'onclick', function() {console.log("boo"); Element.addClassName('treewidget'); } );
-	    console.log("success");
-	    
-            Droppables.add('title_' + id, {
-                hoverclass : 'drop',
-                onDrop : doDrop
-            });
-            Droppables.add('handle_' + id, {
-                hoverclass : 'drop',
-                onDrop : doDrop
-            });
-        });
-        Droppables.add('trash', {
-            hoverclass : 'drop',
-            onDrop : destroyTask,
-            accept : 'deletable'
-        });
-    }
-
 
     if (mode == 'view') {
         $A($('tasks').getElementsByTagName('IMG')).each(function (x) {
