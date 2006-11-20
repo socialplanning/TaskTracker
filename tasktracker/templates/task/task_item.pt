@@ -5,12 +5,12 @@
 <span tal:attributes="depth python: atask.depth() - c.depth" class="taskitem">
 
   <span tal:condition="not: c/flat">
-    <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'), class_='treewidget', id='collapseButton_%d' % atask.id)" />
-
     <span tal:attributes="id string:draggable_${atask/id};">
-        <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'), id = 'handle_%s' % atask.id, 
-	style = 'padding-left: %dpx;' % ((atask.depth() - c.depth) * 15), 
-	onclick = 'toggleCollapse(%s)' % atask.id, class_='handle')" />
+        <!-- <span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), '/images/folder_open.png', '/images/file.png'), id = 'handle_%s' % atask.id, -->
+	
+	<span tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'), class_='treewidget handle', id='handle_%d' % atask.id,
+		style = 'padding-left: %dpx;' % ((atask.depth() - c.depth) * 15),
+		onclick = 'toggleCollapse(%s)' % atask.id)" />	
 
     </span>
   </span>

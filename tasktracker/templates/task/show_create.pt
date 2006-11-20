@@ -1,6 +1,6 @@
 <metal:macro define-macro="show_create">
 
-<form tal:attributes="action python:h.url_for(action='create', controller='task')" method="post">
+<form tal:attributes="action python:h.url_for(action='create', controller='task', url_from=c.url_from)" method="post">
 
 <table>
 <tr><td>

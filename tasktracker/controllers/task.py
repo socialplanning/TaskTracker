@@ -110,11 +110,11 @@ class TaskController(BaseController):
 
     @attrs(action='create', watchdog=TaskCreateWatchdog)
     @validate(schema=EditTaskForm(), form='show_create')
-    def create(self):
+    def create(self, *args, **kwargs):
         p = self._clean_params(self.form_result)
-        return self._create_task(**p)
+        return self._create_task(url_from=request.params.get('url_from', None), **p)
 
-    def _create_task(self, **p):
+    def _create_task(self, url_from = None, **p):
         if not (c.level <= Role.getLevel('ProjectAdmin') or
                 TaskList.get(p['task_listID']).isOwnedBy(c.username)):
             p['private'] = False
@@ -127,7 +127,10 @@ class TaskController(BaseController):
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
-        return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
+        if url_from:
+            return Response.redirect_to(url_from)
+        else:
+            return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors
@@ -204,6 +207,7 @@ class TaskController(BaseController):
         c.tasklist = c.task.task_list
         c.task_listID = c.tasklist.id
         c.depth = c.task.depth() + 1
+        c.url_from = url_for(controller='task', action='show', id=id)
         return render_response('zpt', 'task.show')
 
     @attrs(action='update')

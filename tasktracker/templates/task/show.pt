@@ -102,4 +102,3 @@ Make your own comment?
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
 </metal:do>
-
