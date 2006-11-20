@@ -140,15 +140,16 @@ observer.prototype = {
     initialize : function() {
     },
 
-    onStart : function(event_name, handle) {
-        Droppables.remove (handle.handle);
+    onStart : function(event_name, draggable, event) {
+        Droppables.remove(draggable.handle);
+	draggable.handle.setAttribute('drag', "true");
     },
 
-    onEnd : function(event_name, handle, event) {
-        Droppables.add (handle.handle.id, {
+    onEnd : function(event_name, draggable, event) {
+        Droppables.add (draggable.handle.id, {
             hoverclass : 'drop',
             onDrop : doDrop
-        });	
+        });
         // TODO consume the event so it doesn't trigger a click on mouse-up
     }
 };
@@ -254,8 +255,9 @@ function destroyTask(child, drop_target) {
         onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask.bind(task_id)});
 }
 
-function doDrop(child, drop_target) {
+function doDrop(child, drop_target, a) {
     var id;
+    console.log(a);
     if (drop_target == child) {
         return;
     }
@@ -265,18 +267,17 @@ function doDrop(child, drop_target) {
     if (drop_target.id.match(/^title_/)) {   // drop under a parent node
         id = parseInt(drop_target.id.replace(/^title_/, ''));
         var new_parent = $('task_' + id);
-        new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+	new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
             onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}),
             onFailure:debugThing});
     } else {   // drop after a sibling node
         id = parseInt(drop_target.id.replace(/^handle_/, ''));
         var new_sibling = $('task_' + id);
-
         new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
             onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}),
-            onFailure:debugThing}); 
+            onFailure:debugThing});
     }
 }
 
@@ -313,6 +314,11 @@ function sortULBy(ul, column) {
 }
 
 function toggleCollapse(task_id) {
+    if($('handle_' + task_id).getAttribute('drag') == "true") {
+	$('handle_' + task_id).setAttribute('drag', "");
+	return;
+    }
+
     $A($('task_' + task_id).childNodes).each(function(node) {        
         if (node.className) {
             if (node.className.match('^task_list')) {
@@ -367,7 +373,10 @@ function modeSwitch() {
                 revert : true
                 //ghosting : true
             });
-
+	    console.log("about to observe handle_" + id);
+	    //	    Event.observe('handle_' + id, 'onclick', function() {console.log("boo"); Element.addClassName('treewidget'); } );
+	    console.log("success");
+	    
             Droppables.add('title_' + id, {
                 hoverclass : 'drop',
                 onDrop : doDrop
@@ -406,3 +415,4 @@ function modeSwitch() {
             $('create_section').show();
     }
 }
+

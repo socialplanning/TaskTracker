@@ -121,6 +121,5 @@ a.sortarrow:link {
 }
 
 span.editable:hover {
-  font-style: italic;
-  background-color: #ddffdd;
+  background-color: #edf;
 }
