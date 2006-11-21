@@ -52,7 +52,7 @@ class Globals(object):
             
         """
         self.events = {}
-        if app_conf.has_key('atom_store_link'):
+        if app_conf.get('atom_store_link', None):
             from tasktracker.lib.store_notes import AtomStoreLink
             from tasktracker.config.notify import setup_notify
             require('atomixlib', 'httplib2')

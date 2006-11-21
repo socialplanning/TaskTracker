@@ -83,3 +83,4 @@ use = egg:Paste#pkg_resources
 egg = Deliverance
 resource_name = deliverance/test-data/nycsr
 
+atom_store_link=
