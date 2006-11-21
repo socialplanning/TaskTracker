@@ -52,6 +52,7 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 
 openplans_wrapper = ZWSGIFakeEnv
 
+atom_store_link =
 
 ############################################################
 ## Deliverance-enabled example
@@ -82,5 +83,3 @@ use = egg:Paste#urlmap
 use = egg:Paste#pkg_resources
 egg = Deliverance
 resource_name = deliverance/test-data/nycsr
-
-atom_store_link=
