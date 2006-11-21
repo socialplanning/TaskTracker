@@ -18,9 +18,6 @@
 # Boston, MA  02110-1301
 # USA
 
-from tasktracker.lib.store_notes import AtomStoreLink
-from tasktracker.config.notify import setup_notify
-
 import imp
 
 def require(*libs):
@@ -56,6 +53,8 @@ class Globals(object):
         """
         self.events = {}
         if app_conf.has_key('atom_store_link'):
+            from tasktracker.lib.store_notes import AtomStoreLink
+            from tasktracker.config.notify import setup_notify
             require('atomixlib', 'httplib2')
             self.atom_store_link = AtomStoreLink(app_conf['atom_store_link'])
             setup_notify(self.events)
