@@ -81,7 +81,7 @@ class AtomStoreLink(object):
             self.lock.acquire()
             try:
                 for key in self.recent_entries.keys():
-                    if self.recent_entries[key].updated.value + datetime.timedelta(0, 30*60, 0) < time.now() :
+                    if self.recent_entries[key].updated.value + datetime.timedelta(0, 30*60, 0) < datetime.datetime.now() :
                         del self.recent_entries[key]
             finally:
                 self.lock.release()

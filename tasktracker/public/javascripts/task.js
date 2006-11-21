@@ -13,8 +13,12 @@ function addLoadEvent(func) {
   }
 }
 
+function hasReorderableTasks() {
+    return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");
+}
+
 function createDragDrop() {
-    if (!initialized) {
+    if (!initialized && hasReorderableTasks()) {
         initialized = true;
         Draggables.addObserver(new observer());
 
@@ -25,10 +29,6 @@ function createDragDrop() {
                 revert : true
                 //ghosting : true
             });
-	    console.log("about to observe handle_" + id);
-	    //	    Event.observe('handle_' + id, 'onclick', function() {console.log("boo"); Element.addClassName('treewidget'); } );
-	    console.log("success");
-	    
             Droppables.add('title_' + id, {
                 hoverclass : 'drop',
                 onDrop : doDrop
@@ -38,11 +38,13 @@ function createDragDrop() {
                 onDrop : doDrop
             });
         });
-        Droppables.add('trash', {
-            hoverclass : 'drop',
-            onDrop : destroyTask,
-            accept : 'deletable'
-        });
+	if ($('trash')) {
+	    Droppables.add('trash', {
+		    hoverclass : 'drop',
+			onDrop : destroyTask,
+			accept : 'deletable'
+			});
+	}
     }
 }
 

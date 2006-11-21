@@ -20,7 +20,7 @@ You are watching this task list.
 
 <!-- the actual task list -->
 
-<ul id="tasks" class="task_list">
+<ul id="tasks" class="task_list" hasReorderableTasks="True">
   <tal:for repeat="atask c/tasks">
     
     <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
