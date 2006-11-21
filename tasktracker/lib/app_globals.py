@@ -56,7 +56,15 @@ class Globals(object):
             from tasktracker.lib.store_notes import AtomStoreLink
             from tasktracker.config.notify import setup_notify
             require('atomixlib', 'httplib2')
-            self.atom_store_link = AtomStoreLink(app_conf['atom_store_link'])
+            url = app_conf['atom_store_link']
+            if url == 'self':
+                #start an atom server
+                from atomstore.atomstore import start_store
+                self.store = start_store()
+                url = "http://localhost:8080"
+                import time
+                time.sleep(1)
+            self.atom_store_link = AtomStoreLink(url)
             setup_notify(self.events)
 
     def __del__(self):
@@ -64,4 +72,5 @@ class Globals(object):
         Put any cleanup code to be run when the application finally exits 
         here.
         """
-        pass
+        if hasattr(self, 'store'):
+            self.store.running = False

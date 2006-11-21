@@ -17,8 +17,19 @@ def setup_store():
           HEAD=a_store.head_collection)
     s.add('/tasks/{rid:any}', GET=a_store.get_member, PUT=a_store.update_member,
           DELETE=a_store.delete_member, HEAD=a_store.head_member)
-        
+    
     return s
+
+def start_store():
+    store = setup_store()
+    def do_start():
+        httpd = make_server('localhost', 8080, store)
+        store.running = True
+        while store.running:
+            httpd.handle_request()
+    import threading
+    threading.Thread(target=do_start).start()
+    return store
 
 if __name__ == '__main__':
     s = setup_store()

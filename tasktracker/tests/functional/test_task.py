@@ -59,7 +59,6 @@ class TestTaskController(TestController):
         res = form.submit()
 
         #Creating a new task should redirect you to the list of tasks.
-        print res.header_dict
         location = res.header_dict['location']
         assert location.startswith('/tasklist/show/')
 
@@ -293,30 +292,6 @@ class TestTaskController(TestController):
         res = res.follow()
 
         res.mustcontain("Edit your watch settings")
-
-        #let's check if notifications actually work
-        email = 'admin@topp.example.com' #this is hard-coded in fakeenv
-        og = OutgoingEmail.selectBy(envelope_to_address = email)
-        old_count = og.count()
-
-        res = app.get(url_for(controller='task', action='show_update', id=task.id))
-        form = res.forms[0]
-        form.fields['title'][0].value = "Changed"
-        res = form.submit()
-       
-        og = OutgoingEmail.selectBy(envelope_to_address = email)
-        assert og.count() == old_count + 1
-
-        from datetime import datetime, timedelta
-
-        found = False
-        now = datetime.now()
-        for mail in og:
-            if mail.created - now < timedelta(0,5,0):
-                if task_path in mail.message:
-                    found = True
-
-        assert found
 
         #delete watcher
 

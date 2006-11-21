@@ -28,7 +28,7 @@ from atomixlib.mapper import *
 import httplib2
 h = httplib2.Http()
 from utils import threaded
-from threading import Lock
+from threading import Lock, Thread
 import datetime
 
 #next three functions adapted from amplee demo
@@ -73,8 +73,7 @@ class AtomStoreLink(object):
         self.reaper()
         self.lock = Lock()
 
-    @threaded()
-    def reaper(self):
+    def _reaper(self):
         while 1:
             import time
             time.sleep(60)
@@ -86,6 +85,11 @@ class AtomStoreLink(object):
             finally:
                 self.lock.release()
     
+    def reaper(self):
+        reaper = Thread(target=self._reaper)
+        reaper.setDaemon(True)
+        reaper.start()
+
     def _create_task_entry(self, task):
         text = u" ".join(["<div>",
                           "Title: <em>%s</em><br/>" % task.title,
