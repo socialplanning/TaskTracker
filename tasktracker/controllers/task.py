@@ -58,8 +58,12 @@ class TaskController(BaseController):
     @catches_errors
     def change_field(self, id, *args, **kwargs):
         field = request.params['field']
-        c.task = self._getTask(int(id))
-        setattr(c.task, field, self.form_result[field])
+        task = self._getTask(int(id))
+        newfield = self.form_result[field]
+        if not getattr(task, field) == newfield:
+            print "setting attr"
+            setattr(task, field, newfield)
+        c.task = task
         return render_text("ok")
         
     @attrs(action='show')
