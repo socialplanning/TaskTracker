@@ -103,7 +103,7 @@ def editableField(task, field):
                              % (url_for(controller='task', action='change_field', id=task.id, field=field), task.id, field))
     cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
 
-    span_contents = "%s <div>%s %s</div>" % (_fieldHelpers[field](task), save_img, cancel_img)
+    span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
     return "%s %s </span>" % (span, span_contents)
 
 def _ownerInput(task):
@@ -112,7 +112,7 @@ def _ownerInput(task):
         orig = task.owner    
 
     input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
-              id="owner_%d" value="%s"/>""" % (orig, task.id, task.owner)
+              id="owner_%d" value="%s" onchange='changeField("%s", %d, "owner");'/>""" % (orig, task.id, task.owner, url_for(controller='task', action='change_field', id=task.id, field='owner'), task.id)
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
     script = """<script type="text/javascript">new Ajax.Autocompleter('owner_%d', 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
     return "%s\n%s\n%s" % (input, span, script)
@@ -121,7 +121,8 @@ def _prioritySelect(task):
     priority = task.priority
     id = task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority, id='priority_%d' % id)
+                  method='post', originalvalue=priority, id='priority_%d' % id, onchange='changeField("%s", %d, "priority");' \
+                             % (url_for(controller='task', action='change_field', id=task.id, field='priority'), task.id))
 
 
 def _deadlineInput(task):
@@ -147,8 +148,9 @@ def _statusSelect(task):
                   options_for_select(status_names, task.status), 
                   method='post', 
                   originalvalue=task.status,
-                  id='status_%d' % task.id)
-#                  onchange='changeField("%s", %d, "status")' % (status_change_url, task.id),
+                  id='status_%d' % task.id,
+                  onchange='changeField("%s", %d, "status");' \
+                             % (url_for(controller='task', action='change_field', id=task.id, field='status'), task.id))
 
 _fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
     
