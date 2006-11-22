@@ -30,13 +30,18 @@ from tasktracker.lib.datetimeconverter import *
 class EditTaskForm(formencode.Schema):  
     pre_validators = [formencode.variabledecode.NestedVariables]
     allow_extra_fields = True
+    filter_extra_fields = True
     ignore_key_missing = True
     title = NotEmpty()
     deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today),
                                        DateConverter())
-    status = formencode.validators.OneOf([status.name for status in Status.select()]) # TODO this is not true
+    status = formencode.validators.OneOf([status.name for status in Status.select()]) # TODO this is still not true
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
+    parentID = formencode.validators.Int(not_empty = True)
+    task_listID = formencode.validators.Int()
+    text = NotEmpty()
+    private = NotEmpty()
 
 
 _actions = dict(status='change_status', owner='assign', priority='update', deadline='update')
@@ -61,7 +66,6 @@ class TaskController(BaseController):
         task = self._getTask(int(id))
         newfield = self.form_result[field]
         if not getattr(task, field) == newfield:
-            print "setting attr"
             setattr(task, field, newfield)
         c.task = task
         return render_text("ok")
