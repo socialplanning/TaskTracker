@@ -24,7 +24,7 @@ from tasktracker.models import *
 class TestTaskController(TestController):
     def test_my_tasks(self):
         #fixtures:
-        tl = self.create_tasklist('testing task query', security_level=0)
+        tl = self.create_tasklist('testing task query')
 
         my_task = Task(title='My task', text='x', private=False, task_listID=tl.id, owner='admin')
         her_task = Task(title='Her task', text='x', private=False, task_listID=tl.id, owner='maria')
@@ -40,7 +40,7 @@ class TestTaskController(TestController):
             x.destroySelf()
 
     def test_project_tasks(self):
-        tl = self.create_tasklist('testing task query', security_level=0)
+        tl = self.create_tasklist('testing task query')
 
         task = Task(title='A task', text='x', private=False, task_listID=tl.id)
         
@@ -53,7 +53,7 @@ class TestTaskController(TestController):
             x.destroySelf()
 
     def test_tasklist_tasks(self):
-        tl = self.create_tasklist('testing task query', security_level=0)
+        tl = self.create_tasklist('testing task query')
 
         assert tl.id != self.task_list.id
 

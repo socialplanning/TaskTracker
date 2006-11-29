@@ -1,10 +1,18 @@
+<h1>Create New List</h1>
+
 A task list is a container for tasks.  Task lists are used to organize
 tasks by area, or by sub-project.  For example, there might be a task
 list for tasks around the office, and another task list for organizing
-opposition to a certain law.
+opposition to a proposed law.
 
 <span tal:replace="structure python: h.form(h.url(action='create'), method='post')" />
 
 <metal:do use-macro="here/_form/macros/form" />
 
 <span tal:replace="structure python: h.end_form()" />
+
+<script>
+if ($('custom_status').checked) {
+    $('statuses').show();
+}
+</script>

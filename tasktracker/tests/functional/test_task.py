@@ -34,6 +34,7 @@ class TestTaskController(TestController):
         res = res.click(lists[0].title)
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
+
         assert task.status == 'not done'
         res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'done'})
         assert task.status == "done"
@@ -106,61 +107,63 @@ class TestTaskController(TestController):
         top_level_task.destroySelf()
         tl.destroySelf()
 
-    def test_auth_role(self):
-        tl = self.create_tasklist('testing the auth role')
+# actually, this role is never used.
 
-        #set security such that only task owner can change status and update
-        found = False
-        for perm in tl.permissions:
-            if perm.action.action == "task_change_status" or perm.action.action == "task_update":
-                found = True
-                perm.min_level = Role.getLevel("TaskOwner")
-        assert found
+#     def test_auth_role(self):
+#         tl = self.create_tasklist('testing the auth role')
 
-        #add a task assigned to 'auth'
-        task1 = Task(title='Fleem', text='x', owner='auth', task_listID=tl.id)
-        #add a task not assigned to 'auth'
-        task2 = Task(title='Fleem', text='x', owner='admin', task_listID=tl.id)
+#         #set security such that only task owner can change status and update
+#         found = False
+#         for perm in tl.permissions:
+#             if perm.action.action == "task_change_status" or perm.action.action == "task_update":
+#                 found = True
+#                 perm.min_level = Role.getLevel("TaskOwner")
+#         assert found
 
-        app = self.getApp('auth')
+#         #add a task assigned to 'auth'
+#         task1 = Task(title='Fleem', text='x', owner='auth', task_listID=tl.id)
+#         #add a task not assigned to 'auth'
+#         task2 = Task(title='Fleem', text='x', owner='admin', task_listID=tl.id)
 
-        res = app.get(url_for(
-                controller='tasklist', action='show', id=tl.id))
+#         app = self.getApp('auth')
 
-        res.mustcontain('testing the auth role')
+#         res = app.get(url_for(
+#                 controller='tasklist', action='show', id=tl.id))
 
-        spanTags = self._getElementsByTagName(res.body, 'span')
+#         res.mustcontain('testing the auth role')
 
-        found = 0
-        for span in spanTags:
-            for field in 'status deadline priority owner'.split():
-                if '%s-label_%d' % (field, task1.id) in span:
-                #the label for task1 must be clickable
-                    assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
-                    found += 1
-                elif '%s-label_%d' % (field, task2.id) in span:
-                #the label for task2 must not be clickable
-                    assert 'onclick="viewChangeableField(%d, \'%s\')"' % (task1.id, field) not in span
-                    found += 1
+#         spanTags = self._getElementsByTagName(res.body, 'span')
 
-        assert found == 8
+#         found = 0
+#         for span in spanTags:
+#             for field in 'status deadline priority owner'.split():
+#                 if '%s-label_%d' % (field, task1.id) in span:
+#                 #the label for task1 must be clickable
+#                     assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
+#                     found += 1
+#                 elif '%s-label_%d' % (field, task2.id) in span:
+#                 #the label for task2 must not be clickable
+#                     assert 'onclick="viewChangeableField(%d, \'%s\')"' % (task1.id, field) not in span
+#                     found += 1
 
-        selectTags = self._getElementsByTagName(res.body, 'select')
-        found = 0
-        for select in selectTags:
-            #there is no select for task2, because we can't edit it.
-            assert 'status_%d' % task2.id not in select 
-            assert 'priority_%d' % task2.id not in select
+#         assert found == 8
 
-            #but there is one for task1
-            if 'status_%d' % task1.id in select or 'priority_%d' % task1.id in select:
-              found += 1
+#         selectTags = self._getElementsByTagName(res.body, 'select')
+#         found = 0
+#         for select in selectTags:
+#             #there is no select for task2, because we can't edit it.
+#             assert 'status_%d' % task2.id not in select 
+#             assert 'priority_%d' % task2.id not in select
 
-        assert found == 2
+#             #but there is one for task1
+#             if 'status_%d' % task1.id in select or 'priority_%d' % task1.id in select:
+#               found += 1
 
-        task1.destroySelf()
-        task2.destroySelf()
-        tl.destroySelf()
+#         assert found == 2
+
+#         task1.destroySelf()
+#         task2.destroySelf()
+#         tl.destroySelf()
 
     def test_comments(self):
         tl = TaskList.select()[0]
@@ -185,7 +188,8 @@ class TestTaskController(TestController):
         res.mustcontain('Fleem')
         
         #fill in the form
-        form = res.forms[0]
+        form = res.forms[1]
+
         form.fields['text'][0].value = "This is a test comment."
 
         res = form.submit()
@@ -196,7 +200,9 @@ class TestTaskController(TestController):
         task1.destroySelf()
 
     def test_private_tasks(self):
-        tl = self.create_tasklist('testing the auth role', security_level=0)
+        tl = self.create_tasklist('testing the auth role')
+        #hack to force private tasks
+        TaskListFeature(task_listID=tl.id, name='private_tasks', value=None)
 
         nonpriv = Task(title='The non-private one', text='x', private=False, task_listID=tl.id)
         priv = Task(title='The private one', text='x', private=True, task_listID=tl.id)
@@ -241,7 +247,7 @@ class TestTaskController(TestController):
         priv.destroySelf()
     
     def test_task_update(self):
-        tl = self.create_tasklist('testing task update', security_level=0)
+        tl = self.create_tasklist('testing task update')
 
         task = Task(title='The task', text='x', private=False, task_listID=tl.id)
         
@@ -275,7 +281,7 @@ class TestTaskController(TestController):
         
     def test_task_watch(self):
         """Tests adding self as a watcher for a task"""
-        tl = self.create_tasklist('testing task watching', security_level=0)
+        tl = self.create_tasklist('testing task watching')
 
         task = Task(title='The task', text='x', private=False, task_listID=tl.id)
         

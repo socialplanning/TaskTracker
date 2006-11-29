@@ -2,64 +2,166 @@
 
 <input type="hidden" name="mode" id="mode" tal:attributes="value python:test(c.security_policy_id, 'simple', 'complex')">
 
-<table>
-<tr><td><label for="title">Title:</label></td>
-<td><span tal:replace="structure python: h.text_field_r('tasklist', 'title')" /> </td>
-</tr>
+<label for="title">Name:</label><br/>
+<span tal:replace="structure python: h.text_field('title', size=80)" /><br/>
 
-<tr><td><label for="text">Long description of task list:</label></td>
-<td><span tal:replace="structure python: h.text_area_r('tasklist', 'text', rows=10, cols=80)" /></td>
-</tr>
+<label for="text">Description:</label><br/>
+<span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
 
+<table style="width:100%">
+<tr><td><label for="admins">Managers:</label>
+<input type="hidden" value="" id="managers" name="managers">
+</td><td>
 
-<tr><td><label for="policy">Security:</label></td>
-<td>
+<!-- list managers -->
 
-<!-- Complex security settings -->
-<div id="complex_form" tal:attributes="style python:test(c.security_policy_id, 'display:none;;', '')">
-<tal:for repeat="action c/actions">
-<span tal:replace="action/question" />
-
-<span tal:replace="structure python: h.select('action_' + action.action, h.options_for_select([(a.description, a.id) for a in action.roles], c.permissions[action.id]))" />
-<br/>
-</tal:for>
-<a href="#" onclick="$('complex_form').hide(); $('mode').setAttribute('value', 'simple'); $('simple_form').show(); return false;">Show simple security options</a>
-</div>
-
-<!-- Simple security settings -->
-<div id="simple_form" tal:attributes="style python:test(c.security_policy_id, '', 'display:none;;')">
-<span tal:replace="structure python: h.select('policy', h.options_for_select([(p.name, p.id) for p in c.policies], c.security_policy_id))" />
-
-<a href="#" onclick="$('simple_form').hide(); $('mode').setAttribute('value', 'complex'); $('complex_form').show(); return false;">Show advanced security options</a>
-</div>
-</td>
-</tr>
-
-<tr><td><label for="admins">List owners:</label></td>
-<td>
-<input type="hidden" value="" id="items" name="owners">
-
-<span tal:replace="structure python: h.list_with_checkboxes('list_owners', c.owners, c.uneditableOwners)" />
+<span tal:replace="structure python: h.list_with_minuses('list_managers', c.managers, c.administrators)" />
 
 <span class="autocomplete">
-  <label for="owner">Add an owner:</label>   <input autocomplete="off" id="owner" name="owner" size="30" type="text" value="" /><input type="submit" name="submit" value="Add an owner" onclick="addItem($('owner').value);$('owner').value=''; return false;"/>
-
-
-  <div class="auto_complete" id="owner_auto_complete"></div>
-  <script type="text/javascript">new Ajax.Autocompleter('owner', 'owner_auto_complete', 
-  '../../../task/auto_complete_for_owner/', {})</script>
+  <label for="manager" onclick="$('add_manager').toggle(); $('show_add_manager').toggle()" id="show_add_manager">[ + ] add manager</label>
+<span id="add_manager" style="display:none;">
+   <input autocomplete="off" id="manager" name="manager" size="20" type="text" value="" />
+   <input type="submit" name="submit" value="Add" onclick="addItem('list_managers', $('manager').value);$('manager').value=''; return false;"/>
 </span>
 
-</td>
+  <div class="auto_complete" id="manager_auto_complete"></div>
+  <script type="text/javascript">new Ajax.Autocompleter('manager', 'manager_auto_complete', 
+  '../../../task/auto_complete_for/manager', {})</script>
+</span>
+
+</td><td>
+
 </tr>
-
-
 </table>
 
+
+<!-- Permissions -->
+
+This project's team members can:
+<ul id="member_permissions"></ul>
+Anyone else can:
+<ul id="other_permissions"></ul>
+
+<!-- these will be filled in by htmlfill, and then deleted by js -->
+
+<input type="hidden" name="member_level" id="member_level_old" value="0">
+<input type="hidden" name="other_level" id="other_level_old" value="0">
+
+<script>
+//'
+var options = ["not even see this list", "view this list but not participate", "and get tasks assigned to them", "and create new tasks", "and edit any task"];
+var lists = ['member', 'other'];
+checked = {};
+lists.each(function(list_name) {
+	list = $(list_name + '_permissions');
+	list.className = "undecorated_list";
+	options.each (function(option, index) {
+		var button = Builder.node('input', {
+			id : list_name + '_level_' + index,
+			name : list_name + '_level', 
+			value : index, 
+			type : "radio", 
+			onclick : list_name + '_permission_set(' + index + ')'
+		    });
+		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, option]);
+		list.appendChild(li);
+	    });
+
+	//set the value to the 'previous' value
+	old = $(list_name + '_level_old');
+	$(list_name + '_level_' + old.value).checked = true;
+	old.parentNode.removeChild(old);
+    });
+
+function show_selected(list_name, index) {
+    //also show what's selected
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $(list_name + '_level_' + i);
+	if (i <= index && i > 0) {
+	    radio.parentNode.style['color'] = '#080';
+	} else {
+	    radio.parentNode.style['color'] = '#000';
+	}
+    }
+}
+
+function member_permission_set(index) {
+    //disable inappropriate options on 'anyone else'; enable appropriate ones
+    other_selected = null;
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $('other_level_' + i);
+	if (radio.checked) {
+	    other_selected = radio;
+	}
+	if (i > index) {
+	    radio.disabled = true;
+	} else {
+	    radio.disabled = false;
+	}
+    }
+    if (other_selected.value > index) {
+	$('other_level_' + index).checked = true;
+    }
+
+    show_selected('member', index);
+}
+function other_permission_set(index) {
+    //disable inappropriate options on 'member'; enable appropriate ones
+    member_selected = null;
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $('member_level_' + i);
+	if (radio.checked) {
+	    member_selected = radio;
+	}
+	if (i < index) {
+	    radio.disabled = true;
+	} else {
+	    radio.disabled = false;
+	}
+    }
+    if (member_selected.value < index) {
+	$('member_level_' + index).checked = true;
+    }
+
+    show_selected('other', index);
+}
+
+
+</script>
+
+<!-- Features -->
+
+<br/>
+Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
+<input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
+<input type="checkbox" name="feature_custom_statuses" value="1" class="features" onclick="$('statuses').toggle();" id="custom_status"/>Custom status<br/>
+<input type="hidden" value="" id="statuses" name="statuses">
+
+<div id="statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
+<span tal:replace="structure python: h.list_with_minuses('list_statuses', [], ['done'])" />
+
+   <input id="status" name="status" size="20" type="text" value="" />
+   <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('status').value);$('status').value=''; return false;"/>
+
+
+</div>
+<div id="statuses" tal:condition="c/update" style="margin-left: 3em;">
+  Statuses: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
+</div>
+
+<input type="checkbox" name="feature_private_tasks" value="1" class="features"/>Private tasks<br/>
+
+<br/>
+By default, tasks are initially assigned to:<br/>
+<input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
+<input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+
 <span tal:replace="structure python: h.submit('Submit')" />
+<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
 
 <script language="JavaScript">
-   setupEditableList('list_owners');
+   setupEditableList('managers', 'list_managers');
+   setupEditableList('statuses', 'list_statuses');
 </script>
 
 </metal:macro>

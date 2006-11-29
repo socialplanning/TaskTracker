@@ -14,7 +14,10 @@
    sodipodi:version="0.32"
    inkscape:version="0.43"
    sodipodi:docbase="/home/novalis/task-tracker/src/TaskTracker-work/tasktracker/public/images"
-   sodipodi:docname="question.svg">
+   sodipodi:docname="question.svg"
+   inkscape:export-filename="/home/novalis/task-tracker/src/TaskTracker-work/tasktracker/public/images/question.png"
+   inkscape:export-xdpi="2.5105853"
+   inkscape:export-ydpi="2.5105853">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -31,8 +34,8 @@
      inkscape:current-layer="layer1"
      inkscape:window-width="798"
      inkscape:window-height="575"
-     inkscape:window-x="389"
-     inkscape:window-y="531" />
+     inkscape:window-x="140"
+     inkscape:window-y="538" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -59,14 +62,14 @@
        d="M 700 553.79077 A 264.28571 264.28571 0 1 1  171.42859,553.79077 A 264.28571 264.28571 0 1 1  700 553.79077 z" />
     <text
        xml:space="preserve"
-       style="font-size:520;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="289.21771"
-       y="749.505"
+       style="font-size:500px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="297.21771"
+       y="741.505"
        id="text2182"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
          id="tspan2184"
-         x="289.21771"
-         y="749.505">?</tspan></text>
+         x="297.21771"
+         y="741.505">?</tspan></text>
   </g>
 </svg>

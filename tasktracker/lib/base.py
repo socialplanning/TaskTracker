@@ -92,9 +92,6 @@ def render_text(text):
 class SecurityException(Exception):
     pass
 
-class NotInitializedException(Exception):
-    pass
-
 class MissingSecurityException(Exception):
     pass
 
@@ -140,6 +137,7 @@ class BaseController(WSGIController):
             if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
                 self.watchdog.dog.after(params)
 
+
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
         if callable(action_verb):
@@ -148,7 +146,10 @@ class BaseController(WSGIController):
         action_name = controller + '_' + action_verb
         #special case for creating task lists
         if action_name == 'tasklist_create':
-            return c.project.create_list_permission >= c.level
+            if c.project_permission_level in ['open', 'medium']:
+                return c.level >= Role.getLevel('ProjectMember')
+            else:
+                return c.level >= Role.getLevel('ProjectAdmin')
 
         if controller == 'tasklist':
             task_list = TaskList.get(params['id'])
@@ -204,28 +205,7 @@ class BaseController(WSGIController):
             
         return tl_permissions[0].min_level >= local_level
 
-
-    def _initialize_project(self, controller, action_verb, params):
         
-        if callable(action_verb):  #TODO: this isn't a good solution!
-            return True
-
-        action_name = controller + '_' + action_verb
-        if action_name == 'project_initialize':
-            if c.level <= Role.getLevel('ProjectAdmin'):
-                return True #OK, let admins initialize the project.
-            else:
-                raise NotInitializedException
-        elif action_name == 'project_show_uninitialized':
-            return True #always let people see the not initialized message
-
-
-        if not c.project.initialized:
-            if c.level <= Role.getLevel('ProjectAdmin'):
-                redirect_to(controller='project', action='show_initialize', id = c.project.id)
-            else:
-                redirect_to(controller='project', action='show_uninitialized', id = c.project.id)
-
     def _authorize(self, project, action, params):
         controller = params['controller']
 
@@ -244,7 +224,7 @@ class BaseController(WSGIController):
         c.username = username
 
         c.user_info = request.environ.get('topp.user_info', None)
-
+        c.project_permission_level = request.environ.get('topp.project_permission_level', None)
         c.usermapper = environ['topp.project_members']
 
         func = getattr(self, action)
@@ -257,7 +237,7 @@ class BaseController(WSGIController):
         
         #A few special cases follow, with the general permission case at the end.
 
-        if self._initialize_project(controller, action_verb, params):
+        if callable(action_verb):  #TODO: this isn't a good solution!
             return True
 
         if action_verb == 'open':

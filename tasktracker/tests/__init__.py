@@ -58,7 +58,6 @@ class TestController(TestCase):
                                     'global_conf': self.conf.global_conf})
         self.wsgiapp = loadapp('config:development.ini#test', relative_to=conf_dir)
         self.setup_database()
-        self.setup_project()
         self.setup_fixtures()
         TestCase.__init__(self, *args)
 
@@ -68,13 +67,13 @@ class TestController(TestCase):
             delquery = conn.sqlrepr(Delete(table.q, where=None))
             conn.query(delquery)
     
-        self.task_list = TaskList(title="List 1", text="The list", projectID=self.project.id, username='member')
+        self.task_list = self.create_tasklist('The list')
 
         Task(title="Task 1", text="This is a task",
              task_list=self.task_list)
         Task(title="Task 2", text="Another task",
              task_list=self.task_list)
-        task_list_complete = TaskList(title="Complete list", text="Another list", projectID=self.project.id, username='admin')
+        task_list_complete = self.create_tasklist('Complete list')
         Task(title="Task A", text="more",
              task_list=task_list_complete,
              status='done')
@@ -84,7 +83,7 @@ class TestController(TestCase):
 
 
     def setup_database(self):
-        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListOwner, Comment, Status, User]
+        nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListRole, Comment, Status, User]
 
         for table in nonFixedClasses[::-1]:
             table.dropTable(ifExists=True)
@@ -96,42 +95,25 @@ class TestController(TestCase):
 
         self.project = Project(title='theproject')
 
-    def setup_project(self):
-        app = self.getApp('admin')
-
-        res = app.get('/')
-        location = res.header_dict['location']
-        assert location.startswith('/project/show_initialize/')
-
-        res = res.follow()
-
-        res.mustcontain('theproject')
-        res.mustcontain('Set up')
-
-        form = res.forms[0]
-
-        form['create_list_permission'] = 50
-
-        form['statuses'] = "not done,done,"
-
-        res = form.submit()
-
-
     def getApp(self, username):
         encoded = 'Basic ' + (username + ':nopassword').encode('base64')        
         return paste.fixture.TestApp(self.wsgiapp, extra_environ={'HTTP_AUTHORIZATION': encoded})
         
-    def create_tasklist(self, title, security_level=1):
+    def create_tasklist(self, title, member_level=4, other_level=4):
         app = self.getApp('admin')
         res = app.get(url_for(
                 controller='tasklist', action='show_create'))
 
         form = res.forms[0]
         
-        form.fields['title'][0].value = title
-        form.fields['mode'][0].value = 'simple'
-        policy = form.fields['policy'][0]
-        policy.value = policy.options[security_level][0] 
+        form['title'] = title
+        form['mode'] = 'simple'
+        class level(object):
+            def __init__(self, level):
+                self.value = level
+
+        form.fields['member_level'] = [level(member_level)]
+        form.fields['other_level'] = [level(other_level)]
         
         res = form.submit()
         res = res.follow()

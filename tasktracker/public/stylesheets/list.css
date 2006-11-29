@@ -123,3 +123,19 @@ a.sortarrow:link {
 span.editable:hover {
   background-color: #edf;
 }
+
+.help {
+  cursor: pointer;
+}
+
+.help_text {
+  background-color: #ddd;
+  border: 1px solid black;
+  position: absolute;
+}
+
+.undecorated_list {
+	list-style-type: none;
+        list-style-image: none; 
+	padding-left: 0px;
+}

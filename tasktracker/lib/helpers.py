@@ -34,6 +34,9 @@ from datebocks_helper import datebocks_field
 from stripogram import html2safehtml, html2text
 import imp, os
 
+from formencode import htmlfill
+from tasktracker.lib.base import render_response
+
 def debugThings():
     foo = c
     import pdb; pdb.set_trace()
@@ -44,17 +47,24 @@ def readableDate(date):
     else:
         return "No deadline"
 
-def list_with_checkboxes(id, updateable_items=[], fixed_items=[]):
+def help(text):
+    from random import random
+    help_id = 'help_' + str(random())[2:]
+    return """
+<img src="/images/question.png" onclick="$('%s').toggle();" class="help"/>
+<div id="%s" onclick="$('%s').hide()" class="help_text" style="display: none;">%s</div>
+""" % (help_id, help_id, help_id, text)
+
+def list_with_minuses(id, updateable_items=[], fixed_items=[]):
     updateable_lis = "\n".join([
-            """<li>
-                 <input type="checkbox" id="item_%d" onclick="deleteItem('item_%d');"/>
+            """<li id="%s_item_%d">
                  <span>%s</span>
-               </li>""" % (i, i, updateable_items[i])
+                 <span onclick="deleteItem('%s_item_%d');">[ - ]</span>
+               </li>""" % (id, i, updateable_items[i].username, id, i)
             for i in range(0, len(updateable_items))])
 
     fixed_lis = "\n".join([
             """<li id="%s">
-                 <input type="checkbox" disabled="disabled"/>
                  <span>%s</span>
                </li>""" % (item, item)
             for item in fixed_items])
@@ -133,7 +143,7 @@ def _deadlineInput(task):
                            input_attributes={'originalvalue': "%s" % orig}, value=task.deadline)
                         
 def _statusSelect(task):
-    statuses = task.task_list.project.statuses
+    statuses = task.task_list.statuses
     status_names = [(s.name, s.name) for s in statuses]
     index = 0
     for status in statuses:
@@ -239,3 +249,18 @@ def priority_as_int(priority_name):
 
 def interest_levels():
     return [('Just the highlights', 0), ('The works', 1)]
+
+def sqlobject_to_dict(obj):
+    out = {}
+    columns = obj.__class__.sqlmeta.columns
+    for column in columns.keys():
+        out[column] = getattr(obj, column)
+        
+    return out
+
+def filled_render(template, obj, extra_dict={}):
+    response = render_response('zpt', template)
+    d = sqlobject_to_dict(obj)
+    d.update(extra_dict)
+    response.content = [htmlfill.render("".join(response.content), d)]
+    return response

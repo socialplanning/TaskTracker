@@ -29,13 +29,17 @@ conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 def _user_dict(name):
     return dict(username = name,
                 email = "%s@topp.example.com" % name, 
-                roles=('Authenticated, ProjectMember'),
+                roles = 'Authenticated ProjectMember'.split(),
                 )
 
 class UserMapper:
     def project_members(self):
         names = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
-        return map (_user_dict, names)
+        members = map (_user_dict, names)
+        for member in members:
+            if member['username'] == 'admin':
+                member['roles'].append('ProjectAdmin')
+        return members
 
 class ZWSGIFakeEnv(object):
     def __init__(self, app, users):
@@ -61,6 +65,7 @@ class ZWSGIFakeEnv(object):
 
             environ['topp.project_members'] = UserMapper()
             environ['topp.project_name'] = 'theproject'
+            environ['topp.project_permission_level'] = 'closed'
 
             environ['REMOTE_USER'] = username
 

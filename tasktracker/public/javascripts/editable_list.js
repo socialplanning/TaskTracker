@@ -1,16 +1,15 @@
-var the_list_id;
-var the_list;
 
-function setupEditableList(list_id) {
-    the_list_id = list_id;
-    the_list = $(the_list_id);
-    Sortable.create(the_list_id);
+function setupEditableList(field, list_id) {
+    var the_list_id = list_id;
+    var the_list = $(the_list_id);
+    the_list.field = field;
+    //    Sortable.create(the_list_id);
 }
 
-function updateItem() {
+function updateItem(list) {
     //update the form variable
-    var item_list = the_list;
-    var items = item_list.getElementsByTagName('li')
+    list = $(list);
+    var items = list.getElementsByTagName('li')
     var s = '';
 
     for (i = 0; i < items.length; ++i) {
@@ -18,30 +17,29 @@ function updateItem() {
 	s += ',';
     }
 
-    $('items').value = s;
+    list.field.value = s;
 }
 
-function deleteItem(item_name) {
+function deleteItem(list, item_name) {
     $(item_name).parentNode.remove();
-    updateItem();
+    updateItem(list);
 }
 
 function getItemName(item_li) {
     return item_li.getElementsByTagName('span')[0].childNodes[0].nodeValue;
 }
 
-function addItem(item) {
+function addItem(list, item) {
+
     item = item.replace(/[^A-Za-z0-9 ]/g, '');
 
     if (item.length < 1) {
         return;
     }
 
-    item = item.toLowerCase();
-
     //prevent duplication
 
-    var item_list = the_list;
+    var item_list = $(list);
     var items = item_list.getElementsByTagName('li');
 
     for (i = 0; i < items.length; ++i) {
@@ -53,15 +51,18 @@ function addItem(item) {
     //add the html element
 
     var item_name = 'item_' + items.length;
-    var del = 'deleteItem(\'' + item_name + '\');';
-    var check = Builder.node('input', {'id' : item_name, 'type' : 'checkbox', 'onclick' : del});
-    var li = Builder.node('li', [check, Builder.node('span', item)]);
+    var del = "deleteItem('" + list + "', '" + item_name + "');";
+    var check = Builder.node('span', {'id' : item_name, 'onclick' : del}, ' [ - ]');
+    var li = Builder.node('li', [Builder.node('span', item), check]);
 
-    done = $('done');
-    item_list.insertBefore(li, done);
+    var last_item = item_list.firstChild;
+    while (last_item.nextSibling) {
+	last_item = last_item.nextSibling;
+    }
+    item_list.insertBefore(li, last_item);
 
-    updateItem();
+    updateItem(list);
 
-    Sortable.destroy(the_list_id);
-    Sortable.create(the_list_id);
+    //    Sortable.destroy(the_list_id);
+    //    Sortable.create(the_list_id);
 }

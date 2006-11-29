@@ -20,39 +20,23 @@
 
 from tasktracker.lib.base import *
 from tasktracker.models import *
+from tasktracker.lib.helpers import filled_render
 
 import formencode  
 
-class CreateListForm(formencode.Schema):  
-    allow_extra_fields = True  
-    filter_extra_fields = True  
-    #todo: add validators
+class CreateListForm(formencode.Schema): 
+    pre_validators = [formencode.variabledecode.NestedVariables()]
+    allow_extra_fields = True
     title = formencode.validators.NotEmpty()
-
-
-    TaskList.select(
-        AND(TaskList.q.live==True, 
-            TaskListPermission.q.task_listID == TaskList.q.id, 
-            TaskListPermission.q.actionID == Action.q.id, 
-            Action.q.action == 'tasklist_show'))
-    
-#TaskListPermission.q.min_level >= level))    
-
-
+    member_level = formencode.validators.Int()
+    other_level = formencode.validators.Int()
+    initial_assign = formencode.validators.Int()
 
 class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
         return [t for t in TaskList.selectBy(projectID = c.project.id)
                 if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
-
-    def _clean_params(self, params):
-        allowed_params = ("title", "text", "projectID")
-        clean = {}
-        for param in allowed_params:
-            if params.has_key(param):
-                clean[param] = params[param]
-        return clean
 
     @attrs(action='open')    
     def index(self):
@@ -68,61 +52,94 @@ class TasklistController(BaseController):
         c.depth = 0
         return render_response('zpt', 'task.list')
 
-    def _prepare_form(self):
-        c.actions = Action.select()
-        c.policies = SimpleSecurityPolicy.select()
-
     @attrs(action='create')
     def show_create(self):
-        self._prepare_form()
-        c.owners = []
-        c.uneditableOwners = [c.username]
-        c.permissions = dict([(action.id, action.roles[0].level) for action in c.actions])
-        c.security_policy_id = 1
+        c.managers = []
+        c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
         return render_response('zpt', 'tasklist.show_create')
 
-    def _set_security(self, p):
-        if p['mode'] == 'simple':
-            policy = SimpleSecurityPolicy.get(p['policy'])
-            p['security_policy'] = policy.id
-            for action in policy.actions:
-                p['action_%s' % action.action.action] = action.min_level
-        else:
-            p['security_policy'] = 0 #we don't need no steeking referential integrity
+    def _apply_role(self, members, tasklist, role):
+        for member in members:
+            if member:
+                TaskListRole(task_listID = tasklist.id, username = member, role = Role.getByName("ListOwner"))
 
+
+    def _setup_roles(self, p, tasklist):
+
+        for permission in tasklist.permissions:
+            permission.destroySelf()
+
+        def make_permission(action_name, tasklist, level):
+            TaskListPermission(action=Action.selectBy(action = action_name)[0], 
+                               task_list=tasklist, min_level = level)
+
+        other_level = Role.getLevel('Anonymous')
+        auth_level = Role.getLevel('Authenticated')
+        member_level = Role.getLevel('ProjectMember')
+        manager_level = Role.getLevel('ListOwner')
+
+        actions = ['', 'task_show', 'task_claim', 'task_create', 'task_update']
+        for i in range(len(actions)):
+            action = actions[i]
+            if not action: continue
+            if i < p['other_level']:
+                if action == 'task_show':
+                    make_permission(action, tasklist, other_level)
+                    #task_show and tasklist_show are the same
+                    make_permission('tasklist_show', tasklist, other_level)
+                else:
+                    make_permission(action, tasklist, auth_level)
+            elif i < p['member_level']:
+                make_permission(action, tasklist, member_level)
+            else:
+                make_permission(action, tasklist, manager_level)
+
+        #anyone can change task status
+        make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))
+
+        #only managers can assign and update list
+        make_permission('task_assign', tasklist, Role.getLevel('ListOwner'))
+        make_permission('tasklist_update', tasklist, Role.getLevel('ListOwner'))
+
+        #anyone can comment
+        make_permission('task_comment', tasklist, auth_level)
 
     @attrs(action='create')
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
-        p = dict(request.params)
+        assert self.form_result['member_level'] >= self.form_result['other_level']
+
+        p = dict(self.form_result)
         p['username'] = c.username
         p['projectID'] = c.project.id
-        owners = p.pop('owners').split(",")
         c.tasklist = TaskList(**p)
+        
+        def add_feature(name, value = None):
+            TaskListFeature(task_listID=c.tasklist.id, name=name, value=value)
 
-        for owner in owners:
-            if not owner or owner == c.username:
-                continue
-            TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
+        if p.get('feature_deadlines', None):
+            add_feature('deadlines')
+        if p.get('feature_custom_status', None):
+            add_feature('custom_status', None) #statuses are stored normalized
+        if p.get('feature_private_tasks', None):
+            add_feature('private_tasks')
 
-        self._set_security(p)
+        self._setup_roles(p, c.tasklist)
 
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
     @attrs(action='update')
     @catches_errors
     def show_update(self, id, *args, **kwargs):
-        c.tasklist = self._getTaskList(int(id))
-        c.owners = [o.username for o in c.tasklist.owners if not o.username == c.username]
-        if c.tasklist.isOwnedBy(c.username):
-            c.uneditableOwners = [c.username]
-        else:
-            c.uneditableOwners = []
-        c.permissions = dict([(perm.action.id, perm.min_level) for perm in c.tasklist.permissions])
-        c.security_policy_id = c.tasklist.security_policyID
-        self._prepare_form()
+        c.tasklist = TaskList.get(id)
+        c.managers = c.tasklist.managers()
+        c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        c.update = True
+        p = {}
+        for feature in c.tasklist.features:
+            p['feature_' + feature.name] = 1
 
-        return render_response('zpt', 'tasklist.show_update')
+        return filled_render('tasklist.show_update', c.tasklist, p)
 
     @validate(schema=CreateListForm(), form='show_update')  
     @attrs(action='update')
@@ -131,22 +148,9 @@ class TasklistController(BaseController):
         c.tasklist = self._getTaskList(int(id))
 
         p = dict(request.params)
-        self._set_security(p)
 
         c.tasklist.set(**p)
         
-        if p['owners']:
-            new_owners = p['owners'].split(",")
-            for owner in c.tasklist.owners:
-                if not owner in new_owners:
-                    owner.destroySelf()
-                    
-            for owner in new_owners:
-                if not owner:
-                    continue
-                if not owner in c.tasklist.owners:
-                    TaskListOwner(task_listID = c.tasklist.id, username = owner, sire='')
-
         return Response.redirect_to(action='index')
 
     def _getTaskList(self, id):

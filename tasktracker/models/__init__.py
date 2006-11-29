@@ -108,6 +108,7 @@ class TaskListVersion(Version):
     live = BoolCol()
     text = StringCol()
     sort_index = IntCol()
+    doers = IntCol()
 
 class Watcher(SQLObject):
     username = StringCol()
@@ -123,11 +124,11 @@ class Watcher(SQLObject):
 
 class Status(SQLObject):
     name = StringCol()
-    project = ForeignKey("Project")
+    task_list = ForeignKey("TaskList")
 
     @classmethod
-    def lookup(cls, name, project_id):
-        return Status.selectBy(name=name, projectID=project_id)
+    def lookup(cls, name, task_list_id):
+        return Status.selectBy(name=name, task_listID=task_list_id)
 
 class Role(SQLObject):
     class sqlmeta:
@@ -149,12 +150,13 @@ class Role(SQLObject):
             Role.levels[name] = role[0].level
         return Role.levels[name]
 
+    @classmethod
+    def getByName(cls, name):
+        return Role.selectBy(name=name)[0]
+
 class Project(SQLObject):
     title = StringCol()
-    create_list_permission = IntCol(default=0)
-    initialized = BoolCol(default=False)
     task_lists = MultipleJoin("TaskList")
-    statuses = MultipleJoin("Status")
 
     @classmethod
     def getProject(cls, title):
@@ -164,26 +166,16 @@ class Project(SQLObject):
         else:
             return projects[0]
 
-class TaskListOwner(SQLObject):
+class TaskListRole(SQLObject):
     _cacheValue = False
     username = StringCol(length=100)
     task_list = ForeignKey('TaskList')
-    sire = StringCol(length=100)
+    role = ForeignKey("Role")
 
     index = DatabaseIndex(task_list, username, unique=True)
 
-class SecurityPolicyAction(SQLObject):
-    simple_security_policy = ForeignKey("SimpleSecurityPolicy")
-    action = ForeignKey("Action")
-    min_level = IntCol()                        
-
-class SimpleSecurityPolicy(SQLObject):
-    name = StringCol()
-    actions = MultipleJoin('SecurityPolicyAction')
-
 class Action(SQLObject):
     action = StringCol(unique=True, length=100)
-    question = StringCol()
     roles = RelatedJoin('Role')
 
 class TaskListPermission(SQLObject):
@@ -195,9 +187,8 @@ class TaskListPermission(SQLObject):
     def _create(self, id, **kwargs):
         if 'min_level' in kwargs:
             # make sure value is sane
-            if kwargs['min_level'] > \
-                    Action.get(kwargs['action'].id).roles[0].level:
-                raise ValueError("Invalid permission settings.")
+            if kwargs['min_level'] > kwargs['action'].roles[0].level:
+                raise ValueError("Invalid permission settings.  Trying to create a permission with level %d for action %s, which has roles %s." % (kwargs['min_level'], kwargs['action'].action, [(r.name, r.level) for r in kwargs['action'].roles]))
         SQLObject._create(self, id, **kwargs)
 
 
@@ -211,7 +202,6 @@ def _task_sort_index():
 class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
-
 
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
@@ -241,17 +231,25 @@ class Task(SQLObject):
 
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
-            kwargs['task_listID'] = kwargs.pop('task_list').id
+            kwargs['task_listID'] = kwargs.pop('task_list').id          
 
-        if not kwargs.has_key('status'):
-            project = TaskList.get(kwargs['task_listID']).project
-            assert len(project.statuses)
-            kwargs['status'] = project.statuses[0].name
+        task_list = TaskList.get(kwargs['task_listID'])
+
+        if kwargs.get('private'):
+            assert 'private_tasks' in [f.name for f in task_list.features]
+
+        if not kwargs.get('status', None):
+            kwargs['status'] = task_list.statuses[0].name
+        assert kwargs['status']
 
         kwargs['updated_by'] = c.username
         kwargs['sort_index'] = _task_sort_index()
         kwargs.setdefault('parentID', 0)
         kwargs['live'] = True
+
+        if task_list.initial_assign == 0 and not kwargs.get('owner', None):
+            kwargs['owner'] = c.username
+
         SQLObject._create(self, id, **kwargs)
 
     def set(self, **kwargs):
@@ -336,16 +334,20 @@ class User(SQLObject):
     username = StringCol()
     password = StringCol()
 
+class TaskListFeature(SQLObject):
+    name = StringCol()
+    task_list = ForeignKey("TaskList")
+    value = StringCol()
+
 class TaskList(SQLObject):
     _cacheValue = False
     class sqlmeta:
         defaultOrder = 'sort_index'
 
     live = BoolCol(default=True)
-    owners = MultipleJoin("TaskListOwner")
+    special_users = MultipleJoin("TaskListRole")
     permissions = MultipleJoin("TaskListPermission")
     project = ForeignKey("Project")
-    security_policy = ForeignKey("SimpleSecurityPolicy", default=0)
     sort_index = IntCol(default=_task_list_sort_index)
     tasks = MultipleJoin("Task")
     text = StringCol()
@@ -355,6 +357,18 @@ class TaskList(SQLObject):
     versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
+    features = MultipleJoin("TaskListFeature")
+    statuses = MultipleJoin("Status")
+    initial_assign = IntCol(default=0)
+
+    def managers(self):
+        return [u for u in self.special_users if u.role == Role.getByName('ListOwner')]
+
+    def hasFeature(self, feature):
+        for feature in self.features:
+            if feature.name == feature:
+                return True
+        return False
 
     def getWatcher(self, username):
         return Watcher.selectBy(username=username, task_listID=self.id)[0]
@@ -392,39 +406,18 @@ class TaskList(SQLObject):
 
         params = self._clean_params(kwargs)
         SQLObject.set(self, **params)
-        self._setup_actions(kwargs)
 
         trans.commit()
 
     def _clean_params(self, kwargs):
 
         params = {}
-        allowed_params = ("title", "text", "projectID")
+        allowed_params = ("title", "text", "projectID", "initial_assign")
         for param in allowed_params:
             if kwargs.has_key(param):
                 params[param] = kwargs[param]
 
         return params
-
-    def _setup_actions(self, kwargs):
-
-        for permission in self.permissions:
-            permission.destroySelf()
-
-        if kwargs.get('mode') == 'simple':
-            ss = SimpleSecurityPolicy.get(int(kwargs['policy']))
-            actions = SecurityPolicyAction.selectBy(simple_security_policy=ss)
-            for action in actions:
-                p = TaskListPermission(task_listID=self.id,
-                                       min_level=action.min_level, action=action.action)
-        else:
-            for action in Action.select():
-                value = kwargs.get('action_%s' % action.action, None)
-                if value:
-                    role = Role.get(value)
-                else:
-                    role = action.roles[-1]
-                p = TaskListPermission(task_listID=self.id, min_level=role.level, action=action)
 
 
     def rescuePermissions(self):
@@ -440,15 +433,19 @@ class TaskList(SQLObject):
         trans = conn.transaction()
 
         SQLObject._create(self, id, **params)
-
-        self._setup_actions(kwargs)
-
-        TaskListOwner(username=username, sire=username, task_listID = self.id)
+        if kwargs.get('statuses', None):
+            statuses = kwargs['statuses'].split(",")
+            if not 'done' in statuses:
+                statuses.append('done')
+        else:
+            statuses = ['not done', 'done']
+        for status in statuses:
+            Status(name=status, task_list = self.id)
 
         trans.commit()
 
     def isOwnedBy(self, username):
-        return TaskListOwner.selectBy(username = username, task_listID = self.id).count()
+        return TaskListRole.selectBy(username = username, task_listID = self.id, role = Role.getByName('ListOwner')).count()
 
     def destroySelf(self):
         for permission in self.permissions:
@@ -457,22 +454,19 @@ class TaskList(SQLObject):
         SQLObject.destroySelf(self)
 
 soClasses = [
-    Action,
-    Comment,
-    Notification,
-    OutgoingEmail,
-    Project,
-    Role,
-    SecurityPolicyAction,
-    SimpleSecurityPolicy,
-    Status,
-    Task,
-    TaskList,
-    TaskListOwner,
-    TaskListPermission,
-    TaskListVersion,
-    TaskVersion,
-    User,
-    Watcher,
-    Version,
-    ]
+Action,
+Comment,
+Notification,
+OutgoingEmail,
+Project,
+Role,
+Status,
+Task,
+TaskList,
+TaskListFeature,
+TaskListPermission,
+TaskListRole,
+User,
+Version,
+Watcher,
+]
