@@ -169,7 +169,9 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
    <input id="status" name="status" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('status').value);$('status').value=''; return false;"/>
 
-
+<script>
+   setupEditableList('statuses', 'list_statuses');
+</script>
 </div>
 <div id="statuses" tal:condition="c/update" style="margin-left: 3em;">
   Statuses: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
@@ -187,7 +189,6 @@ By default, tasks are initially assigned to:<br/>
 
 <script language="JavaScript">
    setupEditableList('managers', 'list_managers');
-   setupEditableList('statuses', 'list_statuses');
 </script>
 
 </metal:macro>
