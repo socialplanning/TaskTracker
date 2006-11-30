@@ -63,15 +63,21 @@ lists.each(function(list_name) {
 			type : "radio", 
 			onclick : list_name + '_permission_set(' + index + ')'
 		    });
-		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, option]);
+		var label = Builder.node('label', {'for' : button.id}, option);
+		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
 		list.appendChild(li);
 	    });
 
 	//set the value to the 'previous' value
 	old = $(list_name + '_level_old');
 	$(list_name + '_level_' + old.value).checked = true;
-        show_selected(list_name, old.value);
+	list.old_value = old.value;
 	old.parentNode.removeChild(old);
+    });
+
+lists.each(function(list_name) {
+	list = $(list_name + '_permissions');
+	eval(list_name + '_permission_set')(list.old_value);
     });
 
 function show_selected(list_name, index) {
@@ -86,6 +92,27 @@ function show_selected(list_name, index) {
     }
 }
 
+function disable_radio(radio) {
+    radio.disabled = true;
+    li = radio.parentNode;
+    if (li.className.indexOf('disabled-permission') == -1) {
+	li.className += ' disabled-permission';
+    }
+}
+
+function enable_radio(radio) {
+    radio.disabled = false;
+    li = radio.parentNode;
+    classes = li.className.split(" ");
+    new_classes = [];
+    for (i in classes) {
+	if (classes[i] != 'disabled-permission') {
+	    new_classes.push (classes[i]);
+	}
+    }
+    li.className = new_classes.join(' ');
+}
+
 function member_permission_set(index) {
     //disable inappropriate options on 'anyone else'; enable appropriate ones
     other_selected = null;
@@ -95,9 +122,9 @@ function member_permission_set(index) {
 	    other_selected = radio;
 	}
 	if (i > index) {
-	    radio.disabled = true;
+	    disable_radio(radio);
 	} else {
-	    radio.disabled = false;
+	    enable_radio(radio);
 	}
     }
     if (other_selected.value > index) {
@@ -115,9 +142,9 @@ function other_permission_set(index) {
 	    member_selected = radio;
 	}
 	if (i < index) {
-	    radio.disabled = true;
+	    disable_radio(radio);
 	} else {
-	    radio.disabled = false;
+	    enable_radio(radio);
 	}
     }
     if (member_selected.value < index) {

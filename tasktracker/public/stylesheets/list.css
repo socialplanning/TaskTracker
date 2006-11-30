@@ -146,12 +146,15 @@ span.editable:hover {
 }
 
 .undecorated_list {
-	list-style-type: none;
-        list-style-image: none; 
-	padding-left: 0px;
+  list-style-type: none;
+  list-style-image: none; 
+  padding-left: 0px;
 }
 
 .selected-permission {
-       font-weight: bold; 
+  font-weight: bold; 
+}
 
+.disabled-permission {
+  color: #888;
 }
