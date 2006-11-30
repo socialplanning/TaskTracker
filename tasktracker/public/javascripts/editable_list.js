@@ -9,14 +9,8 @@ function updateItem(list) {
     //update the form variable
     list = $(list);
     var items = list.getElementsByTagName('li')
-    var s = '';
 
-    for (i = 0; i < items.length; ++i) {
-        s += getItemName(items[i]);
-	s += ',';
-    }
-
-    list.field.value = s;
+    $(list.field).value = $A(items).map(getItemName).join(",");
 }
 
 function deleteItem(list, item_name) {
