@@ -162,10 +162,10 @@ function other_permission_set(index) {
 <br/>
 Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
 <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
-<input type="checkbox" name="feature_custom_statuses" value="1" class="features" onclick="$('statuses').toggle();" id="custom_status"/>Custom status<br/>
+<input type="checkbox" name="feature_custom_statuses" value="1" class="features" onclick="$('add_statuses').toggle();" id="custom_status"/>Custom status<br/>
 <input type="hidden" value="" id="statuses" name="statuses">
 
-<div id="statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
+<div id="add_statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
 <span tal:replace="structure python: h.list_with_minuses('list_statuses', [], ['done'])" />
 
    <input id="status" name="status" size="20" type="text" value="" />
