@@ -116,7 +116,7 @@ class BaseController(WSGIController):
         c.id = params.get('id')
 
         if not self._authorize(project, action, params):
-            redirect_to(controller='project', action='show_not_permitted')
+            redirect_to(controller='error', action='document', message='Not permitted')
             #raise SecurityException("IMPROPER AUTHENTICATION")
 
         params['username'] = c.username
