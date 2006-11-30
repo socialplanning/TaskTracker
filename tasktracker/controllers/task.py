@@ -70,10 +70,10 @@ class TaskController(BaseController):
             setattr(task, field, newfield)
         c.task = task
         return render_text("ok")
-
-    @attrs(action='open')
-    def auto_complete_for(self, id):
-        partial = request.params[id]
+        
+    @attrs(action='show')
+    def auto_complete_for_owner(self):
+        partial = request.params['owner']
         users = map (lambda u: u['username'], c.usermapper.project_members())
         users = filter(lambda u: u.lower().startswith(partial.lower()), users)
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
@@ -159,7 +159,7 @@ class TaskController(BaseController):
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
-    @attrs(action='show', watchdog=TaskCommentWatchdog)
+    @attrs(action='comment', watchdog=TaskCommentWatchdog)
     @catches_errors
     def comment(self, id, *args, **kwargs):
         c.task = Task.get(int(id))

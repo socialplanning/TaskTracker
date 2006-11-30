@@ -1,5 +1,7 @@
 <metal:macro define-macro="form">
 
+<input type="hidden" name="mode" id="mode" tal:attributes="value python:test(c.security_policy_id, 'simple', 'complex')">
+
 <label for="title">Name:</label><br/>
 <span tal:replace="structure python: h.text_field('title', size=80)" /><br/>
 
@@ -61,21 +63,15 @@ lists.each(function(list_name) {
 			type : "radio", 
 			onclick : list_name + '_permission_set(' + index + ')'
 		    });
-		var label = Builder.node('label', {'for' : button.id}, option);
-		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
+		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, option]);
 		list.appendChild(li);
 	    });
 
 	//set the value to the 'previous' value
 	old = $(list_name + '_level_old');
 	$(list_name + '_level_' + old.value).checked = true;
-	list.old_value = old.value;
+        show_selected(list_name, old.value);
 	old.parentNode.removeChild(old);
-    });
-
-lists.each(function(list_name) {
-	list = $(list_name + '_permissions');
-	eval(list_name + '_permission_set')(list.old_value);
     });
 
 function show_selected(list_name, index) {
@@ -90,27 +86,6 @@ function show_selected(list_name, index) {
     }
 }
 
-function disable_radio(radio) {
-    radio.disabled = true;
-    li = radio.parentNode;
-    if (li.className.indexOf('disabled-permission') == -1) {
-	li.className += ' disabled-permission';
-    }
-}
-
-function enable_radio(radio) {
-    radio.disabled = false;
-    li = radio.parentNode;
-    classes = li.className.split(" ");
-    new_classes = [];
-    for (i in classes) {
-	if (classes[i] != 'disabled-permission') {
-	    new_classes.push (classes[i]);
-	}
-    }
-    li.className = new_classes.join(' ');
-}
-
 function member_permission_set(index) {
     //disable inappropriate options on 'anyone else'; enable appropriate ones
     other_selected = null;
@@ -120,9 +95,9 @@ function member_permission_set(index) {
 	    other_selected = radio;
 	}
 	if (i > index) {
-	    disable_radio(radio);
+	    radio.disabled = true;
 	} else {
-	    enable_radio(radio);
+	    radio.disabled = false;
 	}
     }
     if (other_selected.value > index) {
@@ -140,9 +115,9 @@ function other_permission_set(index) {
 	    member_selected = radio;
 	}
 	if (i < index) {
-	    disable_radio(radio);
+	    radio.disabled = true;
 	} else {
-	    enable_radio(radio);
+	    radio.disabled = false;
 	}
     }
     if (member_selected.value < index) {
@@ -160,18 +135,16 @@ function other_permission_set(index) {
 <br/>
 Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
 <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
-<input type="checkbox" name="feature_custom_statuses" value="1" class="features" onclick="$('add_statuses').toggle();" id="custom_status"/>Custom status<br/>
+<input type="checkbox" name="feature_custom_statuses" value="1" class="features" onclick="$('statuses').toggle();" id="custom_status"/>Custom status<br/>
 <input type="hidden" value="" id="statuses" name="statuses">
 
-<div id="add_statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
+<div id="statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
 <span tal:replace="structure python: h.list_with_minuses('list_statuses', [], ['done'])" />
 
    <input id="status" name="status" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('status').value);$('status').value=''; return false;"/>
 
-<script>
-   setupEditableList('statuses', 'list_statuses');
-</script>
+
 </div>
 <div id="statuses" tal:condition="c/update" style="margin-left: 3em;">
   Statuses: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
@@ -189,6 +162,7 @@ By default, tasks are initially assigned to:<br/>
 
 <script language="JavaScript">
    setupEditableList('managers', 'list_managers');
+   setupEditableList('statuses', 'list_statuses');
 </script>
 
 </metal:macro>

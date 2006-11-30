@@ -27,7 +27,7 @@ from webhelpers import *
 from pylons.util import _, log, set_lang, get_lang
 from routes import url_for
 from pylons import Response, c, g, cache, request, session
-import tasktracker.models
+from tasktracker.models import Task, TaskList
 
 from datebocks_helper import datebocks_field
 
@@ -76,7 +76,7 @@ def list_with_minuses(id, updateable_items=[], fixed_items=[]):
 
 def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) 
-                for tasklist in models.TaskList.selectBy(live=True, projectID=c.project.id) 
+                for tasklist in TaskList.selectBy(live=True, projectID=c.project.id) 
                 if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
@@ -191,7 +191,7 @@ _fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_pr
     
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []
-    for task in models.Task.selectBy(task_listID=task_list_id, parentID=parent_id):
+    for task in Task.selectBy(task_listID=task_list_id, parentID=parent_id):
         if has_permission('task', 'show', id=task.id) and not task.id == this_task_id:
             item = ("%s %s" % ('...' * (depth), task.title), task.id)
             tasks.append(item)

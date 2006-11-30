@@ -107,7 +107,7 @@ class TestTaskListController(TestController):
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
         res = res.follow()
-        res = res.click("Edit list settings")
+        res = res.click("view list preferences")
         res.mustcontain('<span>member</span>')
 
         app = self.getApp('member')
@@ -148,6 +148,7 @@ class TestTaskListController(TestController):
 
         assert not form.fields.has_key('private')
 
+
     def test_tasklist_watch(self):
         """Tests adding self as a watcher for a task list"""
         tl = self.create_tasklist(title="list")
@@ -157,11 +158,11 @@ class TestTaskListController(TestController):
         res = app.get(url_for(
                 controller='tasklist', action='show', id=tl.id))
         
-        res = res.click("Watch this task list")
+        res = res.click("watch this list")
         res.mustcontain("Just the highlights")
         res = res.forms[0].submit()
 
         assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
         res = res.follow()
-        res.mustcontain("Edit your watch settings")
+        res.mustcontain("edit watch settings")
         tl.destroySelf()

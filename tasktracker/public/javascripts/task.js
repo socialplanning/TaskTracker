@@ -1,3 +1,44 @@
+function addClass(element, classname) {
+    element.className += element.className ? ' ' + classname : classname;
+}
+
+function removeClass(element, classname) {
+    var removeMe = element.className.match(' ' + classname) ? ' ' + classname : classname;
+    element.className = element.className.replace(removeMe, '');
+}
+
+function hasClass(element, classname) {
+    return new RegExp('\\b' + classname + '\\b').test(element.className);
+}
+
+var myrules = {
+    '.draggable' : function(element) {
+	element.onclick = function(e) {
+	    if (hasClass(element, 'drag')) {
+		removeClass(element, 'drag');
+		return false;
+	    } else 
+		if (e.originalTarget.doclick)
+		    e.originalTarget.doclick(e);
+	}
+    },
+
+    '.treewidget' : function(element) {
+	element.doclick = function() {
+	    toggleCollapse(element.id.replace("handle_", ""));
+	    return false;
+	}
+    },
+    '.task_item' : function(element) {
+	element.doclick = function() {
+	    document.location = element.href;
+	    return false;
+	}
+    }
+};
+
+Behaviour.register(myrules);
+
 // http://trac.mochikit.com/wiki/ParsingHtml
 function evalHTML(value) {
     if (typeof(value) != 'string') {
@@ -45,8 +86,9 @@ function createDragDrop() {
 
         $A($('tasks').getElementsByTagName('li')).each(function(node) {
             var id = node.getAttribute('task_id');
+
             var drag = new Draggable(node.id, {
-                handle : 'handle_' + id, 
+                handle : 'draggable_' + id, 
                 revert : true
                 //ghosting : true
             });
@@ -239,6 +281,8 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
+    console.log(req);
+    console.log("wok");
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
@@ -247,13 +291,14 @@ function doneMovingTask(req) {
         }
     }
     if (new_parent_id) {
-
         insertTaskUnderParent(task_id, new_parent_id);
         expandTask(new_parent_id);
     } else if (new_sibling_id) {
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
+    console.log("wok");
     updateTaskItem(task_id);
+    console.log("wok");
 }
 
 function hideCreate() {
@@ -303,7 +348,7 @@ observer.prototype = {
 
     onStart : function(event_name, draggable, event) {
         Droppables.remove(draggable.handle);
-	draggable.handle.setAttribute('drag', "true");
+	addClass(draggable.handle, 'drag');
     },
 
     onEnd : function(event_name, draggable, event) {
@@ -311,7 +356,6 @@ observer.prototype = {
             hoverclass : 'drop',
             onDrop : doDrop
         });
-        // TODO consume the event so it doesn't trigger a click on mouse-up
     }
 };
 
@@ -474,11 +518,6 @@ function sortULBy(ul, column) {
 }
 
 function toggleCollapse(task_id) {
-    if($('handle_' + task_id).getAttribute('drag') == "true") {
-	$('handle_' + task_id).setAttribute('drag', "");
-	return;
-    }
-
     $A($('task_' + task_id).childNodes).each(function(node) {        
         if (node.className) {
             if (node.className.match('^task_list')) {

@@ -27,7 +27,6 @@ from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 from pylons import c
-import tasktracker.lib.helpers as h
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
@@ -297,6 +296,8 @@ class Task(SQLObject):
                 task.sort_index += 1
 
     def liveChildren(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
     def isOwnedBy(self, username):
@@ -377,15 +378,23 @@ class TaskList(SQLObject):
         return Watcher.selectBy(username=username, task_list=self.id).count() > 0
 
     def topLevelTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if h.has_permission('task', 'show', id=c.id)]
 
     def uncompletedTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
+        import tasktracker.lib.helpers as h
+        
         return [c for c in Task.select(AND(Task.q.status == 'done', Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
 
     def visibleTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
 
     def set(self, **kwargs):
