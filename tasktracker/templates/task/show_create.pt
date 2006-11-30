@@ -9,8 +9,11 @@ Add task:
 <div id="hideable_title_label" style="display:none;">title</div>
 <span tal:replace="structure python: h.text_field_r('oldtask', 'title', size=80)" />
 
-<span tal:replace="structure python: h.check_box_r('oldtask', 'private')" /> make this task private
-<span tal:replace="structure python: h.image_tag('question.png')" />
+<span tal:condition="python:c.tasklist.hasFeature('private_tasks')">
+  <span tal:replace="structure python: h.check_box_r('oldtask', 'private')" /> make this task private
+  <span tal:replace="structure python: h.help('Private tasks can only be seen by list administrators')" />
+</span>
+
 <br/><br/>
 <div id="hideable_add_description">
 <a id="show_description" href="#nevermind" onclick="$('hideable_add_description').hide(); $('hideable_title_label').show(); $('description_field').show(); $('text').focus(); return false;">

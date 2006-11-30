@@ -364,9 +364,9 @@ class TaskList(SQLObject):
     def managers(self):
         return [u for u in self.special_users if u.role == Role.getByName('ListOwner')]
 
-    def hasFeature(self, feature):
+    def hasFeature(self, feature_name):
         for feature in self.features:
-            if feature.name == feature:
+            if feature.name == feature_name:
                 return True
         return False
 
@@ -385,7 +385,10 @@ class TaskList(SQLObject):
         return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
-        return list(Task.selectBy(status='done', task_listID=self.id, live=True))
+        return [c for c in Task.select(AND(Task.q.status == 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'show', id=c.id)]
+
+    def visibleTasks(self):
+        return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'show', id=c.id)]
 
     def set(self, **kwargs):
 

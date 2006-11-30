@@ -1,3 +1,8 @@
+<h1 tal:content="c/tasklist/title" /><br />
+
+<p tal:content="c/tasklist/text" />
+<small>This list has <span tal:replace="python:len(c.tasklist.visibleTasks())" /> tasks total / <span tal:replace="python:len(c.tasklist.uncompletedTasks())" /> left undone</small>
+
 <span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
 <metal:do use-macro="here/_form/macros/form" />
