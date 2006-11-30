@@ -139,3 +139,8 @@ span.editable:hover {
         list-style-image: none; 
 	padding-left: 0px;
 }
+
+.selected-permission {
+       font-weight: bold; 
+
+}

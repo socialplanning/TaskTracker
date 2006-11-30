@@ -70,6 +70,7 @@ lists.each(function(list_name) {
 	//set the value to the 'previous' value
 	old = $(list_name + '_level_old');
 	$(list_name + '_level_' + old.value).checked = true;
+        show_selected(list_name, old.value);
 	old.parentNode.removeChild(old);
     });
 
@@ -78,9 +79,9 @@ function show_selected(list_name, index) {
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(list_name + '_level_' + i);
 	if (i <= index && i > 0) {
-	    radio.parentNode.style['color'] = '#080';
+	    radio.parentNode.className = 'selected-permission';
 	} else {
-	    radio.parentNode.style['color'] = '#000';
+	    radio.parentNode.className = 'unselected-permission';
 	}
     }
 }
