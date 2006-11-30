@@ -122,6 +122,32 @@ class TestTaskListController(TestController):
         res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
         assert res.header_dict['location'].startswith('/error/')
 
+    def test_privacy(self):
+        app = self.getApp('admin')
+
+        res = app.get(url_for(controller='tasklist', action='show_create'))
+
+        form = res.forms[0]
+        form['title'] = 'The new tl title'
+        form['feature_private_tasks'] = 1
+
+        res = form.submit()
+        res = res.follow()
+        form = res.forms[0]
+
+        assert form.fields.has_key('private')
+
+        res = app.get(url_for(controller='tasklist', action='show_create'))
+        form = res.forms[0]
+        form['title'] = 'The new tl title'
+        form['feature_private_tasks'] = 0
+
+        res = form.submit()
+        res = res.follow()
+        form = res.forms[0]
+
+        assert not form.fields.has_key('private')
+
     def test_tasklist_watch(self):
         """Tests adding self as a watcher for a task list"""
         tl = self.create_tasklist(title="list")
