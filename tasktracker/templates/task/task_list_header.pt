@@ -8,8 +8,8 @@
 <!-- span class="creator-column">Created by</span -->
 </div>
 <div>
-<span class="taskitem">ba</span>
-<span class="status-column">boo</span>
+<span class="taskitem">&nbsp;</span>
+<span class="status-column">&nbsp;</span>
 <span class="deadline-column"><span tal:replace="structure python: h._deadlineFilter()"/></span>
 <span class="priority-column"><span tal:replace="structure python: h._priorityFilter()"/></span>
 <span class="owner-column"><span tal:replace="structure python: h._ownerFilter(c.tasklist)"/></span>

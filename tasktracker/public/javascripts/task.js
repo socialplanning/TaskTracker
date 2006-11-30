@@ -13,16 +13,27 @@ function hasClass(element, classname) {
 
 var myrules = {
     '.draggable' : function(element) {
+	var drag = new Draggable(element.id, {
+                handle : element.id, 
+                revert : true
+            });
+
 	element.onclick = function(e) {
 	    if (hasClass(element, 'drag')) {
 		removeClass(element, 'drag');
 		return false;
-	    } else 
+	    } else
 		if (e.originalTarget.doclick)
 		    e.originalTarget.doclick(e);
 	}
     },
 
+    '#add_a_task' : function(element) {
+	element.doclick = function() {
+	    hideCreate();
+	    return false;
+	}
+    },
     '.treewidget' : function(element) {
 	element.doclick = function() {
 	    toggleCollapse(element.id.replace("handle_", ""));
@@ -87,11 +98,7 @@ function createDragDrop() {
         $A($('tasks').getElementsByTagName('li')).each(function(node) {
             var id = node.getAttribute('task_id');
 
-            var drag = new Draggable(node.id, {
-                handle : 'draggable_' + id, 
-                revert : true
-                //ghosting : true
-            });
+            
             Droppables.add('title_' + id, {
                 hoverclass : 'drop',
                 onDrop : doDrop
@@ -191,10 +198,7 @@ function doneAddingTask(req) {
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
-    var drag = new Draggable('task_' + id, {
-	    handle : 'draggable_' + id, 
-	    revert : true
-	});
+
     Droppables.add('title_' + id, {hoverclass:'drop', onDrop:doDrop});
     Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
     Behaviour.apply();
@@ -297,8 +301,6 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
-    console.log(req);
-    console.log("wok");
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
@@ -312,9 +314,7 @@ function doneMovingTask(req) {
     } else if (new_sibling_id) {
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
-    console.log("wok");
     updateTaskItem(task_id);
-    console.log("wok");
 }
 
 function hideCreate() {
@@ -481,7 +481,9 @@ function doDrop(child, drop_target, a) {
     if (drop_target == child) {
         return;
     }
-    var task_id = child.getAttribute('task_id');
+    if (!child.id.match("draggable"))
+	return;
+    var task_id = child.id.replace("draggable_", "");
     var old_parent_id = child.parentNode.parentNode.getAttribute('task_id');
 
     if (drop_target.id.match(/^title_/)) {   // drop under a parent node
