@@ -27,6 +27,7 @@ from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 from pylons import c
+from tasktracker.lib.helpers import has_permission
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
@@ -377,11 +378,9 @@ class TaskList(SQLObject):
         return Watcher.selectBy(username=username, task_list=self.id).count() > 0
 
     def topLevelTasks(self):
-        from tasktracker.lib.helpers import has_permission
         return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if has_permission('task', 'show', id=c.id)]
 
     def uncompletedTasks(self):
-        from tasktracker.lib.helpers import has_permission
         return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
