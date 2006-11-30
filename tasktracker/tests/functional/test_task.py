@@ -229,7 +229,7 @@ class TestTaskController(TestController):
                 controller='task', action='show', id=priv.id))
 
         location = res.header_dict['location']
-        assert location.startswith('/project/show_not_permitted/')
+        assert location.startswith('/error')
 
         # but task owners can see their private tasks
         app = self.getApp('member')
