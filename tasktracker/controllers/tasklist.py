@@ -84,15 +84,18 @@ class TasklistController(BaseController):
             if not action: continue
             if i < p['other_level']:
                 if action == 'task_show':
-                    make_permission(action, tasklist, other_level)
-                    #task_show and tasklist_show are the same
-                    make_permission('tasklist_show', tasklist, other_level)
+                    level = other_level
                 else:
-                    make_permission(action, tasklist, auth_level)
+                    level = auth_level
             elif i < p['member_level']:
-                make_permission(action, tasklist, member_level)
+                level = member_level
             else:
-                make_permission(action, tasklist, manager_level)
+                level = manager_level
+
+            #task_show and tasklist_show are the same
+            make_permission(action, tasklist, level)
+            if action == 'task_show':
+                make_permission('tasklist_show', tasklist, level)
 
         #anyone can change task status
         make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))

@@ -422,6 +422,7 @@ class TaskList(SQLObject):
 
     def rescuePermissions(self):
         print "Rescuing permissions.  This is very, very bad."
+        print 1/0
         for action in Action.select():
             TaskListPermission(task_listID=self.id, min_level=action.roles[0].level, action=action)
 
