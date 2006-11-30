@@ -65,7 +65,7 @@ function createDragDrop() {
 			onDrop : destroyTask,
 			accept : 'deletable'
 			});
-	}
+	} 
     }
 }
 
@@ -132,10 +132,8 @@ function filterField(fieldname) {
 function addTask(tasklist_id) {
     var title = $('title').value;
     var url = '/task/create/';
-    console.log("request...");
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'title='+title+';task_listID='+tasklist_id,
 				     onSuccess:doneAddingTask.bind(title), onFailure:failedAddingTask});
-    console.log("ok");
 }
 
 function doneAddingTask(req) {
@@ -161,8 +159,6 @@ function doneAddingTask(req) {
 }
 
 function failedAddingTask(req) {
-    console.log("boo");
-    console.log(req);
 }
 
 function changeField(task_id, fieldname) {
@@ -184,7 +180,6 @@ function hideChangeableField(task_id, fieldname) {
 }
 
 function updateTaskItem(task_id) {
-    console.log(task_id);
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
@@ -195,7 +190,6 @@ function updateTaskItem(task_id) {
 	root = 'root-task';
     }
     tasktext.setAttribute('class', completed + ' ' + root);
-    console.log("whee");
 }
 
 function revertField(task_id, fieldname) {
@@ -245,7 +239,6 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
-    console.log("here");
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
@@ -254,14 +247,12 @@ function doneMovingTask(req) {
         }
     }
     if (new_parent_id) {
-	console.log("parent;");
+
         insertTaskUnderParent(task_id, new_parent_id);
         expandTask(new_parent_id);
     } else if (new_sibling_id) {
-	console.log("sib");
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
-    console.log("bye");
     updateTaskItem(task_id);
 }
 
@@ -325,7 +316,6 @@ observer.prototype = {
 };
 
 function debugThing() { 
-    console.log("FAILED");
 }
 
 function indentTaskItem(task, depth) {
@@ -342,7 +332,6 @@ function indentTaskItem(task, depth) {
 }
 
 function insertTaskAfterSibling(task_id, sibling_id) {
-    console.log("sib");
     var child = $('task_' + task_id);
     var new_sibling = $('task_' + sibling_id);
 
@@ -380,27 +369,21 @@ function insertTaskAfterSibling(task_id, sibling_id) {
 }
 
 function insertTaskUnderParent(child_id, parent_id) {
-    console.log("pare");
     var child = $('task_' + child_id);
     var new_parent = $('task_' + parent_id);
     //find new parent's contained ul
-    console.log(new_parent);
     v = new_parent;
 
     var ul = new_parent.getElementsByTagName('UL');
-    console.log(ul);
     if (ul.length) {
         ul = ul[0];
-	console.log(ul);
         ul.insertBefore(child, ul.childNodes[0]);
-	console.log(child);
         var items = ul.getElementsByTagName('LI');
         //update sort_index
         $A(items).each(function(item) {
             var sort_index = parseInt(item.getAttribute('sort_index'));
             item.setAttribute('sort_index', sort_index + 1);
         });
-	console.log("hi");
         var sort_index = parseInt(items[0].getAttribute('sort_index'));
         items[0].setAttribute('sort_index', 0);
         //set child indent
@@ -459,8 +442,6 @@ function doDrop(child, drop_target, a) {
 }
 
 function sortULBy(ul, column) {
-    console.log(ul);
-    console.log(column);
     items = $A(ul.childNodes);
     items = items.findAll(function(x) {
         return x.tagName == "LI";
