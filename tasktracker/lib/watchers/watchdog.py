@@ -42,7 +42,7 @@ class TaskMoveWatchdog(TaskWatchdog):
 
 class TaskCreateWatchdog(Watchdog):
     def after(self, params):
-        self.task = Task.get(int(params['id'])) 
+        self.task = c.task
         fire("Task Created", task = self.task)
 
 class TaskCommentWatchdog(TaskWatchdog):

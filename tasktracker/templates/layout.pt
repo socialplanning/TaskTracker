@@ -8,6 +8,7 @@ Todo list
 <span tal:replace="structure python:h.javascript_include_tag('prototype.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('effects.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('dragdrop.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('MochiKit.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('task.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('builder.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('controls.js')" />

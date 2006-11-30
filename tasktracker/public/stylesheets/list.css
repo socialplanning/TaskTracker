@@ -73,11 +73,22 @@ a.sortarrow:link {
   clear: both; 
 }
 
+.taskrow li {
+}
+
 .taskitem {
    float: left; 
    width: 20%; 
 }
 
+.create_section {
+   padding: 10px;
+/*   background-color: #ddd; */
+}
+
+.column-heading span {
+   background-color: #ddd;
+}
 
 .status-column {
    float: left; 

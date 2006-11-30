@@ -216,7 +216,7 @@ class Task(SQLObject):
     sort_index = IntCol()
     status = StringCol()
     task_list = ForeignKey("TaskList")
-    text = StringCol()
+    text = StringCol(default="")
     title = StringCol()
     updated = DateTimeCol(default=datetime.datetime.now)
     updated_by = StringCol()

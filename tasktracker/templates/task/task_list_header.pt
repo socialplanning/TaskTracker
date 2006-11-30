@@ -1,8 +1,18 @@
 <metal:macro metal:define-macro="show_header">
+<div class="column-heading">
 <span class="taskitem">Task name</span>
 <span class="status-column">Status <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('status'); return false;">&#x2193;</a></span>
 <span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
 <span class="priority-column">Priority <a href="#sortbypriority" class="sortarrow" onclick="sortBy('priority'); return false;">&#x2193;</a></span>
 <span class="owner-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 <!-- span class="creator-column">Created by</span -->
+</div>
+<div>
+<span class="taskitem">ba</span>
+<span class="status-column">boo</span>
+<span class="deadline-column"><span tal:replace="structure python: h._deadlineFilter()"/></span>
+<span class="priority-column"><span tal:replace="structure python: h._priorityFilter()"/></span>
+<span class="owner-column"><span tal:replace="structure python: h._ownerFilter(c.tasklist)"/></span>
+</div>
+
 </metal:macro>

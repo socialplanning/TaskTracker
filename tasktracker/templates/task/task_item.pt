@@ -1,6 +1,6 @@
 <metal:macro metal:define-macro="show_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority python: h.priority_as_int(atask.priority); status atask/status; class python: 'taskrow %s' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; style string:line-height: 2em;;; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; class python: 'taskrow %s' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <span tal:attributes="depth python: atask.depth() - c.depth" class="taskitem">
 

@@ -1,3 +1,24 @@
+// http://trac.mochikit.com/wiki/ParsingHtml
+function evalHTML(value) {
+    if (typeof(value) != 'string') {
+	return null;
+    }
+    value = MochiKit.Format.strip(value);
+    if (value.length == 0) {
+	return null;
+    }
+    var parser = MochiKit.DOM.DIV();
+    var html = MochiKit.DOM.currentDocument().createDocumentFragment();
+    
+    var child;
+    parser.innerHTML = value;
+    while ((child = parser.firstChild)) {
+	html.appendChild(child);
+    }
+    return html;
+}
+
+
 // http://simon.incutio.com/archive/2004/05/26/addLoadEvent
 function addLoadEvent(func) {
   var oldonload = window.onload;
@@ -54,9 +75,100 @@ function toggle(obj) {
     obj.style.display = (obj.style.display != 'none' ? 'none' : '');
 }
 
-function changeField(url, task_id, fieldname) {    
+function filterDeadline() {
+    var filtervalue = $('deadline_filter').value;
+
+    if (filtervalue == 'All') {
+	$A($('tasks').getElementsByTagName('li')).each(function(node) {
+		node.show();
+	    });
+	return;
+    }
+    if (filtervalue == 'None') {
+	$A($('tasks').getElementsByTagName('li')).each(function(node) {
+		if (!node.getAttribute('deadline'))
+		    node.show();
+		else
+		    node.hide();
+	    });
+	return;
+    }
+    
+    var byThisDate = new Date();
+    byThisDate.setDate(byThisDate.getDate() + parseInt(filtervalue) + 1);
+    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+	    var deadline = node.getAttribute('deadline');
+	    if (deadline) {
+		var db = new DateBocks();
+		var nodeDate = db.parseDateString(deadline);
+		if (nodeDate < byThisDate) {
+		    node.show();
+		} else {
+		    node.hide();
+		}
+	    } else {
+		node.hide();
+	    }
+	});
+}
+
+function filterField(fieldname) {
+    filtervalue = $(fieldname + '_filter').value;
+    if (filtervalue == 'All') {
+	$A($('tasks').getElementsByTagName('li')).each(function(node) {
+		node.show();
+	    });
+	return;
+    }
+    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+	    if (node.getAttribute(fieldname) != filtervalue) {
+		node.hide();
+	    } else {
+		node.show();
+	    }
+	});
+}
+
+function addTask(tasklist_id) {
+    var title = $('title').value;
+    var url = '/task/create/';
+    console.log("request...");
+    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'title='+title+';task_listID='+tasklist_id,
+				     onSuccess:doneAddingTask.bind(title), onFailure:failedAddingTask});
+    console.log("ok");
+}
+
+function doneAddingTask(req) {
+    $('tasks').appendChild(evalHTML(req.responseText));
+    var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
+    var drag = new Draggable('task_' + id, {
+	    handle : 'handle_' + id, 
+	    revert : true
+	});
+    Droppables.add('title_' + id, {hoverclass:'drop', onDrop:doDrop});
+    Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
+    
+    $A(document.forms[0].getElements()).each(function(node) {
+	    if (node.type == "checkbox") 
+		node.checked = false;
+	    else if (node.type == "submit" || node.type == "hidden")
+		return;
+	    else
+		node.value = "";
+	});
+    $('title').focus();
+    return;
+}
+
+function failedAddingTask(req) {
+    console.log("boo");
+    console.log(req);
+}
+
+function changeField(task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
     field.disabled = true;
+    var url = '/task/change_field/' + task_id + '?field=' + fieldname;
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + field.value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
@@ -72,6 +184,7 @@ function hideChangeableField(task_id, fieldname) {
 }
 
 function updateTaskItem(task_id) {
+    console.log(task_id);
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
@@ -82,6 +195,7 @@ function updateTaskItem(task_id) {
 	root = 'root-task';
     }
     tasktext.setAttribute('class', completed + ' ' + root);
+    console.log("whee");
 }
 
 function revertField(task_id, fieldname) {
@@ -131,6 +245,7 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
+    console.log("here");
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
@@ -139,11 +254,14 @@ function doneMovingTask(req) {
         }
     }
     if (new_parent_id) {
+	console.log("parent;");
         insertTaskUnderParent(task_id, new_parent_id);
         expandTask(new_parent_id);
     } else if (new_sibling_id) {
+	console.log("sib");
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
+    console.log("bye");
     updateTaskItem(task_id);
 }
 
@@ -224,6 +342,7 @@ function indentTaskItem(task, depth) {
 }
 
 function insertTaskAfterSibling(task_id, sibling_id) {
+    console.log("sib");
     var child = $('task_' + task_id);
     var new_sibling = $('task_' + sibling_id);
 
@@ -261,20 +380,27 @@ function insertTaskAfterSibling(task_id, sibling_id) {
 }
 
 function insertTaskUnderParent(child_id, parent_id) {
+    console.log("pare");
     var child = $('task_' + child_id);
     var new_parent = $('task_' + parent_id);
     //find new parent's contained ul
+    console.log(new_parent);
+    v = new_parent;
+
     var ul = new_parent.getElementsByTagName('UL');
+    console.log(ul);
     if (ul.length) {
         ul = ul[0];
+	console.log(ul);
         ul.insertBefore(child, ul.childNodes[0]);
+	console.log(child);
         var items = ul.getElementsByTagName('LI');
         //update sort_index
         $A(items).each(function(item) {
             var sort_index = parseInt(item.getAttribute('sort_index'));
             item.setAttribute('sort_index', sort_index + 1);
         });
-	
+	console.log("hi");
         var sort_index = parseInt(items[0].getAttribute('sort_index'));
         items[0].setAttribute('sort_index', 0);
         //set child indent
@@ -285,7 +411,7 @@ function insertTaskUnderParent(child_id, parent_id) {
         title.setAttribute('depth', parentdepth + 1);
         //title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
         indentTaskItem(title,parentdepth+1); 
-        resetChildDepths(child);
+        resetChildDepths(child);	
         return;
     }
 }
@@ -309,7 +435,6 @@ function destroyTask(child, drop_target) {
 
 function doDrop(child, drop_target, a) {
     var id;
-    console.log(a);
     if (drop_target == child) {
         return;
     }
@@ -334,6 +459,8 @@ function doDrop(child, drop_target, a) {
 }
 
 function sortULBy(ul, column) {
+    console.log(ul);
+    console.log(column);
     items = $A(ul.childNodes);
     items = items.findAll(function(x) {
         return x.tagName == "LI";

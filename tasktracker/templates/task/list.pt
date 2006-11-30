@@ -37,12 +37,11 @@ You are watching this task list.
 
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <span metal:fill-slot="subtask_link">
-<a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)" onclick="hideCreate();return false;">Add a new task.</a>
-<br/>
-<a tal:attributes="href python:h.url_for(action='show_create_tasks', controller='task', task_listID=c.tasklist.id)">Add a bunch of new tasks.</a>
+[ + ]<a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)" onclick="hideCreate();return false;">add a task</a>
+<!-- <br/>
+<a tal:attributes="href python:h.url_for(action='show_create_tasks', controller='task', task_listID=c.tasklist.id)">Add a bunch of new tasks.</a> -->
 </span>
 </metal:do>
-
 
 <!-- ----------------------------- -->
 

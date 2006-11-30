@@ -47,30 +47,29 @@ class TestTaskController(TestController):
         app = self.getApp('admin')
 
         res = app.get(url_for(
-                controller='task', action='show_create', 
-                task_listID=task_listID
+                controller='tasklist', action='show',
+                id=task_listID
                 ))
 
         form = res.forms[0]
 
         form['title'] = 'The new task title'
         form['text'] = 'The new task body'
-#        form['deadline.date'] = '10/10/2029'
-#        form['deadline.time'] = '00:00:00'
         res = form.submit()
 
-        #Creating a new task should redirect you to the list of tasks.
-        location = res.header_dict['location']
-        assert location.startswith('/tasklist/show/')
+        # the response should consist of the new task's li
+        res.mustcontain('<li status="not done"')        
+        res.mustcontain("The new task title")
+        res.mustcontain("The new task body")
 
-        id = int(location[location.rindex('/') + 1:])
+        # the task should now show up on the tasklist view page
+        res = app.get(url_for(
+                controller='tasklist', action='show',
+                id=task_listID
+                ))
+        res.mustcontain("The new task title")
+        res.mustcontain("The new task body")
 
-        assert id == task_listID
-
-        res = res.follow()
-
-        res.mustcontain('The new task title')
-    
     def _getElementsByTagName(self, body, tagname):
         elements = []
         start = -1

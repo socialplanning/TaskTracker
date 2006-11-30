@@ -89,7 +89,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
 
     if input_attributes is None:
         input_attributes = dict()
-    
+        
     attribute_str = str()
     keys = attributes.keys()
     if 'class' in keys:
@@ -134,7 +134,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
 
     if value:
         value = value.strftime("%m-%d-%Y")
-      
+    
     retval = "".join(["""
     <span """, attribute_str, """>
       <script type="text/javascript">

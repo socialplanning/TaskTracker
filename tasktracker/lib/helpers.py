@@ -109,12 +109,46 @@ def editableField(task, field):
 
     span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
-    save_img = image_tag('save.png', onclick='changeField("%s", %d, "%s");' \
-                             % (url_for(controller='task', action='change_field', id=task.id, field=field), task.id, field))
+    save_img = image_tag('save.png', onclick='changeField(%d, "%s");' % (task.id, field))
     cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
 
     span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
     return "%s %s </span>" % (span, span_contents)
+
+def _prioritySelect(task, onchange = None):
+    priority = task.priority
+    id = task.id
+    if onchange is None:
+        onchange = 'changeField(%d, "priority");'  % task.id
+    return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
+                  method='post', originalvalue=priority, id='priority_%d' % id, 
+                  onchange=onchange)
+
+def _deadlineFilter():
+    onchange = 'filterDeadline();'
+    return select('deadline_filter', options_for_select([('All','All'), ('Thirty Days', 30), ('Seven Days', 7),
+                                                         ('Three Days',3), ('Today',0), ('Overdue', -1), ('None','None')], 'All'),
+                  method='post', originalvalue='All', id='deadline_filter', 
+                  onchange=onchange)
+
+def _priorityFilter(onchange = None):
+    if onchange is None:
+        onchange = 'filterField("priority");'
+    return select('priority_filter', options_for_select([(s, s) for s in 'All High Medium Low None'.split()], 'All'),
+                  method='post', originalvalue='All', id='priority_filter', 
+                  onchange=onchange)
+
+def _ownerFilter(tasklist):
+    owners = [task.owner for task in tasklist.tasks]
+    owner_dict = {'All':'All'}
+    for owner in owners:
+        if not owner:
+            owner_dict["No owner"] = ""
+        else:
+            owner_dict[owner] = owner
+    return select('owner_filter', options_for_select(owner_dict.items(), 'All'),
+                  method='post', originalvalue='All', id='owner_filter', 
+                  onchange='filterField("owner");')
 
 def _ownerInput(task):
     orig = "No owner"
@@ -122,25 +156,17 @@ def _ownerInput(task):
         orig = task.owner    
 
     input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
-              id="owner_%d" value="%s" onchange='changeField("%s", %d, "owner");'/>""" % (orig, task.id, task.owner, url_for(controller='task', action='change_field', id=task.id, field='owner'), task.id)
+              id="owner_%d" value="%s" onchange='changeField(%d, "owner");'/>""" % (orig, task.id, task.owner, task.id)
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
     script = """<script type="text/javascript">new Ajax.Autocompleter('owner_%d', 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
     return "%s\n%s\n%s" % (input, span, script)
-
-def _prioritySelect(task):
-    priority = task.priority
-    id = task.id
-    return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority, id='priority_%d' % id, onchange='changeField("%s", %d, "priority");' \
-                             % (url_for(controller='task', action='change_field', id=task.id, field='priority'), task.id))
-
-
+    
 def _deadlineInput(task):
     orig = "No deadline"
     if task.deadline:
         orig = task.deadline
     return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
-                           input_attributes={'originalvalue': "%s" % orig}, value=task.deadline)
+                           input_attributes=dict(originalvalue="%s" % orig), value=task.deadline)
                         
 def _statusSelect(task):
     statuses = task.task_list.statuses
@@ -159,8 +185,7 @@ def _statusSelect(task):
                   method='post', 
                   originalvalue=task.status,
                   id='status_%d' % task.id,
-                  onchange='changeField("%s", %d, "status");' \
-                             % (url_for(controller='task', action='change_field', id=task.id, field='status'), task.id))
+                  onchange='changeField(%d, "status");' % task.id)
 
 _fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
     

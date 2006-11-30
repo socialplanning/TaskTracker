@@ -26,6 +26,7 @@ from tasktracker.lib.taskparser import *
 import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
+from pylons.templating import render_response as render_body
 
 class EditTaskForm(formencode.Schema):  
     pre_validators = [formencode.variabledecode.NestedVariables]
@@ -40,7 +41,7 @@ class EditTaskForm(formencode.Schema):
     owner = formencode.compound.Any(NotEmpty(), Empty())
     parentID = formencode.validators.Int(not_empty = True)
     task_listID = formencode.validators.Int()
-    text = NotEmpty()
+    text = formencode.validators.String()
     private = NotEmpty()
 
 
@@ -126,19 +127,23 @@ class TaskController(BaseController):
         if not (c.level <= Role.getLevel('ProjectAdmin') or
                 TaskList.get(p['task_listID']).isOwnedBy(c.username)):
             p['private'] = False
-        
         p['creator'] = c.username
+        if not p.has_key('task_listID'):
+            p['task_listID'] = c.tasklist.id;
         if p.has_key('text'):
             p['text'] = p['text'].replace('\n', "<br>")
+        if not p.has_key('parentID'):
+            p['parentID'] = 0
         c.task = Task(**p)
-
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
-        if url_from:
-            return Response.redirect_to(url_from)
-        else:
-            return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
+        c.depth = 0
+        return render_body('zpt', 'task.task_list_item', atask=c.task)
+#        if url_from:
+#            return Response.redirect_to(url_from)
+#        else:
+#            return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors
