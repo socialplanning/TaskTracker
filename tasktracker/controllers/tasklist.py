@@ -150,7 +150,7 @@ class TasklistController(BaseController):
     def update(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
 
-        p = dict(request.params)
+        p = dict(self.form_result)
 
         c.tasklist.set(**p)
         
