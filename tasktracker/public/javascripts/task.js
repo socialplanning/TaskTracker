@@ -111,7 +111,13 @@ function createDragDrop() {
     }
 }
 
+function setupEmptyList() {
+    if ($('tasks') && !($('tasks').getElementsByTagName('li').length))
+	hideCreate();
+}
+
 addLoadEvent(createDragDrop);
+addLoadEvent(setupEmptyList);
 
 function toggle(obj) {
     obj.style.display = (obj.style.display != 'none' ? 'none' : '');
@@ -182,6 +188,8 @@ function addTask(tasklist_id) {
 
 function doneAddingTask(req) {
     $('tasks').appendChild(evalHTML(req.responseText));
+    $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
+
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
     var drag = new Draggable('task_' + id, {
 	    handle : 'draggable_' + id, 
@@ -234,6 +242,12 @@ function updateTaskItem(task_id) {
 	root = 'root-task';
     }
     tasktext.setAttribute('class', completed + ' ' + root);
+    var uncompletedTasks = 0;
+    $A(document.getElementsByTagName("li")).each(function(task) {
+	    if (task.getAttribute('status') != 'done')
+		uncompletedTasks++;
+	});
+    $('num_uncompleted').innerHTML = uncompletedTasks;
 }
 
 function revertField(task_id, fieldname) {
