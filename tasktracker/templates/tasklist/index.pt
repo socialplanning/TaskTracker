@@ -8,8 +8,7 @@
      <span tal:replace="list/title" /> 
      </a> - <small><span tal:replace="python:len(list.uncompletedTasks())"/> uncompleted 
 
-<span tal:condition="python:len(list.uncompletedTasks())==1" tal:replace="string:task" />
-<span tal:condition="python:len(list.uncompletedTasks())!=1" tal:replace="string:tasks" />
+<span tal:replace="python:test(len(list.uncompletedTasks())==1, 'task', 'tasks')" />
 
 </small>
 </li>
