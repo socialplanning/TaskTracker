@@ -107,7 +107,6 @@ class TestController(TestCase):
         form = res.forms[0]
         
         form['title'] = title
-        form['mode'] = 'simple'
         class level(object):
             def __init__(self, level):
                 self.value = level
