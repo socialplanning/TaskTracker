@@ -11,8 +11,6 @@
 <br />
 <h3 tal:condition="c/tasklist/text" tal:content="c/tasklist/text" />
 
-<span tal:condition="python: len(c.tasks)">
-
 <!-- list headers -->
 
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
@@ -27,7 +25,6 @@
   </tal:for>
 </ul>
 
-</span>
 <br clear="both" />
 <!-- the garbage bin -->
 <!-- is currently hidden
