@@ -1,7 +1,6 @@
 
 function setupEditableList(field, list_id) {
-    var the_list_id = list_id;
-    var the_list = $(the_list_id);
+    var the_list = $(list_id);
     the_list.field = field;
     //    Sortable.create(the_list_id);
 }
