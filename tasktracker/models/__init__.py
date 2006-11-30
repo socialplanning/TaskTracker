@@ -172,7 +172,7 @@ class TaskListRole(SQLObject):
     task_list = ForeignKey('TaskList')
     role = ForeignKey("Role")
 
-    index = DatabaseIndex(task_list, username, unique=True)
+    index = DatabaseIndex(task_list, username, role, unique=True)
 
 class Action(SQLObject):
     action = StringCol(unique=True, length=100)

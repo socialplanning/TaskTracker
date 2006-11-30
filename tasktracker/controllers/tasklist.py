@@ -107,6 +107,17 @@ class TasklistController(BaseController):
         #anyone can comment
         make_permission('task_comment', tasklist, auth_level)
 
+        list_owner = Role.selectBy(name='ListOwner')[0].id
+        #demote old managers
+        for user in tasklist.special_users:
+            if user.roleID == list_owner: 
+                user.destroySelf()
+
+        administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        for manager in p['managers'].split(","):
+            if manager and not manager in administrators:
+                TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
+
     @attrs(action='create')
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
@@ -153,8 +164,10 @@ class TasklistController(BaseController):
         p = dict(self.form_result)
 
         c.tasklist.set(**p)
+
+        self._setup_roles(p, c.tasklist)
         
-        return Response.redirect_to(action='index')
+        return Response.redirect_to(action='show',id=c.tasklist.id)
 
     def _getTaskList(self, id):
         try:

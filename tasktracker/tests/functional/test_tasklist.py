@@ -94,6 +94,34 @@ class TestTaskListController(TestController):
         #clean up: destroy new list
         tl.destroySelf()
 
+    def test_list_manager(self):
+        app = self.getApp('admin')
+
+        res = app.get(url_for(controller='tasklist', action='show_create'))
+
+        form = res.forms[0]
+        form['title'] = 'The new tl title'
+        form['managers'] = 'admin,member'
+
+        res = form.submit()
+        loc = res.header_dict['location']
+        the_id = loc.split("/")[-1]
+        res = res.follow()
+        res = res.click("Edit list settings")
+        res.mustcontain('<span>member</span>')
+
+        app = self.getApp('member')
+
+        res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
+        res.mustcontain('Managers:')
+        form = res.forms[0]
+        form['managers'] = 'admin'
+        res = form.submit()
+        res = res.follow()
+
+        res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
+        assert res.header_dict['location'].startswith('/error/')
+
     def test_tasklist_watch(self):
         """Tests adding self as a watcher for a task list"""
         tl = self.create_tasklist(title="list")

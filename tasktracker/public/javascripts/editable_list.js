@@ -9,12 +9,12 @@ function updateItem(list) {
     //update the form variable
     list = $(list);
     var items = list.getElementsByTagName('li')
-
     $(list.field).value = $A(items).map(getItemName).join(",");
 }
 
-function deleteItem(list, item_name) {
-    $(item_name).parentNode.remove();
+function deleteItem(item_name) {
+    var list = $(item_name).parentNode;
+    $(item_name).remove();
     updateItem(list);
 }
 
@@ -44,7 +44,7 @@ function addItem(list, item) {
     //add the html element
 
     var item_name = 'item_' + items.length;
-    var del = "deleteItem('" + list + "', '" + item_name + "');";
+    var del = "deleteItem('" + list + "_" + item_name + "');";
     var check = Builder.node('span', {'id' : item_name, 'onclick' : del}, ' [ - ]');
     var li = Builder.node('li', [Builder.node('span', item), check]);
 
