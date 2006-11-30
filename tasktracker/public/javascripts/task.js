@@ -174,20 +174,22 @@ function filterField(fieldname) {
 function addTask(tasklist_id) {
     var title = $('title').value;
     var url = '/task/create/';
-    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:'title='+title+';task_listID='+tasklist_id,
-				     onSuccess:doneAddingTask.bind(title), onFailure:failedAddingTask});
+    var req = new Ajax.Request(url, 
+			       {asynchronous:true, evalScripts:true,
+				method:'post', parameters:'title='+title+';task_listID='+tasklist_id,
+				onSuccess:doneAddingTask.bind(title), onFailure:failedAddingTask});
 }
 
 function doneAddingTask(req) {
     $('tasks').appendChild(evalHTML(req.responseText));
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
     var drag = new Draggable('task_' + id, {
-	    handle : 'handle_' + id, 
+	    handle : 'draggable_' + id, 
 	    revert : true
 	});
     Droppables.add('title_' + id, {hoverclass:'drop', onDrop:doDrop});
     Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
-    
+    Behaviour.apply();
     $A(document.forms[0].getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
 		node.checked = false;
