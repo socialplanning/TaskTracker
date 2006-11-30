@@ -108,6 +108,7 @@ class TaskListVersion(Version):
     live = BoolCol()
     text = StringCol()
     sort_index = IntCol()
+    initial_assign = IntCol()
 
 class Watcher(SQLObject):
     username = StringCol()
