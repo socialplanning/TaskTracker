@@ -8,10 +8,8 @@
 <label for="text">Description:</label><br/>
 <span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
 
-<table style="width:100%">
-<tr><td><label for="admins">Managers:</label>
+<label for="managers">Managers:</label><br/>
 <input type="hidden" value="" id="managers" name="managers">
-</td><td>
 
 <!-- list managers -->
 
@@ -29,11 +27,8 @@
   '../../../task/auto_complete_for/manager', {})</script>
 </span>
 
-</td><td>
-
-</tr>
-</table>
-
+<br/>
+<br/>
 
 <!-- Permissions -->
 
