@@ -78,6 +78,8 @@ class ZWSGIFakeEnv(object):
                 environ['topp.user_info']['roles'] = ['ProjectAdmin']
             if username == 'auth':
                 environ['topp.user_info']['roles'] = ['Authenticated']
+            if username == 'anon':
+                environ['topp.user_info']['roles'] = ['Anonymous']
 
             return True
 
