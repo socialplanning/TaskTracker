@@ -1,7 +1,5 @@
 <metal:macro define-macro="form">
 
-<input type="hidden" name="mode" id="mode" tal:attributes="value python:test(c.security_policy_id, 'simple', 'complex')">
-
 <label for="title">Name:</label><br/>
 <span tal:replace="structure python: h.text_field('title', size=80)" /><br/>
 
