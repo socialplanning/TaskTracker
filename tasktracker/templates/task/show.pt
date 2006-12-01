@@ -15,7 +15,7 @@ You are watching this task.
 <div style="border: thin solid darkgray; padding:5px;">
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
-<ul style="list-style:none; padding:0px;" tal:define="atask c/task">
+<ul class="task_list" tal:define="atask c/task">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
 </ul>
 
@@ -44,7 +44,7 @@ Deadline: <span tal:replace="c/task/deadline" /><br/>
 <br/>
 -->
 
-<br/>
+<br style="clear: both;" />
 
 <br/>
 

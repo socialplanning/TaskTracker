@@ -218,8 +218,8 @@ class TaskController(BaseController):
         c.task = self._getTask(int(id))
         c.parentID = int(id)
         c.tasklist = c.task.task_list
-        c.task_listID = c.tasklist.id
-        c.depth = c.task.depth() + 1
+        c.task_listID = c.tasklist.id        
+        c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
         return render_response('zpt', 'task.show')
 
