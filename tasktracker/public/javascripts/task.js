@@ -388,7 +388,7 @@ function indentTaskItem(task, depth) {
 	    break; 
 	}
     }
-    target.style.paddingLeft = 15*depth + 'px'; 
+    target.style.marginLeft = 15*depth + 'px'; 
 }
 
 function insertTaskAfterSibling(task_id, sibling_id) {

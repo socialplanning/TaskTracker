@@ -9,7 +9,7 @@
 	tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'),
 		class_='treewidget handle',
 		id='handle_%d' % atask.id,
-		style='padding-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
+		style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
 
     <!-- title -->
     <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
