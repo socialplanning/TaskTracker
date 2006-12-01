@@ -66,17 +66,22 @@ a.sortarrow:link {
     font-weight: bold;
 }
 
-.taskrow {
+.task-filter-controls {
   clear: both; 
 }
 
-.taskrow li {
+ul.task_list {
+  padding: 0; 
+  margin: 0; 
+  clear: both; 
 }
 
-.taskitem {
-   float: left; 
-   width: 20%; 
+.taskrow {
+  clear: both; 
+  padding: 0; 
+  margin: 0; 
 }
+
 
 .create_section {
    padding: 10px;
@@ -89,27 +94,43 @@ a.sortarrow:link {
 
 .status-column {
    float: left; 
-   width: 20%; 
+   width: 19%;
+   padding: 0; 
+   margin: 0;  
 }
+
+.taskitem {
+   float: left; 
+   width: 19%; 
+   padding: 0; 
+   margin: 0; 
+}
+
 
 .deadline-column {
    float: left; 
-   width: 20%;    
+   width: 19%;
+   padding: 0; 
+   margin: 0;     
 }
 
 .priority-column {
    float: left; 
-   width: 20%;    
+   width: 19%;    
 }
 
 .owner-column {
    float: left; 
-   width: 20%;    
+   width: 19%;
+   padding: 0; 
+   margin: 0;     
 }
 
 .creator-column {
    float: left; 
-   width: 20%;    
+   width: 19%;
+   padding: 0; 
+   margin: 0;     
 }
 
 .completed-task {

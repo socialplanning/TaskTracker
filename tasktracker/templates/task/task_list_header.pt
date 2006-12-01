@@ -7,7 +7,7 @@
 <span class="owner-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
 <!-- span class="creator-column">Created by</span -->
 </div>
-<div>
+<div class="task-filter-controls">
 <span class="taskitem">&nbsp;</span>
 <span class="status-column">&nbsp;</span>
 <span class="deadline-column"><span tal:replace="structure python: h._deadlineFilter()"/></span>
