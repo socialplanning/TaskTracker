@@ -131,12 +131,8 @@ class TestTaskListController(TestController):
         app = self.getApp('anon')
 
         res = app.get(url_for(controller='task', action='show', id=task.id))
-        found = False
-        for form in res.forms.values():
-            if form.action.startswith ('/task/change_field'):
-                found = True
-
-        assert found
+        #look for priority
+        res.mustcontain('<option value="Medium">Medium</option>')
 
     def test_privacy(self):
         app = self.getApp('admin')
