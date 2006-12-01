@@ -80,53 +80,39 @@ def taskListDropDown(id):
                 if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
-def field_permission(target, field=None):
-    if isinstance(target, Task):
-        return has_permission('task', 'change_field', id=target.id, field=field)
-    elif isinstance(target, TaskList):
-        return has_permission('tasklist', 'update', id=target.id)
-    else:
-        raise TypeError
-
-
-def possiblyEditableSpan(target, field, contents=None):
-
-    editable = field_permission(target, field)
+def possiblyEditableSpan(task, field, contents=None):
+    editable = has_permission('task', 'change_field', id=task.id, field=field)
 
     if contents is None:        
-        contents = getattr(target, field)
+        contents = getattr(task, field)
     
     if not contents:
         contents = "No %s" % field
 
     out = []
-    if isinstance(target, Task):
-        classes = ["%s-column" % field]
+    if editable:        
+        out.append("""<span class="%s-column editable" """ % field)
     else:
-        classes = []
-    if editable:      
-        classes.append('editable')
- 
-    out.append("""<span class="%s" """ % " ".join(classes))
-    
-    out.append("""id="%s-label_%d" """ % (field, target.id))
+        out.append("""<span class="%s-column" """ % field)
+
+    out.append("""id="%s-label_%d" """ % (field, task.id))
     if editable:
-        out.append ("""onclick="viewChangeableField(%d, &quot;%s&quot;)" """ % (target.id, field))
+        out.append ("""onclick="viewChangeableField(%d, &quot;%s&quot;)" """ % (task.id, field))
 
     out.append(">%s</span>" % contents)
     
     return " ".join(out)
 
-def editableField(target, field):
-    if not field_permission(target, field):
+def editableField(task, field):
+    if not has_permission('task', 'change_field', id=task.id, field=field):
         return None
 
-    span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, target.id)
+    span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
-    save_img = image_tag('save.png', onclick='changeField(%d, "%s");' % (target.id, field))
-    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (target.id, field))
+    save_img = image_tag('save.png', onclick='changeField(%d, "%s");' % (task.id, field))
+    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
 
-    span_contents = "%s <div></div>" % (_fieldHelpers[field](target))
+    span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
     return "%s %s </span>" % (span, span_contents)
 
 def _prioritySelect(task, onchange = None):
