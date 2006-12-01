@@ -82,12 +82,12 @@ class TasklistController(BaseController):
         for i in range(len(actions)):
             action = actions[i]
             if not action: continue
-            if i < p['other_level']:
-                if action == 'task_show':
+            if i <= p['other_level']:
+                if action != 'task_claim' and action != 'task_comment':
                     level = other_level
                 else:
                     level = auth_level
-            elif i < p['member_level']:
+            elif i <= p['member_level']:
                 level = member_level
             else:
                 level = manager_level

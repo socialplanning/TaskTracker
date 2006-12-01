@@ -118,11 +118,11 @@ def setup_config(command, filename, section, vars):
 
     setRoles(makeAction(action="tasklist_update"), [manager, pa])
 
-    setRoles(makeAction(action="task_create"), members)
-    setRoles(makeAction(action="task_update"), members)
+    setRoles(makeAction(action="task_create"), all)
+    setRoles(makeAction(action="task_update"), all)
     setRoles(makeAction(action="task_claim"), members)
 
-    setRoles(makeAction(action="task_change_status"), members)
+    setRoles(makeAction(action="task_change_status"), all)
     setRoles(makeAction(action="task_assign"), members)
 
     setRoles(makeAction(action="task_comment"), members)
