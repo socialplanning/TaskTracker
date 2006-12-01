@@ -122,6 +122,23 @@ class TestTaskListController(TestController):
         res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
         assert res.header_dict['location'].startswith('/error/')
 
+    def test_list_update_permission(self):
+        tl = self.create_tasklist('fleem')
+
+        #create a task
+        task = Task(title='morx', task_listID=tl.id)
+
+        app = self.getApp('anonymous')
+
+        res = app.get(url_for(controller='task', action='show', id=task.id))
+
+        found = False
+        for form in forms:
+            if form.action.startswith ('/task/change_field'):
+                found = True
+
+        assert found
+
     def test_privacy(self):
         app = self.getApp('admin')
 
