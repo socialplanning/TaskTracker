@@ -128,12 +128,12 @@ class TestTaskListController(TestController):
         #create a task
         task = Task(title='morx', task_listID=tl.id)
 
-        app = self.getApp('anonymous')
+        app = self.getApp('anon')
 
         res = app.get(url_for(controller='task', action='show', id=task.id))
 
         found = False
-        for form in forms:
+        for form in res.forms:
             if form.action.startswith ('/task/change_field'):
                 found = True
 

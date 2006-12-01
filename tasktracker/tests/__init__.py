@@ -90,7 +90,7 @@ class TestController(TestCase):
         for table in nonFixedClasses:
             table.createTable(ifNotExists=True)
         
-        for username in ['admin', 'member', 'auth']:
+        for username in ['admin', 'member', 'auth', 'anon']:
             User(username=username, password='nopassword'.encode("base64"))
 
         self.project = Project(title='theproject')
