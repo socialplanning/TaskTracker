@@ -56,7 +56,8 @@ lists.each(function(list_name) {
 			type : "radio", 
 			onclick : list_name + '_permission_set(' + index + ')'
 		    });
-		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, option]);
+                var label = Builder.node('label', {'for' : button.id}, option);
+		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
 		list.appendChild(li);
 	    });
 
