@@ -95,8 +95,10 @@ class ZWSGIFakeEnv(object):
         if environ['PATH_INFO'] == '/favicon.ico':
             safe = True
         if environ['PATH_INFO'].startswith("/stylesheets"):
-            safe = True
-
+            import os
+            if os.path.exists('tasktracker' + environ['PATH_INFO']):
+                safe = True
+        
         if safe or self.authenticate(environ):
             return self.app(environ, start_response)
         else:
