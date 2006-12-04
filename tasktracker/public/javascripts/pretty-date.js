@@ -5,12 +5,16 @@ function utc(d) {
 function date_diff(date1, date2) {
     var date1_UTC = utc(date1);
     var date2_UTC = utc(date2);
-    console.log(date1, date2, date1_UTC / 86400000, date2_UTC / 86400000);
     return (date1_UTC - date2_UTC) / 86400000;
 }
 
 function dayOfWeek(day) {
     return "SunMonTueWedThuFriSatSun".substr(day * 3, 3);
+}
+
+function monthName(month) {
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return months[month];
 }
 
 
@@ -28,6 +32,10 @@ function pretty_date_engine(now, date) {
     if (diff < 7) {
 	return dayOfWeek(date.getDay());
     }
+    if (diff < 90 && date.getYear() == now.getYear()) {
+	return monthName(date.getMonth()) + " " + date.getDate()
+    }
+    return monthName(date.getMonth()) + " " + date.getDate() + ", " + date.getFullYear();
 }
 
 function pretty_date(date) {
@@ -45,6 +53,7 @@ function test_pretty_date() {
 	'Tue' : new Date(2006, 0, 3),
 	'Sat' : new Date(2006, 0, 7),
 	'January 8' : new Date(2006, 0, 8),
+	'December 8, 2006' : new Date(2006, 11, 8),
 	'January 8, 2007' : new Date(2007, 0, 8)
     };
 
