@@ -43,7 +43,9 @@ def debugThings():
 
 def readableDate(date):
     if date:
-        return date.strftime("%m/%d/%Y")
+#date.strftime("%m/%d/%Y")
+        return javascript_tag('document.write(pretty_date(new Date(%d, %d, %d)));' % (date.year, date.month - 1, date.day))
+
     else:
         return "No deadline"
 
@@ -88,6 +90,8 @@ def possiblyEditableSpan(task, field, contents=None):
     
     if not contents:
         contents = "No %s" % field
+    elif field == 'deadline':
+        contents = readableDate(contents)
 
     out = []
     if editable:        

@@ -596,17 +596,15 @@ DateBocks.prototype = {
             }
 
             input.className = '';
-            
+		
             // Human readable date
             if (messageSpan) {
                 messageSpan.innerHTML = d.toDateString();
                 messageSpan.className = this.messageSpanSuccessClass;
             }
-	    console.log("done");
 	    var num = input.id.replace('deadline_', '');
 	    if (num != input.id) {
 		changeField(num, 'deadline');
-		console.log("ok!");
 	    }    
         }
         catch (e) {

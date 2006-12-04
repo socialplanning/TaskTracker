@@ -280,7 +280,11 @@ function succeededChangingField(req) {
     field.disabled = false;
     field.style.color = "black"; 
     var label = $(fieldname + '-label_' + task_id);
-    label.innerHTML = newvalue;
+    if (fieldname == 'deadline') {
+	label.innerHTML = pretty_date_from_text(newvalue);
+    } else {
+	label.innerHTML = newvalue;
+    }
     $('task_' + task_id).setAttribute(fieldname, field.value);
     updateTaskItem(task_id);
     hideChangeableField(task_id, fieldname);

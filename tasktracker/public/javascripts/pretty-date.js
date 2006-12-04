@@ -38,6 +38,12 @@ function pretty_date_engine(now, date) {
     return monthName(date.getMonth()) + " " + date.getDate() + ", " + date.getFullYear();
 }
 
+function pretty_date_from_text(text) {
+    parts = text.split("/");
+    return pretty_date(new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1])));
+
+}
+
 function pretty_date(date) {
     var now = new Date();
     return pretty_date_engine(now, date);
