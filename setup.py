@@ -27,12 +27,22 @@ setup(
     #author="",
     #author_email="",
     #url="",
-    install_requires=["Pylons==dev,>=0.9.4a", "PasteScript", "ZPTKit==dev,>=0.4.2a", "SQLObject", "decorator", "uuid"],
+    install_requires=[
+      "Pylons==dev,>=0.9.4a", 
+      "PasteScript", 
+      "ZPTKit==dev,>=0.4.2a", 
+      "SQLObject", 
+      "decorator", 
+      "uuid"],
     packages=find_packages(),
     include_package_data=True,
     test_suite = 'nose.collector',
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
-    dependency_links = ["http://pythonpaste.org/package_index.html","http://cheeseshop.python.org/pypi/Pylons/0.9.2"],
+    dependency_links = [
+      "http://pythonpaste.org/package_index.html",
+      "http://cheeseshop.python.org/pypi/Pylons/0.9.2",
+      "http://zesty.ca/python/uuid.py#egg=uuid-dev",
+      ],
     entry_points="""
     [paste.app_factory]
     main=tasktracker:make_app
