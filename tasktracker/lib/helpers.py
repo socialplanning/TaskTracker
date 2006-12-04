@@ -37,15 +37,15 @@ import imp, os
 from formencode import htmlfill
 from tasktracker.lib.base import render_response
 
+from tasktracker.lib.pretty_date import pretty_date
+
 def debugThings():
     foo = c
     import pdb; pdb.set_trace()
 
 def readableDate(date):
     if date:
-#date.strftime("%m/%d/%Y")
-        return javascript_tag('document.write(pretty_date(new Date(%d, %d, %d)));' % (date.year, date.month - 1, date.day))
-
+        return pretty_date(date)
     else:
         return "No deadline"
 
