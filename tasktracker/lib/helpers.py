@@ -82,24 +82,27 @@ def taskListDropDown(id):
                 if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
-def possiblyEditableSpan(task, field, contents=None):
+def editableField(task, field):
     editable = has_permission('task', 'change_field', id=task.id, field=field)
-
-    if contents is None:        
-        contents = getattr(task, field)
-    
-    if not contents:
-        contents = "No %s" % field
-    elif field == 'deadline':
-        contents = readableDate(contents)
-
     out = []
-    if editable:        
+    contents = getattr(task, field)
+    if editable:
+        span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
+
+        span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
+        out.append("%s %s </span>" % (span, span_contents))
+    
+        if not contents:
+            contents = "No %s" % field
+        elif field == 'deadline':
+            contents = readableDate(contents)
+
         out.append("""<span class="%s-column editable" """ % field)
     else:
         out.append("""<span class="%s-column" """ % field)
 
     out.append("""id="%s-label_%d" """ % (field, task.id))
+
     if editable:
         out.append ("""onclick="viewChangeableField(%d, &quot;%s&quot;)" """ % (task.id, field))
 
@@ -107,17 +110,6 @@ def possiblyEditableSpan(task, field, contents=None):
     
     return " ".join(out)
 
-def editableField(task, field):
-    if not has_permission('task', 'change_field', id=task.id, field=field):
-        return None
-
-    span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
-
-    save_img = image_tag('save.png', onclick='changeField(%d, "%s");' % (task.id, field))
-    cancel_img = image_tag('cancel.png', onclick='revertField(%d, "%s");' % (task.id, field))
-
-    span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
-    return "%s %s </span>" % (span, span_contents)
 
 def _prioritySelect(task, onchange = None):
     priority = task.priority

@@ -17,37 +17,13 @@
 </span>
 
 
-<!-- the status -->
-
 <span tal:replace="structure python:h.editableField(atask, 'status')"/>
-
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'status')" />
-
-<!-- end status -->
-
-<!-- deadline -->
 
 <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
 
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'deadline')" />
-
-<!-- end deadline -->
-
-<!-- priority -->
-
 <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
 
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'priority')" />
-
-<!-- end priority -->
-
-<!-- owner -->
-
 <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
-
-<span tal:replace="structure python:h.possiblyEditableSpan(atask, 'owner')" />
-
-<!-- end owner --> 
 
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
