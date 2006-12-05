@@ -718,3 +718,24 @@ function modeSwitch() {
     }
 }
 
+//ported from mochilkit
+function evalHTML(value) {
+        if (typeof(value) != 'string') {
+                return null;
+        }
+        value = MochiKit.Format.strip(value);
+        if (value.length == 0) {
+                return null;
+        }
+
+        var parser = Builder.node('div');
+        var html = document.createDocumentFragment();
+
+        var child;
+
+        parser.innerHTML = value;
+        while ((child = parser.firstChild)) {
+                html.appendChild(child)
+        }
+        return html;
+}

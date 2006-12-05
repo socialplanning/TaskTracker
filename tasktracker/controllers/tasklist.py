@@ -20,7 +20,7 @@
 
 from tasktracker.lib.base import *
 from tasktracker.models import *
-from tasktracker.lib.helpers import filled_render
+from tasktracker.lib.helpers import filled_render, has_permission
 
 import formencode  
 
@@ -31,6 +31,30 @@ class CreateListForm(formencode.Schema):
     member_level = formencode.validators.Int()
     other_level = formencode.validators.Int()
     initial_assign = formencode.validators.Int()
+
+def add_feature(name, value = None):
+    f = TaskListFeature.selectBy(task_listID=c.tasklist.id, name=name)
+    if f.count():
+        f[0].value = value
+    else:
+        TaskListFeature(task_listID=c.tasklist.id, name=name, value=value)
+
+def remove_feature(name, value = None):
+    if name == 'private_tasks':
+        for task in c.tasklist.tasks:
+            task.private = False
+    
+    f = TaskListFeature.selectBy(task_listID=c.tasklist.id, name=name)
+    if f.count():
+        f[0].destroySelf()
+
+
+def set_features(p):
+    for feature in ['deadlines', 'custom_status', 'private_tasks']:
+        if p.get('feature_%s' % feature, None):
+            add_feature(feature)
+        else:
+            remove_feature(feature)
 
 class TasklistController(BaseController):
     @classmethod
@@ -128,21 +152,12 @@ class TasklistController(BaseController):
         p['projectID'] = c.project.id
         c.tasklist = TaskList(**p)
         
-        def add_feature(name, value = None):
-            TaskListFeature(task_listID=c.tasklist.id, name=name, value=value)
-
-        if p.get('feature_deadlines', None):
-            add_feature('deadlines')
-        if p.get('feature_custom_status', None):
-            add_feature('custom_status', None) #statuses are stored normalized
-        if p.get('feature_private_tasks', None):
-            add_feature('private_tasks')
-
+        set_features(p)
         self._setup_roles(p, c.tasklist)
 
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
-    @attrs(action='update')
+    @attrs(action='show')
     @catches_errors
     def show_update(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(id)
@@ -152,19 +167,25 @@ class TasklistController(BaseController):
         p = {}
         for feature in c.tasklist.features:
             p['feature_' + feature.name] = 1
+            setattr(c, 'feature_' + feature.name, 1)
 
-        return filled_render('tasklist.show_update', c.tasklist, p)
+        if has_permission('tasklist', 'update'):
+            return filled_render('tasklist.show_update', c.tasklist, p)
+        else:
+            return filled_render('tasklist.show_preferences', c.tasklist, p)
 
     @validate(schema=CreateListForm(), form='show_update')  
     @attrs(action='update')
     @catches_errors
     def update(self, id, *args, **kwargs):
+        assert self.form_result['member_level'] >= self.form_result['other_level']
         c.tasklist = self._getTaskList(int(id))
 
         p = dict(self.form_result)
 
         c.tasklist.set(**p)
 
+        set_features(p)
         self._setup_roles(p, c.tasklist)
         
         return Response.redirect_to(action='show',id=c.tasklist.id)

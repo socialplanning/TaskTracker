@@ -1,0 +1,66 @@
+<!-- Please also see show_update for the editable version -->
+
+
+<h1 tal:content="c/tasklist/title" />
+
+<span tal:content="c/tasklist/text" />
+
+<br/>
+
+Managers:<br/>
+
+<ul>
+     <li tal:repeat="manager python:c.managers + c.administrators" tal:content="manager"/>
+</ul>
+
+
+<!-- Permissions -->
+<metal:do use-macro="here/_permissions/macros/permissions"/>
+<script>
+lists.each(function(list_name) {
+for (var i = 0; i < 5; i ++) {
+  button = $(list_name + '_level_' + i);
+  button.hide();
+  button.disabled = true;
+}
+});
+</script>
+
+
+<!-- Features -->
+
+<br/>
+Extra Features:<br/>
+<span tal:condition="c/feature_deadlines">
+Tasks have deadlines
+</span>
+<span tal:condition="not: c/feature_deadlines">
+Tasks do not have deadlines
+</span>
+<br/>
+
+<span tal:condition="c/feature_custom_status">
+This list has custom task statuses.  The statuses are: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
+</span>
+<span tal:condition="not: c/feature_custom_status">
+Tasks do not have custom statuses. 
+</span>
+<br/>
+
+<span tal:condition="c/feature_private">
+This list has private tasks.
+</span>
+<span tal:condition="not: c/feature_custom_status">
+This list does not have private tasks.
+</span>
+<br/>
+
+
+<br/>
+By default, tasks are initially
+<span tal:condition="c/tasklist/initial_assign">
+unassigned 
+</span>
+<span tal:condition="not: c/tasklist/initial_assign">
+assigned to the person who created them
+</span>

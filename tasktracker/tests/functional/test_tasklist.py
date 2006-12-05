@@ -66,7 +66,7 @@ class TestTaskListController(TestController):
 
         res = app.get(url_for(controller='tasklist', action='show_update', id = the_id))
         assert res.form['feature_deadlines'].checked
-        assert not res.form['feature_custom_statuses'].checked 
+        assert not res.form.fields.has_key('feature_custom_status') #can't edit statuses
         assert not res.form['feature_private_tasks'].checked
         
         #clean up: destroy new list
@@ -81,7 +81,7 @@ class TestTaskListController(TestController):
         form = res.forms[0]
 
         form['title'] = 'The new tl title'
-        form['feature_custom_statuses'] = 1
+        form['feature_custom_status'] = 1
 
         form['statuses'] = 'morx,fleem'
         res = form.submit()

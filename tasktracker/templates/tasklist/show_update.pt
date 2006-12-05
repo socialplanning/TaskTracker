@@ -1,17 +1,167 @@
-<h1 tal:content="c/tasklist/title" /><br />
+<!-- Please also see show_preferences for the non-editable version -->
 
-<p tal:content="c/tasklist/text" />
-<small>This list has <span tal:replace="python:len(c.tasklist.visibleTasks())" /> tasks total / <span tal:replace="python:len(c.tasklist.uncompletedTasks())" /> left undone</small>
 <span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
-<metal:do use-macro="here/_form/macros/form" />
+<div class="tooltip" style="display:none;" id="tooltip">
+Click to change this.
+</div>
+
+<div id="title" class="editable" onmouseover="return escape('change this');">
+<h1 tal:content="c/tasklist/title" onclick="$('title').hide(); $('edit_title').show();" />
+</div>
+<div id="edit_title" style="display:none;">
+<span tal:replace="structure python: h.text_field('title')" /><br/>
+</div>
+
+<div id="text" class="editable">
+<span tal:content="python: test(c.tasklist.text, c.tasklist.text, '[no description]')" onclick="$('text').hide(); $('edit_text').show();" />
+</div>
+<div id="edit_text" style="display:none;">
+<span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
+</div>
+
+<br/>
+
+
+<label for="managers">Managers:</label><br/>
+<div id="managers" onclick="$('managers').hide(); $('edit_managers').show();" class="editable">
+<ul>
+     <li tal:repeat="manager python:c.managers + c.administrators" tal:content="manager"/>
+</ul>
+</div>
+<div id="edit_managers" style="display:none;">
+
+
+<input type="hidden" value="" id="managers" name="managers">
+
+<!-- list managers -->
+
+<span tal:replace="structure python: h.list_with_minuses('list_managers', c.managers, c.administrators)" />
+
+<span class="autocomplete">
+  <label for="manager" onclick="$('add_manager').toggle(); $('show_add_manager').toggle()" id="show_add_manager">[ + ] add manager</label>
+<span id="add_manager" style="display:none;">
+   <input autocomplete="off" id="manager" name="manager" size="20" type="text" value="" />
+   <input type="submit" name="submit" value="Add" onclick="addItem('list_managers', $('manager').value);$('manager').value=''; return false;"/>
+</span>
+
+  <div class="auto_complete" id="manager_auto_complete"></div>
+  <script type="text/javascript">new Ajax.Autocompleter('manager', 'manager_auto_complete', 
+  '../../../task/auto_complete_for/manager', {})</script>
+</span>
+</div>
+
+<br/>
+<br/>
+
+<!-- Permissions -->
+<span onclick="show_permissions();" class="editable">
+<metal:do use-macro="here/_permissions/macros/permissions"/>
+</span>
+<script>
+function show_permissions() {
+lists.each(function(list_name) {
+for (var i = 0; i < 5; i ++) {
+  button = $(list_name + '_level_' + i);
+  button.show();
+}
+});
+}
+lists.each(function(list_name) {
+for (var i = 0; i < 5; i ++) {
+  button = $(list_name + '_level_' + i);
+  button.hide();
+}
+});
+</script>
+
+
+<!-- Features -->
+
+<br/>
+Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
+
+
+<div id="deadlines" class="editable">
+  <span onclick="$('deadlines').hide(); $('edit_deadlines').show();">
+    <span tal:condition="c/feature_deadlines">
+      Tasks have deadlines
+    </span>
+    <span tal:condition="not: c/feature_deadlines">
+      Tasks do not have deadlines
+    </span>
+  </span>
+  <br/>
+</div>
+<div id="edit_deadlines" style="display:none;">
+  <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
+</div>
+
+
+<span tal:condition="c/feature_custom_status">
+This list has custom task statuses.  The statuses are: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
+</span>
+<span tal:condition="not: c/feature_custom_status">
+Tasks do not have custom statuses. 
+</span>
+<br/>
+
+<div id="edit_private" style="display:none;" class="editable">
+<input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
+</div>
+
+<div id="private" class="editable">
+<span onclick="$('private').hide(); $('edit_private').show();">
+<span tal:condition="c/feature_private_tasks">
+This list has private tasks.
+<script>
+$('feature_private_tasks').onclick=function() {return confirm('All private tasks will be made public.  Procede?')};
+</script>
+</span>
+<span tal:condition="not: c/feature_private_tasks">
+This list does not have private tasks.
+</span>
+<br/>
+</div>
+
+<br/>
+
+<div id="initial_assign" class="editable">
+  <span onclick="$('initial_assign').hide(); $('edit_initial_assign').show();" >
+    By default, tasks are initially
+    <span tal:condition="c/tasklist/initial_assign">
+      unassigned 
+    </span>
+    <span tal:condition="not: c/tasklist/initial_assign">
+      assigned to the person who created them
+    </span>
+  </span>
+</div>
+<div id="edit_initial_assign" style="display:none;">
+  By default, tasks are initially assigned to:<br/>
+  <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
+  <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+</div>
+<br/>
+
+<span tal:replace="structure python: h.submit('Submit')" />
+<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
+
+<script language="JavaScript">
+   setupEditableList('managers', 'list_managers');
+
+   //fixme: maybe reimplement with behavior once get licensing figured out
+   function init_change_this(parent) {
+       $A(parent.childNodes).each(function (node) {
+	       if (node.nodeName != '#text') {
+		   init_change_this(node);
+	       }
+	       if (node.className == "editable") {
+		   node.title="Click to change this."
+	       }
+	   });
+   }
+   init_change_this(document);
+</script>
 
 <span tal:replace="structure python: h.end_form()" />
-
-<script>
-var features = document.getElementsByClassName("features");
-for (i = 0; i < features.length; ++i) {
-    features[i].disabled = true;
-}
-
-</script>
