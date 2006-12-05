@@ -684,6 +684,12 @@ function sortBy(column) {
 	    }
 	});
     $(column + '-arrows').show();
+    
+    var otherorder = (order == 'up') ? 'down' : 'up';
+
+    addClass($(column + '-' + otherorder + '-arrow'), 'grayed-out');
+    removeClass($(column + '-' + order + '-arrow'), "grayed-out");
+	
     sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
 }
 

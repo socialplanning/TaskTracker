@@ -82,6 +82,18 @@ def taskListDropDown(id):
                 if has_permission('tasklist', 'show', id=tasklist.id)]
     return select('task_listID', options_for_select(tasklist, selected=id))
 
+def sortableColumn(field, fieldname = None):
+    if fieldname is None:
+        fieldname = field
+    span = """
+    <span class="column-heading %s-column" onclick="sortBy('%s'); sortOrder=''">%s
+      <span style="display:none;" class="sort-arrows" id="%s-arrows">&nbsp;
+       <span id="%s-down-arrow">&#x2193;</span>
+       <span id="%s-up-arrow">&#x2191;</span>
+      </span>
+    </span>""" % (field, field, fieldname, field, field, field)
+    return span
+
 def editableField(task, field):
     editable = has_permission('task', 'change_field', id=task.id, field=field)
     out = []
