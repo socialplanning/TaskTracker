@@ -85,8 +85,8 @@ var myrules = {
 	    return false;
 	}
     },
-
-    'a#show_description' : function(element) {
+    
+    '#show_description' : function(element) {
 	element.onclick = function() {
 	    $('hideable_add_description').hide();
 	    $('hideable_title_label').show();
