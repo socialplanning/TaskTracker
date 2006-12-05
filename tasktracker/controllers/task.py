@@ -93,7 +93,6 @@ class TaskController(BaseController):
     def _move_below_sibling(self, id, siblingID):
         task = self._getTask(int(id))
         new_sibling = Task.get(siblingID)
-        print new_sibling
         assert new_sibling.task_listID == task.task_listID
         task.parentID = new_sibling.parentID
         if new_sibling.parentID > 0:
@@ -144,7 +143,6 @@ class TaskController(BaseController):
         if not p.has_key('parentID'):
             p['parentID'] = 0
         siblingID = p['siblingID']
-        print siblingID, p['parentID']
         del p['siblingID']
         c.task = Task(**p)
         # some ugly error checking
@@ -152,7 +150,6 @@ class TaskController(BaseController):
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
         c.depth = 0
         if siblingID > 0:
-            print "moving"
             self._move_below_sibling(c.task.id, siblingID)
         return render_body('zpt', 'task.task_list_item', atask=c.task)
 

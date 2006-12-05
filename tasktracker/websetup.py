@@ -53,8 +53,6 @@ def setup_config(command, filename, section, vars):
     Set up the task tracker's fixtures
     """
 
-    print "ok"
-
     dummy, sect = section.split(':')
 
     conf = appconfig('config:%s#%s' % (filename, sect), relative_to=conf_dir)
