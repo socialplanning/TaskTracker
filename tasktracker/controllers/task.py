@@ -71,10 +71,10 @@ class TaskController(BaseController):
             setattr(task, field, newfield)
         c.task = task
         return render_text(getattr(task, field))
-        
-    @attrs(action='show')
-    def auto_complete_for_owner(self):
-        partial = request.params['owner']
+
+    @attrs(action='open')
+    def auto_complete_for(self, id):
+        partial = request.params[id]
         users = map (lambda u: u['username'], c.usermapper.project_members())
         users = filter(lambda u: u.lower().startswith(partial.lower()), users)
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
