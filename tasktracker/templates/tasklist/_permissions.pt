@@ -1,0 +1,95 @@
+<metal:macro define-macro="permissions">
+This project's team members can:
+<ul id="member_permissions"></ul>
+Anyone else can:
+<ul id="other_permissions"></ul>
+
+<!-- these will be filled in by htmlfill, and then deleted by js -->
+
+<input type="hidden" name="member_level" id="member_level_old" value="0">
+<input type="hidden" name="other_level" id="other_level_old" value="0">
+
+<script>
+//'
+var options = ["not even see this list", "view this list but not participate", "and get tasks assigned to them", "and create new tasks", "and edit any task"];
+var lists = ['member', 'other'];
+checked = {};
+lists.each(function(list_name) {
+	list = $(list_name + '_permissions');
+	list.className = "undecorated_list";
+	options.each (function(option, index) {
+		var button = Builder.node('input', {
+			id : list_name + '_level_' + index,
+			name : list_name + '_level', 
+			value : index, 
+			type : "radio", 
+			onclick : list_name + '_permission_set(' + index + ')'
+		    });
+                var label = Builder.node('label', {'for' : button.id}, option);
+		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
+		list.appendChild(li);
+	    });
+
+	//set the value to the 'previous' value
+	old = $(list_name + '_level_old');
+	$(list_name + '_level_' + old.value).checked = true;
+        show_selected(list_name, old.value);
+	old.parentNode.removeChild(old);
+    });
+
+function show_selected(list_name, index) {
+    //also show what's selected
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $(list_name + '_level_' + i);
+	if (i <= index && i > 0) {
+	    radio.parentNode.className = 'selected-permission';
+	} else {
+	    radio.parentNode.className = 'unselected-permission';
+	}
+    }
+}
+
+function member_permission_set(index) {
+    //disable inappropriate options on 'anyone else'; enable appropriate ones
+    other_selected = null;
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $('other_level_' + i);
+	if (radio.checked) {
+	    other_selected = radio;
+	}
+	if (i > index) {
+	    radio.disabled = true;
+	} else {
+	    radio.disabled = false;
+	}
+    }
+    if (other_selected.value > index) {
+	$('other_level_' + index).checked = true;
+    }
+
+    show_selected('member', index);
+}
+function other_permission_set(index) {
+    //disable inappropriate options on 'member'; enable appropriate ones
+    member_selected = null;
+    for (var i = 0; i < options.length; ++ i) {
+	var radio = $('member_level_' + i);
+	if (radio.checked) {
+	    member_selected = radio;
+	}
+	if (i < index) {
+	    radio.disabled = true;
+	} else {
+	    radio.disabled = false;
+	}
+    }
+    if (member_selected.value < index) {
+	$('member_level_' + index).checked = true;
+    }
+
+    show_selected('other', index);
+}
+
+
+</script>
+</metal:macro>
