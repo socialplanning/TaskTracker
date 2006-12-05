@@ -1,0 +1,19 @@
+<metal:macro define-macro="managers">
+<input type="hidden" value="" id="managers" name="managers">
+
+<!-- list managers -->
+
+<span tal:replace="structure python: h.list_with_minuses('list_managers', c.managers, c.administrators)" />
+
+<span class="autocomplete">
+  <label for="manager" onclick="$('add_manager').toggle(); $('show_add_manager').toggle()" id="show_add_manager">[ + ] add manager</label>
+<span id="add_manager" style="display:none;">
+   <input autocomplete="off" id="manager" name="manager" size="20" type="text" value="" />
+   <input type="submit" name="submit" value="Add" onclick="addItem('list_managers', $('manager').value);$('manager').value=''; return false;"/>
+</span>
+
+  <div class="auto_complete" id="manager_auto_complete"></div>
+  <script type="text/javascript">new Ajax.Autocompleter('manager', 'manager_auto_complete', 
+  '../../../task/auto_complete_for/manager', {})</script>
+</span>
+</metal:macro>
