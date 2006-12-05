@@ -1,45 +1,39 @@
 <metal:macro define-macro="show_create">
 
-<span tal:replace="structure python:h.form_remote_tag(url=h.url_for(controller='task', action='create'), success='return doneAddingTask(request);', failure='failedAddingTask')" />
+<div tal:replace="structure python:h.form_remote_tag(url=h.url_for(controller='task', action='create'),
+      			     success='return doneAddingTask(request);', failure='failedAddingTask')" />
 
 Add task:
+
 <br/><br/>
 <input type="hidden" name="task_listID" tal:attributes="value c/task_listID" />
+<input type="hidden" name="parentID" value="0" />
+<input type="hidden" name="siblingID" value="0" />
 
 <div id="hideable_title_label" style="display:none;">title</div>
-<span tal:replace="structure python: h.text_field_r('oldtask', 'title', size=80)" />
+<div tal:replace="structure python: h.text_field_r('oldtask', 'title', size=80, tabindex=1)" />
 
-<span tal:condition="python:c.tasklist.hasFeature('private_tasks')">
-  <span tal:replace="structure python: h.check_box_r('oldtask', 'private')" /> make this task private
-  <span tal:replace="structure python: h.help('Private tasks can only be seen by list administrators')" />
-</span>
-<br/><br/>
+<div tal:condition="python:c.tasklist.hasFeature('private_tasks')" style="display:inline;">
+  <div tal:replace="structure python: h.check_box_r('oldtask', 'private', tabindex=3)" /> make this task private
+  <div tal:replace="structure python: h.help('Private tasks can only be seen by list administrators')" />
+</div>
+
+<p>
 <div id="hideable_add_description">
-<a id="show_description" href="#nevermind" onclick="$('hideable_add_description').hide(); $('hideable_title_label').show(); $('description_field').show(); $('text').focus(); return false;">
-Add description</a></div>
+<a id="show_description" href="#nevermind">
+Add description</a>
+</div>
 
 <div id="description_field" style="display:none;">
 <div id="hideable_description_label">description</div>
-<span tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=5, cols=80)"/>
-<br/><a href="#nevermind" id="hide_description" onclick="$('description_field').hide(); $('hideable_add_description').show();">Hide description</a>
+<div tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=5, cols=80, tabindex=2, autocomplete='off')"/>
+<br/>
+<a href="#nevermind" id="hide_description"
+   onclick="$('description_field').hide(); $('hideable_add_description').show();">Hide description</a>
 </div>
 
-<!-- <table>
-<tr><td>
-<label class="row-heading" for="title">Title:</label></td><td>
-<span tal:replace="structure python: h.text_field_r('oldtask', 'title')" />
-
-<span class="row-heading">Parent: </span>
-<span tal:replace="structure python: h.taskDropDown(c.parentID, c.tasklist.id, initial_value=c.task, include_this_task=True)" />
-</td></tr>
-<br/>
-<tr><td>
-<label class="row-heading" for="text">Description:</label></td><td>
-<span tal:replace="structure python: h.text_area_r('oldtask', 'text', rows=10, cols=80)" /></tr></table>
--->
-
-<br/>
-<input type="submit" name="create" value="go" />
+<p>
+<input type="submit" name="create" value="go" tabindex=4 />
 <metal:macro define-slot="cancel_button"></metal:macro>
-<span tal:replace="structure python:h.end_form()" />
+<div tal:replace="structure python:h.end_form()" />
 </metal:macro>

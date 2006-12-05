@@ -84,22 +84,33 @@ var myrules = {
 	    document.location = element.href;
 	    return false;
 	}
+    },
+
+    'a#show_description' : function(element) {
+	element.onclick = function() {
+	    $('hideable_add_description').hide();
+	    $('hideable_title_label').show();
+	    $('description_field').show();
+	    $('text').focus();  // TODO this line seems to cause a javascript exception (but still works)
+	    return false;
+	}
     }
+
 };
 
 Behaviour.register(myrules);
 
-// http://trac.mochikit.com/wiki/ParsingHtml
+// "ported" from http://trac.mochikit.com/wiki/ParsingHtml
 function evalHTML(value) {
     if (typeof(value) != 'string') {
 	return null;
     }
-    value = MochiKit.Format.strip(value);
+    value = value.strip();
     if (value.length == 0) {
 	return null;
     }
-    var parser = MochiKit.DOM.DIV();
-    var html = MochiKit.DOM.currentDocument().createDocumentFragment();
+    var parser = document.createElement("DIV");
+    var html = document.createDocumentFragment();
     
     var child;
     parser.innerHTML = value;
@@ -173,16 +184,11 @@ function filterDeadline() {
     var filtervalue = $('deadline_filter').value;
 
     if (filtervalue == 'All') {
-	$A($('tasks').getElementsByTagName('li')).each(function(node) {
-		node.show();
-	    });
 	return;
     }
     if (filtervalue == 'None') {
 	$A($('tasks').getElementsByTagName('li')).each(function(node) {
-		if (!node.getAttribute('deadline'))
-		    node.show();
-		else
+		if (node.getAttribute('deadline'))
 		    node.hide();
 	    });
 	return;
@@ -195,9 +201,7 @@ function filterDeadline() {
 	    if (deadline) {
 		var db = new DateBocks();
 		var nodeDate = db.parseDateString(deadline);
-		if (nodeDate < byThisDate) {
-		    node.show();
-		} else {
+		if (!(nodeDate < byThisDate)) {
 		    node.hide();
 		}
 	    } else {
@@ -207,33 +211,62 @@ function filterDeadline() {
 }
 
 function filterField(fieldname) {
+    if (fieldname == "deadline") {
+	filterDeadline();
+	return;
+    }
+			
     filtervalue = $(fieldname + '_filter').value;
     if (filtervalue == 'All') {
-	$A($('tasks').getElementsByTagName('li')).each(function(node) {
-		node.show();
-	    });
 	return;
     }
     $A($('tasks').getElementsByTagName('li')).each(function(node) {
 	    if (node.getAttribute(fieldname) != filtervalue) {
 		node.hide();
-	    } else {
-		node.show();
 	    }
 	});
 }
 
-function addTask(tasklist_id) {
-    var title = $('title').value;
-    var url = '/task/create/';
-    var req = new Ajax.Request(url, 
-			       {asynchronous:true, evalScripts:true,
-				method:'post', parameters:'title='+title+';task_listID='+tasklist_id,
-				onSuccess:doneAddingTask.bind(title), onFailure:failedAddingTask});
+function filterListByAllFields() {
+    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+	    node.show();
+	});
+    $A(["status", "deadline", "priority", "owner"]).each(function(field){
+	    var filter = $(field + '_filter');
+	    var filtervalue = filter.value;
+	    $(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
+	    if (filtervalue == "All")
+		return;
+	    filterField(field);
+	});
+}
+
+function restoreAddTask() { 
+    $('add_task_anchor').appendChild($('movable_add_task'));
+    hideCreate();
+    document.forms[0].getInputs()[1].setAttribute("value", 0);
+    document.forms[0].getInputs()[2].setAttribute("value", 0);
+    return false;
 }
 
 function doneAddingTask(req) {
-    $('tasks').appendChild(evalHTML(req.responseText));
+    var parentID = parseInt(document.forms[0].getInputs()[1].getAttribute("value"));
+    var siblingID = parseInt(document.forms[0].getInputs()[2].getAttribute("value"));
+    if (siblingID != 0) {
+	var sibling = $('task_' + siblingID);
+	insertAfter(evalHTML(req.responseText), sibling);
+    } else if (parentID != 0) {
+	var parent = $('task_' + parentID);
+	var ul = parent.getElementsByTagName("ul")[0];
+	ul.insertBefore(evalHTML(req.responseText), ul.childNodes[0]);
+	//	ul.appendChild(evalHTML(req.responseText));
+	updateTaskItem(parentID);
+	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
+    } else {
+	var ul = $('tasks');
+	ul.appendChild(evalHTML(req.responseText));
+    }
+    
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
@@ -277,6 +310,7 @@ function hideChangeableField(task_id, fieldname) {
 function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
+    var handle = $('handle_' + task_id);
     var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
     var root;
     if (taskitem.childNodes[1].nodeType == 1) {
@@ -284,7 +318,12 @@ function updateTaskItem(task_id) {
     } else {
 	root = 'root-task';
     }
-    tasktext.setAttribute('class', completed + ' ' + root);
+    tasktext.setAttribute('class', completed + ' ' + root);  // TODO MAKE THIS USE ADDCLASS
+    if( taskitem.getElementsByTagName("UL")[0].getElementsByTagName("LI").length ) {
+	expandTask(task_id);
+    } else {
+	flattenTask(task_id);
+    }
     var uncompletedTasks = 0;
     $A(document.getElementsByTagName("li")).each(function(task) {
 	    if (task.getAttribute('status') != 'done')
@@ -303,7 +342,7 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
-    if (req.responseText == "ok") {
+    if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {
 	failedChangingField.bind(this)(req);
@@ -324,7 +363,7 @@ function succeededChangingField(req) {
     } else {
 	label.innerHTML = newvalue;
     }
-    $('task_' + task_id).setAttribute(fieldname, field.value);
+    $('task_' + task_id).setAttribute(fieldname, req.responseText);
     updateTaskItem(task_id);
     hideChangeableField(task_id, fieldname);
 }
@@ -363,7 +402,7 @@ function doneMovingTask(req) {
 function hideCreate() {
     $('create').show();
     $('show_create').hide();
-    $('create_anchor').scrollTo();
+    //    $('create_anchor').scrollTo();
     $('title').focus();
     return false;
 }
@@ -524,8 +563,31 @@ function doDrop(child, drop_target, a) {
     if (drop_target == child) {
         return;
     }
-    if (!child.id.match("draggable"))
+    // if it's "add a task" element
+    if (!child.id.match("draggable")) {  // TODO be more specific
+	if (drop_target.id.match(/^title_/)) {   // drop under a parent node
+	    id = parseInt(drop_target.id.replace(/^title_/, ''));
+	    document.forms[0].getInputs()[1].setAttribute("value", id);
+	    document.forms[0].getInputs()[2].setAttribute("value", 0);
+	    var new_parent = $('task_' + id);
+	    var ul = new_parent.getElementsByTagName("ul")[0];
+	    var li = document.createElement("li");
+	    li.className = "taskrow";
+	    li.appendChild(child);
+	    ul.insertBefore(li, ul.childNodes[0]);
+	} else {   // drop after a sibling node
+	    id = parseInt(drop_target.id.replace(/^handle_/, ''));
+	    document.forms[0].getInputs()[1].setAttribute("value", 0);
+	    document.forms[0].getInputs()[2].setAttribute("value", id);
+	    var new_sibling = $('task_' + id);
+	    var ul = new_sibling.parentNode;
+	    var li = document.createElement("li");
+	    li.className = "taskrow";
+	    li.appendChild(child);
+	    insertAfter(child, new_sibling);
+	}
 	return;
+    }
     var task_id = child.id.replace("draggable_", "");
     var old_parent_id = child.parentNode.parentNode.getAttribute('task_id');
 
@@ -546,34 +608,34 @@ function doDrop(child, drop_target, a) {
     }
 }
 
-function sortULBy(ul, column) {
+function sortULBy(ul, column, forward) {
     items = $A(ul.childNodes);
     items = items.findAll(function(x) {
-        return x.tagName == "LI";
-    });
+	    return x.tagName == "LI";
+	});
 
     items = items.sort(function (x, y) {
-        a = x.getAttribute(column);
-        b = y.getAttribute(column);
-        if (a > b) 
-            return 1;
-        else if (b > a) 
-            return -1;
-        else if (x.getAttribute('sort_index') > y.getAttribute('sort_index')) 
-            return 1;
-        else if (x.getAttribute('sort_index') < y.getAttribute('sort_index'))
-            return -1;
-        else
-            return 0;
-    });
+	    a = x.getAttribute(column);
+	    b = y.getAttribute(column);
+	    if (a > b) 
+		return 1 * forward;
+	    else if (b > a) 
+		return -1  * forward;
+	    else if (x.getAttribute('sort_index') > y.getAttribute('sort_index')) 
+		return 1  * forward;
+	    else if (x.getAttribute('sort_index') < y.getAttribute('sort_index'))
+		return -1  * forward;
+	    else
+		return 0;
+	});
 
     items.each (function (x) { ul.removeChild(x); });
     items.each (function (x) {
         ul.appendChild(x);
-        child_ul = x.getElementsByTagName('UL');
-        if (child_ul) {
+        child_ul = x.getElementsByClassName('task_list');
+        if( child_ul.length ) {
             child_ul = child_ul[0];
-            sortULBy(child_ul, column);
+            sortULBy(child_ul, column, forward);
         }
     });
 }
@@ -609,13 +671,25 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column) {
-    sortULBy($('tasks'), column);
+    $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
+	    e.hide();
+	});
+    var order;
+    $A(document.getElementsByClassName("column-heading")).each(function(e) {
+	    if (hasClass(e, column + '-column')) {
+		e.setAttribute('sortOrder', e.getAttribute('sortOrder') == 'up' ? 'down' : 'up');
+		order = e.getAttribute('sortOrder');
+	    } else {
+		e.setAttribute('sortOrder', '');
+	    }
+	});
+    $(column + '-arrows').show();
+    sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
 }
 
 var initialized = false;
 
 function modeSwitch() {
-
     if (mode == 'view') {
         $A($('tasks').getElementsByTagName('IMG')).each(function (x) {
             if (x.className == "handle") 

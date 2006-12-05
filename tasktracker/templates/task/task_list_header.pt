@@ -1,18 +1,26 @@
 <metal:macro metal:define-macro="show_header">
 <div class="column-heading">
 <span class="taskitem">Task name</span>
-<span class="status-column">Status <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('status'); return false;">&#x2193;</a></span>
-<span class="deadline-column">Deadline <a href="#sortbydeadline" class="sortarrow" onclick="sortBy('deadline'); return false;">&#x2193;</a></span>
-<span class="priority-column">Priority <a href="#sortbypriority" class="sortarrow" onclick="sortBy('priority'); return false;">&#x2193;</a></span>
-<span class="owner-column">Assigned to<a href="#sortbyowner" class="sortarrow" onclick="sortBy('owner'); return false;">&#x2193;</a></span>
+<span class="column-heading status-column" onclick="sortBy('status'); sortOrder=''">Status
+      <span style="display:none;" class="sort-arrows" id="status-arrows">&nbsp;&#x2193;&#x2191;</span>
+</span>
+<span class="column-heading deadline-column" onclick="sortBy('deadline'); sortOrder=''">Deadline
+      <span style="display:none;" class="sort-arrows" id="deadline-arrows">&nbsp;&#x2193;&#x2191;</span>
+</span>
+<span class="column-heading priority-column" onclick="sortBy('priority'); sortOrder=''">Priority
+      <span style="display:none;" class="sort-arrows" id="priority-arrows">&nbsp;&#x2193;&#x2191;</span>
+</span>
+<span class="column-heading owner-column" onclick="sortBy('owner'); sortOrder=''">Assigned to
+      <span style="display:none;" class="sort-arrows" id="owner-arrows">&nbsp;&#x2193;&#x2191;</span>
+</span>
 <!-- span class="creator-column">Created by</span -->
 </div>
 <div class="task-filter-controls">
 <span class="taskitem">&nbsp;</span>
-<span class="status-column">&nbsp;</span>
-<span class="deadline-column"><span tal:replace="structure python: h._deadlineFilter()"/></span>
-<span class="priority-column"><span tal:replace="structure python: h._priorityFilter()"/></span>
-<span class="owner-column"><span tal:replace="structure python: h._ownerFilter(c.tasklist)"/></span>
+<span class="status-column"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></span>
+<span class="deadline-column"><span tal:replace="structure python: h.columnFilter('deadline')"/></span>
+<span class="priority-column"><span tal:replace="structure python: h.columnFilter('priority')"/></span>
+<span class="owner-column"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></span>
 </div>
 
 </metal:macro>

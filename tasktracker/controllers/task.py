@@ -40,6 +40,7 @@ class EditTaskForm(formencode.Schema):
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
     parentID = formencode.validators.Int(not_empty = True)
+    siblingID = formencode.validators.Int(not_empty = True)
     task_listID = formencode.validators.Int()
     text = formencode.validators.String()
     private = NotEmpty()
@@ -52,7 +53,7 @@ def _field_permission(param):
 class TaskController(BaseController):
     
     def _clean_params(self, params):
-        allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "owner", "private", "priority")
+        allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "siblingID", "owner", "private", "priority")
         clean = {}
         for param in allowed_params:
             if params.has_key(param):
@@ -69,7 +70,7 @@ class TaskController(BaseController):
         if not getattr(task, field) == newfield:
             setattr(task, field, newfield)
         c.task = task
-        return render_text("ok")
+        return render_text(getattr(task, field))
         
     @attrs(action='show')
     def auto_complete_for_owner(self):
@@ -78,29 +79,37 @@ class TaskController(BaseController):
         users = filter(lambda u: u.lower().startswith(partial.lower()), users)
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
-    @attrs(action='update', watchdog=TaskMoveWatchdog)
-    def move(self, id):
+    def _move_under_parent(self, id, parentID):
         task = self._getTask(int(id))
-        if request.params.has_key ('new_parent'):
+        assert parentID == 0 or Task.get(parentID).task_listID == task.task_listID
+        assert parentID != task.id
+        task.parentID = parentID
+        if parentID > 0:
+            parent = Task.get(parentID)
+            if parent.private:
+                task.private = True
+        task.moveToTop()
+
+    def _move_below_sibling(self, id, siblingID):
+        task = self._getTask(int(id))
+        new_sibling = Task.get(siblingID)
+        print new_sibling
+        assert new_sibling.task_listID == task.task_listID
+        task.parentID = new_sibling.parentID
+        if new_sibling.parentID > 0:
+            parent = Task.get(new_sibling.parentID)
+            if parent.private:
+                task.private = True
+        task.moveBelow(new_sibling)
+
+    @attrs(action='update', watchdog=TaskMoveWatchdog)
+    def move(self, id):        
+        if request.params.has_key('new_parent'):
             new_parent_id = int(request.params['new_parent'])
-            assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == task.task_listID
-            assert new_parent_id != task.id
-            task.parentID = new_parent_id
-            if new_parent_id > 0:
-                parent = Task.get(new_parent_id)
-                if parent.private:
-                    task.private = True
-            task.moveToTop()
+            self._move_under_parent(id, new_parent_id)
         else:
             new_sibling_id = int(request.params['new_sibling'])
-            new_sibling = Task.get(new_sibling_id)
-            assert new_sibling.task_listID == task.task_listID
-            task.parentID = new_sibling.parentID
-            if new_sibling.parentID > 0:
-                parent = Task.get(new_sibling.parentID)
-                if parent.private:
-                    task.private = True
-            task.moveBelow(new_sibling)
+            self._move_below_sibling(id, new_sibling_id)
         return render_text('ok')
 
     @attrs(action='create')
@@ -129,21 +138,23 @@ class TaskController(BaseController):
             p['private'] = False
         p['creator'] = c.username
         if not p.has_key('task_listID'):
-            p['task_listID'] = c.tasklist.id;
+            p['task_listID'] = c.tasklist.id
         if p.has_key('text'):
-            p['text'] = p['text'].replace('\n', "<br>")
+            p['text'] = p['text'].replace('\n', "<br>")  #TODO there must be a better way to do this
         if not p.has_key('parentID'):
             p['parentID'] = 0
+        siblingID = p['siblingID']
+        print siblingID, p['parentID']
+        del p['siblingID']
         c.task = Task(**p)
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])
         c.depth = 0
+        if siblingID > 0:
+            print "moving"
+            self._move_below_sibling(c.task.id, siblingID)
         return render_body('zpt', 'task.task_list_item', atask=c.task)
-#        if url_from:
-#            return Response.redirect_to(url_from)
-#        else:
-#            return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
     @attrs(action='claim')
     @catches_errors

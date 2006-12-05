@@ -16,7 +16,6 @@ td {
 .drop {
    border-bottom: 2px solid black;
    padding-bottom: 2px;	
-   background-image: url('../images/folder_open.png');
 }
 
 /*from scriptaculous*/
@@ -80,8 +79,8 @@ ul.task_list {
   clear: both; 
   padding: 0; 
   margin: 0; 
+  line-height: 2em;
 }
-
 
 .create_section {
    padding: 10px;

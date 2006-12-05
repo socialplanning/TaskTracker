@@ -178,3 +178,18 @@ class TestTaskListController(TestController):
         res = res.follow()
         res.mustcontain("edit watch settings")
         tl.destroySelf()
+
+    def test_task_create(self):
+        """Tests creating a new task"""
+        tl = self.create_tasklist('testing task creation')
+        
+        app = self.getApp('admin')
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
+
+        form = res.forms[0]
+        form['title'] = "The new task"
+        form['text'] = "The description text"
+        res = form.submit()
+        res.mustcontain("The new task")
+        res.mustcontain("The description text")
+        

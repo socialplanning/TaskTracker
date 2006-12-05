@@ -120,21 +120,36 @@ def _prioritySelect(task, onchange = None):
                   method='post', originalvalue=priority, id='priority_%d' % id, 
                   onchange=onchange)
 
-def _deadlineFilter():
-    onchange = 'filterDeadline();'
+def columnFilter(field, tasklist = None):
+    out = []
+    onchange = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
+    filter = globals()["_%sFilter" % field](onchange = onchange, tasklist = tasklist)
+    onclick = """$('%s-filter-label').hide(); $('%s_filter').show();""" % (field, field)
+    span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
+    
+    return "%s%s" % (filter, span)
+
+def _deadlineFilter(onchange = None, tasklist = None):
     return select('deadline_filter', options_for_select([('All','All'), ('Thirty Days', 30), ('Seven Days', 7),
                                                          ('Three Days',3), ('Today',0), ('Overdue', -1), ('None','None')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
-                  onchange=onchange)
+                  onchange=onchange, style="display:none")
 
-def _priorityFilter(onchange = None):
-    if onchange is None:
-        onchange = 'filterField("priority");'
+def _priorityFilter(onchange = None, tasklist = None):
     return select('priority_filter', options_for_select([(s, s) for s in 'All High Medium Low None'.split()], 'All'),
                   method='post', originalvalue='All', id='priority_filter', 
-                  onchange=onchange)
+                  onchange=onchange, style="display:none")
 
-def _ownerFilter(tasklist):
+def _statusFilter(onchange = None, tasklist = None):
+    statuses = [status.name for status in tasklist.statuses]
+    status_dict = {'All':'All'}
+    for status in statuses:
+        status_dict[status] = status
+    return select('status_filter', options_for_select(status_dict.items(), 'All'),
+                  method='post', originalvalue='All', id='status_filter', 
+                  onchange=onchange, style="display:none")
+
+def _ownerFilter(onchange = None, tasklist = None):
     owners = [task.owner for task in tasklist.tasks]
     owner_dict = {'All':'All'}
     for owner in owners:
@@ -144,7 +159,7 @@ def _ownerFilter(tasklist):
             owner_dict[owner] = owner
     return select('owner_filter', options_for_select(owner_dict.items(), 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
-                  onchange='filterField("owner");')
+                  onchange=onchange, style="display:none")
 
 def _ownerInput(task):
     orig = "No owner"
