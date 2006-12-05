@@ -24,7 +24,7 @@ Click to change this.
 
 
 <label for="managers">Managers:</label><br/>
-<div id="managers" onclick="$('managers').hide(); $('edit_managers').show();" class="editable">
+<div id="managers_div" onclick="$('managers_div').hide(); $('edit_managers').show();" class="editable">
 <ul>
      <li tal:repeat="manager python:c.managers + c.administrators" tal:content="manager"/>
 </ul>

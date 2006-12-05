@@ -62,7 +62,7 @@ def list_with_minuses(id, updateable_items=[], fixed_items=[]):
             """<li id="%s_item_%d">
                  <span>%s</span>
                  <span onclick="deleteItem('%s_item_%d');">[ - ]</span>
-               </li>""" % (id, i, updateable_items[i].username, id, i)
+               </li>""" % (id, i, updateable_items[i], id, i)
             for i in range(0, len(updateable_items))])
 
     fixed_lis = "\n".join([

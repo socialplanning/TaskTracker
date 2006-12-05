@@ -365,7 +365,7 @@ class TaskList(SQLObject):
     member_level =  IntCol()
 
     def managers(self):
-        return [u for u in self.special_users if u.role == Role.getByName('ListOwner')]
+        return [u.username for u in self.special_users if u.role == Role.getByName('ListOwner')]
 
     def hasFeature(self, feature_name):
         for feature in self.features:

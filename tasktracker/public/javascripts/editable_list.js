@@ -73,8 +73,8 @@ function addItem(list, item) {
     } 
     //add the html element
 
-    var item_name = 'item_' + items.length;
-    var del = "deleteItem('" + list + "_" + item_name + "');";
+    var item_name =  + list + "_" + 'item_' + items.length;
+    var del = "deleteItem('" + item_name + "');";
     var check = Builder.node('span', {'id' : item_name, 'onclick' : del}, ' [ - ]');
     var li = Builder.node('li', [Builder.node('span', item), check]);
 
