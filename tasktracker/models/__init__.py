@@ -361,6 +361,8 @@ class TaskList(SQLObject):
     features = MultipleJoin("TaskListFeature")
     statuses = MultipleJoin("Status")
     initial_assign = IntCol(default=0)
+    other_level =  IntCol()
+    member_level =  IntCol()
 
     def managers(self):
         return [u for u in self.special_users if u.role == Role.getByName('ListOwner')]
@@ -422,7 +424,7 @@ class TaskList(SQLObject):
     def _clean_params(self, kwargs):
 
         params = {}
-        allowed_params = ("title", "text", "projectID", "initial_assign")
+        allowed_params = ("title", "text", "projectID", "initial_assign", "member_level", "other_level")
         for param in allowed_params:
             if kwargs.has_key(param):
                 params[param] = kwargs[param]
