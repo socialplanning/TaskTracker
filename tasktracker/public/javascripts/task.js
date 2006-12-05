@@ -51,12 +51,19 @@ var myrules = {
             });
 
 	element.onclick = function(e) {
+	    e = e || event 
 	    if (hasClass(element, 'drag')) {
 		removeClass(element, 'drag');
 		return false;
-	    } else
-		if (e.originalTarget.doclick)
-		    e.originalTarget.doclick(e);
+	    } else {
+		if (e.target && e.target.doclick) {
+		    e.target.doclick(e);
+		}
+		else if (e.srcElement && e.srcElement.doclick) {
+		    e.srcElement.doclick(e);
+		}
+	    }
+	    
 	}
     },
 
