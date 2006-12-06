@@ -2,17 +2,17 @@
 
 <span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
-<div id="title" class="editable">
-<h1 tal:content="c/tasklist/title" onclick="$('title').hide(); $('edit_title').show();" />
+<div id="title" class="editable unfolded">
+<h1 tal:content="c/tasklist/title" />
 </div>
-<div id="edit_title" style="display:none;">
+<div id="edit_title" class="folded">
 <span tal:replace="structure python: h.text_field('title')" /><br/>
 </div>
 
-<div id="text" class="editable">
-<span tal:content="python: test(c.tasklist.text, c.tasklist.text, '[no description]')" onclick="$('text').hide(); $('edit_text').show();" />
+<div id="text" class="editable unfolded">
+<span tal:content="python: test(c.tasklist.text, c.tasklist.text, '[no description]')" />
 </div>
-<div id="edit_text" style="display:none;">
+<div id="edit_text" class="folded">
 <span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
 </div>
 
@@ -20,12 +20,12 @@
 
 
 <label for="managers">Managers:</label><br/>
-<div id="managers_div" onclick="$('managers_div').hide(); $('edit_managers').show();" class="editable">
+<div id="managers_div" class="unfolded editable">
 <ul>
      <li tal:repeat="manager python:c.managers + c.administrators" tal:content="manager"/>
 </ul>
 </div>
-<div id="edit_managers" style="display:none;">
+<div id="edit_managers_div" class="folded">
 
 <metal:do use-macro="here/_managers/macros/managers"/>
 </div>
@@ -61,18 +61,16 @@ for (var i = 0; i < 5; i ++) {
 Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
 
 
-<div id="deadlines" class="editable">
-  <span onclick="$('deadlines').hide(); $('edit_deadlines').show();">
-    <span tal:condition="c/feature_deadlines">
-      Tasks have deadlines
-    </span>
-    <span tal:condition="not: c/feature_deadlines">
-      Tasks do not have deadlines
-    </span>
+<div id="deadlines" class="editable unfolded">
+  <span tal:condition="c/feature_deadlines">
+    Tasks have deadlines
+  </span>
+  <span tal:condition="not: c/feature_deadlines">
+    Tasks do not have deadlines
   </span>
   <br/>
 </div>
-<div id="edit_deadlines" style="display:none;">
+<div id="edit_deadlines" class="folded">
   <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
 </div>
 
@@ -85,12 +83,11 @@ Tasks do not have custom statuses.
 </span>
 <br/>
 
-<div id="edit_private" style="display:none;" class="editable">
+<div id="edit_private" class="folded">
 <input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
 </div>
 
-<div id="private" class="editable">
-<span onclick="$('private').hide(); $('edit_private').show();">
+<div id="private" class="editable unfolded">
 <span tal:condition="c/feature_private_tasks">
 This list has private tasks.
 <script>
@@ -105,8 +102,7 @@ This list does not have private tasks.
 
 <br/>
 
-<div id="initial_assign" class="editable">
-  <span onclick="$('initial_assign').hide(); $('edit_initial_assign').show();" >
+<div id="initial_assign" class="unfolded editable">
     By default, tasks are initially
     <span tal:condition="c/tasklist/initial_assign">
       unassigned 
@@ -114,9 +110,8 @@ This list does not have private tasks.
     <span tal:condition="not: c/tasklist/initial_assign">
       assigned to the person who created them
     </span>
-  </span>
 </div>
-<div id="edit_initial_assign" style="display:none;">
+<div id="edit_initial_assign" class="folded">
   By default, tasks are initially assigned to:<br/>
   <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
   <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
@@ -130,6 +125,17 @@ This list does not have private tasks.
    setupEditableList('managers', 'list_managers');
 
    with_items ("editable", function(node) { node.title="Click to change this."; }, document.childNodes[0]);
+
+    function unfold () {
+	other = $('edit_' + this.id);
+	other.style['display'] = 'block';
+	this.hide();
+    }
+    function add_unfold(node) {
+	node.onclick = unfold.bind(node);
+    }
+
+   with_items ("unfolded", add_unfold, document.childNodes[0]);
 </script>
 
 <span tal:replace="structure python: h.end_form()" />

@@ -179,3 +179,7 @@ span.editable:hover {
 .disabled-permission {
   color: #888;
 }
+
+.folded {
+  display: none;
+}

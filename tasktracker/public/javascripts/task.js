@@ -724,3 +724,15 @@ function modeSwitch() {
     }
 }
 
+
+function with_items (klass, func, parent) {
+    $A(parent.childNodes).each(function (node) {
+        if (node.nodeType == 1) {
+	    with_items(klass, func, node);
+	    classes = node.className.split(" ");
+	    if (classes.include(klass)) {
+		func(node);
+	    }
+	}
+    });
+}
