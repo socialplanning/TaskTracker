@@ -29,8 +29,8 @@
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
 
-<div tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
-<span tal:replace="python:h.previewText(atask.text)"/>
+<div tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);" >
+&nbsp;<span tal:replace="python:h.previewText(atask.text)"/>
 </div>
 
 <span metal:define-slot="post_task" />
