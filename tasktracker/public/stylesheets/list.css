@@ -83,7 +83,7 @@ ul.task_list {
   clear: both; 
   padding: 0; 
   margin: 0; 
-  line-height: 2em;
+  line-height: 1em;
 }
 
 .create_section {

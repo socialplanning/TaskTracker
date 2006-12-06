@@ -14,7 +14,7 @@
 		style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
 
     <!-- title -->
-    <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task', test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+    <a tal:content="python: h.previewText(atask.title, 10)" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task', test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
  </span>
 </span>
 
@@ -31,7 +31,9 @@
 <!-- span class="creator-column" tal:content="atask/creator" / -->
 
 <span metal:define-slot="post_task" />
-
+<span tal:attributes="style python:'margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
+<span tal:replace="python:h.previewText(atask.text)"/>
+</span>
 
 </li>
 </metal:macro>

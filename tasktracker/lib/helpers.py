@@ -43,6 +43,16 @@ def debugThings():
     foo = c
     import pdb; pdb.set_trace()
 
+def previewText(text, length=15):
+    if not text: return ""
+    words = text.split()
+    text = words.pop(0)
+    while len(text) < length and len(words):
+        text = "%s %s" % (text, words.pop(0))
+    if len(words):
+        text = "%s ..." % text
+    return text
+
 def isOverdue(deadline):
     if not deadline:
         return False
