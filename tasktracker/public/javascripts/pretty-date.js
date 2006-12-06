@@ -75,6 +75,8 @@ function pretty_date_engine(now, date) {
 }
 
 function pretty_date_from_text(text) {
+    if (text == "No deadline")
+	return text;
     parts = text.split("/");
     return pretty_date(new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1])));
 }

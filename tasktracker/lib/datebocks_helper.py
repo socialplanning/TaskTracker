@@ -144,12 +144,13 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
       </script>
       <span>
         <span class="dateBocksInput">""",
-                     text_field(options['name'], 
+                      text_field(options['name'], 
                                  value=value, 
-                                  id=calendar_ref, 
-                                  onChange=calendar_ref + "Obj.magicDate();", 
-                                  onKeyPress=calendar_ref + "Obj.keyObserver(event, 'parse'); return " + calendar_ref + "Obj.keyObserver(event, 'return');", 
-                                  onClick="this.select();", **input_attributes), """</span>
+                                 id=calendar_ref, 
+                                 onChange=calendar_ref + "Obj.magicDate();",
+                                 onBlur=calendar_ref + "Obj.magicDate();",
+                                 onKeyPress=calendar_ref + "Obj.keyObserver(event, 'parse'); return " + calendar_ref + "Obj.keyObserver(event, 'return');", 
+                                 onClick="this.select();", **input_attributes), """</span>
         <span class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</span>
         <span class="dateBocksHelp">""", image_tag('icon-help.gif', alt='Help', id=calendar_ref + 'Help', style = 'cursor: pointer' ), """</span>
       </span>
@@ -158,5 +159,5 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
         Calendar.setup(""",options_for_javascript(calendar_options), """);        
       </script>
     </span>"""])
-
+    
     return retval

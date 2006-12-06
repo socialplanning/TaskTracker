@@ -566,6 +566,13 @@ DateBocks.prototype = {
         var messageSpan = document.getElementById(input.id + this.messageSpanSuffix);
 
         try {
+	    var num = input.id.replace('deadline_', '');
+	    if (!input.value) {
+		console.log("OO");
+		if (num != input.id) {
+		    return changeField(num, 'deadline');
+		}	
+	    }
             var d = this.parseDateString(input.value);
 
             var day = this.zeroPad(d.getDate());
@@ -602,7 +609,6 @@ DateBocks.prototype = {
                 messageSpan.innerHTML = d.toDateString();
                 messageSpan.className = this.messageSpanSuccessClass;
             }
-	    var num = input.id.replace('deadline_', '');
 	    if (num != input.id) {
 		changeField(num, 'deadline');
 	    }    
