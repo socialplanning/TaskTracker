@@ -1,6 +1,8 @@
 <metal:macro metal:define-macro="show_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index; owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; class python: 'taskrow %s' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
+<li tal:attributes="id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index;
+    owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status;
+    class python: '%s taskrow' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <span tal:attributes="depth python: atask.depth() - c.depth" class="taskitem">
 
@@ -12,7 +14,7 @@
 		style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
 
     <!-- title -->
-    <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task', 'uncompleted-task'), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+    <a tal:content="atask/title" tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id); title atask/text; class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task', test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')), test(atask.parentID == 0, 'root-task', 'sub-task')); id string:title_${atask/id}" />        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
  </span>
 </span>
 

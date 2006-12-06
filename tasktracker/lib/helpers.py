@@ -43,6 +43,14 @@ def debugThings():
     foo = c
     import pdb; pdb.set_trace()
 
+def isOverdue(deadline):
+    if not deadline:
+        return False
+    import datetime
+    if deadline.date() < datetime.date.today():
+        return True
+    return False
+
 def readableDate(date):
     if date:
         return pretty_date(date)

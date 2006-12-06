@@ -136,6 +136,10 @@ ul.task_list {
    margin: 0;     
 }
 
+.overdue-task {
+   color: red;
+}
+
 .completed-task {
     text-decoration: line-through;
     color: gray

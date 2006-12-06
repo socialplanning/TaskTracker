@@ -334,14 +334,26 @@ function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
     var handle = $('handle_' + task_id);
-    var completed = (taskitem.getAttribute('status') == 'done') ? 'completed-task' : 'uncompleted-task';
+    var completed;
+    if (taskitem.getAttribute('status') == 'done') 
+	completed = 'completed-task';
+    else {
+	var db = new DateBocks();
+	var date = taskitem.getAttribute('deadline');
+	var now = new Date();
+	if (date && db.parseDateString(date) < now) {
+	    completed = 'overdue-task';
+	}
+	else
+	    completed = 'uncompleted-task';
+    }
     var root;
     if (taskitem.childNodes[1].nodeType == 1) {
 	root = (parseInt(taskitem.childNodes[1].getAttribute('depth')) === 0) ? 'root-task' : 'sub-task';
     } else {
 	root = 'root-task';
     }
-    tasktext.setAttribute('class', completed + ' ' + root);  // TODO MAKE THIS USE ADDCLASS
+    tasktext.setAttribute('class', completed + ' ' + root);
     if( taskitem.getElementsByTagName("UL")[0].getElementsByTagName("LI").length ) {
 	expandTask(task_id);
     } else {
