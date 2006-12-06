@@ -553,7 +553,7 @@ function insertTaskUnderParent(child_id, parent_id) {
 
     var ul = new_parent.getElementsByTagName('UL');
     if (ul.length) {
-        ul = ul[0];
+        ul = ul[0];	
         ul.insertBefore(child, ul.childNodes[0]);
         var items = ul.getElementsByTagName('LI');
         //update sort_index

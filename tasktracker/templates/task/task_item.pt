@@ -18,7 +18,6 @@
  </span>
 </span>
 
-
 <span tal:replace="structure python:h.editableField(atask, 'status')"/>
 
 <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
@@ -30,10 +29,11 @@
 <!-- creator -->
 <!-- span class="creator-column" tal:content="atask/creator" / -->
 
-<span metal:define-slot="post_task" />
-<span tal:attributes="style python:'margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
+<div tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
 <span tal:replace="python:h.previewText(atask.text)"/>
-</span>
+</div>
+
+<span metal:define-slot="post_task" />
 
 </li>
 </metal:macro>
