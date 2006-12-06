@@ -300,6 +300,11 @@ class Task(SQLObject):
 
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
+    def uncompletedChildren(self):
+        import tasktracker.lib.helpers as h
+
+        return [c for c in self.children if c.status != 'done' and c.live and h.has_permission('task', 'show', id=c.id)]
+
     def isOwnedBy(self, username):
         return self.owner == username            
 
