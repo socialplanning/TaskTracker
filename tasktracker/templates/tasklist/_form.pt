@@ -23,11 +23,11 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
 
 <input type="checkbox" name="feature_custom_status" value="1" class="features" onclick="$('edit_statuses').toggle();" id="custom_status"/>
 <label for="custom_status">Custom status</label><br/>
-<input type="hidden" value="" id="statuses" name="statuses">
 
 <div id="edit_statuses" style="display:none; margin-left: 3em;">
 <span tal:replace="structure python: h.editable_list('statuses', [], ['done'])" />
 
+   <input type="hidden" value="" id="statuses" name="statuses">
    <input id="add_status" name="add_status" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
 
