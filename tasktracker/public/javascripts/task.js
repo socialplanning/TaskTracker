@@ -619,8 +619,11 @@ function sortULBy(ul, column, forward) {
     items = items.sort(function (x, y) {
 	    a = x.getAttribute(column);
 	    b = y.getAttribute(column);
-	    console.log(a, b, a > b, a < b);
-	    if (a > b) 
+	    if (!a && b)
+		return 1 * forward;
+	    else if (!b && a)
+		return -1 * forward;
+	    else if (a > b) 
 		return 1 * forward;
 	    else if (b > a) 
 		return -1  * forward;
