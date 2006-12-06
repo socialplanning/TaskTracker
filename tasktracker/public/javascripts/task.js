@@ -264,6 +264,7 @@ function doneAddingTask(req) {
 	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
     } else {
 	var ul = $('tasks');
+	evalHTML(req.responseText);
 	ul.appendChild(evalHTML(req.responseText));
     }
     
@@ -300,6 +301,7 @@ function changeField(task_id, fieldname) {
 function viewChangeableField(task_id, fieldname) {
     $(fieldname + '-label_' + task_id).hide();
     $(fieldname + '-form_' + task_id).show();
+    $(fieldname + '_' + task_id).focus();
 }
 
 function hideChangeableField(task_id, fieldname) {
@@ -617,6 +619,7 @@ function sortULBy(ul, column, forward) {
     items = items.sort(function (x, y) {
 	    a = x.getAttribute(column);
 	    b = y.getAttribute(column);
+	    console.log(a, b, a > b, a < b);
 	    if (a > b) 
 		return 1 * forward;
 	    else if (b > a) 
@@ -718,24 +721,3 @@ function modeSwitch() {
     }
 }
 
-//ported from mochilkit
-function evalHTML(value) {
-        if (typeof(value) != 'string') {
-                return null;
-        }
-        value = MochiKit.Format.strip(value);
-        if (value.length == 0) {
-                return null;
-        }
-
-        var parser = Builder.node('div');
-        var html = document.createDocumentFragment();
-
-        var child;
-
-        parser.innerHTML = value;
-        while ((child = parser.firstChild)) {
-                html.appendChild(child)
-        }
-        return html;
-}

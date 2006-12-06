@@ -5,11 +5,7 @@
 <a href="#nevermind">permalink this view</a>
 </small><br/>
 
-<h1 style="display:inline" tal:content="c/tasklist/title" />
-
-<small>(<span id="num_uncompleted" tal:content="python:len(c.tasklist.uncompletedTasks())" /> <span tal:replace="python:test(len(c.tasklist.uncompletedTasks())==1, 'task', 'tasks')"/> left)</small>
-<br />
-<h3 tal:condition="c/tasklist/text" tal:content="c/tasklist/text" />
+<metal:do use-macro="here/task_list_title/macros/show_title"/>
 
 <!-- list headers -->
 

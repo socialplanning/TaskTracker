@@ -123,45 +123,45 @@ def editableField(task, field):
     return " ".join(out)
 
 
-def _prioritySelect(task, onchange = None):
+def _prioritySelect(task, onblur = None):
     priority = task.priority
     id = task.id
-    if onchange is None:
-        onchange = 'changeField(%d, "priority");'  % task.id
+    if onblur is None:
+        onblur = 'changeField(%d, "priority");'  % task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
                   method='post', originalvalue=priority, id='priority_%d' % id, 
-                  onchange=onchange)
+                  onblur=onblur, onchange=onblur)
 
 def columnFilter(field, tasklist = None):
     out = []
-    onchange = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
-    filter = globals()["_%sFilter" % field](onchange = onchange, tasklist = tasklist)
-    onclick = """$('%s-filter-label').hide(); $('%s_filter').show();""" % (field, field)
+    onblur = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
+    filter = globals()["_%sFilter" % field](onblur = onblur, tasklist = tasklist)
+    onclick = """$('%s-filter-label').hide(); $('%s_filter').show(); $('%s_filter').focus();""" % (field, field, field)
     span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
     
     return "%s%s" % (filter, span)
 
-def _deadlineFilter(onchange = None, tasklist = None):
+def _deadlineFilter(onblur = None, tasklist = None):
     return select('deadline_filter', options_for_select([('All','All'), ('Thirty Days', 30), ('Seven Days', 7),
                                                          ('Three Days',3), ('Today',0), ('Overdue', -1), ('None','None')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
-                  onchange=onchange, style="display:none")
+                  onblur=onblur, onchange=onblur, style="display:none")
 
-def _priorityFilter(onchange = None, tasklist = None):
+def _priorityFilter(onblur = None, tasklist = None):
     return select('priority_filter', options_for_select([(s, s) for s in 'All High Medium Low None'.split()], 'All'),
                   method='post', originalvalue='All', id='priority_filter', 
-                  onchange=onchange, style="display:none")
+                  onblur=onblur, onchange=onblur, style="display:none")
 
-def _statusFilter(onchange = None, tasklist = None):
+def _statusFilter(onblur = None, tasklist = None):
     statuses = [status.name for status in tasklist.statuses]
     status_dict = {'All':'All'}
     for status in statuses:
         status_dict[status] = status
     return select('status_filter', options_for_select(status_dict.items(), 'All'),
                   method='post', originalvalue='All', id='status_filter', 
-                  onchange=onchange, style="display:none")
+                  onblur=onblur, onchange=onblur, style="display:none")
 
-def _ownerFilter(onchange = None, tasklist = None):
+def _ownerFilter(onblur = None, tasklist = None):
     owners = [task.owner for task in tasklist.tasks]
     owner_dict = {'All':'All'}
     for owner in owners:
@@ -171,7 +171,7 @@ def _ownerFilter(onchange = None, tasklist = None):
             owner_dict[owner] = owner
     return select('owner_filter', options_for_select(owner_dict.items(), 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
-                  onchange=onchange, style="display:none")
+                  onblur=onblur, onchange=onblur, style="display:none")
 
 def _ownerInput(task):
     orig = "No owner"
@@ -179,9 +179,12 @@ def _ownerInput(task):
         orig = task.owner    
 
     input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
-              id="owner_%d" value="%s" onchange='changeField(%d, "owner");'/>""" % (orig, task.id, task.owner, task.id)
+              id="owner_%d" value="%s" onchange='changeField(%d, "owner");'
+              onblur='changeField(%d, "owner");'/>""" % (orig, task.id, task.owner, task.id, task.id)
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
-    script = """<script type="text/javascript">new Ajax.Autocompleter('owner_%d', 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
+    script = """<script type="text/javascript">
+                 new Ajax.Autocompleter('owner_%d',
+                 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
     return "%s\n%s\n%s" % (input, span, script)
     
 def _deadlineInput(task):
@@ -208,7 +211,8 @@ def _statusSelect(task):
                   method='post', 
                   originalvalue=task.status,
                   id='status_%d' % task.id,
-                  onchange='changeField(%d, "status");' % task.id)
+                  onchange='changeField(%d, "status");' % task.id,
+                  onblur='changeField(%d, "status");' % task.id)
 
 _fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
     
