@@ -43,6 +43,12 @@ function hasClass(element, classname) {
     return new RegExp('\\b' + classname + '\\b').test(element.className);
 }
 
+function showFilterColumn(field) {
+    $(field + '-filter-label').hide();
+    $(field + '_filter').show();
+    $(field + '_filter').focus();
+}
+
 var myrules = {
     '.draggable' : function(element) {
 	var drag = new Draggable(element.id, {
@@ -194,14 +200,29 @@ function filterDeadline() {
 	return;
     }
     
+    var dates = filtervalue.split(",");
+    var min; 
+    var max;
+    if (dates.length == 1) {
+	min = -1 * parseInt(dates[0]);
+	max = parseInt(dates[0]);
+    } else {
+	min = parseInt(dates[0]);
+	max = parseInt(dates[1]);
+    }
+    var minDate = new Date();
     var byThisDate = new Date();
-    byThisDate.setDate(byThisDate.getDate() + parseInt(filtervalue) + 1);
+    minDate.setDate(minDate.getDate() - min);
+    byThisDate.setDate(byThisDate.getDate() + max + 1);
     $A($('tasks').getElementsByTagName('li')).each(function(node) {
 	    var deadline = node.getAttribute('deadline');
 	    if (deadline) {
 		var db = new DateBocks();
 		var nodeDate = db.parseDateString(deadline);
 		if (!(nodeDate < byThisDate)) {
+		    node.hide();
+		}
+		if (min <= max && !(nodeDate > minDate)) {
 		    node.hide();
 		}
 	    } else {

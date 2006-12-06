@@ -136,14 +136,14 @@ def columnFilter(field, tasklist = None):
     out = []
     onblur = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
     filter = globals()["_%sFilter" % field](onblur = onblur, tasklist = tasklist)
-    onclick = """$('%s-filter-label').hide(); $('%s_filter').show(); $('%s_filter').focus();""" % (field, field, field)
+    onclick = """showFilterColumn('%s');""" % field
     span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
     
     return "%s%s" % (filter, span)
 
 def _deadlineFilter(onblur = None, tasklist = None):
-    return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Three Days',3),
-                                                         ('Today',0), ('Overdue', -1), ('No deadline','None'), ('All','All')], 'All'),
+    return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Due tomorrow',1),
+                                                         ('Due in the next week',"0,7"), ('No deadline','None'), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
                   onblur=onblur, onchange=onblur, style="display:none")
 
