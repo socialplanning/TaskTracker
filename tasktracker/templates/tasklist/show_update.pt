@@ -2,11 +2,7 @@
 
 <span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
 
-<div class="tooltip" style="display:none;" id="tooltip">
-Click to change this.
-</div>
-
-<div id="title" class="editable" onmouseover="return escape('change this');">
+<div id="title" class="editable">
 <h1 tal:content="c/tasklist/title" onclick="$('title').hide(); $('edit_title').show();" />
 </div>
 <div id="edit_title" style="display:none;">
@@ -133,18 +129,7 @@ This list does not have private tasks.
 <script language="JavaScript">
    setupEditableList('managers', 'list_managers');
 
-   //fixme: maybe reimplement with behavior once get licensing figured out
-   function init_change_this(parent) {
-       $A(parent.childNodes).each(function (node) {
-	       if (node.nodeName != '#text') {
-		   init_change_this(node);
-	       }
-	       if (node.className == "editable") {
-		   node.title="Click to change this."
-	       }
-	   });
-   }
-   init_change_this(document);
+   with_items ("editable", function(node) { node.title="Click to change this."; }, document.childNodes[0]);
 </script>
 
 <span tal:replace="structure python: h.end_form()" />
