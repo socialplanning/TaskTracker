@@ -142,14 +142,16 @@ def columnFilter(field, tasklist = None):
     return "%s%s" % (filter, span)
 
 def _deadlineFilter(onblur = None, tasklist = None):
-    return select('deadline_filter', options_for_select([('All','All'), ('Thirty Days', 30), ('Seven Days', 7),
-                                                         ('Three Days',3), ('Today',0), ('Overdue', -1), ('None','None')], 'All'),
+    return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Three Days',3),
+                                                         ('Today',0), ('Overdue', -1), ('No deadline','None'), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
                   onblur=onblur, onchange=onblur, style="display:none")
 
 def _priorityFilter(onblur = None, tasklist = None):
-    return select('priority_filter', options_for_select([(s, s) for s in 'All High Medium Low None'.split()], 'All'),
-                  method='post', originalvalue='All', id='priority_filter', 
+    options = [(s, s) for s in 'High,Medium,Low'.split(',')]
+    options.extend([('No priority','None'), ('All','All')])
+    return select('priority_filter', options_for_select(options, 'All'),
+                  method='post', originalvalue='All', id='priority_filter',
                   onblur=onblur, onchange=onblur, style="display:none")
 
 def _statusFilter(onblur = None, tasklist = None):
@@ -163,13 +165,15 @@ def _statusFilter(onblur = None, tasklist = None):
 
 def _ownerFilter(onblur = None, tasklist = None):
     owners = [task.owner for task in tasklist.tasks]
-    owner_dict = {'All':'All'}
+    owner_dict = dict()
     for owner in owners:
         if not owner:
-            owner_dict["No owner"] = ""
+            pass 
         else:
             owner_dict[owner] = owner
-    return select('owner_filter', options_for_select(owner_dict.items(), 'All'),
+    options = owner_dict.items()
+    options.extend([("No owner", ""), ("All","All")])
+    return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
                   onblur=onblur, onchange=onblur, style="display:none")
 
@@ -184,7 +188,7 @@ def _ownerInput(task):
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
     script = """<script type="text/javascript">
                  new Ajax.Autocompleter('owner_%d',
-                 'owner_auto_complete_%d', '../../../task/auto_complete_for_owner/', {});</script>""" % (task.id, task.id)
+                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
     return "%s\n%s\n%s" % (input, span, script)
     
 def _deadlineInput(task):

@@ -250,7 +250,7 @@ class BaseController(WSGIController):
             else:
                 return True
 
-        if action == 'auto_complete_for_owner':
+        if action == 'auto_complete_for':
             return True
 
         params = dict(params)
