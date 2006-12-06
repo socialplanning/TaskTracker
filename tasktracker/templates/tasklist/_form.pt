@@ -18,23 +18,24 @@
 
 <br/>
 Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
-<input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
-<input type="checkbox" name="feature_custom_status" value="1" class="features" onclick="$('statuses').toggle();" id="custom_status"/>Custom status<br/>
+<input type="checkbox" id="feature_deadlines" name="feature_deadlines" value="1" class="features"/>
+<label for="feature_deadlines">Deadlines</label><br/>
+
+<input type="checkbox" name="feature_custom_status" value="1" class="features" onclick="$('edit_statuses').toggle();" id="custom_status"/>
+<label for="custom_status">Custom status</label><br/>
 <input type="hidden" value="" id="statuses" name="statuses">
 
-<div id="statuses" tal:condition="not:c/update" style="display:none; margin-left: 3em;">
-<span tal:replace="structure python: h.list_with_minuses('list_statuses', [], ['done'])" />
+<div id="edit_statuses" style="display:none; margin-left: 3em;">
+<span tal:replace="structure python: h.editable_list('statuses', [], ['done'])" />
 
-   <input id="status" name="status" size="20" type="text" value="" />
-   <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('status').value);$('status').value=''; return false;"/>
+   <input id="add_status" name="add_status" size="20" type="text" value="" />
+   <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
 
 
 </div>
-<div id="statuses" tal:condition="c/update" style="margin-left: 3em;">
-  Statuses: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
-</div>
 
-<input type="checkbox" name="feature_private_tasks" value="1" class="features"/>Private tasks<br/>
+<input type="checkbox" name="feature_private_tasks" id="feature_private_tasks" value="1" class="features"/>
+<label for="feature_private_tasks">Private tasks</label><br/>
 
 <br/>
 By default, tasks are initially assigned to:<br/>
@@ -43,10 +44,5 @@ By default, tasks are initially assigned to:<br/>
 
 <span tal:replace="structure python: h.submit('Submit')" />
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
-
-<script language="JavaScript">
-   setupEditableList('managers', 'list_managers');
-   setupEditableList('statuses', 'list_statuses');
-</script>
 
 </metal:macro>

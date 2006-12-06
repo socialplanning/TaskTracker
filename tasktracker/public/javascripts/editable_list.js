@@ -29,17 +29,11 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
-function setupEditableList(field, list_id) {
-    var the_list = $(list_id);
-    the_list.field = field;
-    //    Sortable.create(the_list_id);
-}
-
 function updateItem(list) {
     //update the form variable
     list = $(list);
     var items = list.getElementsByTagName('li')
-    $(list.field).value = $A(items).map(getItemName).join(",");
+    $(list.getAttribute('field')).value = $A(items).map(getItemName).join(",");
 }
 
 function deleteItem(item_name) {
@@ -65,7 +59,7 @@ function addItem(list, item) {
     var item_list = $(list);
     var items = item_list.getElementsByTagName('li');
 
-    for (i = 0; i < items.length; ++i) {
+    for (var i = 0; i < items.length; ++i) {
 
         if (getItemName(items[i]) == item) {
             return;
@@ -74,18 +68,29 @@ function addItem(list, item) {
     //add the html element
 
     var item_name =  + list + "_" + 'item_' + items.length;
-    var del = "deleteItem('" + item_name + "');";
-    var check = Builder.node('span', {'id' : item_name, 'onclick' : del}, ' [ - ]');
-    var li = Builder.node('li', [Builder.node('span', item), check]);
-
+    var li = Builder.node('li', [Builder.node('span', item)]);
     var last_item = item_list.firstChild;
     while (last_item.nextSibling) {
 	last_item = last_item.nextSibling;
     }
     item_list.insertBefore(li, last_item);
+    add_delete_button(li);
 
     updateItem(list);
 
     //    Sortable.destroy(the_list_id);
     //    Sortable.create(the_list_id);
 }
+
+
+
+function add_delete_button(node) {
+    var button = Builder.node('span', '[ - ]');
+    node.appendChild(button);
+
+    var del = function () { deleteItem(node); };
+    node.onclick = del;
+}
+
+with_items ("removable_list_item", add_delete_button, document.childNodes[0]);
+

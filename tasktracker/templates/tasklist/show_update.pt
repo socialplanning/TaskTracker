@@ -122,20 +122,9 @@ This list does not have private tasks.
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
 
 <script language="JavaScript">
-   setupEditableList('managers', 'list_managers');
 
    with_items ("editable", function(node) { node.title="Click to change this."; }, document.childNodes[0]);
-
-    function unfold () {
-	other = $('edit_' + this.id);
-	other.style['display'] = 'block';
-	this.hide();
-    }
-    function add_unfold(node) {
-	node.onclick = unfold.bind(node);
-    }
-
-   with_items ("unfolded", add_unfold, document.childNodes[0]);
+   
 </script>
 
 <span tal:replace="structure python: h.end_form()" />

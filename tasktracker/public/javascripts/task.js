@@ -762,10 +762,23 @@ function with_items (klass, func, parent) {
     $A(parent.childNodes).each(function (node) {
         if (node.nodeType == 1) {
 	    with_items(klass, func, node);
-	    classes = node.className.split(" ");
+	    var classes = node.className.split(" ");
 	    if (classes.include(klass)) {
 		func(node);
 	    }
 	}
     });
 }
+
+
+function unfold () {
+	var other = $('edit_' + this.id);
+	other.style['display'] = 'block';
+	this.hide();
+}
+
+function add_unfold(node) {
+	node.onclick = unfold.bind(node);
+}
+
+addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });

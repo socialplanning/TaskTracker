@@ -278,29 +278,29 @@ class TestTaskController(TestController):
         task.destroySelf()
         tl.destroySelf()
         
-    def test_task_watch(self):
-        """Tests adding self as a watcher for a task"""
-        tl = self.create_tasklist('testing task watching')
+#     def test_task_watch(self):
+#         """Tests adding self as a watcher for a task"""
+#         tl = self.create_tasklist('testing task watching')
 
-        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+#         task = Task(title='The task', text='x', private=False, task_listID=tl.id)
         
-        app = self.getApp('admin')
+#         app = self.getApp('admin')
 
-        res = app.get(url_for(controller='task', action='show', id=task.id))
+#         res = app.get(url_for(controller='task', action='show', id=task.id))
         
-        task_path = '/task/show/%s' % task.id
+#         task_path = '/task/show/%s' % task.id
 
-        res = res.click("Watch this task")
-        res.mustcontain("Just the highlights")
-        res = res.forms[0].submit()
-        assert res.header_dict['location'].startswith(task_path)
-        res = res.follow()
+#         res = res.click("Watch this task")
+#         res.mustcontain("Just the highlights")
+#         res = res.forms[0].submit()
+#         assert res.header_dict['location'].startswith(task_path)
+#         res = res.follow()
 
-        res.mustcontain("Edit your watch settings")
+#         res.mustcontain("Edit your watch settings")
 
-        #delete watcher
+#         #delete watcher
 
-        res = app.get(url_for(controller='task', action='show', id=task.id))
-        res = res.click("Edit your watch settings")
-        res = res.click("Stop watching")
-        assert Watcher.selectBy(username='admin').count() == 0
+#         res = app.get(url_for(controller='task', action='show', id=task.id))
+#         res = res.click("Edit your watch settings")
+#         res = res.click("Stop watching")
+#         assert Watcher.selectBy(username='admin').count() == 0

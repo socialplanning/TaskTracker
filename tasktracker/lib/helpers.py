@@ -75,24 +75,17 @@ def help(text):
 <div id="%s" onclick="$('%s').hide()" class="help_text" style="display: none;">%s</div>
 """ % (help_id, help_id, help_id, text)
 
-def list_with_minuses(id, updateable_items=[], fixed_items=[]):
-    updateable_lis = "\n".join([
-            """<li id="%s_item_%d">
-                 <span>%s</span>
-                 <span onclick="deleteItem('%s_item_%d');">[ - ]</span>
-               </li>""" % (id, i, updateable_items[i], id, i)
-            for i in range(0, len(updateable_items))])
+def editable_list(field, updateable_items=[], fixed_items=[]):
+    out = ['<ul id="list_%s" class="task_list" field="%s">' % (field, field)]
+    for item in updateable_items:
+        out.append('<li class="removable_list_item">')
+        out.append("<span>%s</span></li>" % item)
+    for item in fixed_items:
+        out.append('<li class="unremovable_list_item">')
+        out.append("<span>%s</span></li>" % item)
 
-    fixed_lis = "\n".join([
-            """<li id="%s">
-                 <span>%s</span>
-               </li>""" % (item, item)
-            for item in fixed_items])
-
-    return """<ul id="%s" class="task_list">
-    %s
-    %s
-    </ul>""" % (id, updateable_lis, fixed_lis);
+    out.append("</ul>")
+    return "\n".join(out)
 
 def taskListDropDown(id):
     tasklist = [(tasklist.title, tasklist.id) 

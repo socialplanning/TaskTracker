@@ -161,23 +161,23 @@ class TestTaskListController(TestController):
         assert not form.fields.has_key('private')
 
 
-    def test_tasklist_watch(self):
-        """Tests adding self as a watcher for a task list"""
-        tl = self.create_tasklist(title="list")
+#     def test_tasklist_watch(self):
+#         """Tests adding self as a watcher for a task list"""
+#         tl = self.create_tasklist(title="list")
 
-        app = self.getApp('admin')
+#         app = self.getApp('admin')
 
-        res = app.get(url_for(
-                controller='tasklist', action='show', id=tl.id))
+#         res = app.get(url_for(
+#                 controller='tasklist', action='show', id=tl.id))
         
-        res = res.click("watch this list")
-        res.mustcontain("Just the highlights")
-        res = res.forms[0].submit()
+#         res = res.click("watch this list")
+#         res.mustcontain("Just the highlights")
+#         res = res.forms[0].submit()
 
-        assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
-        res = res.follow()
-        res.mustcontain("edit watch settings")
-        tl.destroySelf()
+#         assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
+#         res = res.follow()
+#         res.mustcontain("edit watch settings")
+#         tl.destroySelf()
 
     def test_task_create(self):
         """Tests creating a new task"""
