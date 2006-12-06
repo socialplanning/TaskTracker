@@ -17,4 +17,5 @@
 <span class="owner-column"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></span>
 </div>
 
+&nbsp;<hr/>
 </metal:macro>
