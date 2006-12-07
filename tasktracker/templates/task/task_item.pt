@@ -14,7 +14,7 @@
 		style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
 
     <!-- title -->
-    <a tal:content="python: h.previewText(atask.title, 10)" 
+    <a tal:content="python: h.previewText(atask.title, 20)" 
        tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
         title atask/text;
 	class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
