@@ -341,28 +341,27 @@ function restoreAddTask() {
 function doneAddingTask(req) {
     var parentID = parseInt(document.forms[0].getInputs()[1].getAttribute("value"));
     var siblingID = parseInt(document.forms[0].getInputs()[2].getAttribute("value"));
+    var node = evalHTML(req.responseText);
     if (siblingID != 0) {
 	var sibling = $('task_' + siblingID);
-	insertAfter(evalHTML(req.responseText), sibling);
+	insertAfter(node, sibling);
     } else if (parentID != 0) {
 	var parent = $('task_' + parentID);
 	var ul = parent.getElementsByTagName("ul")[0];
-	ul.insertBefore(evalHTML(req.responseText), ul.childNodes[0]);
-	//	ul.appendChild(evalHTML(req.responseText));
+	ul.insertBefore(node, ul.childNodes[0]);
 	updateTaskItem(parentID);
 	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
     } else {
 	var ul = $('tasks');
-	evalHTML(req.responseText);
-	ul.appendChild(evalHTML(req.responseText));
+	ul.appendChild(node);
     }
     
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
 
-    //dndMgr.registerDropZone( new Rico.Dropzone('title_' + id) );
-    //    Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
+    dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, 'task_' + id, 'draggable-name') );
+    dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, 'task_' + id ) );
     Behaviour.apply();
     $A(document.forms[0].getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
