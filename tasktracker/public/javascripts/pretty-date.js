@@ -74,38 +74,63 @@ function pretty_date_engine(now, date) {
     return monthName(date.getMonth()) + " " + date.getDate() + ", " + date.getFullYear();
 }
 
-function pretty_date_from_text(text) {
+function pretty_date_from_text(text, now) {
     if (text == "No deadline")
 	return text;
+    console.log(text);
     parts = text.split("/");
-    return pretty_date(new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1])));
+    return pretty_date(new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1])), now);
 }
 
-function pretty_date(date) {
-    var now = new Date();
+function pretty_date(date, now) {
+    if (!now) 
+	now = new Date();
     return pretty_date_engine(now, date);
 }
 
 
 function test_pretty_date() {
     var now = new Date(2006, 0, 1);
-    var dates = {
-	'Today' : new Date(2006, 0, 1),
-	'Tomorrow' : new Date(2006, 0, 2),
-	'Yesterday' : new Date(2005, 11, 31),
-	'December 30, 2005' : new Date(2005, 11, 30),
-	'Tue' : new Date(2006, 0, 3),
-	'Sat' : new Date(2006, 0, 7),
-	'January 8' : new Date(2006, 0, 8),
-	'December 8, 2006' : new Date(2006, 11, 8),
-	'January 8, 2007' : new Date(2007, 0, 8)
-    };
+    var dates = [
+		 ['Today', new Date(2006, 0, 1)],
+		 ['Tomorrow', new Date(2006, 0, 2)],
+		 ['Yesterday', new Date(2005, 11, 31)],
+		 ['December 30, 2005', new Date(2005, 11, 30)],
+		 ['Tue', new Date(2006, 0, 3)],
+		 ['Sat', new Date(2006, 0, 7)],
+		 ['January 8', new Date(2006, 0, 8)],
+		 ['December 8, 2006', new Date(2006, 11, 8)],
+		 ['January 8, 2007', new Date(2007, 0, 8)]
+		 ];
+    var i;
+    for (i = 0; i < dates.length; i++ ) {
+	var date = dates[i][1];
+	var pd = pretty_date_engine(now, date);
+	if (pd != dates[i][0]) {
+	    alert("failure mapping " + date + " to " + dates[i][0] + ", got " + pd);
+	}
+    }
 
-    for (date in dates) {
-	var pd = pretty_date_engine(now, dates[date]);
-	if (pd != date) {
-	    alert("failure mapping " + dates[date] + " to " + date + ", got " + pd);
-	    break;
+    now = new Date(2006, 0, 1);
+    dates = [
+	     ['Today', "01/01/2006"],
+	     ['Tomorrow', "01/02/2006"],
+	     ['Yesterday', "12/31/2005"],
+	     ['December 30, 2005', "12/30/2005"],
+	     ['Tue', "01/03/2006"],
+	     ['Sat', "01/07/2006"],
+	     ['January 8', "01/08/2006"],
+	     ['December 8, 2006', "12/08/2006"],
+	     ['January 8, 2007', "01/08/2007"]
+	     ];
+    var i;
+    for (i = 0; i < dates.length; i++ ) {
+	var date = dates[i][1];
+	var pd = pretty_date_from_text(date, now);
+	if (pd != dates[i][0]) {
+	    console.log("failure mapping " + date + " to " + dates[i][0] + ", got " + pd);
+	} else {
+	    console.log("ok");
 	}
     }
 }
