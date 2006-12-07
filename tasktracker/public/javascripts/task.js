@@ -53,20 +53,33 @@ function showFilterColumn(field) {
 
 var CustomDraggable = Class.create();
 CustomDraggable.prototype = (new Rico.Draggable()).extend( {
-	initialize: function( htmlElement, refElement, name ) {
+	initialize: function( htmlElement, refElement, owner, name ) {
 	    this.type        = 'Custom';
-	    this.refElement  = $(refElement);	    
+	    this.refElement  = $(refElement);
 	    this.htmlElement = $(htmlElement);
+	    this.owner       = $(owner);
 	    this.name        = name;
 	},
 
 	startDrag: function() {
 	    addClass(this.refElement, 'drag');
+	    dndMgr.deregisterDropZone(this.owner.dropzone);
+	    $A(this.owner.getElementsByTagName("LI")).each(function(node) {
+		    dndMgr.deregisterDropZone(node.dropzone);
+		});
 	},
 
 	cancelDrag: function() {
 	    removeClass(this.refElement, 'drag');
 	},
+
+	endDrag: function() {
+	    dndMgr.registerDropZone(this.owner.dropzone);
+	    $A(this.owner.getElementsByTagName("LI")).each(function(node) {
+		    dndMgr.registerDropZone(node.dropzone);
+		});
+	},
+
 	getSingleObjectDragGUI: function() {
 	    var el = this.htmlElement;
 	    
@@ -86,10 +99,11 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 
 var CustomDropzone = Class.create();
 CustomDropzone.prototype = (new Rico.Dropzone()).extend( {
-	initialize: function( htmlElement, refElement ) {
-	    this.htmlElement  = $(htmlElement);
-	    this.refElement = $(refElement);
-	    this.absoluteRect = null;	    
+	initialize: function( htmlElement, refElement, owner ) {
+	    this.htmlElement     = $(htmlElement);
+	    this.refElement      = $(refElement);
+	    this.owner           = $(owner);
+	    this.absoluteRect    = null;
 	    this.acceptedObjects = [];
 	},
 	
@@ -214,9 +228,9 @@ function createDragDrop() {
 
         $A($('tasks').getElementsByTagName('li')).each(function(node) {
 		var id = node.getAttribute('task_id');
-		dndMgr.registerDraggable( new CustomDraggable('draggable_' + id, 'draggable_' + id, 'draggable-name') );
-		dndMgr.registerDropZone( new CustomDropzone( 'title_' + id, 'title_' + id ) );
-		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+		dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
+		dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
+		//		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
 	    });
 	/*
 	if ($('trash')) {
