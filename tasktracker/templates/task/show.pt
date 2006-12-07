@@ -5,7 +5,7 @@
 <a href="#permalink">permalink this task</a>
 </small><br/>
 
-<!--metal:do use-macro="task_list_title/macros/title"/-->
+<metal:do use-macro="task_list_title/macros/title"/>
 
 <br/><br/>
 
