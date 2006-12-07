@@ -31,7 +31,8 @@
 // exception statement from your version.
 
 function addClass(element, classname) {
-    element.className += element.className ? ' ' + classname : classname;
+    if (!hasClass(element, classname))
+	element.className += element.className ? ' ' + classname : classname;
 }
 
 function removeClass(element, classname) {
@@ -49,15 +50,76 @@ function showFilterColumn(field) {
     $(field + '_filter').focus();
 }
 
+
+var CustomDraggable = Class.create();
+CustomDraggable.prototype = (new Rico.Draggable()).extend( {
+	initialize: function( htmlElement, refElement, name ) {
+	    this.type        = 'Custom';
+	    this.refElement  = $(refElement);	    
+	    this.htmlElement = $(htmlElement);
+	    this.name        = name;
+	},
+
+	startDrag: function() {
+	    addClass(this.refElement, 'drag');
+	},
+
+	cancelDrag: function() {
+	    removeClass(this.refElement, 'drag');
+	},
+	getSingleObjectDragGUI: function() {
+	    var el = this.htmlElement;
+	    
+	    var div = document.createElement("div");
+	    div.className = 'customDraggable';
+	    
+	    div.style.width = this.htmlElement.offsetWidth;
+
+	    var text = el.innerHTML;
+	    new Insertion.Top( div, text );
+	    return div;
+	}
+    } );
+
+
+
+
+var CustomDropzone = Class.create();
+CustomDropzone.prototype = (new Rico.Dropzone()).extend( {
+	initialize: function( htmlElement, refElement ) {
+	    this.htmlElement  = $(htmlElement);
+	    this.refElement = $(refElement);
+	    this.absoluteRect = null;	    
+	    this.acceptedObjects = [];
+	},
+	
+	showHover: function() {
+	    addClass(this.htmlElement, 'drop');
+	},
+
+	activate: function() {
+	    return;
+	},
+
+	hideHover: function() {
+	    removeClass(this.htmlElement, 'drop');
+	},
+	
+	accept: function(draggableObjects) {
+	    var l = draggableObjects.length;
+	    var i;
+	    for (i = 0; i < l; i++) {
+		doDrop(draggableObjects[i].refElement, this.refElement);
+	    }
+	}
+	
+    } );
+
 var myrules = {
     '.draggable' : function(element) {
-	var drag = new Draggable(element.id, {
-                handle : element.id, 
-                revert : true
-            });
-
+	
 	element.onclick = function(e) {
-	    e = e || event 
+	    e = e || event;
 	    if (hasClass(element, 'drag')) {
 		removeClass(element, 'drag');
 		return false;
@@ -149,28 +211,20 @@ function hasReorderableTasks() {
 function createDragDrop() {
     if (!initialized && hasReorderableTasks()) {
         initialized = true;
-        Draggables.addObserver(new observer());
 
         $A($('tasks').getElementsByTagName('li')).each(function(node) {
-            var id = node.getAttribute('task_id');
-
-            
-            Droppables.add('title_' + id, {
-                hoverclass : 'drop',
-                onDrop : doDrop
-            });
-            Droppables.add('handle_' + id, {
-                hoverclass : 'drop',
-                onDrop : doDrop
-            });
-        });
+		var id = node.getAttribute('task_id');
+		dndMgr.registerDraggable( new CustomDraggable('draggable_' + id, 'draggable_' + id, 'draggable-name') );
+		dndMgr.registerDropZone( new CustomDropzone( 'title_' + id, 'title_' + id ) );
+		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+	    });
+	/*
 	if ($('trash')) {
 	    Droppables.add('trash', {
 		    hoverclass : 'drop',
 			onDrop : destroyTask,
 			accept : 'deletable'
-			});
-	} 
+			});*/
     }
 }
 
@@ -293,8 +347,8 @@ function doneAddingTask(req) {
 
     var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
 
-    Droppables.add('title_' + id, {hoverclass:'drop', onDrop:doDrop});
-    Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
+    //dndMgr.registerDropZone( new Rico.Dropzone('title_' + id) );
+    //    Droppables.add('handle_' + id, {hoverclass:'drop', onDrop:doDrop});
     Behaviour.apply();
     $A(document.forms[0].getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
@@ -470,27 +524,6 @@ function insertAfter(new_node, after) {
         after.parentNode.appendChild(new_node);
     }
 }
-
-var observer = Class.create();
-
-observer.prototype = {
-    element: null,
-    
-    initialize : function() {
-    },
-
-    onStart : function(event_name, draggable, event) {
-        Droppables.remove(draggable.handle);
-	addClass(draggable.handle, 'drag');
-    },
-
-    onEnd : function(event_name, draggable, event) {
-        Droppables.add (draggable.handle.id, {
-            hoverclass : 'drop',
-            onDrop : doDrop
-        });
-    }
-};
 
 function debugThing() { 
 }

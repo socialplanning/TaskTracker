@@ -43,7 +43,7 @@ def debugThings():
     foo = c
     import pdb; pdb.set_trace()
 
-def previewText(text, length=15):
+def previewText(text, length=25):
     if not text: return ""
     words = text.split()
     text = words.pop(0)
@@ -57,7 +57,11 @@ def isOverdue(deadline):
     if not deadline:
         return False
     import datetime
-    if deadline.date() < datetime.date.today():
+    if type(deadline) == type(datetime.date(2006,1,1)):
+        date = deadline
+    else:
+        date = deadline.date()
+    if date < datetime.date.today():
         return True
     return False
 

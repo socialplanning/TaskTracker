@@ -17,6 +17,12 @@ td {
 	padding: 0px 4px 0px 4px;
 }
 
+.customDraggable {
+  color: #666;
+  background-color: #bbb;
+  opacity: .4;
+}
+
 .drop {
    border-bottom: 2px solid black;
    padding-bottom: 2px;	
@@ -100,6 +106,7 @@ ul.task_list {
    width: 19%;
    padding: 0; 
    margin: 0;  
+   background-color: #ddd;
 }
 
 .taskitem {
@@ -107,19 +114,21 @@ ul.task_list {
    width: 19%; 
    padding: 0; 
    margin: 0; 
+   background-color: #ddd;
 }
-
 
 .deadline-column {
    float: left; 
    width: 19%;
    padding: 0; 
    margin: 0;     
+   background-color: #ddd;
 }
 
 .priority-column {
    float: left; 
    width: 19%;    
+   background-color: #ddd;
 }
 
 .owner-column {
@@ -127,6 +136,7 @@ ul.task_list {
    width: 19%;
    padding: 0; 
    margin: 0;     
+   background-color: #ddd;
 }
 
 .creator-column {
@@ -134,10 +144,11 @@ ul.task_list {
    width: 19%;
    padding: 0; 
    margin: 0;     
+   background-color: #ddd;
 }
 
 .overdue-task {
-   color: red;
+   color: maroon;
 }
 
 .completed-task {
@@ -146,6 +157,7 @@ ul.task_list {
 }
 
 .uncompleted-task {
+   color: blue;
 }
 
 .root-task {

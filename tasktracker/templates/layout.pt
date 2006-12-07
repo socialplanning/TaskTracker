@@ -7,8 +7,8 @@ Todo list
 <link rel="Shortcut Icon" href="/favicon.ico">
 <span tal:replace="structure python:h.javascript_include_tag('behaviour.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('prototype.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('rico.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('effects.js')" />
-<span tal:replace="structure python:h.javascript_include_tag('dragdrop.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('task.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('pretty-date.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('builder.js')" />
