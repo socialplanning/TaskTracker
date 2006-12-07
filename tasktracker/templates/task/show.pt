@@ -1,11 +1,11 @@
 <small>
 <hr/><br/>
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index', id=c.task.task_list.id)">
-<< return to list of lists</a>&nbsp;
+&lt;&lt; return to list of lists</a>&nbsp;
 <a href="#permalink">permalink this task</a>
 </small><br/>
 
-<metal:do use-macro="task_list_title/macros/title"/>
+<metal:do use-macro="here/task_list_title/macros/show_title"/>
 
 <br/><br/>
 
