@@ -79,7 +79,7 @@ function pretty_date_from_text(text, now) {
 	return text;
     console.log(text);
     parts = text.split("/");
-    return pretty_date(new Date(parseInt(parts[2]), parseInt(parts[0])-1, parseInt(parts[1])), now);
+    return pretty_date(new Date(parseInt(parts[2], 10), parseInt(parts[0], 10)-1, parseInt(parts[1], 10)), now);
 }
 
 function pretty_date(date, now) {
@@ -128,9 +128,7 @@ function test_pretty_date() {
 	var date = dates[i][1];
 	var pd = pretty_date_from_text(date, now);
 	if (pd != dates[i][0]) {
-	    console.log("failure mapping " + date + " to " + dates[i][0] + ", got " + pd);
-	} else {
-	    console.log("ok");
+	    alert("failure mapping " + date + " to " + dates[i][0] + ", got " + pd);
 	}
     }
 }
