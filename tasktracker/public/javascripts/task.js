@@ -333,14 +333,14 @@ function filterListByAllFields() {
 function restoreAddTask() { 
     $('add_task_anchor').appendChild($('movable_add_task'));
     hideCreate();
-    document.forms[0].getInputs()[1].setAttribute("value", 0);
-    document.forms[0].getInputs()[2].setAttribute("value", 0);
+    $('add_task_form').getInputs()[1].setAttribute("value", 0);
+    $('add_task_form').getInputs()[2].setAttribute("value", 0);
     return false;
 }
 
 function doneAddingTask(req) {
-    var parentID = parseInt(document.forms[0].getInputs()[1].getAttribute("value"));
-    var siblingID = parseInt(document.forms[0].getInputs()[2].getAttribute("value"));
+    var parentID = parseInt($('add_task_form').getInputs()[1].getAttribute("value"));
+    var siblingID = parseInt($('add_task_form').getInputs()[2].getAttribute("value"));
     var node = evalHTML(req.responseText);
     if (siblingID != 0) {
 	var sibling = $('task_' + siblingID);
@@ -363,7 +363,7 @@ function doneAddingTask(req) {
     dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, 'task_' + id, 'draggable-name') );
     dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, 'task_' + id ) );
     Behaviour.apply();
-    $A(document.forms[0].getElements()).each(function(node) {
+    $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
 		node.checked = false;
 	    else if (node.type == "submit" || node.type == "hidden")
@@ -648,8 +648,8 @@ function doDrop(child, drop_target, a) {
     if (!child.id.match("draggable")) {  // TODO be more specific
 	if (drop_target.id.match(/^title_/)) {   // drop under a parent node
 	    id = parseInt(drop_target.id.replace(/^title_/, ''));
-	    document.forms[0].getInputs()[1].setAttribute("value", id);
-	    document.forms[0].getInputs()[2].setAttribute("value", 0);
+	    $('add_task_form').getInputs()[1].setAttribute("value", id);
+	    $('add_task_form').getInputs()[2].setAttribute("value", 0);
 	    var new_parent = $('task_' + id);
 	    var ul = new_parent.getElementsByTagName("ul")[0];
 	    var li = document.createElement("li");
@@ -658,8 +658,8 @@ function doDrop(child, drop_target, a) {
 	    ul.insertBefore(li, ul.childNodes[0]);
 	} else {   // drop after a sibling node
 	    id = parseInt(drop_target.id.replace(/^handle_/, ''));
-	    document.forms[0].getInputs()[1].setAttribute("value", 0);
-	    document.forms[0].getInputs()[2].setAttribute("value", id);
+	    $('add_task_form').getInputs()[1].setAttribute("value", 0);
+	    $('add_task_form').getInputs()[2].setAttribute("value", id);
 	    var new_sibling = $('task_' + id);
 	    var ul = new_sibling.parentNode;
 	    var li = document.createElement("li");
