@@ -9,94 +9,58 @@
 
 <br/><br/>
 
-
+<span tal:condition="c/task/previousTask">
+Previous task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.previousTask().id)" tal:content="python:c.task.previousTask().title"/>
+</span>
 
 <div style="border: thin solid darkgray; padding:5px;">
-<metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
 <ul class="task_list" tal:define="atask c/task">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
 </ul>
 
-<!-- 
-<b><span tal:replace="c/task/title" /><br/></b>
-Deadline: <span tal:replace="c/task/deadline" /><br/>
-
-<tal:if condition="c/task/owner">
-  Assigned to <span tal:replace="c/task/owner" />
-  <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id) and c.task.owner != c.username">
-    -- 
-    <a tal:attributes="href python:h.url_for(action='claim', id=c.task.id)">
-      Steal this task?
-    </a>
-  </tal:if>
-</tal:if>
-<tal:if condition="not:c/task/owner">
-  Unassigned
-  <tal:if condition="python: h.has_permission(controller='task', action='claim', id=c.task.id)">
-    -- 
-    <a tal:attributes="href python:h.url_for(action='claim', id=c.task.id)">
-      Claim this task?
-    </a>
-  </tal:if>
-</tal:if>
-<br/>
--->
-
-<br style="clear: both;" />
-
-<br/>
-
-<span tal:condition="python:len(c.task.liveChildren())">
-<!-- <div style="border: thin solid darkgray; padding:5px;"> -->
-
-<!-- list headers -->
-Child tasks:<br>
-
-<!-- the actual task list -->
-<ul id="tasks" class="task_list" hasReorderableTasks="True">
-  <tal:for repeat="atask c/task/liveChildren">
-    
-    <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
-    
-  </tal:for>
-</ul>
-<br clear="both" />
-
-</span>
-</div>
-<metal:do use-macro="here/_hideable_show_create/macros/show">
-<a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">Add a new subtask.</a>
-</metal:do>
 
 <div tal:content="structure c/task/text" />
-<br/>
-<!-- comments -->
-<span tal:condition="c/task/comments">
-Here are the comments:
-</span>
-<span tal:condition="not:c/task/comments">
-There are no comments.
+
+
+<b>Latest activity:</b>
+
+
+
+<span tal:condition="python:len(c.task.liveChildren())">
+
+<!-- list headers -->
+This task has <span tal:replace="len/c/task/liveChildren"/> sub-tasks.  View them.<br/>
+
 </span>
 
-<ul tal:repeat="comment c/task/comments">
+<metal:do use-macro="here/_hideable_show_create/macros/show">
+<a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">[ + ] add a task</a>
+</metal:do>
+<br/>
+<!-- comments -->
+
+<ul tal:repeat="action python: c.task.actions()">
 <li>
-By: <span tal:replace="comment/user"/><br/>
-On: <span tal:replace="comment/date"/><br/>
-Text: <span tal:replace="structure python:h.html2safehtml(comment.text)"/><br/>
+<span tal:replace="structure python: h.render_action(action)"/>
 </li>
 </ul>
 
 <tal:if condition="python: h.has_permission(controller='task', action='comment', id=c.task.id)">
 
 Make your own comment?
-<form tal:attributes="action python:h.url_for(action='comment', task_id=c.task.id)" method="post">
+<form tal:attributes="action python:h.url_for(action='comment', task_id=c.task.id)" id="add_comment_form" method="post">
 
 <label for="text">Text:<label> <textarea name="text" cols=80 rows=10></textarea><br/>
 
 <input type="submit" value="comment" name="comment">
 </form>
 </tal:if>
+
+<span tal:condition="c/task/nextTask">
+Next task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.nextTask().id)" tal:content="python:c.task.nextTask().title"/>
+</span>
+
 
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
