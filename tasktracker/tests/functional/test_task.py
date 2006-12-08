@@ -51,7 +51,7 @@ class TestTaskController(TestController):
                 id=task_listID
                 ))
 
-        form = res.forms[0]
+        form = res.forms['add_task_form']
 
         form['title'] = 'The new task title'
         form['text'] = 'The new task body'
@@ -187,7 +187,7 @@ class TestTaskController(TestController):
         res.mustcontain('Fleem')
         
         #fill in the form
-        form = res.forms[1]
+        form = res.forms['add_comment_form']
 
         form.fields['text'][0].value = "This is a test comment."
 
