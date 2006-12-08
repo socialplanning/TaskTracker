@@ -1,7 +1,7 @@
 <metal:macro define-macro="show_create">
 
 <div tal:replace="structure python:h.form_remote_tag(url=h.url_for(controller='task', action='create'),
-      			     success='return doneAddingTask(request);', failure='failedAddingTask')" />
+      			     success='return doneAddingTask(request);', failure='failedAddingTask', html=dict(id='add_task_form')" />
 
 Add task:
 
