@@ -4,9 +4,8 @@
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status;
     class python: '%s taskrow' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<span tal:attributes="depth python: atask.depth() - c.depth" class="taskitem">
+<span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
- <span class="draggable" tal:attributes="id string:draggable_${atask/id};">
   <span tal:condition="not: c/flat"
 	tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'),
 		class_='treewidget handle',
@@ -22,11 +21,10 @@
 	 test(atask.parentID == 0, 'root-task', 'sub-task'));
 	id string:title_${atask/id}" />
 
-	<span tal:condition="atask/uncompletedChildren" tal:content="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
-	<span tal:condition="atask/comments" tal:content="python:'%d comments' % len(atask.comments)" />
-        <span tal:condition="atask/private" tal:attributes="style string: color:red" tal:content="string: -- (private)" />
+	<span tal:condition="atask/uncompletedChildren" tal:replace="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
+	<span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
+        <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 
- </span>
 </span>
 
 <form tal:attributes="action string:/task/update/${atask/id}">
