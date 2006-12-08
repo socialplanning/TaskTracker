@@ -179,7 +179,7 @@ class TaskController(BaseController):
     @catches_errors
     def show_update(self, id, *args, **kwargs):
         c.oldtask = self._getTask(int(id))        
-        c.owner = c.oldtask.owner.title
+        c.owner = c.oldtask.owner
         return render_response('zpt', 'task.show_update')
 
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
