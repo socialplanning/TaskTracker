@@ -304,3 +304,30 @@ class TestTaskController(TestController):
 #         res = res.click("Edit your watch settings")
 #         res = res.click("Stop watching")
 #         assert Watcher.selectBy(username='admin').count() == 0
+
+    def test_task_update_field(self):
+        tl = self.create_tasklist('testing task update')
+
+        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+        
+        app = self.getApp('admin')
+
+        res = app.get(url_for(
+                controller='task', action='assign', id=task.id, owner='newowner'))
+
+        res = app.get(url_for(
+                controller='task', action='show', id=task.id))
+        
+        res.mustcontain("newowner")
+
+        #find the old version
+        versions = task.versions
+        assert len(versions) == 1
+        version = versions[0]
+
+        assert version.owner == "" 
+        assert version.updated == task.created
+
+        version.destroySelf()
+        task.destroySelf()
+        tl.destroySelf()
