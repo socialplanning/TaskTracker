@@ -820,7 +820,7 @@ function with_items (klass, func, parent) {
 function unfold () {
 	var other = $('edit_' + this.id);
 	other.style['display'] = 'block';
-	this.hide();
+	$(this).hide();
 }
 
 function add_unfold(node) {
