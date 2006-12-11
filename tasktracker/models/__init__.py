@@ -75,7 +75,7 @@ class Notification(SQLObject):
             return "task_list"
 
 class Versionable(InheritableSQLObject):
-    pass
+    doneConstruction = BoolCol(default=False)
 
 class Version(InheritableSQLObject):
     """Represents an old version of an item."""
@@ -203,11 +203,11 @@ class TaskListPermission(SQLObject):
             # make sure value is sane
             if kwargs['min_level'] > kwargs['action'].roles[0].level:
                 raise ValueError("Invalid permission settings.  Trying to create a permission with level %d for action %s, which has roles %s." % (kwargs['min_level'], kwargs['action'].action, [(r.name, r.level) for r in kwargs['action'].roles]))
-        SQLObject._create(self, id, **kwargs)
+        super(TaskListPermission, self)._create(id, **kwargs)
 
 
 def _task_sort_index():
-    index = max([t.sort_index for t in Task.selectBy(live=True)])
+    index = max([t.sort_index for t in Task.selectBy(live=True, doneConstruction=True)] + [0])
     if index is None:
         return 0
     else:
@@ -265,13 +265,14 @@ class Task(Versionable):
         if task_list.initial_assign == 0 and not kwargs.get('owner', None):
             kwargs['owner'] = c.username
 
-        SQLObject._create(self, id, **kwargs)
+        super(Task, self)._create(id, **kwargs)
+        self.doneConstruction = True
 
     def set(self, **kwargs):
         kwargs['updated_by'] = c.username
         kwargs['updated'] = datetime.datetime.now()
 
-        SQLObject.set(self, **kwargs)
+        super(Task, self).set(**kwargs)
 
     def _set_live(self, value):
         if getattr(self, 'id', None):
@@ -393,7 +394,7 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    index = max([tl.sort_index for tl in TaskList.select()])
+    index = max([tl.sort_index for tl in TaskList.selectBy(doneConstruction=True)] + [0])
     if index is None:
         return 0
     else:
@@ -472,7 +473,7 @@ class TaskList(Versionable):
         started = True
         if not getattr(self, 'id', None):
             started = False
-            SQLObject.set(self, **kwargs)
+            super(TaskList, self).set(**kwargs)
             
         kwargs['updated_by'] = c.username
         kwargs['updated'] = datetime.datetime.now()
@@ -483,7 +484,7 @@ class TaskList(Versionable):
         trans = conn.transaction()
 
         params = self._clean_params(kwargs)
-        SQLObject.set(self, **params)
+        super(TaskList, self).set(**params)
 
         trans.commit()
 
@@ -510,7 +511,8 @@ class TaskList(Versionable):
         conn = hub.getConnection()
         trans = conn.transaction()
 
-        SQLObject._create(self, id, **params)
+        super(TaskList, self)._create(id, **params)
+
         if kwargs.get('statuses', None):
             statuses = kwargs['statuses'].split(",")
             if not 'done' in statuses:
@@ -520,6 +522,7 @@ class TaskList(Versionable):
         for status in statuses:
             Status(name=status, task_list = self.id)
 
+        self.doneConstruction = True
         trans.commit()
 
     def isOwnedBy(self, username):
@@ -528,8 +531,11 @@ class TaskList(Versionable):
     def destroySelf(self):
         for permission in self.permissions:
             permission.destroySelf()
+        
+        for feature in self.features:
+            feature.destroySelf()
 
-        SQLObject.destroySelf(self)
+        super(TaskList, self).destroySelf()
 
 
 def task_row_update(task, args):
