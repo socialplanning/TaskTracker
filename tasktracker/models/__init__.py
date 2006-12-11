@@ -18,21 +18,16 @@
 # Boston, MA  02110-1301
 # USA
 
-## NOTE
-##   If you plan on using SQLObject, the following should be un-commented and provides
-##   a starting point for setting up your schema
-
 from sqlobject import *
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.sqlbuilder import *
+from sqlobject.events import *
 from pylons.database import PackageHub
 from pylons import c
+from tasktracker.lib.memoize import memoize
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
-
-# You should then import your SQLObject classes
-# from myclass import MyDataClass
 
 # Don't forget to update soClasses, below
 
@@ -46,6 +41,7 @@ def create_version(klass, obj):
         if column not in ["updated", "id", "origID"]:
             args[column] = getattr(obj, column)
 
+    obj.updated = datetime.datetime.now()
     args['updated'] = obj.updated
     args['updated_by'] = c.username
     args['origID'] = obj.id
@@ -78,14 +74,35 @@ class Notification(SQLObject):
         else:
             return "task_list"
 
+class Versionable(InheritableSQLObject):
+    pass
+
 class Version(InheritableSQLObject):
     """Represents an old version of an item."""
+
     updated = DateTimeCol()
     updated_by = StringCol()
+    orig = ForeignKey("Versionable")
+
+    def nextVersion(self):
+        version = Version.select(AND(Version.q.origID == self.orig.id, Version.q.updated > self.updated), limit=1, orderBy=Version.q.updated)
+        if version.count():
+            return version[0]
+        else:
+            return self.orig
+
+    def getChangedFields(self):
+        next = self.nextVersion()
+        columns = self.__class__.sqlmeta.columns
+        fields = []
+        for column in columns:
+            if column not in ["updated", "id", "origID"]:
+                if getattr(self, column) != getattr(next, column):
+                    fields.append(column)
+
+        return fields        
 
 class TaskVersion(Version):
-
-    orig = ForeignKey("Task")
 
     deadline = DateTimeCol()
     live = BoolCol(default=True)    
@@ -98,11 +115,8 @@ class TaskVersion(Version):
     text = StringCol()
     title = StringCol()
 
-    def equals(self, version):
-        important_columns = "deadline live owner priority private sort_index status task_list text title".split()
 
 class TaskListVersion(Version):
-    orig = ForeignKey("TaskList")
 
     title = StringCol()
     live = BoolCol()
@@ -199,10 +213,11 @@ def _task_sort_index():
     else:
         return index + 1
 
-class Task(SQLObject):
+class Task(Versionable):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
+    version_class = TaskVersion
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
@@ -220,7 +235,7 @@ class Task(SQLObject):
     title = StringCol()
     updated = DateTimeCol(default=datetime.datetime.now)
     updated_by = StringCol()
-    versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
+    versions = MultipleJoin("Version", joinColumn="orig_id", orderBy='updated')
     watchers = MultipleJoin("Watcher")
 
     def getWatcher(self, username):
@@ -253,8 +268,6 @@ class Task(SQLObject):
         SQLObject._create(self, id, **kwargs)
 
     def set(self, **kwargs):
-        if getattr(self, 'id', None):
-            create_version(TaskVersion, self)
         kwargs['updated_by'] = c.username
         kwargs['updated'] = datetime.datetime.now()
 
@@ -312,6 +325,7 @@ class Task(SQLObject):
         self.status = newStatus
         return self.status
 
+    @memoize
     def depth(self):
         depth = 0
         p_id = int(self.parentID)
@@ -319,6 +333,55 @@ class Task(SQLObject):
             depth += 1
             p_id = int(Task.get(p_id).parentID)
         return depth
+
+    @memoize
+    def path(self):
+        path = []
+        task = self
+        while task.parentID:
+            path.append(task.sort_index)
+            task = task.parent
+        path.append(task.sort_index)
+        path.reverse()
+        return path
+
+    @memoize
+    def previousTask(self):
+        conn = hub.getConnection()
+        trans = conn.transaction()
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)])]
+        trans.commit()
+
+        prev = None
+        for task in tasks:
+            if task == self:
+                return prev
+            prev = task
+        return prev
+
+    @memoize
+    def nextTask(self):
+
+        conn = hub.getConnection()
+        trans = conn.transaction()
+        tasks = [t[1] for t in reversed(sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)]))]
+        trans.commit()
+        
+        next = None
+        for task in tasks:
+            if task == self:
+                return next
+            next = task
+        return next
+
+    def actions(self):
+        return sorted(self.comments + self.versions, key=_by_date)
+
+def _by_date(obj):
+    if hasattr(obj, 'date'):
+        return obj.date
+    else:
+        return obj.updated
 
 class Comment(SQLObject):
     class sqlmeta:
@@ -345,7 +408,7 @@ class TaskListFeature(SQLObject):
     task_list = ForeignKey("TaskList")
     value = StringCol()
 
-class TaskList(SQLObject):
+class TaskList(Versionable):
     _cacheValue = False
     class sqlmeta:
         defaultOrder = 'sort_index'
@@ -360,7 +423,7 @@ class TaskList(SQLObject):
     title = StringCol()
     updated = DateTimeCol(default=datetime.datetime.now)
     updated_by = StringCol()
-    versions = MultipleJoin("TaskVersion", joinColumn="orig_id")
+    versions = MultipleJoin("Version", joinColumn="orig_id", orderBy='updated')
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")
@@ -407,9 +470,7 @@ class TaskList(SQLObject):
     def set(self, **kwargs):
 
         started = True
-        if getattr(self, 'id', None):
-            create_version(TaskListVersion, self)
-        else:
+        if not getattr(self, 'id', None):
             started = False
             SQLObject.set(self, **kwargs)
             
@@ -470,6 +531,20 @@ class TaskList(SQLObject):
 
         SQLObject.destroySelf(self)
 
+
+def task_row_update(task, args):
+    if len(args) == 1 and args.has_key('updated'):
+        return
+    create_version(TaskVersion, task)
+
+def task_list_row_update(task, args):
+    if len(args) == 1 and args.has_key('updated'):
+        return
+    create_version(TaskListVersion, task)
+
+listen(task_row_update, Task, RowUpdateSignal)
+listen(task_list_row_update, TaskList, RowUpdateSignal)
+
 soClasses = [
 Action,
 Comment,
@@ -487,5 +562,6 @@ TaskListRole,
 TaskListVersion,
 User,
 Version,
+Versionable,
 Watcher,
 ]
