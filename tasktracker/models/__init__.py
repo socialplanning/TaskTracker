@@ -207,7 +207,7 @@ class TaskListPermission(SQLObject):
 
 
 def _task_sort_index():
-    index = Task.selectBy(live=True).max('sort_index')
+    index = max([t.sort_index for t in Task.selectBy(live=True)])
     if index is None:
         return 0
     else:
@@ -393,7 +393,7 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    index = TaskList.select().max('sort_index')
+    index = max([tl.sort_index for tl in TaskList.select()])
     if index is None:
         return 0
     else:
