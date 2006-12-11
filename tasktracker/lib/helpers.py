@@ -27,7 +27,7 @@ from webhelpers import *
 from pylons.util import _, log, set_lang, get_lang
 from routes import url_for
 from pylons import Response, c, g, cache, request, session
-from tasktracker.models import Task, TaskList, Comment
+from tasktracker.models import Task, TaskList
 
 from datebocks_helper import datebocks_field
 
@@ -38,7 +38,7 @@ from formencode import htmlfill
 from tasktracker.lib.base import render_response
 
 from tasktracker.lib.pretty_date import pretty_date
-from random import random
+
 def debugThings():
     foo = c
     import pdb; pdb.set_trace()
@@ -72,6 +72,7 @@ def readableDate(date):
         return "No deadline"
 
 def help(text):
+    from random import random
     help_id = 'help_' + str(random())[2:]
     return """
 <img src="/images/question.png" onclick="$('%s').toggle();" class="help"/>
@@ -334,28 +335,3 @@ def filled_render(template, obj, extra_dict={}):
     d.update(extra_dict)
     response.content = [htmlfill.render("".join(response.content), d)]
     return response
-
-def shorter(text):
-    if len(text) <= 100:
-        return text
-    else:
-        segment = text[:100]
-        #make sure we're not stopping in the middle of a tag.
-        i = len(segment) - 1
-        for c in reversed(segment):
-            if c == '>':
-                break #good
-            if c == '<':
-                segment = segment[:i]
-            i -= 1
-
-        hidden_id = 'hidden_' + str(random())[2:]
-        return '<span id="%s">%s</span> <span id="more_%s" onclick="%s.show(); more_%s.hide();">(more...)</span>' % (hidden_id, segment, hidden_id, hidden_id, hidden_id)
-
-def render_action(action):
-    if isinstance(action, Comment):
-        comment = shorter(html2safehtml(action.text))
-        comment += "<br/><b>Comment from %s by %s</b>" % (pretty_date(action.date), action.user)
-        return comment 
-    else:
-        return "<b>%s updated %s by %s</b>" % (", ".join (action.getChangedFields()), pretty_date(action.updated), action.updated_by)

@@ -30,7 +30,7 @@ Previous task: <a tal:attributes="href python: h.url_for(controller='task', acti
 <span tal:condition="python:len(c.task.liveChildren())">
 
 <!-- list headers -->
-This task has <span tal:replace="python: len(c.task.liveChildren())"/> sub-tasks.  View them.<br/>
+This task has <span tal:replace="len/c/task/liveChildren"/> sub-tasks.  View them.<br/>
 
 </span>
 
