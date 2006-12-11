@@ -1,9 +1,10 @@
 <metal:macro metal:define-macro="show_task">
 
-<li tal:attributes="id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index;
+<tr tal:attributes="parentID atask/parentID; id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index;
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status;
-    class python: '%s taskrow' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
+    class python: '%s taskrow task-item' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
+<td>
 <span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
   <span tal:condition="not: c/flat"
@@ -12,38 +13,43 @@
 		id='handle_%d' % atask.id,
 		style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15))" />
 
-    <!-- title -->
-    <a tal:content="python: h.previewText(atask.title, 20)" 
-       tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
-        title atask/text;
-	class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
-	 test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-	 test(atask.parentID == 0, 'root-task', 'sub-task'));
-	id string:title_${atask/id}" />
+  <!-- title -->
+  <a tal:content="python: h.previewText(atask.title, 20)" 
+     tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
+     title atask/text;
+     class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
+     test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
+     test(atask.parentID == 0, 'root-task', 'sub-task'));
+     id string:title_${atask/id}" />
 
-	<span tal:condition="atask/uncompletedChildren" tal:replace="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
-	<span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
-        <span tal:condition="atask/private" tal:replace="string: -- (private)" />
+  <span tal:condition="atask/uncompletedChildren" tal:replace="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
+  <span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
+  <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 
+  <p tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);" >
+    &nbsp;<span tal:replace="python:h.previewText(atask.text)"/>
+  </p>
 </span>
+</td>
 
-<form tal:attributes="action string:/task/update/${atask/id}">
-<span tal:replace="structure python:h.editableField(atask, 'status')"/>
+<!-- <form tal:attributes="action string:/task/update/${atask/id}"> -->
 
-<span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
+<td>
+ <span tal:replace="structure python:h.editableField(atask, 'status')"/>
+</td>
 
-<span tal:replace="structure python:h.editableField(atask, 'priority')"/>
+<td>
+ <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
+</td>
 
-<span tal:replace="structure python:h.editableField(atask, 'owner')"/>
-</form>
-<!-- creator -->
-<!-- span class="creator-column" tal:content="atask/creator" / -->
+<td>
+ <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
+</td>
 
-<div tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);" >
-&nbsp;<span tal:replace="python:h.previewText(atask.text)"/>
-</div>
+<td>
+ <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
+</td>
 
+</tr>
 <span metal:define-slot="post_task" />
-
-</li>
 </metal:macro>

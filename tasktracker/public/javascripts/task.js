@@ -30,6 +30,46 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
+function find(thing, item) {
+    if( length(thing) ) {
+	var i;
+	for( i = 0; i < thing.length; i++ )
+	    if( thing[i] == item )
+		return i;
+    }
+    return -1;
+}
+
+function insertBeforeInList(thing, newitem, olditem) {
+    if( length(thing) ) {
+	var i;
+	for( i = thing.length - 1; i > -1; i-- ) {
+	    thing[i+1] = thing[i];
+	    if( thing[i] == olditem ) {
+		thing[i] = newitem;
+		return i;
+	    }
+	}
+    }
+    thing[0] = newitem;
+    return -1;
+}
+
+function insertAfterInList(thing, newitem, olditem) {
+    if( length(thing) ) {
+	var i;
+	for( i = thing.length - 1; i > -1; i-- ) {
+	    thing[i+1] = thing[i];
+	    if( thing[i] == olditem ) {
+		thing[i+1] = newitem;
+		return i;
+	    }
+	}
+    }
+    thing[0] = newitem;
+    return -1;
+}
+
 function addClass(element, classname) {
     if (!hasClass(element, classname))
 	element.className += element.className ? ' ' + classname : classname;
@@ -42,6 +82,10 @@ function removeClass(element, classname) {
 
 function hasClass(element, classname) {
     return new RegExp('\\b' + classname + '\\b').test(element.className);
+}
+
+function length(thing) {
+    return (thing && thing.length ? thing.length : 0);
 }
 
 function showFilterColumn(field) {
@@ -64,20 +108,39 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 	startDrag: function() {
 	    addClass(this.refElement, 'drag');
 	    dndMgr.deregisterDropZone(this.owner.dropzone);
-	    $A(this.owner.getElementsByTagName("LI")).each(function(node) {
-		    dndMgr.deregisterDropZone(node.dropzone);
-		});
+	    var dereg = function(list) {
+		$A(list).each(function(node) {
+			addClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
+			dereg(node.childTasks);
+			dndMgr.deregisterDropZone(node.dropzone);
+		    })
+	    };
+	    dereg(this.owner.childTasks);
 	},
 
 	cancelDrag: function() {
 	    removeClass(this.refElement, 'drag');
+	    dndMgr.registerDropZone(this.owner.dropzone);
+	    var reg = function(list) {
+		$A(list).each(function(node) {
+			removeClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
+			reg(node.childTasks);
+			dndMgr.registerDropZone(node.dropzone);
+		    })
+	    };
+	    reg(this.owner.childTasks);
 	},
 
 	endDrag: function() {
 	    dndMgr.registerDropZone(this.owner.dropzone);
-	    $A(this.owner.getElementsByTagName("LI")).each(function(node) {
-		    dndMgr.registerDropZone(node.dropzone);
-		});
+	    var reg = function(list) {
+		$A(list).each(function(node) {
+			removeClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
+			reg(node.childTasks);
+			dndMgr.registerDropZone(node.dropzone);
+		    })
+	    };
+	    reg(this.owner.childTasks);
 	},
 
 	getSingleObjectDragGUI: function() {
@@ -191,12 +254,16 @@ function evalHTML(value) {
     if (value.length == 0) {
 	return null;
     }
-    var parser = document.createElement("DIV");
+    var parser = document.createElement("TABLE");
+    var body;
+    parser.appendChild(body = document.createElement("TBODY"));
     var html = document.createDocumentFragment();
     
     var child;
-    parser.innerHTML = value;
-    while ((child = parser.firstChild)) {
+    body.innerHTML = value;
+
+    while ((child = body.firstChild)) {
+	list[list.length] = child;
 	html.appendChild(child);
     }
     return html;
@@ -222,11 +289,27 @@ function hasReorderableTasks() {
     return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");
 }
 
+function setTaskParents() {
+    if (hasReorderableTasks()) {
+	$A($('tasks').getElementsByClassName('task-item')).each(function(task) {
+		var parentID;
+		var parent;
+		if( !task.childTasks ) task.childTasks = [];
+		if( (parentID = task.getAttribute("parentID")) && (parent = $('task_' + parentID)) ) {
+		    if( length(parent.childTasks) )
+			parent.childTasks[parent.childTasks.length] = task;
+		    else
+			parent.childTasks = [task]
+		}
+	    });
+    }
+}
+
 function createDragDrop() {
     if (!initialized && hasReorderableTasks()) {
         initialized = true;
 
-        $A($('tasks').getElementsByTagName('li')).each(function(node) {
+        $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		var id = node.getAttribute('task_id');
 		dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
 		dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
@@ -243,15 +326,16 @@ function createDragDrop() {
 }
 
 function setupEmptyList() {
-    if ($('tasks') && !($('tasks').getElementsByTagName('li').length))
+    if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length))
 	hideCreate();
 }
 
 addLoadEvent(createDragDrop);
 addLoadEvent(setupEmptyList);
+addLoadEvent(setTaskParents);
 
 function toggle(obj) {
-    obj.style.display = (obj.style.display != 'none' ? 'none' : '');
+    obj.style.display = (obj.style.display != 'none' ? 'none' : '');  //todo hey, this is no good.
 }
 
 function filterDeadline() {
@@ -261,7 +345,7 @@ function filterDeadline() {
 	return;
     }
     if (filtervalue == 'None') {
-	$A($('tasks').getElementsByTagName('li')).each(function(node) {
+	$A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		if (node.getAttribute('deadline'))
 		    node.hide();
 	    });
@@ -282,7 +366,7 @@ function filterDeadline() {
     var byThisDate = new Date();
     minDate.setDate(minDate.getDate() - min);
     byThisDate.setDate(byThisDate.getDate() + max + 1);
-    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    var deadline = node.getAttribute('deadline');
 	    if (deadline) {
 		var db = new DateBocks();
@@ -309,7 +393,7 @@ function filterField(fieldname) {
     if (filtervalue == 'All') {
 	return;
     }
-    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    if (node.getAttribute(fieldname) != filtervalue) {
 		node.hide();
 	    }
@@ -317,7 +401,7 @@ function filterField(fieldname) {
 }
 
 function filterListByAllFields() {
-    $A($('tasks').getElementsByTagName('li')).each(function(node) {
+    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    node.show();
 	});
     $A(["status", "deadline", "priority", "owner"]).each(function(field){
@@ -339,21 +423,22 @@ function restoreAddTask() {
 }
 
 function doneAddingTask(req) {
-    var parentID = parseInt($('add_task_form').getInputs()[1].getAttribute("value"));
-    var siblingID = parseInt($('add_task_form').getInputs()[2].getAttribute("value"));
+    var forminputs = $('add_task_form').getInputs();
+    var parentID = parseInt(forminputs[1].getAttribute("value"));
+    var siblingID = parseInt(forminputs[2].getAttribute("value"));
     var node = evalHTML(req.responseText);
-    if (siblingID != 0) {
+
+    var table = $('tasks');
+    if (siblingID != 0){ 
 	var sibling = $('task_' + siblingID);
-	insertAfter(node, sibling);
+	insertAfter(node, sibling);  //todo
     } else if (parentID != 0) {
 	var parent = $('task_' + parentID);
-	var ul = parent.getElementsByTagName("ul")[0];
-	ul.insertBefore(node, ul.childNodes[0]);
+	insertAfter(node, parent);  //todo
 	updateTaskItem(parentID);
 	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
     } else {
-	var ul = $('tasks');
-	ul.appendChild(node);
+	table.appendChild(node);
     }
     
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
@@ -363,6 +448,7 @@ function doneAddingTask(req) {
     dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, 'task_' + id, 'draggable-name') );
     dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, 'task_' + id ) );
     Behaviour.apply();
+
     $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
 		node.checked = false;
@@ -421,13 +507,13 @@ function updateTaskItem(task_id) {
 	root = 'root-task';
     }
     tasktext.setAttribute('class', completed + ' ' + root);
-    if( taskitem.getElementsByTagName("UL")[0].getElementsByTagName("LI").length ) {
+    if( length(taskitem.childTasks) ) {
 	expandTask(task_id);
     } else {
-	flattenTask(task_id);
+	flattenTask(task_id);  // todo test this half
     }
     var uncompletedTasks = 0;
-    $A(document.getElementsByTagName("li")).each(function(task) {
+    $A(document.getElementsByClassName("task-item")).each(function(task) {
 	    if (task.getAttribute('status') != 'done')
 		uncompletedTasks++;
 	});
@@ -488,9 +574,11 @@ function doneMovingTask(req) {
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
-        if (old_parent.getElementsByTagName('LI').length - child.getElementsByTagName('LI').length < 2) {
+	oop = old_parent;
+	chil = child;
+	old_parent.childTasks.removeItem(child);
+        if( !length(old_parent.childTasks) )
             flattenTask(old_parent_id);
-        }
     }
     if (new_parent_id) {
         insertTaskUnderParent(task_id, new_parent_id);
@@ -512,26 +600,23 @@ function hideCreate() {
 var mode = 'view';
 
 function resetChildDepths(elem) {
-    var child_ul = elem.getElementsByTagName('UL')[0].childNodes;
-
-    if (child_ul.length > 0) {
-        var new_depth = parseInt(elem.childNodes[1].getAttribute('depth')) + 1;
-        $A(child_ul).each(function(child) {
-            if (child.tagName == 'LI') {
-                var title = child.childNodes[1];
-
-                title.setAttribute('depth', new_depth);
-                //var left = new_depth * 15;
-                //title.style.paddingLeft = left + 'px'; 
-                indentTaskItem(title,new_depth)
-                resetChildDepths(child);
-            }
-        });
+    var children = elem.childTasks;
+    
+    if( length(children) ) {
+        var new_depth = parseInt(children[0].getAttribute('depth')) + 1;
+        $A(children).each(function(child) {
+		var title = child.childNodes[1];		
+		title.setAttribute('depth', new_depth);
+		//var left = new_depth * 15;
+		//title.style.paddingLeft = left + 'px'; 
+		indentTaskItem(title, new_depth);
+		resetChildDepths(child);
+	    });
     }
 }
 
 function insertAfter(new_node, after) {
-    if (after.nextSibling) {
+    if( after.nextSibling ) {
         after.parentNode.insertBefore(new_node, after.nextSibling);
     } else {
         after.parentNode.appendChild(new_node);
@@ -544,9 +629,9 @@ function debugThing() {
 function indentTaskItem(task, depth) {
     var children = task.getElementsByTagName('IMG');
     var target; 
-    for (var i = 0; i < children.length; i++) {
+    for( var i = 0; i < children.length; i++ ) {
 	var child = children[i];
-	if (child.getAttribute('class').match('handle')) {
+	if( hasClass(child, 'handle') ) {
 	    target = child; 
 	    break; 
 	}
@@ -554,18 +639,21 @@ function indentTaskItem(task, depth) {
     target.style.marginLeft = 15*depth + 'px'; 
 }
 
+// TODO test this!
 function insertTaskAfterSibling(task_id, sibling_id) {
     var child = $('task_' + task_id);
     var new_sibling = $('task_' + sibling_id);
 
+    var parent = $('task_' + new_sibling.getAttribute('parentID'));
+    insertAfterInList(parent.childTasks, child, new_sibling);
     insertAfter(child, new_sibling);
-
+    
     var new_index = parseInt(new_sibling.getAttribute('sort_index'));
-    var ul = child.parentNode;
 
     //update sort_index
-    var items = ul.getElementsByTagName('LI');
-    var j;
+    // TODO fix this!
+    /*
+    var items = $('tasks').getElementsByTagName('task-item');
     $A(items).each(function(item) {
         if (item == child) {
             item.setAttribute('sort_index', new_index + 1);
@@ -575,51 +663,60 @@ function insertTaskAfterSibling(task_id, sibling_id) {
                 item.setAttribute('sort_index', sort_index + 1);
             }
         }
-    });
+	});*/
 
+    /*  TODO this is definitely broken.. fix it
     //update depth
-    if (new_sibling.childNodes[1].getAttribute('depth') > 0) {
-        var parent = child.parentNode.parentNode;
+    if ($('draggable_' + sibling_id).getAttribute('depth') > 0) {
         resetChildDepths(parent);
     } else {
-        var title = child.childNodes[1];
-
-        title.setAttribute('depth', 0);
+        $('draggable_' + child_id).setAttribute('depth', 0);
         //title.style.paddingLeft = '0px'; 
-        indentTaskItem(title,0); 
+        indentTaskItem(title, 0);
         resetChildDepths(child);
-    }
+	}*/
 }
 
-function insertTaskUnderParent(child_id, parent_id) {
+function insertTaskUnderParent(child_id, parent_id, justmove) {
     var child = $('task_' + child_id);
     var new_parent = $('task_' + parent_id);
-    //find new parent's contained ul
-    v = new_parent;
 
-    var ul = new_parent.getElementsByTagName('UL');
-    if (ul.length) {
-        ul = ul[0];	
-        ul.insertBefore(child, ul.childNodes[0]);
-        var items = ul.getElementsByTagName('LI');
-        //update sort_index
-        $A(items).each(function(item) {
+    var table = $('tasks');
+
+    if( !justmove ) {
+	if( length(new_parent.childTasks) ) {
+	    insertBeforeInList(new_parent.childTasks, child, new_parent.childTasks[0]);
+	}
+	else {
+	    new_parent.childTasks[0] = child;
+	}
+    }
+    insertAfter(child, new_parent);
+
+    //set child indent
+    var parentdepth = parseInt($('draggable_' + parent_id).getAttribute('depth'));
+    var title = $('draggable_' + child_id);
+    title.setAttribute('depth', parentdepth + 1);
+
+    indentTaskItem(title,parentdepth+1); 
+    resetChildDepths(child);	
+
+    $A(child.childTasks).each(function(node) {
+	    insertTaskUnderParent(node.getAttribute("task_id"), child_id, 1);
+	});
+
+    //todo update all taskitems
+    if( justmove )
+	return;
+
+    var items = new_parent.childTasks;
+    //update sort_index
+    $A(items).each(function(item) {
             var sort_index = parseInt(item.getAttribute('sort_index'));
             item.setAttribute('sort_index', sort_index + 1);
         });
-        var sort_index = parseInt(items[0].getAttribute('sort_index'));
-        items[0].setAttribute('sort_index', 0);
-        //set child indent
-
-        var parenttitle = new_parent.childNodes[1];
-        var parentdepth = parseInt(parenttitle.getAttribute('depth'));
-        var title = child.childNodes[1];
-        title.setAttribute('depth', parentdepth + 1);
-        //title.style.paddingLeft = (parentdepth + 1) * 15 + 'px'; 
-        indentTaskItem(title,parentdepth+1); 
-        resetChildDepths(child);	
-        return;
-    }
+    var sort_index = parseInt(items[0].getAttribute('sort_index'));
+    items[0].setAttribute('sort_index', 0);
 }
 
 function doneDestroyingTask(req) {
@@ -651,11 +748,11 @@ function doDrop(child, drop_target, a) {
 	    $('add_task_form').getInputs()[1].setAttribute("value", id);
 	    $('add_task_form').getInputs()[2].setAttribute("value", 0);
 	    var new_parent = $('task_' + id);
-	    var ul = new_parent.getElementsByTagName("ul")[0];
-	    var li = document.createElement("li");
-	    li.className = "taskrow";
-	    li.appendChild(child);
-	    ul.insertBefore(li, ul.childNodes[0]);
+	    var tr = document.createElement("TR");
+	    tr.className = "taskrow";
+	    tr.appendChild(child);
+	    insertAfter(tr, new_parent);
+	    // todo indentation
 	} else {   // drop after a sibling node
 	    id = parseInt(drop_target.id.replace(/^handle_/, ''));
 	    $('add_task_form').getInputs()[1].setAttribute("value", 0);
@@ -669,8 +766,10 @@ function doDrop(child, drop_target, a) {
 	}
 	return;
     }
+
+    // otherwise, it's a task
     var task_id = child.id.replace("draggable_", "");
-    var old_parent_id = child.parentNode.parentNode.getAttribute('task_id');
+    var old_parent_id = $('task_' + task_id).getAttribute("parentID");
 
     if (drop_target.id.match(/^title_/)) {   // drop under a parent node
         id = parseInt(drop_target.id.replace(/^title_/, ''));
@@ -689,7 +788,9 @@ function doDrop(child, drop_target, a) {
     }
 }
 
+// todo fix this function!
 function sortULBy(ul, column, forward) {
+    /*
     items = $A(ul.childNodes);
     items = items.findAll(function(x) {
 	    return x.tagName == "LI";
@@ -722,17 +823,14 @@ function sortULBy(ul, column, forward) {
             child_ul = child_ul[0];
             sortULBy(child_ul, column, forward);
         }
-    });
+	});*/
 }
 
 function toggleCollapse(task_id) {
-    $A($('task_' + task_id).childNodes).each(function(node) {        
-        if (node.className) {
-            if (node.className.match('^task_list')) {
-                toggle(node);
-            }
-        }
-    });
+    $A($('task_' + task_id).childTasks).each(function(node) {
+	    toggle(node);
+	    toggleCollapse(node.getAttribute('task_id'));
+	});
     var button = $('handle_' + task_id);
     if (button.src.match("minus.png")) {
         button.src = button.src.replace("minus.png", "plus.png");
@@ -768,54 +866,27 @@ function sortBy(column) {
 		e.setAttribute('sortOrder', '');
 	    }
 	});
-    $(column + '-arrows').show();
-    
-    var otherorder = (order == 'up') ? 'down' : 'up';
+    $(column + '-arrows').show();    
 
+    var otherorder = (order == 'up') ? 'down' : 'up';
     addClass($(column + '-' + otherorder + '-arrow'), 'grayed-out');
     removeClass($(column + '-' + order + '-arrow'), "grayed-out");
-	
+
+    // todo rename this
     sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
 }
 
 var initialized = false;
 
-function modeSwitch() {
-    if (mode == 'view') {
-        $A($('tasks').getElementsByTagName('IMG')).each(function (x) {
-            if (x.className == "handle") 
-                x.style['cursor']="move";
-        });
-        mode = 'reorder';
-        sortBy('sort_index');
-        $('modeName').innerHTML = 'Done reordering';
-        if ($('create_section')) 
-            $('create_section').hide();
-    } else {
-        $A($('tasks').getElementsByTagName('IMG')).each(function (x) {
-            if (x.className == "handle") 
-                x.style['cursor']="";
-        });
-        mode = 'view';
-        $('modeName').innerHTML = 'Reorder';
-        if ($('create_section')) 
-            $('create_section').show();
-    }
-}
-
-
 function with_items (klass, func, parent) {
     $A(parent.childNodes).each(function (node) {
         if (node.nodeType == 1) {
 	    with_items(klass, func, node);
-	    var classes = node.className.split(" ");
-	    if (classes.include(klass)) {
+	    if (hasClass(node, klass))
 		func(node);
-	    }
 	}
     });
 }
-
 
 function unfold () {
 	var other = $('edit_' + this.id);

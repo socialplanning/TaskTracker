@@ -39,7 +39,7 @@ from tasktracker.lib.base import render_response
 
 from tasktracker.lib.pretty_date import pretty_date
 
-def debugThings():
+def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
 

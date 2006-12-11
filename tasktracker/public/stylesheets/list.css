@@ -1,3 +1,8 @@
+.undroppable {
+   background-color: maroon;
+   color: pink;
+}
+
 .grayed-out {
    color: gray;
 }
@@ -85,12 +90,12 @@ ul.task_list {
   clear: both; 
 }
 
-.taskrow {
+/*.taskrow {
   clear: both; 
   padding: 0; 
   margin: 0; 
   line-height: 1em;
-}
+}*/
 
 .create_section {
    padding: 10px;
@@ -101,6 +106,11 @@ ul.task_list {
    background-color: #ddd;
 }
 
+.task-item {
+
+}
+
+/*
 .status-column {
    float: left; 
    width: 19%;
@@ -145,7 +155,7 @@ ul.task_list {
    padding: 0; 
    margin: 0;     
    background-color: #ddd;
-}
+}*/
 
 .overdue-task {
    color: maroon;

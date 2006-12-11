@@ -57,8 +57,8 @@ class TestTaskController(TestController):
         form['text'] = 'The new task body'
         res = form.submit()
 
-        # the response should consist of the new task's li
-        res.mustcontain('<li status="not done"')        
+        # the response should consist of the new task's table row
+        res.mustcontain('<tr status="not done"')        
         res.mustcontain("The new task title")
         res.mustcontain("The new task body")
 
