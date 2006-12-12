@@ -459,6 +459,7 @@ function doneAddingTask(req) {
     
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
+    new_item.childTasks = []; 
     enableDragDrop(new_item);
 
 
