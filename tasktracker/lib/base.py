@@ -203,7 +203,7 @@ class BaseController(WSGIController):
             task_list.rescuePermissions()
             tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                          actionID=action.id)
-            
+
         return tl_permissions[0].min_level >= local_level
 
         
