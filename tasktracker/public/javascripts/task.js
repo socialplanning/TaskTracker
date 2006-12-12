@@ -312,10 +312,7 @@ function createDragDrop() {
         initialized = true;
 
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-		var id = node.getAttribute('task_id');
-		dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
-		dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
-		//		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+		enableDragDrop(node);
 	    });
 	/*
 	if ($('trash')) {
@@ -325,6 +322,13 @@ function createDragDrop() {
 			accept : 'deletable'
 			});*/
     }
+}
+
+function enableDragDrop(node) {
+    var id = node.getAttribute('task_id');
+    dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
+    dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
+    //		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
 }
 
 function setupEmptyList() {
@@ -428,15 +432,16 @@ function doneAddingTask(req) {
     var forminputs = $('add_task_form').getInputs();
     var parentID = parseInt(forminputs[1].getAttribute("value"));
     var siblingID = parseInt(forminputs[2].getAttribute("value"));
-    var node = evalHTML(req.responseText);
+    var new_fragment = evalHTML(req.responseText);
+    new_item = new_fragment.firstChild; 
 
     var table = $('tasks');
     if (siblingID != 0){ 
 	var sibling = $('task_' + siblingID);
-	insertAfter(node, sibling);  //todo
+	insertAfter(new_fragment, sibling);  //todo
     } else if (parentID != 0) {
 	var parent = $('task_' + parentID);
-	insertAfter(node, parent);  //todo
+	insertAfter(new_fragment, parent);  //todo
 	updateTaskItem(parentID);
 	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
     } else {
@@ -449,15 +454,14 @@ function doneAddingTask(req) {
 		break; 
 	    }
 	}
-	target.appendChild(node);
+	target.appendChild(new_fragment);
     }
     
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
-    var id = parseInt(req.responseText.match(/task_id="\d+"/)[0].replace('task_id="', ''));
+    enableDragDrop(new_item);
 
-    dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, 'task_' + id, 'draggable-name') );
-    dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, 'task_' + id ) );
+
     Behaviour.apply();
 
     $A($('add_task_form').getElements()).each(function(node) {
