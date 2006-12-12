@@ -31,7 +31,7 @@
 
 <!-- the create setup -->
 
-<div id="add_task_anchor">
+<div id="add_task_anchor" style="width:80%;">
 <div class="draggable" id="movable_add_task" parentID="0" siblingID="0" style="border: 2px dashed gray;  padding:0px;  margin:0px; line-height: 1em;">
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <div metal:fill-slot="subtask_link">
@@ -54,6 +54,4 @@
 <tal:nada replace="structure python:h.link_to('edit watch settings', url=h.url_for(action='show_update', controller='watcher', id=c.tasklist.getWatcher(c.username).id))"/>
 </span>
 
-&nbsp;
-<span><a tal:attributes="href python:h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)">view list preferences</a></span>
 </small>

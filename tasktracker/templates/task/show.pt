@@ -13,24 +13,20 @@
 Previous task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.previousTask().id)" tal:content="python:c.task.previousTask().title"/>
 </span>
 
-<div style="border: thin solid darkgray; padding:5px;">
+<div style="border: thin solid darkgray; padding:5px; width:80%">
 
-<ul class="task_list" tal:define="atask c/task">
+<table class="task_list" style="width:100%" tal:define="atask c/task">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
-</ul>
+</table>
 
 
 <div tal:content="structure c/task/text" />
 
 
-<b>Latest activity:</b>
-
-
-
 <span tal:condition="python:len(c.task.liveChildren())">
 
 <!-- list headers -->
-This task has <span tal:replace="python: len(c.task.liveChildren())"/> sub-tasks.  View them.<br/>
+This task has <span tal:replace="python: len(c.task.liveChildren())"/> sub-tasks.<br/>
 
 </span>
 
@@ -38,9 +34,13 @@ This task has <span tal:replace="python: len(c.task.liveChildren())"/> sub-tasks
 <a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">[ + ] add a task</a>
 </metal:do>
 <br/>
+
+<b>Latest activity:</b>
+
+
 <!-- comments -->
 
-<ul tal:repeat="action python: c.task.actions()">
+<ul tal:repeat="action python: [a for a in c.task.actions().__reversed__()]">
 <li>
 <span tal:replace="structure python: h.render_action(action)"/>
 </li>
