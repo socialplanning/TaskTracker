@@ -254,18 +254,20 @@ function evalHTML(value) {
     if (value.length == 0) {
 	return null;
     }
-    var parser = document.createElement("TABLE");
-    var body;
-    parser.appendChild(body = document.createElement("TBODY"));
-    var html = document.createDocumentFragment();
+    // work around absurd ie innerHTML limitations 
+    var parser = document.createElement("DIV");
+    parser.innerHTML = "<TABLE><TBODY>" + value + "</TBODY></TABLE>";
     
-    var child;
-    body.innerHTML = value;
+    var body = parser.firstChild.firstChild; 
 
-    while ((child = body.firstChild)) {
-	list[list.length] = child;
+    var html = document.createDocumentFragment();
+
+    var child; 
+    for (i = 0; i < body.childNodes.length; i++) {
+	child = body.childNodes[i];
 	html.appendChild(child);
     }
+
     return html;
 }
 
@@ -438,7 +440,16 @@ function doneAddingTask(req) {
 	updateTaskItem(parentID);
 	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
     } else {
-	table.appendChild(node);
+	target = table; 
+	// scan for magic ie TBODY 
+	for (i = 0; i < table.childNodes.length; ++i) {
+	    child = table.childNodes[i]; 
+	    if (child.tagName == 'TBODY') {
+		target = child; 
+		break; 
+	    }
+	}
+	target.appendChild(node);
     }
     
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
