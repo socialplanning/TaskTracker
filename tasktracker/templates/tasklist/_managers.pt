@@ -1,12 +1,12 @@
 <metal:macro define-macro="managers">
 
-<span tal:replace="structure python: h.editable_list('managers', c.managers, c.administrators)"/>
+<span tal:replace="structure python: h.editable_list('managers', fixed_items=[c.username])"/>
 
 <span class="autocomplete">
   <label for="manager" id="add_manager" class="unfolded">[ + ] add manager</label>
 <span id="edit_add_manager" class="folded">
 
-   <input type="hidden" value="" id="managers" name="managers">
+   <input type="hidden" tal:attributes="value c/username;" id="managers" name="managers">
    <input autocomplete="off" id="manager" name="manager" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_managers', $('manager').value);$('manager').value=''; return false;"/>
 </span>

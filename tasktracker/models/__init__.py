@@ -526,7 +526,8 @@ class TaskList(Versionable):
         trans.commit()
 
     def isOwnedBy(self, username):
-        return TaskListRole.selectBy(username = username, task_listID = self.id, role = Role.getByName('ListOwner')).count()
+        return TaskListRole.selectBy(username = username, task_listID = self.id,
+                                     role = Role.getByName('ListOwner')).count()
 
     def destroySelf(self):
         for permission in self.permissions:

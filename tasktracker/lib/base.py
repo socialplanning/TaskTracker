@@ -177,7 +177,8 @@ class BaseController(WSGIController):
         #special case for private tasks
         if controller == 'task':
             if task.private:
-                if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(params['username']):
+                if local_level > Role.getLevel('ListOwner') and \
+                        not task.isOwnedBy(params['username']):
                     return False
 
         if controller == 'task' and local_level > Role.getLevel('TaskOwner'):

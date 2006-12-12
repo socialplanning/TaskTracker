@@ -3,8 +3,9 @@
 <label for="title">Name:</label><br/>
 <span tal:replace="structure python: h.text_field('title', size=80)" /><br/>
 
-<label for="text">Description:</label><br/>
-<span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
+<span style="display:none;">
+<label style="display:none;" for="text">Description:</label><br/>
+<span tal:replace="structure python: h.hidden_field('text', rows=10, cols=80)" /><br/>
 
 <label for="managers">Managers:</label><br/>
 <metal:do use-macro="here/_managers/macros/managers"/>
@@ -19,6 +20,8 @@
 <br/>
 Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
 <input type="checkbox" id="feature_deadlines" name="feature_deadlines" value="1" class="features"/>
+
+<span style="display:none;">
 <label for="feature_deadlines">Deadlines</label><br/>
 
 <input type="checkbox" name="feature_custom_status" value="1" class="features" onclick="$('edit_statuses').toggle();" id="custom_status"/>
@@ -41,8 +44,10 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
 By default, tasks are initially assigned to:<br/>
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+</span>
+
+</span>
 
 <span tal:replace="structure python: h.submit('Submit')" />
-<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
 
 </metal:macro>
