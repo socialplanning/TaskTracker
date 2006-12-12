@@ -42,8 +42,8 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
 
 <br/>
 By default, tasks are initially assigned to:<br/>
-<input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
-<input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+<input type="radio" name="initial_assign" value="1" checked="checked"/> The person who created them<br/>
+<input type="radio" name="initial_assign" value="0"/> Unassigned <br/>
 </span>
 
 </span>
