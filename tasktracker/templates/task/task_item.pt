@@ -46,10 +46,6 @@
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
 </td>
 
-<td>
- <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
-</td>
-
 </tr>
 <span metal:define-slot="post_task" />
 </metal:macro>
