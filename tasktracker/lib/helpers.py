@@ -44,14 +44,17 @@ def debugThings(obj = None):
     import pdb; pdb.set_trace()
 
 def previewText(text, length=25):
-    if not text: return ""
+    #length might be an empty string b/c of tal
+    if length == "":
+        length = 25
+    if not text or not length: return ""
     words = text.split()
-    text = words.pop(0)
+    text = []
     while len(text) < length and len(words):
-        text = "%s %s" % (text, words.pop(0))
+        text.append(words.pop(0))
     if len(words):
-        text = "%s ..." % text
-    return text
+        text.append ("...")
+    return " ".join(text)
 
 def isOverdue(deadline):
     if not deadline:
@@ -210,7 +213,7 @@ def _deadlineInput(task):
     if task.deadline:
         orig = task.deadline
     return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
-                           input_attributes=dict(originalvalue="%s" % orig), value=task.deadline)
+                           input_attributes=dict(originalvalue=str(orig)), value=task.deadline)
                         
 def _statusSelect(task):
     statuses = task.task_list.statuses
@@ -232,7 +235,15 @@ def _statusSelect(task):
                   onchange='changeField(%d, "status");' % task.id,
                   onblur='changeField(%d, "status");' % task.id)
 
-_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
+def _textArea(task):
+    orig = task.text
+    area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, content=orig, rows=10, cols=80)
+    button = submit('submit', onclick = 'changeField(%d, "text"); return false;' % task.id)
+    return area + button
+
+
+
+_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput, text=_textArea)
     
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []
@@ -335,6 +346,7 @@ def filled_render(template, obj, extra_dict={}):
     response.content = [htmlfill.render("".join(response.content), d)]
     return response
 
+#FIXME: merge with previewText
 def shorter(text):
     if len(text) <= 100:
         return text

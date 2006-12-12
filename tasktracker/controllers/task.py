@@ -46,7 +46,7 @@ class EditTaskForm(formencode.Schema):
     private = NotEmpty()
 
 
-_actions = dict(status='change_status', owner='assign', priority='update', deadline='update')
+_actions = dict(status='change_status', owner='assign', priority='update', deadline='update', text='update')
 def _field_permission(param):    
     return _actions[param['field']]
     
@@ -67,7 +67,13 @@ class TaskController(BaseController):
         field = request.params['field']
         task = self._getTask(int(id))
         newfield = self.form_result[field]
-        if not getattr(task, field) == newfield:
+
+        #special case for deadline -- converts a datetime to a date.
+        old = getattr(task, field)
+        if field == 'deadline':
+            old = old.date()
+
+        if not old == newfield:
             setattr(task, field, newfield)
         c.task = task
         return render_text(getattr(task, field))
@@ -229,6 +235,7 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
+        c.previewTextLength = 0
         return render_response('zpt', 'task.show')
 
     @attrs(action='update')

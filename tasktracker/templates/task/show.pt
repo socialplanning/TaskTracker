@@ -10,19 +10,19 @@
 <br/><br/>
 
 <span tal:condition="c/task/previousTask">
-Previous task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.previousTask().id)" tal:content="python:c.task.previousTask().title"/>
+&lt; &lt; previous task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.previousTask().id)" tal:content="python:c.task.previousTask().title"/>
 </span>
 
 <div style="border: thin solid darkgray; padding:5px;">
 
-<ul class="task_list" tal:define="atask c/task">
+<table class="task_list" tal:define="atask c/task" width="100%">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
-</ul>
+</table>
 
 
-<div tal:content="structure c/task/text" />
+<span tal:replace="structure python:h.editableField(c.task, 'text')"/>
 
-
+<br/>
 <b>Latest activity:</b>
 
 
@@ -58,7 +58,7 @@ Make your own comment?
 </tal:if>
 
 <span tal:condition="c/task/nextTask">
-Next task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.nextTask().id)" tal:content="python:c.task.nextTask().title"/>
+next task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.nextTask().id)" tal:content="python:c.task.nextTask().title"/> &gt; &gt; 
 </span>
 
 
