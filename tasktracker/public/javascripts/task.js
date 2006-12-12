@@ -406,7 +406,7 @@ function filterListByAllFields() {
     $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    node.show();
 	});
-    $A(["status", "deadline", "priority", "owner"]).each(function(field){
+    $A(["status", "deadline", "priority"]).each(function(field){
 	    var filter = $(field + '_filter');
 	    var filtervalue = filter.value;
 	    $(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;

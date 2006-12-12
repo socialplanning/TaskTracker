@@ -1,6 +1,6 @@
 <metal:macro metal:define-macro="show_header">
 <tr class="column-heading">
-<th>
+<th class="task-column">
 <span class="taskitem">Task name</span>
 </th>
 
@@ -19,7 +19,7 @@
 </tr>
 
 <tr class="task-filter-controls">
-<td class="taskitem">&nbsp;</td>
+<td class="taskitem" align="right">filter by:</td>
 <td class="status-column"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></td>
 <td class="deadline-column"><span tal:replace="structure python: h.columnFilter('deadline')"/></td>
 <td class="priority-column"><span tal:replace="structure python: h.columnFilter('priority')"/></td>

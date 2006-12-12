@@ -4,7 +4,7 @@
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status;
     class python: '%s taskrow task-item' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<td>
+<td class="task_cell">
 <span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
   <span tal:condition="not: c/flat"
@@ -26,9 +26,9 @@
   <span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 
-  <p tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);" >
+  <div tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);" >
     &nbsp;<span tal:replace="python:h.previewText(atask.text)"/>
-  </p>
+  </div>
 </span>
 </td>
 

@@ -151,7 +151,7 @@ def columnFilter(field, tasklist = None):
     onblur = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
     filter = globals()["_%sFilter" % field](onblur = onblur, tasklist = tasklist)
     onclick = """showFilterColumn('%s');""" % field
-    span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
+    span = """<span class="editable" id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
     
     return "%s%s" % (filter, span)
 
