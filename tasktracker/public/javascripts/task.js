@@ -265,8 +265,7 @@ function evalHTML(value) {
     var child; 
     for (i = 0; i < body.childNodes.length; i++) {
 	child = body.childNodes[i];
-	alert("appending a " + child.tagName); 
-	html.appendChild(child)
+	html.appendChild(child);
     }
 
     return html;
