@@ -619,12 +619,10 @@ function resetChildDepths(elem) {
     var children = elem.childTasks;
     
     if( len_of(children) ) {
-        var new_depth = parseInt(children[0].getAttribute('depth')) + 1;
+        var new_depth = parseInt(elem.getElementsByTagName("SPAN")[0].getAttribute('depth')) + 1;
         $A(children).each(function(child) {
-		var title = child.childNodes[1];		
+		var title = child.getElementsByTagName("TD")[0];
 		title.setAttribute('depth', new_depth);
-		//var left = new_depth * 15;
-		//title.style.paddingLeft = left + 'px'; 
 		indentTaskItem(title, new_depth);
 		resetChildDepths(child);
 	    });
