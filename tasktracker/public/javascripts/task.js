@@ -450,11 +450,13 @@ function doneAddingTask(req) {
     if (siblingID != 0){ 
 	var sibling = $('task_' + siblingID);
 	insertAfter(new_fragment, sibling);  //todo
-    } else if (parentID != 0) {
+    } else if (parentID != 0 && !hasClass(table, 'all_tasks')) {
 	var parent = $('task_' + parentID);
 	insertAfter(new_fragment, parent);  //todo
 	updateTaskItem(parentID);
-	$('movable_add_task').parentNode.appendChild($('movable_add_task'));
+	if ($('movable_add_task')) {
+	    $('movable_add_task').parentNode.appendChild($('movable_add_task'));
+	}
     } else {
 	target = table; 
 	// scan for magic ie TBODY 
@@ -467,7 +469,6 @@ function doneAddingTask(req) {
 	}
 	target.appendChild(new_fragment);
     }
-    
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     new_item.childTasks = []; 
@@ -485,11 +486,20 @@ function doneAddingTask(req) {
 		node.value = "";
 	});
     $('title').focus();
+
+
+    if ($('post_add_task')) {
+	eval($('post_add_task').getAttribute('func'))();
+    }
+
     return;
 }
 doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
+doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
+
 
 function failedAddingTask(req) {
+    console.log("failed to add task");
 }
 
 function changeField(task_id, fieldname) {

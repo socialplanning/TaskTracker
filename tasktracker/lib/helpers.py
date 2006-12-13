@@ -50,8 +50,11 @@ def previewText(text, length=25):
     if not text or not length: return ""
     words = text.split()
     text = []
-    while len(text) < length and len(words):
-        text.append(words.pop(0))
+    total = 0
+    while total < length and len(words):
+        word = words.pop(0)
+        text.append(word)
+        total += len(word)
     if len(words):
         text.append ("...")
     return " ".join(text)

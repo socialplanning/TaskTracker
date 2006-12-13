@@ -61,13 +61,15 @@
 <hr>
 
 <span tal:condition="python:len(c.task.liveChildren())" class="command unfolded" id="subtasks">
-This task has <span tal:replace="python: len(c.task.liveDescendents())"/> sub-tasks.  View them.<br/>
+This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.  View them.<br/>
+<span id="post_add_task" func="count_subtasks"></span>
 </span>
+
 <span class="folded" id="edit_subtasks">
 <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
-hide <span tal:replace="python: len(c.task.liveDescendents())"/> sub-tasks
+hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks
 </span>
-<table width="100%">
+<table width="100%" id="tasks" class="all_tasks">
   <tal:for repeat="atask c/task/liveChildren">
     
     <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
@@ -97,3 +99,10 @@ next task: <a tal:attributes="href python: h.url_for(controller='task', action='
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
 </metal:do>
+<script>
+
+with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
+
+
+}
+</script>
