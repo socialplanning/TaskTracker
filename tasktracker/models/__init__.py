@@ -98,7 +98,7 @@ class Version(InheritableSQLObject):
         for column in columns:
             if column not in ["updated", "id", "origID"]:
                 if getattr(self, column) != getattr(next, column):
-                    fields.append(column)
+                    fields.append(column.title())
 
         return fields        
 

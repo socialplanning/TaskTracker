@@ -371,3 +371,13 @@ def render_action(action):
         return comment 
     else:
         return "<b>%s updated %s by %s</b>" % (", ".join (action.getChangedFields()), pretty_date(action.updated), action.updated_by)
+
+def field_last_updated(task, field):
+    the_version = None
+    for version in reversed(task.versions):
+        if field.title() in version.getChangedFields():
+            the_version = version
+            break
+    if not the_version:
+        return ""
+    return "<b>%s by %s</b>" % (pretty_date(the_version.updated), the_version.updated_by)
