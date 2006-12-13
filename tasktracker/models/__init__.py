@@ -314,6 +314,14 @@ class Task(Versionable):
 
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
+    def liveDescendents(self):
+        descendents = []
+        children = self.liveChildren()
+        for child in children:
+            descendents.append(child)
+            descendents += child.liveDescendents()
+        return descendents
+
     def uncompletedChildren(self):
         import tasktracker.lib.helpers as h
 
