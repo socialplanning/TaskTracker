@@ -73,6 +73,7 @@ class TasklistController(BaseController):
         c.tasklist = self._getTaskList(int(id))
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
+        c.parentID = 0
         c.depth = 0
         return render_response('zpt', 'task.list')
 

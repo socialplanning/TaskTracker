@@ -81,6 +81,10 @@ hide <span tal:replace="python: len(c.task.liveDescendents())"/> sub-tasks
 
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">[ + ] add a task</a>
+<metal:macro fill-slot="parentID">
+<input type="hidden" name="parentID" tal:attributes="value c/task/id" />
+</metal:macro>
+
 </metal:do>
 <br/>
 

@@ -7,7 +7,7 @@ Add task:
 
 <br/><br/>
 <input type="hidden" name="task_listID" tal:attributes="value c/task_listID" />
-<input type="hidden" name="parentID" value="0" />
+<input type="hidden" name="parentID" tal:attributes="value c/parentID" />
 <input type="hidden" name="siblingID" value="0" />
 
 <div id="hideable_title_label" style="display:none;">title</div>
