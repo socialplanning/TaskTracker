@@ -70,7 +70,7 @@ class TaskController(BaseController):
 
         #special case for deadline -- converts a datetime to a date.
         old = getattr(task, field)
-        if field == 'deadline':
+        if field == 'deadline' and old:
             old = old.date()
 
         if not old == newfield:

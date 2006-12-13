@@ -1,6 +1,9 @@
 <small>
 <hr/><br/>
-<a tal:attributes="href python:h.url_for(controller='tasklist', action='index', id=c.task.task_list.id)">
+<a tal:attributes="href python:h.url_for(controller='tasklist', action='show', id=c.task.task_list.id)">
+&lt;&lt; return to tasklist</a>&nbsp;
+
+<a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">
 &lt;&lt; return to list of lists</a>&nbsp;
 <a href="#permalink">permalink this task</a>
 </small><br/>
@@ -100,9 +103,9 @@ next task: <a tal:attributes="href python: h.url_for(controller='task', action='
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
 </metal:do>
 <script>
+function count_subtasks() {
 
 with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
-
 
 }
 </script>
