@@ -643,8 +643,7 @@ function resetChildDepths(elem) {
     if( len_of(children) ) {
         var new_depth = parseInt(elem.getElementsByTagName("SPAN")[0].getAttribute('depth')) + 1;
         $A(children).each(function(child) {
-		var title = child.childNodes[1].childNodes[1];		
-
+		var title = child.getElementsByTagName("SPAN")[0];		
 		title.setAttribute('depth', new_depth);
 		indentTaskItem(title, new_depth);
 		resetChildDepths(child);
