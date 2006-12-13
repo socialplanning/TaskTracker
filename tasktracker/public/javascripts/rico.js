@@ -1,3 +1,4 @@
+
 /**
   *
   *  Copyright 2005 Sabre Airline Solutions
@@ -1164,8 +1165,14 @@ Rico.DragAndDrop.prototype = {
 		
    _updateDraggableLocation: function(e) {
       var dragObjectStyle = this.dragElement.style;
-      dragObjectStyle.left = (e.screenX + this._leftOffset(e) - this.startx) + "px"
-      dragObjectStyle.top  = (e.screenY + this._topOffset(e) - this.starty) + "px";
+      if (navigator.userAgent.toLowerCase().indexOf("safari") >= 0) {
+	  dragObjectStyle.left = (e.screenX - this.startx) + "px"
+	  dragObjectStyle.top  = (e.screenY - this.starty) + "px";
+      }
+      else {
+	  dragObjectStyle.left = (e.screenX + this._leftOffset(e) - this.startx) + "px"
+	  dragObjectStyle.top  = (e.screenY + this._topOffset(e) - this.starty) + "px";
+      }
    },
 
    _updateDropZonesHover: function(e) {
@@ -2640,8 +2647,16 @@ var RicoUtil = {
       var el = $(htmlElement);
       if ( el.currentStyle )
          return el.currentStyle[cssProperty];
-      else
-         return document.defaultView.getComputedStyle(el, null).getPropertyValue(mozillaEquivalentCSS);
+      else {
+	  cs = document.defaultView.getComputedStyle(el, null); 
+	  // this may come back null in safari 
+	  if (cs) {
+	      return cs.getPropertyValue(mozillaEquivalentCSS);
+	  }
+	  else {
+	      return null; 
+	  }
+      }
    },
 
    createXmlDocument : function() {

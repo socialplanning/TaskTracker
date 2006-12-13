@@ -31,7 +31,7 @@
 // exception statement from your version.
 
 function find(thing, item) {
-    if( length(thing) ) {
+    if( len_of(thing) ) {
 	var i;
 	for( i = 0; i < thing.length; i++ )
 	    if( thing[i] == item )
@@ -41,7 +41,7 @@ function find(thing, item) {
 }
 
 function insertBeforeInList(thing, newitem, olditem) {
-    if( length(thing) ) {
+    if( len_of(thing) ) {
 	var i;
 	for( i = thing.length - 1; i > -1; i-- ) {
 	    thing[i+1] = thing[i];
@@ -56,7 +56,7 @@ function insertBeforeInList(thing, newitem, olditem) {
 }
 
 function insertAfterInList(thing, newitem, olditem) {
-    if( length(thing) ) {
+    if( len_of(thing) ) {
 	var i;
 	for( i = thing.length - 1; i > -1; i-- ) {
 	    thing[i+1] = thing[i];
@@ -84,7 +84,7 @@ function hasClass(element, classname) {
     return new RegExp('\\b' + classname + '\\b').test(element.className);
 }
 
-function length(thing) {
+function len_of(thing) {
     return (thing && thing.length ? thing.length : 0);
 }
 
@@ -298,7 +298,7 @@ function setTaskParents() {
 		var parent;
 		if( !task.childTasks ) task.childTasks = [];
 		if( (parentID = task.getAttribute("parentID")) && (parent = $('task_' + parentID)) ) {
-		    if( length(parent.childTasks) )
+		    if( len_of(parent.childTasks) )
 			parent.childTasks[parent.childTasks.length] = task;
 		    else
 			parent.childTasks = [task]
@@ -523,7 +523,7 @@ function updateTaskItem(task_id) {
 	root = 'root-task';
     }
     tasktext.setAttribute('class', completed + ' ' + root);
-    if( length(taskitem.childTasks) ) {
+    if( len_of(taskitem.childTasks) ) {
 	expandTask(task_id);
     } else {
 	flattenTask(task_id);  // todo test this half
@@ -593,7 +593,7 @@ function doneMovingTask(req) {
 	oop = old_parent;
 	chil = child;
 	old_parent.childTasks.removeItem(child);
-        if( !length(old_parent.childTasks) )
+        if( !len_of(old_parent.childTasks) )
             flattenTask(old_parent_id);
     }
     if (new_parent_id) {
@@ -618,7 +618,7 @@ var mode = 'view';
 function resetChildDepths(elem) {
     var children = elem.childTasks;
     
-    if( length(children) ) {
+    if( len_of(children) ) {
         var new_depth = parseInt(children[0].getAttribute('depth')) + 1;
         $A(children).each(function(child) {
 		var title = child.childNodes[1];		
@@ -700,7 +700,7 @@ function insertTaskUnderParent(child_id, parent_id, justmove) {
     var table = $('tasks');
 
     if( !justmove ) {
-	if( length(new_parent.childTasks) ) {
+	if( len_of(new_parent.childTasks) ) {
 	    insertBeforeInList(new_parent.childTasks, child, new_parent.childTasks[0]);
 	}
 	else {
