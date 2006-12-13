@@ -84,7 +84,7 @@ class ZWSGIFakeEnv(object):
             return True
 
         except KeyError:
-            return False            
+            return False
 
     def memberlist(self, project):
         return self.users.keys()

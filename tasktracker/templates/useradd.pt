@@ -1,0 +1,16 @@
+<span tal:replace="structure python: h.start_form(h.url_for(action='create', controller='users'))" />
+
+<label for="username">username</label>
+<span tal:replace="structure python: h.text_field('username')" />
+
+<br/>
+<label for="password">password</label>
+<span tal:replace="structure python: h.password_field('password')" />
+
+<br/>
+<label for="password_again">verify password</label>
+<span tal:replace="structure python: h.password_field('password_again')" />
+
+<br/><br/>
+<span tal:replace="structure python: h.submit()" />
+<span tal:replace="structure python: h.end_form()" />

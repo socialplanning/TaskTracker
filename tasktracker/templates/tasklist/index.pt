@@ -35,9 +35,12 @@
 <a onclick="$('show_create').show(); return false;" 
    tal:attributes="href python:h.url_for(action='show_create')">Create a new list.</a>
 </p>
-
 <span style="display:none;" id="show_create">
 <metal:macro use-macro="here/show_create/macros/task_list_create">
 
 </metal:macro>
 </span>
+
+<p>
+<a tal:attributes="href python:h.url_for(controller='users', action='add')">Add a new user.</a>
+</p>
