@@ -30,6 +30,17 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
+function safeify(func, name) {
+      return function () {
+          try {
+              return func.apply(this, arguments);
+          } catch (e) {
+              console.log('Error in ' + (name || func) + ' at ' + e.lineNumber + ': ' + e);
+              return null;
+          }
+      }
+ }
+
 function find(thing, item) {
     if( len_of(thing) ) {
 	var i;
@@ -328,7 +339,7 @@ function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
     dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
     dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
-    //		dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+    dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
 }
 
 function setupEmptyList() {
@@ -476,6 +487,7 @@ function doneAddingTask(req) {
     $('title').focus();
     return;
 }
+doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function failedAddingTask(req) {
 }
@@ -621,7 +633,8 @@ function resetChildDepths(elem) {
     if( len_of(children) ) {
         var new_depth = parseInt(elem.getElementsByTagName("SPAN")[0].getAttribute('depth')) + 1;
         $A(children).each(function(child) {
-		var title = child.getElementsByTagName("TD")[0];
+		var title = child.childNodes[1].childNodes[1];		
+
 		title.setAttribute('depth', new_depth);
 		indentTaskItem(title, new_depth);
 		resetChildDepths(child);
@@ -659,36 +672,47 @@ function insertTaskAfterSibling(task_id, sibling_id) {
     var new_sibling = $('task_' + sibling_id);
 
     var parent = $('task_' + new_sibling.getAttribute('parentID'));
-    insertAfterInList(parent.childTasks, child, new_sibling);
-    insertAfter(child, new_sibling);
-    
-    var new_index = parseInt(new_sibling.getAttribute('sort_index'));
+    if( parent ) {
+	insertAfterInList(parent.childTasks, child, new_sibling); 
+    }
+    var sib_ch = new_sibling.childTasks;
+    var preceding_task = (len_of(sib_ch) ? 
+			  sib_ch[sib_ch.length - 1] :
+			  new_sibling);
+    insertAfter(child, preceding_task);
 
     //update sort_index
-    // TODO fix this!
-    /*
+    var new_index = parseInt(new_sibling.getAttribute('sort_index'));
     var items = $('tasks').getElementsByTagName('task-item');
     $A(items).each(function(item) {
-        if (item == child) {
-            item.setAttribute('sort_index', new_index + 1);
-        } else {
-            var sort_index = parseInt(item.getAttribute('sort_index'));
-            if (sort_index > new_index) {
-                item.setAttribute('sort_index', sort_index + 1);
-            }
-        }
-	});*/
+	    if (item == child) {
+		item.setAttribute('sort_index', new_index + 1);
+	    } else {
+		var sort_index = parseInt(item.getAttribute('sort_index'));
+		if (sort_index > new_index) {
+		    item.setAttribute('sort_index', sort_index + 1);
+		}
+	    }
+	});
 
-    /*  TODO this is definitely broken.. fix it
     //update depth
-    if ($('draggable_' + sibling_id).getAttribute('depth') > 0) {
+    var me = $('draggable_' + task_id);
+    if ($('draggable_' + sibling_id).getAttribute('depth') > 0) {	
+	$('task_' + task_id).setAttribute("parentID", new_sibling.getAttribute("parentID"));
+	//	indentTaskItem(me, $('handle_' + sibling_id).style.marginLeft);
         resetChildDepths(parent);
     } else {
-        $('draggable_' + child_id).setAttribute('depth', 0);
+        me.setAttribute('depth', 0);
+	$('task_' + task_id).setAttribute("parentID", 0);
         //title.style.paddingLeft = '0px'; 
-        indentTaskItem(title, 0);
+        indentTaskItem(me, 0);
         resetChildDepths(child);
-	}*/
+    }
+    updateTaskItem(task_id);
+
+    $A(child.childTasks).each(function(node) {
+	    insertTaskUnderParent(node.getAttribute("task_id"), task_id, 1);
+	});
 }
 
 function insertTaskUnderParent(child_id, parent_id, justmove) {
@@ -719,7 +743,6 @@ function insertTaskUnderParent(child_id, parent_id, justmove) {
 	    insertTaskUnderParent(node.getAttribute("task_id"), child_id, 1);
 	});
 
-    //todo update all taskitems
     if( justmove )
 	return;
 
