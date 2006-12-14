@@ -125,7 +125,6 @@ function evalHTML(value) {
     return html;
 }
 
-
 // http://simon.incutio.com/archive/2004/05/26/addLoadEvent
 function addLoadEvent(func) {
   var oldonload = window.onload;
@@ -139,4 +138,8 @@ function addLoadEvent(func) {
       func();
     }
   }
+}
+
+function toggle(obj) {
+    obj.style.display = (obj.style.display != 'none' ? 'none' : '');  //todo hey, this is no good.
 }

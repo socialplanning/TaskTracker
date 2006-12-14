@@ -214,7 +214,7 @@ function createDragDrop() {
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
-	/*
+	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
 	if ($('trash')) {
 	    Droppables.add('trash', {
 		    hoverclass : 'drop',
@@ -239,10 +239,6 @@ function setupEmptyList() {
 addLoadEvent(createDragDrop);
 addLoadEvent(setupEmptyList);
 addLoadEvent(setTaskParents);
-
-function toggle(obj) {
-    obj.style.display = (obj.style.display != 'none' ? 'none' : '');  //todo hey, this is no good.
-}
 
 function filterDeadline() {
     var filtervalue = $('deadline_filter').value;
@@ -333,7 +329,7 @@ function doneAddingTask(req) {
     var parentID = parseInt(forminputs[1].getAttribute("value"));
     var siblingID = parseInt(forminputs[2].getAttribute("value"));
     var new_fragment = evalHTML(req.responseText);
-    new_item = new_fragment.firstChild; 
+    var new_item = new_fragment.firstChild; 
 
     var table = $('tasks');
     if (siblingID != 0){ 
@@ -498,11 +494,10 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
+
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
-	oop = old_parent;
-	chil = child;
 	old_parent.childTasks.removeItem(child);
         if( !len_of(old_parent.childTasks) )
             flattenTask(old_parent_id);
@@ -644,6 +639,7 @@ function insertTaskUnderParent(child_id, parent_id, justmove) {
     if( justmove )
 	return;
 
+    child.setAttribute("parentID", parent_id);
     var items = new_parent.childTasks;
     //update sort_index
     $A(items).each(function(item) {
