@@ -30,75 +30,6 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
-function safeify(func, name) {
-      return function () {
-          try {
-              return func.apply(this, arguments);
-          } catch (e) {
-              console.log('Error in ' + (name || func) + ' at ' + e.lineNumber + ': ' + e);
-              return null;
-          }
-      }
- }
-
-function find(thing, item) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = 0; i < thing.length; i++ )
-	    if( thing[i] == item )
-		return i;
-    }
-    return -1;
-}
-
-function insertBeforeInList(thing, newitem, olditem) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = thing.length - 1; i > -1; i-- ) {
-	    thing[i+1] = thing[i];
-	    if( thing[i] == olditem ) {
-		thing[i] = newitem;
-		return i;
-	    }
-	}
-    }
-    thing[0] = newitem;
-    return -1;
-}
-
-function insertAfterInList(thing, newitem, olditem) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = thing.length - 1; i > -1; i-- ) {
-	    thing[i+1] = thing[i];
-	    if( thing[i] == olditem ) {
-		thing[i+1] = newitem;
-		return i;
-	    }
-	}
-    }
-    thing[0] = newitem;
-    return -1;
-}
-
-function addClass(element, classname) {
-    if (!hasClass(element, classname))
-	element.className += element.className ? ' ' + classname : classname;
-}
-
-function removeClass(element, classname) {
-    var removeMe = element.className.match(' ' + classname) ? ' ' + classname : classname;
-    element.className = element.className.replace(removeMe, '');
-}
-
-function hasClass(element, classname) {
-    return new RegExp('\\b' + classname + '\\b').test(element.className);
-}
-
-function len_of(thing) {
-    return (thing && thing.length ? thing.length : 0);
-}
-
 function showFilterColumn(field) {
     $(field + '-filter-label').hide();
     $(field + '_filter').show();
@@ -256,48 +187,6 @@ var myrules = {
 
 Behaviour.register(myrules);
 
-// "ported" from http://trac.mochikit.com/wiki/ParsingHtml
-function evalHTML(value) {
-    if (typeof(value) != 'string') {
-	return null;
-    }
-    value = value.strip();
-    if (value.length == 0) {
-	return null;
-    }
-    // work around absurd ie innerHTML limitations 
-    var parser = document.createElement("DIV");
-    parser.innerHTML = "<TABLE><TBODY>" + value + "</TBODY></TABLE>";
-    
-    var body = parser.firstChild.firstChild; 
-
-    var html = document.createDocumentFragment();
-
-    var child; 
-    for (i = 0; i < body.childNodes.length; i++) {
-	child = body.childNodes[i];
-	html.appendChild(child);
-    }
-
-    return html;
-}
-
-
-// http://simon.incutio.com/archive/2004/05/26/addLoadEvent
-function addLoadEvent(func) {
-  var oldonload = window.onload;
-  if (typeof window.onload != 'function') {
-    window.onload = func;
-  } else {
-    window.onload = function() {
-      if (oldonload) {
-        oldonload();
-      }
-      func();
-    }
-  }
-}
-
 function hasReorderableTasks() {
     return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");
 }
@@ -325,7 +214,7 @@ function createDragDrop() {
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
-	/*
+	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
 	if ($('trash')) {
 	    Droppables.add('trash', {
 		    hoverclass : 'drop',
@@ -350,10 +239,6 @@ function setupEmptyList() {
 addLoadEvent(createDragDrop);
 addLoadEvent(setupEmptyList);
 addLoadEvent(setTaskParents);
-
-function toggle(obj) {
-    obj.style.display = (obj.style.display != 'none' ? 'none' : '');  //todo hey, this is no good.
-}
 
 function filterDeadline() {
     var filtervalue = $('deadline_filter').value;
@@ -444,7 +329,7 @@ function doneAddingTask(req) {
     var parentID = parseInt(forminputs[1].getAttribute("value"));
     var siblingID = parseInt(forminputs[2].getAttribute("value"));
     var new_fragment = evalHTML(req.responseText);
-    new_item = new_fragment.firstChild; 
+    var new_item = new_fragment.firstChild; 
 
     var table = $('tasks');
     if (siblingID != 0){ 
@@ -609,11 +494,10 @@ function doneMovingTask(req) {
     var old_parent_id = this['old_parent_id'];
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
+
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
         var old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
-	oop = old_parent;
-	chil = child;
 	old_parent.childTasks.removeItem(child);
         if( !len_of(old_parent.childTasks) )
             flattenTask(old_parent_id);
@@ -755,6 +639,7 @@ function insertTaskUnderParent(child_id, parent_id, justmove) {
     if( justmove )
 	return;
 
+    child.setAttribute("parentID", parent_id);
     var items = new_parent.childTasks;
     //update sort_index
     $A(items).each(function(item) {

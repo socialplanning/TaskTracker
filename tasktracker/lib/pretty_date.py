@@ -45,7 +45,7 @@ def _pretty_date_engine(now, date):
     return date.strftime("%B %e, %Y")
 
 
-def pretty_date(date):
+def prettyDate(date):
     now = date.today()
     return _pretty_date_engine(now, date)
 

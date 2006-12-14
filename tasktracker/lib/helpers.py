@@ -37,21 +37,27 @@ import imp, os
 from formencode import htmlfill
 from tasktracker.lib.base import render_response
 
-from tasktracker.lib.pretty_date import pretty_date
+from tasktracker.lib.pretty_date import prettyDate
 from random import random
 def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
 
 def previewText(text, length=25):
-    if not text: return ""
+    #length might be an empty string b/c of tal
+    if length == "":
+        length = 25
+    if not text or not length: return ""
     words = text.split()
-    text = words.pop(0)
-    while len(text) < length and len(words):
-        text = "%s %s" % (text, words.pop(0))
+    text = []
+    total = 0
+    while total < length and len(words):
+        word = words.pop(0)
+        text.append(word)
+        total += len(word)
     if len(words):
-        text = "%s ..." % text
-    return text
+        text.append ("...")
+    return " ".join(text)
 
 def isOverdue(deadline):
     if not deadline:
@@ -67,7 +73,7 @@ def isOverdue(deadline):
 
 def readableDate(date):
     if date:
-        return pretty_date(date)
+        return prettyDate(date)
     else:
         return "No deadline"
 
@@ -136,22 +142,61 @@ def editableField(task, field):
     
     return " ".join(out)
 
+def _selectjs(field, id):
+    def _onblur(field, id):
+        return '$("%s-form_%d").hide(); $("%s-label_%d").show();' % (field, id, field, id)
 
-def _prioritySelect(task, onblur = None):
+    def _onchange(field, id):
+        return 'changeField(%d, "%s");'  % (id, field)
+
+    return dict(onblur=_onblur(field, id), onchange=_onchange(field, id))
+
+def _prioritySelect(task):
     priority = task.priority
     id = task.id
-    if onblur is None:
-        onblur = 'changeField(%d, "priority");'  % task.id
+    onchange = 'changeField(%d, "priority");'  % task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority, id='priority_%d' % id, 
-                  onblur=onblur, onchange=onblur)
+                  method='post', originalvalue=priority, id='priority_%d' % id, **_selectjs('priority', id))
+
+def _deadlineInput(task):
+    orig = "No deadline"
+    if task.deadline:
+        orig = task.deadline
+    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
+                           input_attributes=dict(originalvalue=str(orig)), value=task.deadline)
+                        
+def _statusSelect(task):
+    statuses = task.task_list.statuses
+    status_names = [(s.name, s.name) for s in statuses]
+    index = 0
+    for status in statuses:
+        if status.name == task.status:
+            break
+        index += 1
+    
+    return select('status', options_for_select(status_names, task.status), 
+                  method='post', originalvalue=task.status,
+                  id='status_%d' % task.id, **_selectjs('status', task.id))
+
+def _ownerInput(task):
+    orig = "No owner"
+    if task.owner:
+        orig = task.owner    
+
+    input = text_field('owner', autocomplete="off", originalvalue=orig, size=15,
+                       id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
+    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
+    script = """<script type="text/javascript">
+                 new Ajax.Autocompleter('owner_%d',
+                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
+    return "%s\n%s\n%s" % (input, span, script)
 
 def columnFilter(field, tasklist = None):
     out = []
     onblur = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
     filter = globals()["_%sFilter" % field](onblur = onblur, tasklist = tasklist)
     onclick = """showFilterColumn('%s');""" % field
-    span = """<span class="editable" id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
+    span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
     
     return "%s%s" % (filter, span)
 
@@ -191,48 +236,15 @@ def _ownerFilter(onblur = None, tasklist = None):
                   method='post', originalvalue='All', id='owner_filter', 
                   onblur=onblur, onchange=onblur, style="display:none")
 
-def _ownerInput(task):
-    orig = "No owner"
-    if task.owner:
-        orig = task.owner    
+def _textArea(task):
+    orig = task.text
+    area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, content=orig, rows=10, cols=80)
+    button = submit('submit', onclick = 'changeField(%d, "text"); return false;' % task.id)
+    return area + button
 
-    input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
-              id="owner_%d" value="%s" onchange='changeField(%d, "owner");'
-              onblur='changeField(%d, "owner");'/>""" % (orig, task.id, task.owner, task.id, task.id)
-    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
-    script = """<script type="text/javascript">
-                 new Ajax.Autocompleter('owner_%d',
-                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
-    return "%s\n%s\n%s" % (input, span, script)
-    
-def _deadlineInput(task):
-    orig = "No deadline"
-    if task.deadline:
-        orig = task.deadline
-    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
-                           input_attributes=dict(originalvalue="%s" % orig), value=task.deadline)
-                        
-def _statusSelect(task):
-    statuses = task.task_list.statuses
-    status_names = [(s.name, s.name) for s in statuses]
-    index = 0
-    for status in statuses:
-        if status.name == task.status:
-            break
-        index += 1
-    
-#    status_change_url = url_for(controller='task',
-#                                  action='change_field',
-#                                  id=task.id, field=field)
-    return select('status', 
-                  options_for_select(status_names, task.status), 
-                  method='post', 
-                  originalvalue=task.status,
-                  id='status_%d' % task.id,
-                  onchange='changeField(%d, "status");' % task.id,
-                  onblur='changeField(%d, "status");' % task.id)
 
-_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput)
+
+_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput, text=_textArea)
     
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []
@@ -335,6 +347,7 @@ def filled_render(template, obj, extra_dict={}):
     response.content = [htmlfill.render("".join(response.content), d)]
     return response
 
+#FIXME: merge with previewText
 def shorter(text):
     if len(text) <= 100:
         return text
@@ -354,8 +367,22 @@ def shorter(text):
 
 def render_action(action):
     if isinstance(action, Comment):
-        comment = shorter(html2safehtml(action.text))
-        comment += "<br/><b>Comment from %s by %s</b>" % (pretty_date(action.date), action.user)
-        return comment 
+        comment = html2safehtml(action.text)
+        comment += "<br/><b>Comment from %s by %s</b>" % (prettyDate(action.date), action.user)
     else:
-        return "<b>%s updated %s by %s</b>" % (", ".join (action.getChangedFields()), pretty_date(action.updated), action.updated_by)
+        fields = action.getChangedFields()
+        if not fields:
+            return ''
+        comment = "<b>%s updated %s by %s</b>" % (", ".join (fields), prettyDate(action.updated), action.updated_by)
+    return '<li>%s</li>' % comment
+
+
+def field_last_updated(task, field):
+    the_version = None
+    for version in reversed(task.versions):
+        if field.title() in version.getChangedFields():
+            the_version = version
+            break
+    if not the_version:
+        return ""
+    return "<b>%s by %s</b>" % (prettyDate(the_version.updated), the_version.updated_by)
