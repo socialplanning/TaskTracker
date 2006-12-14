@@ -142,15 +142,54 @@ def editableField(task, field):
     
     return " ".join(out)
 
+def _selectjs(field, id):
+    def _onblur(field, id):
+        return '$("%s-form_%d").hide(); $("%s-label_%d").show();' % (field, id, field, id)
 
-def _prioritySelect(task, onblur = None):
+    def _onchange(field, id):
+        return 'changeField(%d, "%s");'  % (id, field)
+
+    return dict(onblur=_onblur(field, id), onchange=_onchange(field, id))
+
+def _prioritySelect(task):
     priority = task.priority
     id = task.id
-    if onblur is None:
-        onblur = 'changeField(%d, "priority");'  % task.id
+    onchange = 'changeField(%d, "priority");'  % task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority, id='priority_%d' % id, 
-                  onblur=onblur, onchange=onblur)
+                  method='post', originalvalue=priority, id='priority_%d' % id, **_selectjs('priority', id))
+
+def _deadlineInput(task):
+    orig = "No deadline"
+    if task.deadline:
+        orig = task.deadline
+    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
+                           input_attributes=dict(originalvalue=str(orig)), value=task.deadline)
+                        
+def _statusSelect(task):
+    statuses = task.task_list.statuses
+    status_names = [(s.name, s.name) for s in statuses]
+    index = 0
+    for status in statuses:
+        if status.name == task.status:
+            break
+        index += 1
+    
+    return select('status', options_for_select(status_names, task.status), 
+                  method='post', originalvalue=task.status,
+                  id='status_%d' % task.id, **_selectjs('status', task.id))
+
+def _ownerInput(task):
+    orig = "No owner"
+    if task.owner:
+        orig = task.owner    
+
+    input = text_field('owner', autocomplete="off", originalvalue=orig, size=15,
+                       id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
+    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
+    script = """<script type="text/javascript">
+                 new Ajax.Autocompleter('owner_%d',
+                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
+    return "%s\n%s\n%s" % (input, span, script)
 
 def columnFilter(field, tasklist = None):
     out = []
@@ -196,47 +235,6 @@ def _ownerFilter(onblur = None, tasklist = None):
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
                   onblur=onblur, onchange=onblur, style="display:none")
-
-def _ownerInput(task):
-    orig = "No owner"
-    if task.owner:
-        orig = task.owner    
-
-    input = """<input autocomplete="off" originalvalue="%s" name="owner" size="15" type="text"
-              id="owner_%d" value="%s" onchange='changeField(%d, "owner");'
-              onblur='changeField(%d, "owner");'/>""" % (orig, task.id, task.owner, task.id, task.id)
-    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
-    script = """<script type="text/javascript">
-                 new Ajax.Autocompleter('owner_%d',
-                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
-    return "%s\n%s\n%s" % (input, span, script)
-    
-def _deadlineInput(task):
-    orig = "No deadline"
-    if task.deadline:
-        orig = task.deadline
-    return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
-                           input_attributes=dict(originalvalue=str(orig)), value=task.deadline)
-                        
-def _statusSelect(task):
-    statuses = task.task_list.statuses
-    status_names = [(s.name, s.name) for s in statuses]
-    index = 0
-    for status in statuses:
-        if status.name == task.status:
-            break
-        index += 1
-    
-#    status_change_url = url_for(controller='task',
-#                                  action='change_field',
-#                                  id=task.id, field=field)
-    return select('status', 
-                  options_for_select(status_names, task.status), 
-                  method='post', 
-                  originalvalue=task.status,
-                  id='status_%d' % task.id,
-                  onchange='changeField(%d, "status");' % task.id,
-                  onblur='changeField(%d, "status");' % task.id)
 
 def _textArea(task):
     orig = task.text
