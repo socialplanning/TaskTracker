@@ -30,75 +30,6 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
-function safeify(func, name) {
-      return function () {
-          try {
-              return func.apply(this, arguments);
-          } catch (e) {
-              console.log('Error in ' + (name || func) + ' at ' + e.lineNumber + ': ' + e);
-              return null;
-          }
-      }
- }
-
-function find(thing, item) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = 0; i < thing.length; i++ )
-	    if( thing[i] == item )
-		return i;
-    }
-    return -1;
-}
-
-function insertBeforeInList(thing, newitem, olditem) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = thing.length - 1; i > -1; i-- ) {
-	    thing[i+1] = thing[i];
-	    if( thing[i] == olditem ) {
-		thing[i] = newitem;
-		return i;
-	    }
-	}
-    }
-    thing[0] = newitem;
-    return -1;
-}
-
-function insertAfterInList(thing, newitem, olditem) {
-    if( len_of(thing) ) {
-	var i;
-	for( i = thing.length - 1; i > -1; i-- ) {
-	    thing[i+1] = thing[i];
-	    if( thing[i] == olditem ) {
-		thing[i+1] = newitem;
-		return i;
-	    }
-	}
-    }
-    thing[0] = newitem;
-    return -1;
-}
-
-function addClass(element, classname) {
-    if (!hasClass(element, classname))
-	element.className += element.className ? ' ' + classname : classname;
-}
-
-function removeClass(element, classname) {
-    var removeMe = element.className.match(' ' + classname) ? ' ' + classname : classname;
-    element.className = element.className.replace(removeMe, '');
-}
-
-function hasClass(element, classname) {
-    return new RegExp('\\b' + classname + '\\b').test(element.className);
-}
-
-function len_of(thing) {
-    return (thing && thing.length ? thing.length : 0);
-}
-
 function showFilterColumn(field) {
     $(field + '-filter-label').hide();
     $(field + '_filter').show();
@@ -255,48 +186,6 @@ var myrules = {
 };
 
 Behaviour.register(myrules);
-
-// "ported" from http://trac.mochikit.com/wiki/ParsingHtml
-function evalHTML(value) {
-    if (typeof(value) != 'string') {
-	return null;
-    }
-    value = value.strip();
-    if (value.length == 0) {
-	return null;
-    }
-    // work around absurd ie innerHTML limitations 
-    var parser = document.createElement("DIV");
-    parser.innerHTML = "<TABLE><TBODY>" + value + "</TBODY></TABLE>";
-    
-    var body = parser.firstChild.firstChild; 
-
-    var html = document.createDocumentFragment();
-
-    var child; 
-    for (i = 0; i < body.childNodes.length; i++) {
-	child = body.childNodes[i];
-	html.appendChild(child);
-    }
-
-    return html;
-}
-
-
-// http://simon.incutio.com/archive/2004/05/26/addLoadEvent
-function addLoadEvent(func) {
-  var oldonload = window.onload;
-  if (typeof window.onload != 'function') {
-    window.onload = func;
-  } else {
-    window.onload = function() {
-      if (oldonload) {
-        oldonload();
-      }
-      func();
-    }
-  }
-}
 
 function hasReorderableTasks() {
     return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");

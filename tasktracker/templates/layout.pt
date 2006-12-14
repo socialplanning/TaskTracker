@@ -9,6 +9,7 @@ Todo list
 <span tal:replace="structure python:h.javascript_include_tag('prototype.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('rico.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('effects.js')" />
+<span tal:replace="structure python:h.javascript_include_tag('helpers.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('task.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('pretty-date.js')" />
 <span tal:replace="structure python:h.javascript_include_tag('builder.js')" />
