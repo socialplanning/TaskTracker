@@ -8,7 +8,7 @@
 <span tal:replace="structure python:h.sortableColumn('status')" />
 </th>
 
-<th>
+<th tal:condition="python: c.tasklist.hasFeature('deadlines')">
 <span tal:replace="structure python:h.sortableColumn('deadline')" />
 </th>
 
@@ -24,7 +24,7 @@
 <tr class="task-filter-controls">
 <td class="taskitem">&nbsp;</td>
 <td class="status-column"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></td>
-<td class="deadline-column"><span tal:replace="structure python: h.columnFilter('deadline')"/></td>
+<td class="deadline-column" tal:condition="python: c.tasklist.hasFeature('deadlines')"><span tal:replace="structure python: h.columnFilter('deadline')" /></td>
 <td class="priority-column"><span tal:replace="structure python: h.columnFilter('priority')"/></td>
 <td class="owner-column"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></td>
 </tr>

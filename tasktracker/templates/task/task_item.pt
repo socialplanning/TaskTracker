@@ -40,9 +40,10 @@
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
 </td>
 
-<td width="15%">
+<td width="15%" tal:condition="python: atask.task_list.hasFeature('deadlines')">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
 </td>
+
 
 <td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
