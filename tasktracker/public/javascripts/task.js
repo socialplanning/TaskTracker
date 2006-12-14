@@ -478,6 +478,11 @@ function succeededChangingField(req) {
     $('task_' + task_id).setAttribute(fieldname, req.responseText);
     updateTaskItem(task_id);
     hideChangeableField(task_id, fieldname);
+
+    if ($('post_edit_task')) {
+	eval($('post_edit_task').getAttribute('func'))(task_id, fieldname);
+    }
+
 }
 
 function failedChangingField(req) {    

@@ -34,7 +34,7 @@
 <span tal:replace="structure python:h.editableField(c.task, 'text')"/>
 
 <br>
-<b>Description last updated <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/></b>
+<b id="description_updated">Description last updated <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/></b>
 <hr>
 
 <br/>
@@ -82,8 +82,6 @@
 
 <span tal:attributes="style python: test(len(c.task.liveChildren()), '', 'display:none;;')" class="command unfolded" id="subtasks">
 This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.  View them.<br/>
-<span id="post_add_task" func="count_subtasks"></span>
-</span>
 
 <span class="folded" id="edit_subtasks">
 <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
@@ -99,6 +97,7 @@ hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtas
  <br>
 <hr>
 </span>
+</span>
 
 
 <br/>
@@ -111,7 +110,20 @@ next task: <a tal:attributes="href python: h.url_for(controller='task', action='
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
 </metal:do>
+
+<span id="post_add_task" func="count_subtasks"></span>
+
+<span id="post_edit_task" func="change_description_updated"></span>
+
+
+
 <script>
+function change_description_updated(task_id, field_name) {
+    if (field_name == 'text') {
+        $('description_updated').innerHTML = "Description last updated today by you";
+    }
+}
+
 function count_subtasks() {
 
 with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
