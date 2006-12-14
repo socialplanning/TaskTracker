@@ -245,38 +245,38 @@ class TestTaskController(TestController):
         nonpriv.destroySelf()
         priv.destroySelf()
     
-    def test_task_update(self):
-        tl = self.create_tasklist('testing task update')
-
-        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
-        
-        app = self.getApp('admin')
-
-        res = app.get(url_for(
-                controller='task', action='show_update', id=task.id))
-
-        form = res.forms[0]
-        form.fields['title'][0].value = "The updated task."
-
-        res = form.submit()
-
-        res = app.get(url_for(
-                controller='task', action='show', id=task.id))
-        
-        res.mustcontain("The updated task")
-
-        #find the old version
-        versions = task.versions
-        assert len(versions) == 1
-        version = versions[0]
-
-        assert version.title == "The task"
-        assert version.text == "x"
-        assert version.updated == task.created
-
-        version.destroySelf()
-        task.destroySelf()
-        tl.destroySelf()
+#    def test_task_update(self):
+#        tl = self.create_tasklist('testing task update')
+#
+#        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+#        
+#        app = self.getApp('admin')
+#
+#        res = app.get(url_for(
+#                controller='task', action='show_update', id=task.id))
+#
+#        form = res.forms[0]
+#        form.fields['title'][0].value = "The updated task."
+#
+#        res = form.submit()
+#
+#        res = app.get(url_for(
+#                controller='task', action='show', id=task.id))
+#        
+#        res.mustcontain("The updated task")
+#
+#        #find the old version
+#        versions = task.versions
+#        assert len(versions) == 1
+#        version = versions[0]
+#
+#        assert version.title == "The task"
+#        assert version.text == "x"
+#        assert version.updated == task.created
+#
+#        version.destroySelf()
+#        task.destroySelf()
+#        tl.destroySelf()
         
 #     def test_task_watch(self):
 #         """Tests adding self as a watcher for a task"""
