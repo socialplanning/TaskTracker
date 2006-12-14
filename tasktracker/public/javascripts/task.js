@@ -156,7 +156,7 @@ var myrules = {
 
     '#add_a_task' : function(element) {
 	element.doclick = function() {
-	    hideCreate();
+	    showTaskCreate();
 	    return false;
 	}
     },
@@ -232,8 +232,9 @@ function enableDragDrop(node) {
 }
 
 function setupEmptyList() {
-    if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length))
-	hideCreate();
+    in_task_show = $('subtasks') ? 1 : 0;
+    if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length) && !in_task_show)
+	showTaskCreate();
 }
 
 addLoadEvent(createDragDrop);
@@ -318,7 +319,7 @@ function filterListByAllFields() {
 
 function restoreAddTask() { 
     $('add_task_anchor').appendChild($('movable_add_task'));
-    hideCreate();
+    showTaskCreate();
     $('add_task_form').getInputs()[1].setAttribute("value", 0);
     $('add_task_form').getInputs()[2].setAttribute("value", 0);
     return false;
@@ -511,7 +512,7 @@ function doneMovingTask(req) {
     updateTaskItem(task_id);
 }
 
-function hideCreate() {
+function showTaskCreate() {
     $('create').show();
     $('show_create').hide();
     //    $('create_anchor').scrollTo();
