@@ -238,13 +238,18 @@ def _ownerFilter(onblur = None, tasklist = None):
 
 def _textArea(task):
     orig = task.text
-    area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, content=orig, rows=10, cols=80)
+    area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, 
+                     content=orig, rows=10, cols=80)
     button = submit('submit', onclick = 'changeField(%d, "text"); return false;' % task.id)
     return area + button
 
+def _titleInput(task):
+    orig = task.title
+    return text_field('title_%d' % task.id, id = 'title_%d' % task.id, originalvalue=orig, 
+                      value=orig, **_selectjs("title", task.id))
 
 
-_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput, text=_textArea)
+_fieldHelpers = dict(status=_statusSelect, deadline=_deadlineInput, priority=_prioritySelect, owner=_ownerInput, text=_textArea, title=_titleInput)
     
 def _childTasksForTaskDropDown(this_task_id, task_list_id, parent_id=0, depth=0):
     tasks = []

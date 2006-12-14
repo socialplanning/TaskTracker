@@ -19,7 +19,15 @@
 <div style="border: thin solid darkgray; padding:5px;">
 
 <table class="task_list" tal:define="atask c/task" width="100%">
-  <metal:do metal:use-macro="here/task_item/macros/show_task" />
+  <metal:do metal:use-macro="here/task_item/macros/show_task">
+<metal:slot fill-slot="task_title">
+
+ <span tal:replace="structure python:h.editableField(atask, 'title')"/> &middot;
+
+</metal:slot>
+
+</metal:do>
+
 </table>
 
 
