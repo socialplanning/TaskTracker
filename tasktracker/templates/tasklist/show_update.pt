@@ -34,18 +34,20 @@
 <br/>
 
 <!-- Permissions -->
-<span onclick="show_permissions();" class="editable">
+<span onclick="show_permissions();" class="editable" id="permissions_section">
 <metal:do use-macro="here/_permissions/macros/permissions"/>
 </span>
 <script>
 function show_permissions() {
 lists.each(function(list_name) {
-for (var i = 0; i < 5; i ++) {
-  button = $(list_name + '_level_' + i);
+for (var i = 0; i < 5; i ++) {  button = $(list_name + '_level_' + i);
   button.show();
 }
 });
+removeClass($('permissions_section'), 'editable');
+$('permissions_section').title = null;
 }
+//on startup for show_update, hide radio buttons
 lists.each(function(list_name) {
 for (var i = 0; i < 5; i ++) {
   button = $(list_name + '_level_' + i);
