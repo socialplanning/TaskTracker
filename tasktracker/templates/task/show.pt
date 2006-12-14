@@ -32,8 +32,11 @@
 <br/>
 <b>All activity:</b>
 
-<ul tal:repeat="action python: c.task.actions()">
+<ul>
+<li>Task created <span tal:replace="python: h.prettyDate(c.task.created)"/> by <span tal:replace="c/task/creator"/> </li>
+<tal:nada repeat="action python: c.task.actions()">
 <span tal:replace="structure python: h.render_action(action)"/>
+</tal:nada>
 </ul>
 
 <hr>

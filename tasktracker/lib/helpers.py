@@ -37,7 +37,7 @@ import imp, os
 from formencode import htmlfill
 from tasktracker.lib.base import render_response
 
-from tasktracker.lib.pretty_date import pretty_date
+from tasktracker.lib.pretty_date import prettyDate
 from random import random
 def debugThings(obj = None):
     foo = c
@@ -73,7 +73,7 @@ def isOverdue(deadline):
 
 def readableDate(date):
     if date:
-        return pretty_date(date)
+        return prettyDate(date)
     else:
         return "No deadline"
 
@@ -370,12 +370,12 @@ def shorter(text):
 def render_action(action):
     if isinstance(action, Comment):
         comment = html2safehtml(action.text)
-        comment += "<br/><b>Comment from %s by %s</b>" % (pretty_date(action.date), action.user)
+        comment += "<br/><b>Comment from %s by %s</b>" % (prettyDate(action.date), action.user)
     else:
         fields = action.getChangedFields()
         if not fields:
             return ''
-        comment = "<b>%s updated %s by %s</b>" % (", ".join (fields), pretty_date(action.updated), action.updated_by)
+        comment = "<b>%s updated %s by %s</b>" % (", ".join (fields), prettyDate(action.updated), action.updated_by)
     return '<li>%s</li>' % comment
 
 
@@ -387,4 +387,4 @@ def field_last_updated(task, field):
             break
     if not the_version:
         return ""
-    return "<b>%s by %s</b>" % (pretty_date(the_version.updated), the_version.updated_by)
+    return "<b>%s by %s</b>" % (prettyDate(the_version.updated), the_version.updated_by)
