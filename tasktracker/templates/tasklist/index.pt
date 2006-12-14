@@ -31,7 +31,7 @@
 
 </div>
 
-<p tal:condition="python: h.has_permission('tasklist', 'show_create')">
+<p tal:condition="python: h.has_permission('tasklist', 'show_create') and c.username != 'anonymous'">
 <a onclick="$('show_create').show(); return false;" 
    tal:attributes="href python:h.url_for(action='show_create')">Create a new list.</a>
 </p>
@@ -40,6 +40,13 @@
 
 </metal:macro>
 </span>
+
+<p>
+<a tal:condition="python: c.username != 'anonymous'"
+   tal:attributes="href python:h.url_for(controller='users', action='logout', id='')">Logout.</a>
+<a tal:condition="python: c.username == 'anonymous'"
+   tal:attributes="href python:h.url_for(controller='users', action='login')">Login as an existing user.</a>
+</p>
 
 <p>
 <a tal:attributes="href python:h.url_for(controller='users', action='add')">Add a new user.</a>

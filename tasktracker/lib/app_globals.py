@@ -19,6 +19,7 @@
 # USA
 
 import imp
+from pylons import c
 
 def require(*libs):
     for lib in libs:
@@ -74,3 +75,29 @@ class Globals(object):
         """
         if hasattr(self, 'store'):
             self.store.running = False
+
+    def valid(self, environ, username, password):
+        print "OK"
+        from tasktracker.models import User
+        if not username:
+            print "No username provided"
+            username = environ.get('REMOTE_USER', 'anonymous')
+            c.username = username
+            return False
+        try: 
+            user = User.selectBy(username=username)[0]
+            if user.password == password.encode("base64"):
+                print "Successfully logged in"
+                environ['REMOTE_USER'] = username
+                username = environ.get('REMOTE_USER', 'anonymous')
+                c.username = username
+                return True
+            print "WRONG PW"
+            username = environ.get('REMOTE_USER', 'anonymous')
+            c.username = username
+            return False
+        except:
+            print "No such user."
+            username = environ.get('REMOTE_USER', 'anonymous')
+            c.username = username
+            return False

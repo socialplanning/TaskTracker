@@ -51,27 +51,28 @@ class ZWSGIFakeEnv(object):
 
     def authenticate (self, environ):
         try:
-            basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
-            if basic != "Basic": return False
-            username, password = encoded.decode("base64").split(":")
-            password = password.encode("base64")
+            #basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
+            #if basic != "Basic": return False
+            #username, password = encoded.decode("base64").split(":")
+            #password = password.encode("base64")
 
-            try:
-                userquery = User.selectBy(username=username)[0]
-                if password != userquery.password:
-                    return False
-            except IndexError:
-                return False
+            #try:
+            #    userquery = User.selectBy(username=username)[0]
+            #    if password != userquery.password:
+            #        return False
+            #except IndexError:
+            #    return False
 
+            username = environ.get("REMOTE_USER", 'anonymous')
             environ['topp.project_members'] = UserMapper()
             environ['topp.project_name'] = 'theproject'
             environ['topp.project_permission_level'] = 'closed'
 
-            environ['REMOTE_USER'] = username
+            #environ['REMOTE_USER'] = username
 
-            environ['topp.user_info'] = dict(username = username, 
+            environ['topp.user_info'] = dict(username = username,
                                              roles = ['ProjectMember'],
-                                             email = '%s@example.com' % username)
+                                             email = 'fleem@example.com')
 
             #these are needed for tests
             if username == 'admin':

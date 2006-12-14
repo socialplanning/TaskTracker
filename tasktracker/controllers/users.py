@@ -21,6 +21,9 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
+from authkit.permissions import RemoteUser
+from authkit.pylons_adaptors import authorize  
+
 import formencode
 from formencode.validators import *
 
@@ -55,6 +58,16 @@ class UsersController(BaseController):
     @attrs(action="open")
     def add(self):
         return render_response('zpt', "useradd")
+    
+    @attrs(action="open")
+    @authorize(RemoteUser())
+    def login(self):
+        return redirect_to(controller="tasklist", action="index")
+
+    @attrs(action="open")
+    @authorize(RemoteUser())
+    def logout(self):
+        return redirect_to(controller="tasklist", action="index")
 
     @attrs(action="open")
     @validate(schema=UserSchema, form="add")

@@ -312,6 +312,10 @@ def has_permission(controller, action, **params):
 
     controller = getattr(module, cap_controller + 'Controller')
 
+    # hack!  woo!
+    if controller.__module__ == 'authkit.authorize':
+        controller = controller.app
+
     action_verb = getattr(controller, action)
     action_verb = action_verb.action
 

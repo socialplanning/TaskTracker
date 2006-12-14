@@ -58,9 +58,21 @@ def make_app(global_conf, **app_conf):
     # YOUR MIDDLEWARE
     # Put your own middleware here, so that any problems are caught by the error
     # handling middleware underneath
+    if config.app_conf.has_key('openplans_wrapper'):
+        users = {'anon' : 'Anonymous',
+                 'auth' : 'Authenticated',
+                 'member' : 'ProjectMember',
+                 'contentmanager' : 'ProjectContentManager',
+                 'admin' : 'ProjectAdmin'
+                 }
+        
+        app = ZWSGIFakeEnv(app, users)
     
     # @@@ Change HTTPExceptions to HTTP responses @@@
     app = httpexceptions.make_middleware(app, global_conf)
+
+    import authkit.authenticate
+    app = authkit.authenticate.middleware(app, config_paste=app_conf, users_valid=g.valid)
     
     # @@@ Error Handling @@@
     app = ErrorHandler(app, global_conf, error_template=error_template, **config.errorware)
@@ -80,15 +92,5 @@ def make_app(global_conf, **app_conf):
     
     # @@@ Establish the Registry for this application @@@
     app = RegistryManager(app)
-
-    if config.app_conf.has_key('openplans_wrapper'):
-        users = {'anon' : 'Anonymous',
-                 'auth' : 'Authenticated',
-                 'member' : 'ProjectMember',
-                 'contentmanager' : 'ProjectContentManager',
-                 'admin' : 'ProjectAdmin'
-                 }
-        
-        app = ZWSGIFakeEnv(app, users)
 
     return app

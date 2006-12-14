@@ -21,6 +21,9 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
+from authkit.permissions import RemoteUser
+from authkit.authorize import middleware
+
 from tasktracker.lib import helpers as h
 from tasktracker.lib.taskparser import *
 import formencode
@@ -254,3 +257,5 @@ class TaskController(BaseController):
         c.tasklist = TaskList.get(int(id))
         c.task_listID = id
         return render_response('zpt', 'task.show_create_tasks')
+
+TaskController = middleware(TaskController(), RemoteUser())

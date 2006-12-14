@@ -19,6 +19,8 @@
 # USA
 
 from tasktracker.lib.base import *
+from authkit.pylons_adaptors import authorize
+from authkit.permissions import RemoteUser
 from tasktracker.models import *
 from tasktracker.lib.helpers import filled_render, has_permission
 
@@ -67,7 +69,23 @@ class TasklistController(BaseController):
         c.tasklists = self._getVisibleTaskLists(c.username)
         return render_response('zpt', 'tasklist.index')
 
+    @attrs(action='open')
+    def test(self):
+        if g.valid(request.environ, 'admin', 'topp'):
+            return Response(  
+                "The username 'james' and password 'james' is a valid combination!"  
+                )
+        return Response("Try again.")
+
+    @attrs(action='open')    
+    def signout(self):
+        if not request.environ.has_key('REMOTE_USER'):
+            return Response('You are not signed in')  
+        else:  
+            return Response('You have been signed out') 
+
     @attrs(action='show')
+    @authorize(RemoteUser())
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
@@ -76,6 +94,7 @@ class TasklistController(BaseController):
         c.depth = 0
         return render_response('zpt', 'task.list')
 
+    @authorize(RemoteUser())
     @attrs(action='create')
     def show_create(self):
         c.managers = []
@@ -142,6 +161,7 @@ class TasklistController(BaseController):
             if manager and not manager in administrators:
                 TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
 
+    @authorize(RemoteUser())
     @attrs(action='create')
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
@@ -158,6 +178,7 @@ class TasklistController(BaseController):
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
     @attrs(action='show')
+    @authorize(RemoteUser())
     @catches_errors
     def show_update(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(id)
@@ -175,6 +196,7 @@ class TasklistController(BaseController):
             return filled_render('tasklist.show_preferences', c.tasklist, p)
 
     @validate(schema=CreateListForm(), form='show_update')  
+    @authorize(RemoteUser())
     @attrs(action='update')
     @catches_errors
     def update(self, id, *args, **kwargs):
@@ -197,6 +219,7 @@ class TasklistController(BaseController):
             raise NoSuchIdError("No such tasklist ID: %s" % id)
 
     @attrs(action='create')
+    @authorize(RemoteUser())
     @catches_errors
     def destroy(self, id, *args, **kwargs):
         c.tasklist = self.getTaskList(int(id))

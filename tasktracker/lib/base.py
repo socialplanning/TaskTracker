@@ -115,11 +115,14 @@ class BaseController(WSGIController):
         c.project = project
         c.id = params.get('id')
 
+        c.username = request.environ.get("REMOTE_USER", 'anonymous')
+        if not c.username:
+            c.username = 'anonymous'
+        params['username'] = c.username
+
         if not self._authorize(project, action, params):
             redirect_to(controller='error', action='document', message='Not permitted')
             #raise SecurityException("IMPROPER AUTHENTICATION")
-
-        params['username'] = c.username
 
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
@@ -206,7 +209,6 @@ class BaseController(WSGIController):
 
         return tl_permissions[0].min_level >= local_level
 
-        
     def _authorize(self, project, action, params):
         controller = params['controller']
 
@@ -219,10 +221,7 @@ class BaseController(WSGIController):
         role = Role.selectBy(name=role_name)
         if not role.count():
             raise Exception("No such role %s" % role_name)
-        c.level = role[0].level
-
-        username = environ.get('REMOTE_USER', 'anonymous')
-        c.username = username
+        c.level = role[0].level        
 
         c.user_info = request.environ.get('topp.user_info', None)
         c.project_permission_level = request.environ.get('topp.project_permission_level', None)
@@ -255,7 +254,6 @@ class BaseController(WSGIController):
             return True
 
         params = dict(params)
-        params['username'] = username
         params.update(request.params)
         return self._has_permission(controller, action_verb, params)
 
