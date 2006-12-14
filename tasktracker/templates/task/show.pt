@@ -33,9 +33,7 @@
 <b>All activity:</b>
 
 <ul tal:repeat="action python: c.task.actions()">
-<li>
 <span tal:replace="structure python: h.render_action(action)"/>
-</li>
 </ul>
 
 <hr>
@@ -82,17 +80,17 @@ hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtas
  <br>
 </span>
 
+<span class="folded" id="add_task">
 <hr>
-
 <metal:do use-macro="here/_hideable_show_create/macros/show">
-<a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">[ + ] add a task</a>
+<a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="hideCreate();return false;">[ + ] add a sub-task</a>
 <metal:macro fill-slot="parentID">
 <input type="hidden" name="parentID" tal:attributes="value c/task/id" />
 </metal:macro>
 
 </metal:do>
 <br/>
-
+</span>
 
 <span tal:condition="c/task/nextTask">
 next task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.nextTask().id)" tal:content="python:c.task.nextTask().title"/> &gt; &gt; 

@@ -11,7 +11,7 @@ Anyone else can:
 
 <script>
 //'
-var options = ["not even see this list", "view this list but not participate", "and get tasks assigned to them", "and create new tasks", "and edit any task"];
+var options = ["not even see this list", "view this list", "and get tasks assigned to them", "and create new tasks", "and edit any task"];
 var lists = ['member', 'other'];
 checked = {};
 lists.each(function(list_name) {

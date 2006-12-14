@@ -215,3 +215,9 @@ span.editable:hover {
   text-decoration: underline;
   color: #00f;
 }
+
+.removable_list_item {
+  cursor:pointer;
+  text-decoration: underline;
+  color: #00f;
+}

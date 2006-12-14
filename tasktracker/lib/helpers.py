@@ -369,11 +369,15 @@ def shorter(text):
 
 def render_action(action):
     if isinstance(action, Comment):
-        comment = shorter(html2safehtml(action.text))
+        comment = html2safehtml(action.text)
         comment += "<br/><b>Comment from %s by %s</b>" % (pretty_date(action.date), action.user)
-        return comment 
     else:
-        return "<b>%s updated %s by %s</b>" % (", ".join (action.getChangedFields()), pretty_date(action.updated), action.updated_by)
+        fields = action.getChangedFields()
+        if not fields:
+            return ''
+        comment = "<b>%s updated %s by %s</b>" % (", ".join (fields), pretty_date(action.updated), action.updated_by)
+    return '<li>%s</li>' % comment
+
 
 def field_last_updated(task, field):
     the_version = None

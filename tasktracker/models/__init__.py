@@ -96,7 +96,7 @@ class Version(InheritableSQLObject):
         columns = self.__class__.sqlmeta.columns
         fields = []
         for column in columns:
-            if column not in ["updated", "id", "origID"]:
+            if column not in ["updated", "id", "origID", "sort_index"]:
                 if getattr(self, column) != getattr(next, column):
                     fields.append(column.title())
 
@@ -137,6 +137,9 @@ class Watcher(SQLObject):
             return self.task_list
 
 class Status(SQLObject):
+    class sqlmeta:
+        defaultOrder = 'id'
+
     name = StringCol()
     task_list = ForeignKey("TaskList")
 
@@ -523,8 +526,11 @@ class TaskList(Versionable):
 
         if kwargs.get('statuses', None):
             statuses = kwargs['statuses'].split(",")
-            if not 'done' in statuses:
-                statuses.append('done')
+            if 'done' in statuses:
+                statuses.remove('done')
+            #done must always be at end
+            statuses.append('done')            
+
         else:
             statuses = ['not done', 'done']
         for status in statuses:
