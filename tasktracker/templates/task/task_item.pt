@@ -34,19 +34,19 @@
 
 <!-- <form tal:attributes="action string:/task/update/${atask/id}"> -->
 
-<td>
+<td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
 </td>
 
-<td>
+<td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
 </td>
 
-<td>
+<td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
 </td>
 
-<td>
+<td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
 </td>
 
