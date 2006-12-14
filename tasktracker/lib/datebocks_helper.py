@@ -99,6 +99,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
     if not 'id' in keys:
         attributes['id'] = 'dateBocks'
 
+    task_id = int(attributes['id'].split('_')[1])
     keys = attributes.keys()
     for key in keys:
         if key != 'id':
@@ -148,7 +149,7 @@ def datebocks_field(object_name, field_name, options = None, calendar_options = 
                                  value=value, 
                                  id=calendar_ref, 
                                  onChange=calendar_ref + "Obj.magicDate();",
-                                 onBlur=calendar_ref + "Obj.magicDate();",
+                                 onBlur='$("deadline-form_%d").hide(); $("deadline-label_%d").show();' % (task_id, task_id),
                                  onKeyPress=calendar_ref + "Obj.keyObserver(event, 'parse'); return " + calendar_ref + "Obj.keyObserver(event, 'return');", 
                                  onClick="this.select();", **input_attributes), """</span>
         <span class="dateBocksIcon">""", image_tag('icon-calendar.gif', alt='Calendar', id=calendar_ref + 'Button', style = 'cursor: pointer;'), """</span>
