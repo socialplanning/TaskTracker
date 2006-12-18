@@ -34,7 +34,8 @@
 <span tal:replace="structure python:h.editableField(c.task, 'text')"/>
 
 <br>
-<b id="description_updated">Description last updated <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/></b>
+<b tal:condition="python: h.field_last_updated(c.task, 'text')" id="description_updated">Description last updated <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/></b>
+<b tal:condition="python: not h.field_last_updated(c.task, 'text')" id="description_updated">Description never updated</b>
 <hr>
 
 <br/>
@@ -120,7 +121,7 @@ next task: <a tal:attributes="href python: h.url_for(controller='task', action='
 <script>
 function change_description_updated(task_id, field_name) {
     if (field_name == 'text') {
-        $('description_updated').innerHTML = "Description last updated today by you";
+        $('description_updated').innerHTML = "Description last updated Today by you";
     }
 }
 
