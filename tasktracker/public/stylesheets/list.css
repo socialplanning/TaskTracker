@@ -1,3 +1,12 @@
+table {
+   text-align: center;
+   width: 80%;
+}
+
+tr {
+   background-color: #ddd;
+}
+
 .undroppable {
    background-color: maroon;
    color: pink;
@@ -156,6 +165,10 @@ ul.task_list {
    margin: 0;     
    background-color: #ddd;
 }*/
+
+.task_cell {
+  text-align: left;
+}
 
 .overdue-task {
    color: maroon;

@@ -9,7 +9,7 @@
 
 <!-- list headers -->
 
-<table border="1" width="100%" style="background-color:lightblue; line-height:1em;" id="tasks" class="task_list" hasReorderableTasks="True">
+<table id="tasks" class="task_list" hasReorderableTasks="True">
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
 <!-- the actual task list -->
