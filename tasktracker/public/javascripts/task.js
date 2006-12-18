@@ -726,8 +726,11 @@ function doDrop(child, drop_target, a) {
 }
 
 // todo make this sort respect parenting
-function sortULBy(ul, column, forward) {
-    items = $A(ul.getElementsByClassName('task-item'));
+function sortULBy(ul, column, forward, parentID) {
+    if( !parentID ) parentID = "0";
+    items = $A(ul.getElementsByClassName('task-item')).filter( function(i) {
+	    return i.getAttribute("parentID") == parentID;
+	} );
 
     items = items.sort(function (x, y) {
 	    var a = x.getAttribute(column);
@@ -749,14 +752,19 @@ function sortULBy(ul, column, forward) {
 	});
 
     ul = ul.getElementsByTagName("TBODY")[0];
-    items.each(function (x) { ul.removeChild(x); });
+    items.each(function (x) {
+	    ul.removeChild(x);
+	    $A(x.childTasks).each(function(i) {
+		    ul.removeChild(i);
+		});
+	});
     items.each (function (x) {
 	    ul.appendChild(x);
-	    //	    child_ul = x.getElementsByClassName('task_list');
-	    //	    if( child_ul.length ) {
-	    //		child_ul = child_ul[0];
-	    //		sortULBy(child_ul, column, forward);
-	    //	    }
+	    $A(x.childTasks).each(function(i) {
+		    ul.appendChild(i);
+		});	    
+	    if( len_of(x.childTasks) )
+		sortULBy($('tasks'), column, forward, x.getAttribute("task_id"));
 	});
 }
 
