@@ -310,7 +310,7 @@ function filterListByAllFields() {
     $A(["status", "deadline", "priority", "owner"]).each(function(field){
 	    var filter = $(field + '_filter');
 	    var filtervalue = filter.value;
-	    $(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
+	    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
 	    if (filtervalue == "All")
 		return;
 	    filterField(field);

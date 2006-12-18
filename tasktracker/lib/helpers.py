@@ -193,25 +193,25 @@ def _ownerInput(task):
 
 def columnFilter(field, tasklist = None):
     out = []
-    onblur = """filterListByAllFields(); $('%s-filter-label').show(); $('%s_filter').hide();""" % (field, field)
+    onblur = """filterListByAllFields();"""
     filter = globals()["_%sFilter" % field](onblur = onblur, tasklist = tasklist)
     onclick = """showFilterColumn('%s');""" % field
     span = """<span id="%s-filter-label" onclick="%s">All</span>""" % (field, onclick)
     
-    return "%s%s" % (filter, span)
+    return filter
 
 def _deadlineFilter(onblur = None, tasklist = None):
     return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Due tomorrow',1),
                                                          ('Due in the next week',"0,7"), ('No deadline','None'), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
-                  onblur=onblur, onchange=onblur, style="display:none")
+                  onblur=onblur, onchange=onblur)
 
 def _priorityFilter(onblur = None, tasklist = None):
     options = [(s, s) for s in 'High,Medium,Low'.split(',')]
     options.extend([('No priority','None'), ('All','All')])
     return select('priority_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='priority_filter',
-                  onblur=onblur, onchange=onblur, style="display:none")
+                  onblur=onblur, onchange=onblur)
 
 def _statusFilter(onblur = None, tasklist = None):
     statuses = [status.name for status in tasklist.statuses]
@@ -220,7 +220,7 @@ def _statusFilter(onblur = None, tasklist = None):
         status_dict[status] = status
     return select('status_filter', options_for_select(status_dict.items(), 'All'),
                   method='post', originalvalue='All', id='status_filter', 
-                  onblur=onblur, onchange=onblur, style="display:none")
+                  onblur=onblur, onchange=onblur)
 
 def _ownerFilter(onblur = None, tasklist = None):
     owners = [task.owner for task in tasklist.tasks]
@@ -234,7 +234,7 @@ def _ownerFilter(onblur = None, tasklist = None):
     options.extend([("No owner", ""), ("All","All")])
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
-                  onblur=onblur, onchange=onblur, style="display:none")
+                  onblur=onblur, onchange=onblur)
 
 def _textArea(task):
     orig = task.text
