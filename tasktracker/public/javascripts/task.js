@@ -725,17 +725,13 @@ function doDrop(child, drop_target, a) {
     }
 }
 
-// todo fix this function!
+// todo make this sort respect parenting
 function sortULBy(ul, column, forward) {
-    /*
-    items = $A(ul.childNodes);
-    items = items.findAll(function(x) {
-	    return x.tagName == "LI";
-	});
+    items = $A(ul.getElementsByClassName('task-item'));
 
     items = items.sort(function (x, y) {
-	    a = x.getAttribute(column);
-	    b = y.getAttribute(column);
+	    var a = x.getAttribute(column);
+	    var b = y.getAttribute(column);
 	    if (!a && b)
 		return 1 * forward;
 	    else if (!b && a)
@@ -752,15 +748,16 @@ function sortULBy(ul, column, forward) {
 		return 0;
 	});
 
-    items.each (function (x) { ul.removeChild(x); });
+    ul = ul.getElementsByTagName("TBODY")[0];
+    items.each(function (x) { ul.removeChild(x); });
     items.each (function (x) {
-        ul.appendChild(x);
-        child_ul = x.getElementsByClassName('task_list');
-        if( child_ul.length ) {
-            child_ul = child_ul[0];
-            sortULBy(child_ul, column, forward);
-        }
-	});*/
+	    ul.appendChild(x);
+	    //	    child_ul = x.getElementsByClassName('task_list');
+	    //	    if( child_ul.length ) {
+	    //		child_ul = child_ul[0];
+	    //		sortULBy(child_ul, column, forward);
+	    //	    }
+	});
 }
 
 function toggleCollapse(task_id) {
