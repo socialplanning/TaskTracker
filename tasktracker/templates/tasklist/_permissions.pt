@@ -29,11 +29,15 @@ lists.each(function(list_name) {
 		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
 		list.appendChild(li);
 	    });
-
-	//set the value to the 'previous' value
+	//select the permission that was set on the server
 	old = $(list_name + '_level_old');
 	$(list_name + '_level_' + old.value).checked = true;
-        show_selected(list_name, old.value);
+	show_selected(list_name, old.value);
+    });
+
+lists.each(function(list_name) {
+	old = $(list_name + '_level_old');
+	eval(list_name + '_permission_set')(old.value);
 	old.parentNode.removeChild(old);
     });
 
@@ -42,9 +46,11 @@ function show_selected(list_name, index) {
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(list_name + '_level_' + i);
 	if (i <= index && i > 0) {
-	    radio.parentNode.className = 'selected-permission';
+	    removeClass(radio.parentNode, 'unselected-permission')
+	    addClass(radio.parentNode, 'selected-permission');
 	} else {
-	    radio.parentNode.className = 'unselected-permission';
+	    removeClass(radio.parentNode, 'selected-permission')
+	    addClass(radio.parentNode, 'unselected-permission');
 	}
     }
 }
@@ -59,8 +65,10 @@ function member_permission_set(index) {
 	}
 	if (i > index) {
 	    radio.disabled = true;
+	    addClass(radio.parentNode, "disabled-permission");
 	} else {
 	    radio.disabled = false;
+	    removeClass(radio.parentNode, "disabled-permission");
 	}
     }
     if (other_selected.value > index) {
@@ -79,8 +87,10 @@ function other_permission_set(index) {
 	}
 	if (i < index) {
 	    radio.disabled = true;
+	    addClass(radio.parentNode, "disabled-permission");
 	} else {
 	    radio.disabled = false;
+	    removeClass(radio.parentNode, "disabled-permission");
 	}
     }
     if (member_selected.value < index) {
