@@ -68,7 +68,7 @@ function addItem(list, item) {
     //add the html element
 
     var item_name =  + list + "_" + 'item_' + items.length;
-    var li = Builder.node('li', {class : "removable_list_item"}, [Builder.node('span', item)]);
+    var li = Builder.node('li', {className : "removable_list_item"}, [Builder.node('span', item)]);
     var last_item = item_list.firstChild;
     while (last_item.nextSibling) {
 	last_item = last_item.nextSibling;
