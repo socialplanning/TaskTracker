@@ -87,8 +87,8 @@ function addClass(element, classname) {
 }
 
 function removeClass(element, classname) {
-    var removeMe = element.className.match(' ' + classname) ? ' ' + classname : classname;
-    element.className = element.className.replace(removeMe, '');
+    var re = new RegExp('\\b' + classname + '\\b');
+    element.className = element.className.replace(re, '').trim().replace("  ", " ")
 }
 
 function hasClass(element, classname) {
