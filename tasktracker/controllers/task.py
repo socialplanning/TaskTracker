@@ -76,7 +76,9 @@ class TaskController(BaseController):
         if not old == newfield:
             setattr(task, field, newfield)
         c.task = task
-        return render_text(getattr(task, field))
+        c.depth = 0
+        #return render_text(getattr(task, field))
+        return render_body('zpt', 'task.task_list_item', atask=c.task)
 
     @attrs(action='open')
     def auto_complete_for(self, id):

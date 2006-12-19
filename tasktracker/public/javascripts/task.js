@@ -505,6 +505,7 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
+    console.log(req);
     if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {
@@ -514,6 +515,35 @@ function doneChangingField(req) {
 
 function succeededChangingField(req) {
     var task_id = this[0];
+    var newNode = evalHTML(req.responseText);
+    var oldVersion = $('task_' + task_id);
+    var parent = oldVersion.getAttribute("parentID");
+    parent = $('task_' + parent);
+    var place;
+    if( parent && len_of(parent.childTasks) ) {
+	for( place = 0; place < parent.childTasks.length; place++ ) {
+	    if( parent.childTasks[place] == oldVersion )
+		break;
+	}
+	parent.childTasks.removeItem(oldVersion);
+    }
+
+    $('tasks').childNodes[1].replaceChild(newNode, $('task_' + task_id));
+    newNode = $('task_' + task_id);
+    newNode.childTasks = oldVersion.childTasks;
+    if( parent ) {
+	if ( len_of(parent.childTasks) ) {
+	    if( place >= parent.childTasks.length )
+		parent.childTasks[length] = newNode;
+	    else 
+		insertBeforeInList(parent.childTasks, newNode, parent.childTasks[place]);
+	} else {
+	    parent.childTasks[0] = newNode;
+	}
+    }
+    enableDragDrop(newNode);
+
+    /*
     var fieldname = this[1];
     var field = $(fieldname + '_' + task_id);
     var newvalue = (field.value ? field.value : "No " + fieldname);
@@ -529,7 +559,7 @@ function succeededChangingField(req) {
     $('task_' + task_id).setAttribute(fieldname, req.responseText);
     updateTaskItem(task_id);
     hideChangeableField(task_id, fieldname);
-
+    */
     if ($('post_edit_task')) {
 	eval($('post_edit_task').getAttribute('func'))(task_id, fieldname);
     }
