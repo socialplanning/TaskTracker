@@ -1,7 +1,7 @@
 <metal:macro metal:define-macro="show_task">
 
 <tr tal:attributes="parentID atask/parentID; id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index;
-    owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status;
+    owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; updated atask/updated;
     class python: '%s taskrow task-item' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
 <td>
@@ -51,6 +51,10 @@
 
 <td width="15%">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
+</td>
+
+<td width="15%">
+ <span tal:replace="structure python: h.readableDate(atask.updated)"/>
 </td>
 
 </tr>

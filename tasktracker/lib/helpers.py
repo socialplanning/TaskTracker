@@ -206,6 +206,11 @@ def _deadlineFilter(onblur = None, tasklist = None):
                   method='post', originalvalue='All', id='deadline_filter', 
                   onblur=onblur, onchange=onblur)
 
+def _updatedFilter(onblur = None, tasklist = None):
+    return select('updated_filter', options_for_select([('Today', 0), ('Yesterday', -1), ('In the past week',"-7,0"), ('All','All')], 'All'),
+                  method='post', originalvalue='All', id='updated_filter', 
+                  onblur=onblur, onchange=onblur)
+
 def _priorityFilter(onblur = None, tasklist = None):
     options = [(s, s) for s in 'High,Medium,Low'.split(',')]
     options.extend([('No priority','None'), ('All','All')])

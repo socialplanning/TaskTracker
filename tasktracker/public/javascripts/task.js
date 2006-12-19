@@ -286,9 +286,58 @@ function filterDeadline() {
 	});
 }
 
+function filterUpdated() {
+    var filtervalue = $('updated_filter').value;
+
+    if (filtervalue == 'All') {
+	return;
+    }
+    if (filtervalue == 'None') {
+	$A($('tasks').getElementsByClassName('task-item')).each(function(node) {
+		if (node.getAttribute('updated'))
+		    node.hide();
+	    });
+	return;
+    }
+    
+    var dates = filtervalue.split(",");
+    var min; 
+    var max;
+    if (dates.length == 1) {
+	min = -1 * parseInt(dates[0]);
+	max = parseInt(dates[0]);
+    } else {
+	min = -1 * parseInt(dates[0]);
+	max = -1 * parseInt(dates[1]);
+    }
+    var minDate = new Date();
+    var byThisDate = new Date();
+    minDate.setDate(minDate.getDate() - min);  //HERE IS WHERE I AM DOING A HACK
+    byThisDate.setDate(byThisDate.getDate() + max + 1);
+    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
+	    var deadline = node.getAttribute('updated');
+	    if (deadline) {
+		var db = new DateBocks();
+		var nodeDate = db.parseDateString(deadline);
+		if (!(nodeDate < byThisDate)) {
+		    node.hide();
+		}
+		if (min >= max && !(nodeDate >= minDate)) {
+		    node.hide();
+		}
+	    } else {
+		node.hide();
+	    }
+	});
+}
+
 function filterField(fieldname) {
     if (fieldname == "deadline") {
 	filterDeadline();
+	return;
+    }
+    if (fieldname == "updated") {
+	filterUpdated();
 	return;
     }
 			
@@ -307,8 +356,10 @@ function filterListByAllFields() {
     $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    node.show();
 	});
-    $A(["status", "deadline", "priority", "owner"]).each(function(field){
+    $A(["status", "deadline", "priority", "owner", "updated"]).each(function(field){
 	    var filter = $(field + '_filter');
+	    if( !filter )
+		return;
 	    var filtervalue = filter.value;
 	    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
 	    if (filtervalue == "All")
