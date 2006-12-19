@@ -849,16 +849,34 @@ function sortULBy(ul, column, forward, parentID) {
 	});
 }
 
-function toggleCollapse(task_id) {
-    $A($('task_' + task_id).childTasks).each(function(node) {
-	    toggle(node);
-	    toggleCollapse(node.getAttribute('task_id'));
-	});
+function setCollapse(task_id, val) {
+    var node = $('task_' + task_id);
     var button = $('handle_' + task_id);
-    if (button.src.match("minus.png")) {
+    var tomatch = val ? "minus.png" : "plus.png";
+    if( val ) 
+	node.show();
+    else 
+	node.hide();
+    if( !val || button.src.match("plus.png") )
+	$A(node.childTasks).each(function(n) {
+		setCollapse(n.getAttribute('task_id'), val);
+	    });
+}
+
+function toggleCollapse(task_id) {
+    var button = $('handle_' + task_id);
+    if( button.src.match("minus.png") ) {
         button.src = button.src.replace("minus.png", "plus.png");
+	$A($('task_' + task_id).childTasks).each(function(node) {
+		//		node.show();
+		setCollapse(node.getAttribute('task_id'), 1);
+	    });
     } else if (button.src.match("plus.png")) {
         button.src = button.src.replace("plus.png", "minus.png");
+	$A($('task_' + task_id).childTasks).each(function(node) {
+		//		node.hide();
+		setCollapse(node.getAttribute('task_id'), 0);
+	    });
     }
 }
 
