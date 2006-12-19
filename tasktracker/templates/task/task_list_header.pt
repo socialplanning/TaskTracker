@@ -4,25 +4,16 @@
 <span class="taskitem">Task name</span>
 </th>
 
-<th class="status-column">
 <span tal:replace="structure python:h.sortableColumn('status')" />
-</th>
 
-<th class="deadline-column" tal:condition="python: c.tasklist.hasFeature('deadlines')">
-<span tal:replace="structure python:h.sortableColumn('deadline')" />
-</th>
+<span tal:condition="python: c.tasklist.hasFeature('deadlines')"
+      tal:replace="structure python:h.sortableColumn('deadline')" />
 
-<th class="priority-column">
 <span tal:replace="structure python:h.sortableColumn('priority')" />
-</th>
 
-<th class="owner-column">
 <span tal:replace="structure python:h.sortableColumn('owner', 'assigned to')" />
-</th>
 
-<th class="updated-column">
 <span tal:replace="structure python:h.sortableColumn('updated', 'updated')" />
-</th>
 
 </tr>
 

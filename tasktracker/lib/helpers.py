@@ -106,12 +106,14 @@ def sortableColumn(field, fieldname = None):
     if fieldname is None:
         fieldname = field
     span = """
-    <span class="column-heading %s-column" onclick="sortBy('%s'); sortOrder=''">%s
+    <th class="%s-column" onclick="sortBy('%s');">
+    <span class="column-heading %s-column" sortOrder=''">%s
       <span style="display:none;" class="sort-arrows" id="%s-arrows">&nbsp;
        <span id="%s-down-arrow">&#x2193;</span>
        <span id="%s-up-arrow">&#x2191;</span>
       </span>
-    </span>""" % (field, field, fieldname, field, field, field)
+    </span>
+    </th>""" % (field, field, field, fieldname, field, field, field)
     return span
 
 def editableField(task, field):

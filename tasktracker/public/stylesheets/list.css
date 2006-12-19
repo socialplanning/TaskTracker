@@ -2,6 +2,10 @@
    font-size: 80%;
 }
 
+.selected-column {
+
+}
+
 table.task_list {
    align: center;
    text-align: center;
