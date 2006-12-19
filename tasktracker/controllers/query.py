@@ -87,9 +87,9 @@ class QueryController(BaseController):
     @attrs(action='open')
     def project_tasks(self):
         c.list_name = "All tasks in a project"
-        results = self._sorted_select(AND(TaskList.q.projectID == c.project.id,
-                              Task.q.task_listID == TaskList.q.id,
-                              Task.q.live == True))
+        results = []
+        for tl in TaskList.selectBy(projectID = c.project.id):
+            results += list(Task.selectBy(task_listID = tl.id, live=True))
         return self._render(results)
 
     @attrs(action='open')
