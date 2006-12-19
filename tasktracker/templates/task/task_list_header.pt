@@ -1,38 +1,38 @@
 <metal:macro metal:define-macro="show_header">
 <tr class="column-heading">
-<th>
+<th class="title-column">
 <span class="taskitem">Task name</span>
 </th>
 
-<th>
+<th class="status-column">
 <span tal:replace="structure python:h.sortableColumn('status')" />
 </th>
 
-<th tal:condition="python: c.tasklist.hasFeature('deadlines')">
+<th class="deadline-column" tal:condition="python: c.tasklist.hasFeature('deadlines')">
 <span tal:replace="structure python:h.sortableColumn('deadline')" />
 </th>
 
-<th>
+<th class="priority-column">
 <span tal:replace="structure python:h.sortableColumn('priority')" />
 </th>
 
-<th>
+<th class="owner-column">
 <span tal:replace="structure python:h.sortableColumn('owner', 'assigned to')" />
 </th>
 
-<th>
+<th class="updated-column">
 <span tal:replace="structure python:h.sortableColumn('updated', 'updated')" />
 </th>
 
 </tr>
 
 <tr class="task-filter-controls">
-<td class="taskitem">&nbsp;</td>
+<td class="taskitem title-column">&nbsp;</td>
 <td class="status-column"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></td>
 <td class="deadline-column" tal:condition="python: c.tasklist.hasFeature('deadlines')"><span tal:replace="structure python: h.columnFilter('deadline')" /></td>
 <td class="priority-column"><span tal:replace="structure python: h.columnFilter('priority')"/></td>
 <td class="owner-column"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></td>
-<td class="owner-column"><span tal:replace="structure python: h.columnFilter('updated')"/></td>
+<td class="updated-column"><span tal:replace="structure python: h.columnFilter('updated')"/></td>
 </tr>
 
 &nbsp;<hr/>

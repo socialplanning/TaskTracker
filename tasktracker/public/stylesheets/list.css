@@ -1,6 +1,10 @@
 table {
    text-align: center;
-   width: 80%;
+   width: 100%;
+}
+
+.title-column {
+   text-align: left;
 }
 
 tr {
@@ -17,7 +21,7 @@ tr {
 }
 
 td {
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     vertical-align: top;
 }
 
@@ -99,13 +103,6 @@ ul.task_list {
   clear: both; 
 }
 
-/*.taskrow {
-  clear: both; 
-  padding: 0; 
-  margin: 0; 
-  line-height: 1em;
-}*/
-
 .create_section {
    padding: 10px;
 /*   background-color: #ddd; */
@@ -118,53 +115,6 @@ ul.task_list {
 .task-item {
 
 }
-
-/*
-.status-column {
-   float: left; 
-   width: 19%;
-   padding: 0; 
-   margin: 0;  
-   background-color: #ddd;
-}
-
-.taskitem {
-   float: left; 
-   width: 19%; 
-   padding: 0; 
-   margin: 0; 
-   background-color: #ddd;
-}
-
-.deadline-column {
-   float: left; 
-   width: 19%;
-   padding: 0; 
-   margin: 0;     
-   background-color: #ddd;
-}
-
-.priority-column {
-   float: left; 
-   width: 19%;    
-   background-color: #ddd;
-}
-
-.owner-column {
-   float: left; 
-   width: 19%;
-   padding: 0; 
-   margin: 0;     
-   background-color: #ddd;
-}
-
-.creator-column {
-   float: left; 
-   width: 19%;
-   padding: 0; 
-   margin: 0;     
-   background-color: #ddd;
-}*/
 
 .task_cell {
   text-align: left;
