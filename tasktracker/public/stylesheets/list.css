@@ -38,6 +38,7 @@ td {
 .customDraggable {
   color: #666;
   background-color: #bbb;
+  filter:alpha(opacity=40);
   opacity: .4;
 }
 
