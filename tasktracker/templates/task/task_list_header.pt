@@ -18,13 +18,14 @@
 </tr>
 
 <tr class="task-filter-controls">
-<td class="taskitem title-column">&nbsp;</td>
-<td class="status-column"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></td>
-<td class="deadline-column" tal:condition="python: c.tasklist.hasFeature('deadlines')"><span tal:replace="structure python: h.columnFilter('deadline')" /></td>
-<td class="priority-column"><span tal:replace="structure python: h.columnFilter('priority')"/></td>
-<td class="owner-column"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></td>
-<td class="updated-column"><span tal:replace="structure python: h.columnFilter('updated')"/></td>
+<td class="taskitem title-column second-line">&nbsp;</td>
+<td class="status-column second-line"><span tal:replace="structure python: h.columnFilter('status', c.tasklist)"/></td>
+<td class="deadline-column second-line"
+    tal:condition="python: c.tasklist.hasFeature('deadlines')">
+    <span tal:replace="structure python: h.columnFilter('deadline')" /></td>
+<td class="priority-column second-line"><span tal:replace="structure python: h.columnFilter('priority')"/></td>
+<td class="owner-column second-line"><span tal:replace="structure python: h.columnFilter('owner', c.tasklist)"/></td>
+<td class="updated-column second-line"><span tal:replace="structure python: h.columnFilter('updated')"/></td>
 </tr>
 
-&nbsp;<hr/>
 </metal:macro>

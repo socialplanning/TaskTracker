@@ -4,10 +4,10 @@
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; updated atask/updated;
     class python: '%s taskrow task-item title-column' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<td>
+<td class="title-column">
 <span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
-  <span tal:condition="not: c/flat"
+      <span tal:condition="not: c/flat"
 	tal:replace="structure python: h.image_tag(test(atask.liveChildren(), 'plus.png', 'blank.png'),
 		class_='treewidget handle',
 		id='handle_%d' % atask.id,
@@ -27,37 +27,42 @@
   <span tal:condition="atask/uncompletedChildren" class="small" tal:content="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
   <span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
-
-  <br/>
+</span>
+  <div class="second-line">
   <span tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
     &nbsp;<span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
-  </span>
-</span>
+  </span></div>
 </td>
 
 <!-- <form tal:attributes="action string:/task/update/${atask/id}"> -->
 
 <td class="status-column">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
+ <div class="second-line">&nbsp;</div>
 </td>
 
 <td class="deadline-column" tal:condition="python: atask.task_list.hasFeature('deadlines')">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
+<div class="second-line">&nbsp;</div>
 </td>
 
 
 <td class="priority-column">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
+<div class="second-line">&nbsp;</div>
 </td>
 
 <td class="owner-column">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
+<div class="second-line">&nbsp;</div>
 </td>
 
 <td class="updated-column">
  <span tal:replace="structure python: h.readableDate(atask.updated)"/>
+<div class="second-line">&nbsp;</div>
 </td>
 
 </tr>
+
 <span metal:define-slot="post_task" />
 </metal:macro>
