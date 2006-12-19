@@ -24,22 +24,27 @@ table.task_list {
 
 .status-column {
    text-align: center;
+   width: 15%;
 }
 
 .priority-column {
    text-align: center;
+   width: 15%;
 }
 
 .deadline-column {
    text-align: center;
+   width: 15%;
 }
 
 .owner-column {
    text-align: center;
+   width: 15%;
 }
 
 .updated-column {
    text-align: center;
+   width: 15%;
 }
 
 tr {
