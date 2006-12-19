@@ -78,7 +78,7 @@ class TaskController(BaseController):
         c.task = task
         c.depth = 0
         #return render_text(getattr(task, field))
-        return render_body('zpt', 'task.task_list_item', atask=c.task)
+        return render_body('zpt', 'task.task_item', atask=c.task)
 
     @attrs(action='open')
     def auto_complete_for(self, id):
