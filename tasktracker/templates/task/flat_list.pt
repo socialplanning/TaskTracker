@@ -3,12 +3,12 @@
 <tal:for repeat="tasks c/results">
 
   <span class="small" tal:content="string: ${tasks/path}:"/>
-  <ul id="xtasks" class="task_list">
+  <table id="tasks" class="task_list" cellspacing="0">
   <tal:for repeat="atask tasks">
 
     <metal:do metal:use-macro="here/task_item/macros/show_task" />
   </tal:for>
-  </ul>
+  </table>
 </tal:for>
 
 
