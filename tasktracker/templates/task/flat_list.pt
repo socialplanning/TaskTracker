@@ -2,7 +2,7 @@
 
 <tal:for repeat="tasks c/results">
 
-  <small><span tal:content="tasks/path"/>:</small>
+  <span class="small" tal:content="string: ${tasks/path}:"/>
   <ul id="xtasks" class="task_list">
   <tal:for repeat="atask tasks">
 

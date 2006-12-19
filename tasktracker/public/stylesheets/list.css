@@ -1,10 +1,35 @@
-table {
+.small {
+   font-size: 80%;
+}
+
+table.task_list {
+   align: center;
    text-align: center;
    width: 100%;
 }
 
 .title-column {
    text-align: left;
+}
+
+.status-column {
+   text-align: center;
+}
+
+.priority-column {
+   text-align: center;
+}
+
+.deadline-column {
+   text-align: center;
+}
+
+.owner-column {
+   text-align: center;
+}
+
+.updated-column {
+   text-align: center;
 }
 
 tr {

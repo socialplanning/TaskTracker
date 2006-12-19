@@ -24,7 +24,7 @@
      id string:title_${atask/id}" />
 </metal:macro>
 
-  <span tal:condition="atask/uncompletedChildren" tal:replace="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
+  <span tal:condition="atask/uncompletedChildren" class="small" tal:content="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
   <span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 

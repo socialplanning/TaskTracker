@@ -14,7 +14,7 @@
 <span tal:replace="structure python: h.datebocks_field('oldtask', 'deadline', attributes={'id':'deadline'})" />
 <!-- <span tal:condition="python: c.oldtask and c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value=c.oldtask.deadline.strftime('%H:%M:%S'))" />
 <span tal:condition="python: not c.oldtask or not c.oldtask.deadline" tal:replace="structure python: h.text_field('deadline.time', value='')" /><br/> -->
-<small> hh:mm:ss</small>
+<span class="small"> hh:mm:ss</span>
 </td></tr>
 
 <tr><td><label class="row-heading" for="priority">Priority:</label></td>

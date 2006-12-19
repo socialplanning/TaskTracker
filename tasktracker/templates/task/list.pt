@@ -1,15 +1,15 @@
-<small>
+<span class="small">
 <hr/><br/>
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">
 << return to list of lists</a>&nbsp;
 <a href="#nevermind">permalink this view</a>
-</small><br/>
+</span><br/>
 
 <metal:do use-macro="here/task_list_title/macros/show_title"/>
 
 <!-- list headers -->
 
-<table id="tasks" class="task_list" hasReorderableTasks="True">
+<table id="tasks" class="task_list" hasReorderableTasks="True" cellspacing="0">
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
 <!-- the actual task list -->
@@ -41,9 +41,9 @@
 </div></div>
 
 <!-- ----------------------------- -->
-<small>
 <hr/>
 
+<span class="small">
 <span tal:condition="python: h.has_permission('task', 'create', task_listID=c.tasklist.id)">
 <a href="#nevermind" onclick="restoreAddTask(); return false;">add a task</a></span>
 &nbsp;
@@ -56,4 +56,4 @@
 
 &nbsp;
 <span><a tal:attributes="href python:h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)">view list preferences</a></span>
-</small>
+</span>
