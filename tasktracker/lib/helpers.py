@@ -118,6 +118,20 @@ def sortableColumn(field, fieldname = None):
 
 def editableField(task, field):
     editable = has_permission('task', 'change_field', id=task.id, field=field)
+    if field == 'owner':
+        #this is fairly complicated.  Cases:
+        #1. person is a list owner.  Then what's there now is good.
+        #2. someone owns task.  Then need just 'owner' and that's it.
+        #3. person can claim task.  then you just need 'claim this' link.
+        #4. else 'no owner'
+        if not task.task_list.isListOwner(c.username):
+            if task.owner:
+                editable = False
+            if editable:
+                return """<input type="hidden" name="owner_%d" id="owner_%d" value="%s">
+                          <a onclick="changeField(%d, &quot;owner&quot;); return false;">Claim this!</a>""" % (task.id, task.id, c.username, task.id)
+
+
     out = []
     contents = getattr(task, field)
 
@@ -189,29 +203,17 @@ def _statusSelect(task):
                   id='status_%d' % task.id, **_selectjs('status', task.id))
 
 def _ownerInput(task):
-    #this is fairly complicated.  Cases:
-    #1. person is a list owner.  Then what's there now is good.
-    #2. someone owns task.  Then need just 'owner' and that's it.
-    #3. person can claim task.  then you just need 'claim this' link.
-    #4. else 'no owner'
+    orig = "No owner"
+    if task.owner:
+        orig = task.owner    
 
-    #get the task
-    if task.task_list.isListOwner(c.username):
-        orig = "No owner"
-        if task.owner:
-            orig = task.owner    
-
-            input = text_field('owner', autocomplete="off", originalvalue=orig, size=15,
-                               id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
-            span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
-            script = """<script type="text/javascript">
-                 new Ajax.Autocompleter('owner_%d',
-                 'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
-            return "%s\n%s\n%s" % (input, span, script)
-    elif task.owner:
-        return task.owner
-    elif has_permission('task', 'claim', id=task.id):
-        link_to_remote('Claim this!', url_for(controller='task', id=task.id))
+        input = text_field('owner', autocomplete="off", originalvalue=orig, size=15,
+                           id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
+        span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
+        script = """<script type="text/javascript">
+             new Ajax.Autocompleter('owner_%d',
+             'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
+        return "%s\n%s\n%s" % (input, span, script)
 
 def columnFilter(field, tasklist = None):
     out = []

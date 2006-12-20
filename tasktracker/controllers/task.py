@@ -46,7 +46,7 @@ class EditTaskForm(formencode.Schema):
     private = NotEmpty()
 
 
-_actions = dict(status='change_status', owner='assign', priority='update', deadline='update', text='update', title='update')
+_actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
 def _field_permission(param):    
     return _actions[param['field']]
     
