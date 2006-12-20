@@ -4,7 +4,7 @@
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; updated atask/updated;
     class python: '%s taskrow task-item' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<td class="title-column">
+<td class="title-column"> 
 <span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
       <span tal:condition="not: c/flat"

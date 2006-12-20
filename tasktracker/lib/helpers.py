@@ -120,6 +120,13 @@ def editableField(task, field):
     editable = has_permission('task', 'change_field', id=task.id, field=field)
     out = []
     contents = getattr(task, field)
+
+    if field == 'status' and not task.task_list.hasFeature('custom_status'):
+        checked = False
+        if task.status == 'done':
+            checked = True
+        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, **_selectjs('status', task.id))
+
     if editable:
         span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
 
@@ -170,12 +177,13 @@ def _deadlineInput(task):
 def _statusSelect(task):
     statuses = task.task_list.statuses
     status_names = [(s.name, s.name) for s in statuses]
+    
     index = 0
     for status in statuses:
         if status.name == task.status:
             break
         index += 1
-    
+
     return select('status', options_for_select(status_names, task.status), 
                   method='post', originalvalue=task.status,
                   id='status_%d' % task.id, **_selectjs('status', task.id))

@@ -36,7 +36,7 @@ class EditTaskForm(formencode.Schema):
     title = NotEmpty()
     deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today),
                                        DateConverter())
-    status = formencode.validators.OneOf([status.name for status in Status.select()]) # TODO this is still not true
+    status = String(not_empty = True)
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
     parentID = formencode.validators.Int(not_empty = True)
@@ -73,6 +73,16 @@ class TaskController(BaseController):
         if field == 'deadline' and old and isinstance(old, datetime.datetime):
             old = old.date()
 
+        #special case for status if only two statuses are present.
+        if field == 'status':
+            if not task.task_list.hasFeature('custom_status'):
+                assert newfield in ('true', 'false')
+                if newfield == 'true':
+                    newfield = 'done'
+                else:
+                    newfield = 'not done'
+            else:
+                assert newfield in [s.name for s in task.task_list.statuses]
         if not old == newfield:
             setattr(task, field, newfield)
         c.task = task
@@ -237,7 +247,7 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
-        #c.previewTextLength = 0
+        c.previewTextLength = 0
         c.flat = True
         return render_response('zpt', 'task.show')
 
