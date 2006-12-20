@@ -83,8 +83,8 @@ def attrs(**kwds):
         return f
     return decorate
 
-def render_text(text):
-    resp = Response()
+def render_text(text, **args):
+    resp = Response(**args)
     resp.content_type = "text/plain"
     resp.content = [text]
     return resp 

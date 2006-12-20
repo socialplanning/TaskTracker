@@ -41,7 +41,7 @@
 <br/>
 <b>All activity:</b>
 
-<ul>
+<ul id="activity">
 <li>Task created <span tal:replace="python: h.prettyDate(c.task.created)"/> by <span tal:replace="c/task/creator"/> </li>
 <tal:nada repeat="action python: c.task.actions()">
 <span tal:replace="structure python: h.render_action(action)"/>
@@ -123,6 +123,10 @@ function change_description_updated(task_id, field_name) {
     if (field_name == 'text') {
         $('description_updated').innerHTML = "Description last updated Today by you";
     }
+    var li = Builder.node('li', Builder.node('b', field_name + " updated Today by you"));
+
+    $('activity').appendChild(li);
+
 }
 
 function count_subtasks() {

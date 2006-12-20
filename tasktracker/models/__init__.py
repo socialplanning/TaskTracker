@@ -444,6 +444,17 @@ class TaskList(Versionable):
     other_level =  IntCol()
     member_level =  IntCol()
 
+    def isListOwner(self, username):
+        list_owner_role = Role.getByName('ListOwner')
+        roles = TaskListRole.selectBy(role=list_owner_role, task_list=self, username=username)
+        if roles.count() > 0:
+            return True
+        else:
+            for u in c.usermapper.project_members():
+                if username == u['username']:
+                    return 'ProjectAdmin' in u['roles']
+            return False
+
     def managers(self):
         return [u.username for u in self.special_users if u.role == Role.getByName('ListOwner')]
 

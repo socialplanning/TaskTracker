@@ -541,10 +541,10 @@ function succeededChangingField(req) {
 	    parent.childTasks[0] = newNode;
 	}
     }
-    enableDragDrop(newNode);
 
-    /*
+    enableDragDrop(newNode);
     var fieldname = this[1];
+    /*
     var field = $(fieldname + '_' + task_id);
     var newvalue = (field.value ? field.value : "No " + fieldname);
     field.setAttribute('originalvalue', newvalue);
@@ -561,7 +561,8 @@ function succeededChangingField(req) {
     hideChangeableField(task_id, fieldname);
     */
     if ($('post_edit_task')) {
-	eval($('post_edit_task').getAttribute('func'))(task_id, fieldname);
+	func = eval($('post_edit_task').getAttribute('func'));
+	func(task_id, fieldname);
     }
 
 }
