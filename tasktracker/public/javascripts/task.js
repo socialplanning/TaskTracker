@@ -528,7 +528,7 @@ function succeededChangingField(req) {
 	parent.childTasks.removeItem(oldVersion);
     }
 
-    $('tasks').childNodes[1].replaceChild(newNode, $('task_' + task_id));
+    oldVersion.parentNode.replaceChild(newNode, oldVersion);
     newNode = $('task_' + task_id);
     newNode.childTasks = oldVersion.childTasks;
     if( parent ) {
