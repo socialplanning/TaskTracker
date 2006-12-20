@@ -1,0 +1,4892 @@
+
+/* ----- base.css ----- */
+@media screen {
+/*
+** Plone style sheet - Base Elements
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade.
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+
+body {
+    font: 69% Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    background-color: White;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    font-size: 100%;
+}
+
+a {
+    color: #256e81;
+    background-color: transparent;
+}
+img {
+    border: none;
+    vertical-align: middle;
+}
+p {
+    margin: 0 0 0.75em 0;
+    line-height: 1.5em;
+}
+
+p img {
+    border: none;
+    margin: 0;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    color: #b7ced3;
+    background-color: #b7ced3;
+    margin: 0.5em 0 1em 0;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333333;
+    background-color: transparent;
+    font-family: Georgia, Arial, Helvetica;
+    font-weight: normal;
+    margin: 0 0 0.25em 0;
+    border-bottom: 1px solid #b7ced3;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+    color: #333333 ! important;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h3 {
+    font-size: 125%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 110%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 100%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 85%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+ul {
+    line-height: 1.5em;
+    margin: 0.5em 0 0 1.5em;
+    padding: 0;
+    list-style-image: url(http://www.openplans.org/bullet.gif);
+    list-style-type: square;
+}
+
+ol {
+    line-height: 1.5em;
+    margin: 0.5em 0 0 2.5em;
+    padding: 0;
+    list-style-image: none;
+}
+
+li {
+    margin-bottom: 0.5em;
+}
+
+dt {
+    font-weight: bold;
+}
+
+dd {
+    line-height: 1.5em;
+    margin-bottom: 1em;
+}
+
+fieldset {
+    border: 1px solid #b7ced3;
+    margin: 1em 0em 1em 0em;
+    padding: 0em 1em 1em 1em;
+    line-height: 1.5em;
+    width: auto;
+}
+legend {
+    background: White;
+    padding: 0.5em;
+    font-size: 90%;
+}
+
+form {
+    border: none;
+    margin: 0;
+}
+
+label {
+    font-weight: bold;
+}
+
+textarea {
+    font: 100% Monaco, "Courier New", Courier, monospace;
+    border: 1px solid #b7ced3;
+    color: Black;
+    background: White url(http://www.openplans.org/input_background.gif) repeat-x;
+    width: 100%;
+}
+
+input {
+    font-family: Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    visibility: visible;
+    border: 1px solid #b7ced3;
+    color: Black;
+    vertical-align: middle;
+    background: White url(http://www.openplans.org/input_background.gif) repeat-x;
+}
+select {
+    border: 1px solid #b7ced3;
+    color: Black;
+    background-color: White;
+    vertical-align: top;
+}
+abbr, acronym, .explain {
+    border-bottom: 1px dotted #333333;
+    color: #333333;
+    background-color: transparent;
+    cursor: help;
+}
+q {
+    font-family: Baskerville, Georgia, serif;
+    font-style: italic;
+    font-size: 120%;
+}
+blockquote {
+    padding-left: 0.5em;
+    margin-left: 0;
+    border-left: 4px solid #b7ced3;
+    color: #76797c;
+}
+code {
+    font-family: Monaco, "Courier New", Courier, monospace;
+    font-size: 120%;
+    color: #333333;
+    background-color: #f4f8f9;
+    padding: 0 0.1em;
+}
+pre {
+    font-family: Monaco, "Courier New", Courier, monospace;
+    font-size: 100%;
+    padding: 1em;
+    border: 1px solid #b7ced3;
+    color: #333333;
+    background-color: #f4f8f9;
+    overflow: auto;
+}
+
+ins {
+    color: green;
+    text-decoration: none;
+}
+
+del {
+    color: red;
+    text-decoration: line-through;
+}
+
+/* Helper element to work with CSS floats */
+
+.visualClear {
+    display: block;
+    clear: both;
+}
+
+/* Hiding helper elements for old browsers */
+
+.netscape4 {
+    display: none;
+}
+
+/* Accessibility and visual enhancement elements */
+
+.hiddenStructure {
+    display: block;
+    background: transparent;
+    background-image: none; /* safari bug */
+    border: none;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    margin: -1px 0 0 -1px;
+    width: 1px;
+}
+
+.contentViews .hiddenStructure,
+.contentActions .hiddenStructure {
+    position: absolute;
+    top: -200px;
+    left: -200px;
+}
+
+.hiddenLabel {
+    display: block;
+    background: transparent;
+    background-image: none; /* safari bug */
+    border: none;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    margin: -1px 0 0 -1px;
+    width: 1px;
+}
+
+
+
+/*  */
+
+}
+
+
+/* ----- public.css ----- */
+@media screen {
+/*
+** Plone style sheet - Public-facing Elements
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade.
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+/* Padding for the columns */
+
+#portal-column-one .visualPadding {
+    padding: 2em 0em 1em 2em;
+}
+
+#portal-column-two .visualPadding {
+    padding: 2em 2em 1em 0em;
+}
+
+/* Content area */
+
+.documentContent {
+    font-size: 110%;
+    padding: 1em 1em 2em 1em !important;
+    background: White;
+}
+
+
+/* Links with differently colored link underlines - only for content */
+
+.documentContent p a {
+    text-decoration: none;
+    border-bottom: 1px #cccccc solid;
+}
+
+.documentContent p a:visited {
+    color: Purple;
+    background-color: transparent;
+}
+
+.documentContent p a:active {
+    color: Red;
+    background-color: transparent;
+}
+
+.documentContent li a {
+    text-decoration: none;
+    border-bottom: 1px #cccccc solid;
+}
+
+.documentContent li a:visited {
+    color: Purple;
+}
+
+.documentContent li a:active {
+    color: Red;
+}
+
+.documentContent dd a {
+    text-decoration: none;
+    border-bottom: 1px #cccccc solid;
+}
+
+.documentContent dd a:visited {
+    color: Purple;
+    background-color: transparent;
+}
+
+.documentContent dd a:active {
+    color: Red;
+    background-color: transparent;
+}
+
+/* End links */
+
+/* The edit form elements */
+
+
+.field {
+    top: 0;
+    left: 0;
+    margin: 0 1em 1em 0;
+}
+
+.field .field {
+    margin: 1em 0 0 0;
+}
+
+.fieldRequired {
+    background: url(http://www.openplans.org/required.gif) center left no-repeat;
+    padding: 0 0 0 8px;
+    color: White;
+}
+
+.fieldUploadFile {
+    text-align: right; 
+    margin-right: 0.75em;
+    display: none;
+}
+
+.fieldTextFormat {
+    text-align: right;
+    margin-right: 0.75em
+}
+
+
+.formHelp {
+    font-size: 90%;
+    color: #76797c;
+    margin: 0 0 0.2em 0;
+}
+
+.formHelp:hover {
+    color: #333333;
+    cursor: default;
+}
+
+.formControls {
+   margin: 1em 0;
+}
+
+.error {
+    /* Class for error indication in forms */
+    background-color: #ffce7b;
+    border: 1px solid #ffa500;
+    padding: 1em;
+    margin: 0 0 1em 0;
+    width: 95%;
+}
+
+.error .fieldRequired {
+   color: #ffce7b;
+}
+
+/* Code to work around IE's lacking support of sub-elements of the input element */
+.noborder,
+.documentEditable * .noborder {
+    border: none;
+    margin: 0;
+    background: none;
+    background-color: transparent;
+}
+
+
+/* End edit form elements */
+
+#visual-portal-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+/* Logo properties */
+
+#portal-logo {
+    background: url(http://www.openplans.org/logo.jpg) no-repeat;
+    border: 0;
+    margin: 0.75em 0em 0.75em 1.5em;
+    padding: 0;
+}
+
+#portal-logo a {
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    padding-top: 80px;
+    height: 0px !important;
+    width: 135px;
+    cursor: pointer;
+}
+
+/* The skin switcher at the top, only shows up if you have multiple skins available */
+
+#portal-skinswitcher {
+}
+
+#portal-skinswitcher a {
+    display: block;
+    float: left;
+}
+
+#portal-top {
+    /* Top section */
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+/* Site-wide action menu - font size, contact, index, sitemap etc */
+
+#portal-siteactions {
+    background-color: transparent;
+    white-space: nowrap;
+    list-style-image: none;
+    list-style-type: none;
+    margin: 1px 0 0 0;
+    height: auto;
+    line-height: normal;
+    float: right;
+    padding: 3px 2em 3px 0;
+}
+
+#portal-siteactions li {
+    display: inline;
+}
+
+#portal-siteactions li a {
+    background-color: transparent;
+    border: 1px solid White;
+    color: #76797c;
+    height: auto;
+    padding: 0.2em;
+    margin-right: 0.2em;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+
+#portal-siteactions li.selected a {
+    background-color: #f4f8f9;
+    color: #256e81;
+    border: 1px solid #b7ced3;
+}
+
+#portal-siteactions li a:hover {
+    background-color: #f4f8f9;
+    color: #256e81;
+    border: 1px solid #b7ced3;
+}
+
+/* Searchbox style and positioning */
+
+#portal-searchbox {
+    float: right;
+    clear: right;
+    background-color: transparent;
+    margin: 1.5em 0 0 0;
+    padding: 0 2em 0 0;
+    text-align: right;
+    text-transform: lowercase;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+#portal-advanced-search {
+    margin-top: 0.2em;
+    clear: both;
+}
+
+#portal-advanced-search a {
+    color: #76797c;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+
+/* LiveSearch styles */
+
+.LSRes {
+    font-family:  Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    visibility: visible;
+    color: #256e81;
+    background-color: White;
+    vertical-align: middle;
+    display:block;
+    list-style-image: none;
+    list-style-type: none;
+    text-align: left;
+    min-width: 16.5em;
+    text-transform: none;
+    margin-left: 0;
+    line-height: 1.1em;
+}
+
+#LSHighlight {
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    color: #256e81;
+}
+
+.LSRow {
+    border: 1px solid White;
+    white-space: normal;
+    padding:0;
+    margin: 0;
+    list-style-image: none;
+    list-style-type: none;
+}
+
+.LSRow a {
+    text-decoration: none;
+    font-weight:bold;
+    white-space:nowrap
+}
+
+.LSDescr {
+    color: #76797c;
+    text-transform: lowercase;
+    padding-left:2.1em;
+    margin-top:-0.1em;
+}
+
+.LSResult {
+    position: relative;
+    display: block;
+    text-align: right;
+    padding-top: 5px;
+    margin: 0;
+    left: 3px;
+    z-index: 3;
+}
+
+.LSShadow {
+    position: relative;
+    text-align: right;
+}
+
+.livesearchContainer {
+    background-color: White;
+    margin-top: 0;
+    padding: 0 !important;
+    position: absolute;
+    right: 0px;
+    /* Currently exposes a rendering bug in Mozilla */
+    top: 0;
+    white-space: normal;
+    font-family:  Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    visibility: visible;
+    text-align: left;
+    color: #256e81;
+    border: 1px solid #b7ced3;
+    width: 30em;
+    text-transform: none;
+}
+
+* html .livesearchContainer {
+    padding: 1px !important;
+    padding-top: 0 !important;
+    background-color: #b7ced3;
+    border: 0;
+}
+
+#livesearchLegend {
+    line-height: 1em;
+    margin-top: -2em;
+    margin-left: -0.1em;
+    border: 1px solid #b7ced3;
+    border-bottom: 0;
+}
+
+* html #livesearchLegend {
+    margin-top: -1.9em;
+    margin-left: -8px;
+    position: relative;
+}
+
+/* Workaround for Internet Explorer's broken z-index implementation */
+.LSIEFix {
+    background-color: White;
+    padding: 0.5em !important;
+    z-index: 20;
+}
+
+.LSBox {
+    clear: left;
+    float: left;
+    text-align: right;
+    padding-right: 1px;
+    display:block;
+}
+
+#LSNothingFound {
+    text-align: center;
+    padding: 2px;
+}
+
+/* The global section tabs. */
+
+#portal-globalnav {
+    background-color: transparent;
+    padding: 0em 0em 0em 2em;
+    white-space: nowrap;
+    list-style: none;
+    margin: 0;
+    height: auto;
+    line-height: normal;
+}
+
+#portal-globalnav li {
+    display: inline;
+}
+
+#portal-globalnav li a {
+    /* The normal, unselected tabs. They are all links */
+    background-color: transparent;
+    border-color: #b7ced3;
+    border-width: 1px;
+    border-style: solid solid none solid;
+    color: #256e81;
+    height: auto;
+    margin-right: 0.5em;
+    padding: 0em 1.25em;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+
+#portal-globalnav li.selected a {
+    /* The selected tab. There's only one of this */
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    border-bottom: #f4f8f9 1px solid;
+    color: #256e81;
+}
+
+#portal-globalnav li a:hover {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-bottom-color: #f4f8f9;
+    color: #256e81;
+}
+
+#portal-personaltools {
+    /* Bar with personalized menu (user preferences, favorites etc) */
+    background-color: #f4f8f9;
+    border-top-color: #b7ced3;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-bottom-color: #b7ced3;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    line-height: 1.6em;
+    color: #333333;
+    padding: 0em 3em 0em 3em;
+    margin: 0;
+    text-align: right;
+    text-transform: lowercase;
+    list-style: none;
+}
+
+#portal-personaltools .portalUser {
+    background: transparent url(http://www.openplans.org/user.gif) center left no-repeat;
+    padding-left: 18px;
+}
+
+#portal-personaltools .portalNotLoggedIn {
+    /* Used on all descriptions relevant to those not logged in */
+    color: #333333;
+    padding: 0;
+    background: transparent;
+    background-image: none;
+}
+
+#portal-personaltools li {
+    color: #256e81;
+    margin-left: 1em;
+    display: inline;
+}
+
+#portal-personaltools li a {
+    text-decoration: none;
+    color: #256e81;
+}
+
+#portal-personaltools .visualIconPadding {
+    padding-left: 10px;
+}
+
+.visualCaseSensitive {
+    text-transform: none;
+}
+
+#portal-breadcrumbs {
+    /* The path bar, including breadcrumbs and add to favorites */
+    border-bottom-color: #b7ced3;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-left: 2em;
+    padding-right: 2em;
+    text-transform: lowercase;
+    line-height: 1.6em;
+}
+
+#portal-breadcrumbs a {
+    text-decoration: none;
+}
+
+.breadcrumbSeparator {
+    font-size: 120%;
+}
+
+.addFavorite {
+    vertical-align: bottom;
+}
+
+#content {
+    padding: 1em 1em 0 1em !important;
+    margin: 0em 0em 2em 0em;
+}
+
+.documentEditable {
+    padding: 0em 2em 1em 2em !important;
+}
+
+#content-news h1 {
+    margin-bottom: 1em;
+}
+
+/* Only h5/h6 headlines in the content area should have the discreet color */
+
+#content h5,
+#content h6 {
+    color: #76797c;
+}
+
+.newsItem {
+    margin-bottom: 1em;
+    border-bottom: 1px solid #b7ced3;
+}
+
+.newsImage {
+    border: 1px solid black;
+}
+
+.newsImageContainer {
+    float:right;
+    margin: 0 0 0.5em 1em;
+    width: 202px;
+}
+
+.newsContent {
+    padding: 0 1em 1em 1em;
+}
+
+.newsContent ul,
+.newsContent li {
+    display: block;
+    list-style: none;
+    list-style-image: none;
+    margin: 0;
+    padding: 0;
+}
+
+.newsAbout {
+    display: block;
+    color: #76797c;
+    font-size: 85%;
+    padding: 0;
+    margin-top: 0;
+    list-style: none;
+    list-style-image: none;
+    float: right;
+    text-align: right;
+}
+
+.newsAbout li {
+    display: inline;
+}
+
+.newsFooter {
+
+}
+
+.newsFooter li {
+    display: inline;
+    margin: 0 1em 0 0;
+}
+
+.documentActions {
+    float: right;
+    margin: 0.4em 0 0 0.5em;
+    padding: 0;
+    text-align: right;
+}
+
+.documentActions ul {
+    margin: 1px 0 2px 0;
+    padding: 0;
+    display: block;
+}
+
+.documentActions li {
+    display: inline;
+    list-style: none;
+    list-style-image: none;
+    margin: 0;
+    padding: 0;
+}
+
+.documentActions a {
+    border: none !important;
+    text-decoration: none;
+}
+
+/* .system-message and #error-handling are reST error indicators */
+
+.portalMessage,
+.system-message,
+#error-handling {
+    background-color: #ffce7b;
+    border: 1px solid #ffa500;
+    color: #333333;
+    font-size: 85%;
+    font-weight: bold;
+    margin: 1em 0em;
+    padding: 0.5em 1em 0.5em 3em;
+    vertical-align: middle;
+    background-image: url(http://www.openplans.org/info_icon.gif);
+    background-repeat: no-repeat;
+    background-position: 5px 50%;
+}
+
+.portalMessage a {
+    color: #333333;
+}
+
+.documentDescription {
+    /* The summary text describing the document */
+    font-weight: bold;
+    display: block;
+    margin: 0em 0em 0.5em 0em;
+    line-height: 1.5em;
+}
+
+.documentByLine {
+    font-size: 85%;
+    font-weight: normal;
+    color: #76797c;
+    margin: 0em 0em 0.5em 0em;
+}
+
+.discussion {
+    margin-top: 1em;
+}
+
+.even {
+    background-color: transparent;
+}
+
+.odd {
+    background-color: transparent;
+}
+
+.visualHighlight {
+    background-color: transparent;
+}
+
+.discreet {
+    color: #76797c;
+    font-size: 85%;
+    font-weight: normal;
+}
+
+.pullquote {
+    padding: 0 1em 0 1em;
+    margin: 0 0 1em 1em;
+    font-weight: bold;
+    color: #CC9933;
+    float: right;
+    width: 35%;
+    clear: right;
+    background-color: White;
+}
+.callout {
+    font-weight: bold;
+    color: #CC9933;
+    padding: 0px 1em;
+}
+
+/* Batch selector */
+
+.listingBar {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0em 1em;
+    text-align: center;
+    text-transform: lowercase;
+    vertical-align: top;
+    margin: 1em 0em;
+    font-size: 94%;
+    clear: both;
+}
+
+.listingBar span.previous,
+.listingPrevious {
+    text-align: left;
+    float: left;
+    margin-right: 1em;
+}
+
+.listingBar span.next,
+.listingNext {
+    text-align: right;
+    float: right;
+    margin-left: 1em;
+}
+
+.listingBar img {
+    vertical-align: middle;
+}
+
+.listingBar a {
+    text-decoration: none;
+}
+
+.tileItem {
+    border-top: 1px solid #b7ced3;
+    padding-top: 0.5em;
+    margin-top: 0.5em;
+}
+
+.tileHeadline {
+    border: none;
+    font-size: 110%;
+    font-weight: bold;
+}
+
+.tileHeadline a {
+    text-decoration: none;
+}
+
+.tileBody {
+    margin-bottom: 0.5em;
+}
+
+.tileImage {
+    float: right;
+    margin: 0 0 0.5em 0.5em;
+    border: 1px solid black;
+}
+
+.eventDetails {
+    float: right;
+    width: 20em;
+    clear: right;
+}
+
+/* Useful deviations from regular style on elements */
+
+/* List classes without markers */
+
+ul.visualNoMarker,
+ol.visualNoMarker {
+    list-style-type: none;
+    list-style-image: none;
+    margin: 0.5em 0 0 0;
+    line-height: 1em;
+}
+
+textarea.proportional {
+    font: 100% Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+}
+
+.productCredits {
+    text-align: right;
+    font-size: 85%;
+    clear: both;
+    font-weight: normal;
+    color: #76797c;
+}
+
+#portal-footer {
+    background-color: #f4f8f9;
+    border-top: 1px solid #b7ced3;
+    border-bottom: 1px solid #b7ced3;
+    float: none;
+    line-height: 1.2em;
+    margin: 2em 0em 1em 0em;
+    padding: 0.5em 0em 1em 0em;
+    text-align: center;
+}
+
+#portal-footer p {
+    margin: 0.25em 0;
+}
+
+#portal-footer a {
+    text-decoration: none;
+    color: #256e81;
+    border: none;
+}
+
+#portal-footer a:visited {
+    color: #256e81;
+}
+
+#portal-footer a:hover {
+    text-decoration: underline;
+}
+
+#portal-colophon {
+    float: none;
+    margin: 0em 0em 2em 0em;
+    padding: 0.5em 0em 1em 0em;
+    text-align: center;
+}
+
+#portal-colophon ul,
+#portal-colophon ul li,
+#portal-colophon ul li a {
+    list-style-image: none;
+    list-style-type: none;
+    display: inline;
+    text-decoration: none;
+    color: #333333;
+}
+
+#portal-colophon ul {
+    display: table-row;
+    list-style-type: none;
+}
+
+#portal-colophon ul li {
+    display: table-cell;
+    font-size: 85%;
+    margin: 0 0.25em;
+    padding: 0.1em 0.2em;
+}
+
+#portal-colophon .colophonWrapper {
+    display: table;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#portal-colophon .colophonIcon {
+    display: block; /* This is for Mozilla, as it doesn't support
+                       inline-block. The colophon icons aren't in
+                       one line though. */
+    display: inline-block;
+    text-decoration: none;
+    overflow: hidden;
+    border: 0;
+    margin: 0 auto;
+    padding: 0;
+    padding-top: 15px;
+    height: 0px !important;
+    width: 80px;
+    vertical-align:top;
+}
+
+#portal-colophon a.colophonIcon {
+    cursor: pointer;
+}
+
+#portal-colophon .colophonIconPlone {
+    background-image: url(http://www.openplans.org/plone_powered.gif);
+}
+
+#portal-colophon .colophonIcon508 {
+    background-image: url(http://www.openplans.org/colophon_sec508.gif);
+}
+
+#portal-colophon .colophonIconWAI {
+    background-image: url(http://www.openplans.org/colophon_wai-aa.gif);
+}
+
+#portal-colophon .colophonIconXHTML {
+    background-image: url(http://www.openplans.org/colophon_xhtml.png);
+}
+
+#portal-colophon .colophonIconCSS {
+    background-image: url(http://www.openplans.org/colophon_css.png);
+}
+
+#portal-colophon .colophonIconAnyBrowser {
+    background-image: url(http://www.openplans.org/colophon_anybrowser.png);
+}
+
+
+.feedButton {
+    display: block; 
+    float: right; 
+    margin-top: 1px;
+}
+
+.poweredBy {
+    display: block;
+    clear: both;
+    font-size: 85%;
+    font-weight: normal;
+    color: #76797c;
+    text-align: right;
+}
+
+/* Sitemap styles */
+
+#portal-sitemap {
+    list-style: none;
+    list-style-image: none;
+    margin: 0;
+    font-size: 90%;
+    border: none;
+}
+
+#portal-sitemap a {
+    border: 1px solid White;
+}
+
+#portal-sitemap a:hover {
+    border: 1px solid #b7ced3;
+}
+
+#portal-sitemap .navTreeLevel1 {
+    padding-left: 1em;
+    border-left: 0.5em solid #b7ced3;
+    margin: 0 0 0 0.5em;
+}
+
+#portal-sitemap .navTreeLevel2 {
+    padding-left: 1em;
+    border-left: 0.5em solid #f4f8f9;
+    margin: 0 0 0 0.6em;
+}
+
+/* Link types */
+
+.link-plain {
+    background-image: none;
+    padding: 0;
+}
+
+.link-parent {
+    display: block;
+    background: transparent url(http://www.openplans.org/arrowUp.gif) 4px 5px no-repeat;
+    padding: 1px 0px 10px 16px;
+    font-size: 85%;
+    text-decoration: none;
+}
+
+.link-user {
+    background: transparent url(http://www.openplans.org/user.gif) 0 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-external {
+    background: transparent url(http://www.openplans.org/link_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-https {
+    background: transparent url(http://www.openplans.org/lock_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-mailto {
+    background: transparent url(http://www.openplans.org/mail_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-news {
+    background: transparent url(http://www.openplans.org/topic_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-ftp {
+    background: transparent url(http://www.openplans.org/file_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-irc {
+    background: transparent url(http://www.openplans.org/discussionitem_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-callto {
+    background: transparent url(http://www.openplans.org/phone_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-webcal {
+    background: transparent url(http://www.openplans.org/event_icon.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 16px;
+}
+
+.link-feed {
+    background: transparent url(http://www.openplans.org/rss.gif) 0px 1px no-repeat;
+    padding: 1px 0px 1px 18px;
+}
+
+.link-comment {
+    background: transparent url(http://www.openplans.org/discussionitem_icon.gif) center left no-repeat;
+    padding: 1px 0px 1px 16px !important; /* value:  */
+}
+
+.link-anchor {
+    color: #76797c;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+/* For ghosted elements */
+.visualGhosted {
+    opacity: 0.2;
+    -moz-opacity: 0.2;
+    -khtml-opacity: 0.2;
+}
+
+/* Fullscreen */
+
+body.fullscreen #portal-logo,
+body.fullscreen #portal-siteactions {
+    display: none;
+}
+
+body.fullscreen #portal-globalnav {
+    margin-top: 4em;
+}
+
+body.fullscreen #portal-searchbox {
+    margin: 0.5em 2em 0 0.5em;
+    padding: 0;
+    position: relative;
+}
+
+/* Kupu image alignment classes */
+
+.image-left {
+   float: left;
+   clear: both;
+   margin: 0.5em 1em 0.5em 0;
+   border: 1px solid Black;
+}
+
+.image-inline {
+   float: none;
+}
+
+.image-right {
+   float: right;
+   clear: both;
+   margin: 0.5em;
+   border: 1px solid Black;
+}
+
+/*  */
+
+}
+
+
+/* ----- columns.css ----- */
+@media screen {
+/*
+** Table-based column layout for all browsers.
+**
+** There's a table-less column layout alternative in the plone_tableless
+** skin layer, if you prefer layouts without tables.
+*/
+
+/*  */
+
+#portal-columns {
+    width: 100% !important;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#portal-column-one {
+    vertical-align: top;
+    width: 16em;
+}
+
+#portal-column-content {
+    vertical-align: top;
+    margin: 0;
+    padding: 0;
+}
+
+#portal-column-two {
+    vertical-align: top;
+    width: 16em;
+}
+
+/* fullscreen */
+
+body.fullscreen #portal-column-one,
+body.fullscreen #portal-column-two {
+    display: none;
+}
+
+body.fullscreen #portal-column-content { 
+    width: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
+
+/*  */
+
+}
+
+
+/* ----- authoring.css ----- */
+@media screen {
+/*
+** Plone style sheet - Authoring Elements
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade.
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+.standalone,
+.documentEditable * .standalone {
+    background: #f4f8f9 url(http://www.openplans.org/linkOpaque.gif) 9px 1px no-repeat;
+    cursor: pointer;
+    font-size: 85%;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+}
+.context,
+.documentEditable * .context {
+    background: transparent url(http://www.openplans.org/linkTransparent.gif) 9px 1px no-repeat;
+    cursor: pointer;
+    font-size: 85%;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+}
+.destructive,
+.documentEditable * .destructive {
+    background: #ffce7b url(http://www.openplans.org/linkTransparent.gif) 9px 1px no-repeat;
+    border: 1px solid #ffa500;
+    cursor: pointer;
+    font-size: 85%;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+}
+input.searchButton {
+    margin-bottom: 1px ! important;
+    font-size: 85%;
+    background: White url(http://www.openplans.org/search_icon.gif) 2px 1px no-repeat;
+    cursor: pointer;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+
+}
+.add,
+.documentEditable * .add {
+}
+.quickSearch {
+}
+.notify,
+.documentEditable * .notify {
+    border: 1px solid #ffa500;
+}
+
+.card {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-width: 1px;
+    border-style: solid;
+    float: left;
+    margin: 1em;
+    text-align: center;
+    width: 110px;
+    padding: 1em 0;
+}
+
+.card a {
+    text-decoration: none;
+}
+
+.portrait {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 85%;
+    margin: 0.5em;
+    padding: 1em 0 0.5em 0;
+    text-align: center;
+    width: 100px;
+}
+
+.portraitPhoto {
+    border: 1px solid black;
+}
+
+.listing,
+.stx table {
+    /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
+    border-collapse: collapse;
+    border-left: 1px solid #b7ced3;
+    border-bottom: 1px solid #b7ced3;
+    font-size: 85%;
+    margin: 1em 0em 1em 0em;
+}
+.listing th,
+.stx table th {
+    background: #f4f8f9;
+    border-top: 1px solid #b7ced3;
+    border-bottom: 1px solid #b7ced3;
+    border-right: 1px solid #b7ced3;
+    font-weight: normal;
+    padding: 0.25em 1em;
+    text-transform: lowercase;
+}
+.listing .top {
+    border-left: 1px solid White;
+    border-top: 1px solid White ! important;
+    border-right: 1px solid White ! important;
+    text-align: right ! important;
+    padding: 0em 0em 1em 0em;
+}
+.listing .listingCheckbox {
+    text-align: center;
+}
+.listing td,
+.stx table td {
+    border-right: 1px solid #b7ced3;
+    padding: 0.25em 1em;
+}
+
+.listing a {
+    text-decoration: none;
+}
+
+.listing a:hover {
+    text-decoration: underline;
+}
+.listing img {
+    vertical-align: middle;
+}
+
+/* Vertical addition class */
+
+.vertical {
+    background-color: White;	
+}
+.vertical th {
+    padding: 0.5em;
+}
+
+.vertical td {
+    border-top: 1px solid #b7ced3;
+    padding: 0.5em;
+}
+
+
+
+ul.configlets {
+    margin: 1em 0;
+    list-style-image: none;
+    list-style: none;
+}
+
+ul.configlets li {
+    margin-bottom: 1em;
+}
+
+ul.configlets li a {
+    text-decoration: none;
+    border: none;
+}
+
+ul.configlets li a:visited {
+    color: #256e81;
+    background-color: transparent;
+}
+
+ul.configlets li a:active {
+    color: #256e81;
+    background-color: transparent;
+}
+
+ul.configlets li label {
+    font-weight: bold;
+}
+
+ul.configletDetails {
+    margin: 0em 1em 1em 4em;
+    list-style-image: none;
+    list-style: none;
+}
+
+ul.configletDetails li {
+    margin-bottom: 1em;
+    display: inline;
+}
+
+ul.configletDetails li a {
+	text-decoration: none;
+}
+
+ul.configletDetails li label {
+    font-weight: bold;
+}
+
+/* List classes without markers */
+
+ul.visualNoMarker,
+ol.visualNoMarker {
+    list-style-type: none;
+    list-style-image: none;
+    margin: 0.5em 0 0 0;
+}
+
+
+
+/* Additional STX workaround classes */
+.stx table p /* stupid STX table workaround */
+{
+    margin: 0;
+    padding: 0;
+}
+.stx table  /* stupid STX table workaround */
+{
+    border: 1px solid #b7ced3 ! important;
+}
+.stx table td {
+    border-bottom: 1px solid #b7ced3;
+}
+
+.reviewHistory {
+    display: inline;
+    font-size: 110% !important; 
+    color: Black;
+}
+
+.comment {
+    background: transparent; 
+    border: 1px dashed #b7ced3; 
+    padding: 0.25em 1em 0.5em 1em;
+    margin-bottom: 1em;
+}
+
+.comment h1,
+.comment h2,
+.comment h3,
+.comment h4, 
+.comment h5,
+.comment h6 {
+    border-bottom: 1px dashed #76797c;
+    font-weight: normal;
+}
+
+.comment h3 a {
+    background-image: url(http://www.openplans.org/discussionitem_icon.gif);
+    background-repeat: no-repeat;
+    padding-left: 18px;
+    margin-left: -1px;
+    margin-bottom: 1px;
+    min-height: 1.6em;
+    height: auto;
+    line-height: 1.6em;	
+}
+
+.commentBody {
+    margin: 0 1em 1em 1em;
+}
+
+.spacer {
+    margin: 1em;
+}
+
+.contentViews {
+    background-color: transparent;
+    padding-left: 1em;
+    line-height: normal;
+    margin: 0;
+    list-style: none;
+    border: 1px solid #de7c07;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+}
+.contentViews li {
+    display: inline;
+    padding-top: 0.5em;
+}
+.contentViews li a {
+    background-color: transparent;
+    border: 1px solid #de7c07;
+    border-style: solid;
+    color: #db4800;
+    height: auto;
+    margin-right: 0.5em;
+    padding: 0em 1em;
+    line-height: normal;
+    text-decoration: none;
+    text-transform: lowercase;
+    z-index: 1;
+}
+.contentViews .selected a {
+    background-color: #fff297;
+    border-bottom: #fff297 1px solid;
+    color: #db4800;
+}
+.contentViews li a:hover {
+    background-color: #fff297;
+    color: #db4800;
+}
+
+
+.configlet .contentViews {
+    font-size: 90%;
+}
+
+/*
+** begin ECMAScript Content Action Menus
+*/
+
+.contentActions {
+    background-color: #fff297;
+    border-left: 1px solid #de7c07;
+    border-right: 1px solid #de7c07;
+    color: #db4800;
+    text-align: right;
+    text-transform: lowercase;
+    padding: 0 0 0 1em;
+    z-index: 2;
+    position:relative;
+    height: 1.6em;
+}
+
+.contentActions ul,
+.contentActions li {
+    margin: 0;
+    list-style: none;
+    list-style-image: none;
+    display: inline;
+    color: #333333;
+    text-align: left;
+}
+
+.contentActions ul {
+    line-height: 1.6em;
+    padding: 0;
+    margin: 0;
+}
+.contentActions li {
+    float: right;
+    z-index: 4;
+    border-left: 1px solid #de7c07;
+    line-height: 1.6em;
+}
+
+.actionItems li {
+    background-image: none;
+}
+
+.contentActions a {
+    text-decoration: none;
+    color: #db4800;
+    padding: 0 0.5em;
+}
+
+.actionMenu {
+    /*  The spec says we can't put this on an element with a float (although
+        Opera is the only one that cares) and we need it in order to catch
+        the position:absolute bubbling up */
+
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.actionMenu .actionMenuHeader {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.actionMenu.activated .actionMenuHeader {
+    position: relative;
+    z-index: 10;
+}
+
+.actionMenu .actionMenuHeader a {
+    display: block;
+}
+
+.actionMenu.activated .actionMenuHeader a,
+.actionMenu.deactivated .actionMenuHeader a {
+    background-image: url(http://www.openplans.org/arrowDownAlternative.gif);
+    background-repeat: no-repeat;
+    background-position: 95% 60%;
+    padding: 0 1.6em 0 0.5em !important;
+    cursor: pointer;
+}
+
+.actionMenuDisabled {
+    padding: 0 0.5em 0 0.5em !important;
+    cursor: pointer;
+}
+
+.actionMenu .actionMenuContent {
+    display: none;
+    z-index: 5;
+    position: absolute;
+    top: 1.6em;
+    right: -1px;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.actionMenu .actionMenuContent ul {
+    display: block;
+    background: #fff297;
+    border: 1px #de7c07;
+    border-style: none solid solid solid;
+    margin: -2px 0 0 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.actionMenu.activated .actionMenuContent {
+    display: block !important;
+}
+.actionMenu.activated .actionMenuContent {
+    /* this one will be ignored by IE, it is here to fix the cut-off error in
+       Firefox */
+    display: table !important;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.actionMenu.deactivated .actionMenuContent {
+    display: none !important;
+}
+
+.actionMenu .actionMenuContent li {
+    float: none;
+    background-color: transparent;
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.actionMenu .actionMenuContent li a {
+    display: block;
+    white-space: nowrap;
+    padding: 0 0.5em;
+    margin: 0.2em 0;
+}
+
+.actionMenu .actionMenuContent .selected {
+    display: block;
+    white-space: nowrap;
+    padding: 0 0.5em;
+    margin: 0.2em 0;
+}
+
+.actionMenu .actionMenuContent li a:hover {
+    background-color: #de7c07;
+    color: White;
+}
+
+.actionMenu .actionMenuContent .actionSeparator a {
+    margin-top: 0.2em;
+    padding-top: 0.2em;
+    border-top: 1px solid #de7c07;
+}
+
+.actionMenu .actionMenuContent .actionSeparator div.currentDefaultPage {
+    margin-top: 0.2em;
+    padding: 0.2em 0.5em 0em 0.5em;
+    white-space: nowrap;
+    border-top: 1px solid #de7c07;
+}
+
+.actionMenu .actionMenuContent .actionSeparator div.actionLabel {
+    margin-top: 0.2em;
+    padding: 0.2em 0.5em 0em 0.5em;
+    white-space: nowrap;
+    border-top: 1px solid #de7c07;
+    background-color: #de7c07;
+    color: #fff297;
+    cursor: default;
+}
+
+
+.contentBatchAction {
+    float: left !important;
+    padding: 0 0.5em;
+    border-top: 1px solid #de7c07;
+    border-right: 1px solid #de7c07;
+    border-left: none !important;
+    border-collapse: collapse;
+    position: relative;
+    top: -1px;
+    margin-left: -0.5em !important;
+}
+
+#objectMenu.actionMenu .actionMenuContent li {
+    display: block;
+}
+
+#objectMenu.actionMenu .actionMenuContent li,
+#objectMenu.actionMenu .actionMenuContent li a:hover {
+    background-position: 3px 50%;
+    margin-left: 0;
+}
+
+#objectMenu.actionMenu .actionMenuContent li a {
+    padding-left: 22px;
+}
+
+.actionMenuSelected {
+    display: block;
+    cursor: default;
+    background-image: url(http://www.openplans.org/bullet_icon.gif);
+    background-repeat: no-repeat;
+    background-position: 0% 3px;
+    padding-left: 16px !important;
+}
+
+#templateMenu li a {
+    padding-left: 16px;
+}
+
+
+/*
+** end ECMAScript Content Action Menus
+*/
+
+
+/* Collapsible elements */
+
+dl.collapsible {
+    border: 1px solid #b7ced3 !important;
+    margin: 1em 0 0 0;
+    padding: 0;
+}
+
+dl.collapsible dt.collapsibleHeader {
+    display: block;
+    float: left;
+    background: White;
+    line-height: 1.2em;
+    vertical-align: middle;
+    font-size: 90%;
+    position: relative;
+    top: -0.6em;
+    width: auto;
+    margin: 0 0 -0.6em 1em;
+    padding: 0 0.5em;
+}
+
+dl.collapsible dd.collapsibleContent {
+    margin: 0;
+    padding: 0 1em;
+    clear: left;
+}
+
+/* for IE the following isn't needed, that's why the css2 selector is used */
+dl.collapsible dd.collapsibleContent > dl {
+    margin: 0;
+    padding: 0;
+}
+
+dl.expandedInlineCollapsible dt.collapsibleHeader,
+dl.expandedBlockCollapsible dt.collapsibleHeader {
+    padding: 0 6px 0 22px;
+    background: White url(treeExpanded.gif) no-repeat 6px 50%;
+    cursor: pointer;
+}
+
+dl.collapsedBlockCollapsible {
+    border: none !important;
+    height: 1em;
+    width: auto;
+}
+
+dl.collapsedBlockCollapsible dt.collapsibleHeader {
+    float: none;
+    position: static;
+    margin: 0;
+    padding: 0 0 0 22px;
+    line-height: 1em;
+    background: transparent url(treeCollapsed.gif) no-repeat 6px 50%;
+    cursor: pointer;
+}
+
+dl.collapsedInlineCollapsible dd.collapsibleContent,
+dl.collapsedBlockCollapsible dd.collapsibleContent {
+    display: none;
+}
+
+dl.collapsedInlineCollapsible {
+    border: none !important;
+    height: 1em;
+    width: auto;
+    display: inline;
+}
+
+dl.collapsedInlineCollapsible dt.collapsibleHeader {
+    position: static;
+    float: none;
+    margin: 0;
+    padding: 0 0 0 22px;
+    line-height: 1em;
+    background: transparent url(treeCollapsed.gif) no-repeat 6px 50%;
+    cursor: pointer;
+    display: inline;
+}
+
+.configlet .documentEditable {
+    padding: 0em !important;
+}
+
+.documentEditable .documentContent {
+    border: 1px solid #de7c07;
+    padding: 0;
+}
+
+.label {
+    font-weight: bold;
+    display: inline;
+    padding-right: 0.5em;
+}
+
+.optionsToggle {
+    border: 1px solid #b7ced3;
+    color: #333333;
+    background-color: #f4f8f9;
+    font-weight: normal !important;
+    font-size: 85%;
+}
+
+.portalNotLoggedIn {} /* Used on all descriptions relevant to those not logged in */
+
+#portal-column-content fieldset > * input:focus,
+#portal-column-content fieldset > * textarea:focus {
+    border-color: #ffa500;
+    border-width: 1px;
+}
+
+.visualOverflow {
+    overflow: auto;
+    margin: 0 0 1em 0;
+}
+
+.visualOverflow pre,
+.visualOverflow table,
+.visualOverflow img {
+    margin: 0;
+}
+
+.visualFontSizeCorrection { /* Correction for WYSIWYG editors */
+    font-size: 75%;
+    background: transparent;
+    background-image: none;
+}
+
+
+/* for highlighting of search terms */
+
+.highlightedSearchTerm {
+   background-color: #feff82;
+}
+
+/* for greying out inherited roles */
+
+.noInheritedRoles {
+    color: #a0a0a0;
+}
+
+/* for highlighting current items, like the language or today in the calendar */
+
+.currentItem {
+    border-collapse: collapse;
+    border: 2px solid #ffa500;
+    padding: 1px;
+}
+
+/* Styles to make the editing widgets look more like their view counterparts */
+
+#archetypes-fieldname-title input {
+    font-size: 160%;
+    font-family: Georgia, Arial, Helvetica;
+    font-weight: normal;
+    width: 99%;
+}
+
+#archetypes-fieldname-description textarea {
+    font: 100% Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    font-weight: bold;
+}
+
+
+/*  */
+}
+
+
+/* ----- portlets.css ----- */
+@media screen {
+/*
+** Plone style sheet - Portlets
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade.
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+/* The new portlet CSS - these will be switched to non-qualified classes
+   (ie. .portlet, not dl.portlet) once the old portlet layout is removed in
+   Plone 2.2. ~limi */
+
+/* Main portlet elements */
+
+dl.portlet {
+    margin: 1px 0 1em 0;
+}
+
+dl.portlet a {
+    text-decoration: none;
+}
+
+.portletHeader a {
+    color: #666666;
+    font-family: Verdana;
+}
+
+.portletHeader a:hover {
+    color: #666666;
+    font-family: Verdana;
+}
+
+dd.portletItem a:hover{
+    color: #db4800;
+}
+    
+
+dd.portletItemLast {
+    margin: 0;
+    padding: 0.25em 1em;
+    border: 1px solid #b7ced3;
+    border-top-style: none;
+}
+
+
+.portletItem a {
+    display: block;
+}
+
+/* openplans edit. changed color and font size */
+
+.portletItemDetails {
+    text-align: right;
+    display: block;
+    color: #999999;
+    font-size: 10px;
+    text-decoration: none;
+}
+
+dd.portletFooter {
+    background-color: transparent;
+    margin: 0;
+    padding: 0.25em 1em;
+    border: 0px solid #b7ced3;
+    border-top-style: dotted;
+    text-align: right;
+}
+
+
+/* Elements that enable layout with rounded corners */
+
+.portletTopLeft {}
+.portletTopRight {}
+.portletBottomLeft {}
+.portletBottomRight {}
+
+
+
+/* New navtree styles */
+
+.state-visible navTreeCurrentItem visualIconPadding {
+     color: red;
+}
+
+
+.portletNavigationTree {
+    margin: 0 0 0 0.75em;
+    padding: 0; 
+    list-style: none; 
+    list-style-image: none; 
+    line-height: 1em;
+}
+
+
+
+.navTree {
+    list-style: none; 
+    list-style-image: none; 
+    margin-top: 1px;
+}
+
+.navTree li {
+    margin-bottom: 1px;
+}
+
+.navTreeItem {
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+li.navTreeCurrentItem {
+    display: block;
+    padding: 0 0 0 1px;
+    margin: 0 0 2px -1px;
+}
+
+li.navTreeCurrentItem a,
+li.navTreeCurrentItem a:hover {
+    display: block;
+    border: 1px solid #f4f8f9;
+    min-height: 1.6em;
+    line-height: 1.6em;
+    height: auto;
+}
+
+/* Another workaround for broken Internet Explorer */
+
+* html li.navTreeCurrentItem a,
+* html li.navTreeCurrentItem a:hover {
+    height: 1.6em;
+}
+
+
+.navTreeLevel0 { margin: 0; }
+.navTreeLevel1 { margin-left: 1em;}
+.navTreeLevel2 { margin-left: 0.75em; }
+.navTreeLevel3 { margin-left: 0.75em; }
+.navTreeLevel4 { margin-left: 0.75em; }
+.navTreeLevel5 { margin-left: 0.75em; }
+
+
+/*
+** Calendar elements - used in the calendar rendering
+*/
+
+.dayPopup {
+    background-color: #ffffe1;
+    border: 1px solid Black;
+    padding: 0.2em;
+    position: absolute;
+    visibility: hidden;
+    width: 12em;
+    z-index: 2;
+}
+.date {
+    font-weight: bold;
+}
+
+.ploneCalendar {
+    border: 1px solid #b7ced3;
+    margin: 1px 0 1em 0;
+    border-collapse: collapse;
+    width: 100%;
+}
+.ploneCalendar a {
+    text-decoration: none;
+}
+.ploneCalendar a:hover {
+    text-decoration: none;
+}
+.ploneCalendar th {
+    background-color: #f4f8f9;
+    font-weight: normal;
+    text-align: center;
+    line-height: 1.6em;
+}
+.ploneCalendar td {
+    background-color: transparent;
+    width: 1.5em;
+    text-align: right;
+    padding: 2px;
+}
+.ploneCalendar .weekdays td {
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    border-style: solid none;
+    text-align: center;
+    padding: 2px;
+}
+.ploneCalendar .event {
+    background-color: #f4f8f9;
+    font-weight: bold;
+}
+.ploneCalendar .todayevent {
+    background-color: #f4f8f9;
+    border: 2px solid #ffa500;
+    font-weight: bold;
+}
+.ploneCalendar .todaynoevent {
+    border-collapse: collapse;
+    border: 2px solid #ffa500;
+}
+.ploneCalendar #calendar-previous {
+    background-image: url(http://www.openplans.org/arrowLeft.gif);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+.ploneCalendar #calendar-next {
+    background-image: url(http://www.openplans.org/arrowRight.gif);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+.ploneCalendar #calendar-previous a,
+.ploneCalendar #calendar-next a {
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    padding-top: 9px;
+    height: 0px !important;
+    height /**/: 9px;
+    cursor: pointer;
+}
+.ploneCalendar #calendar-next a {
+    padding-top: 9px;
+    height: 0px !important;
+    height /**/: 9px;
+}
+
+
+/*  */
+
+}
+
+
+/* ----- presentation.css ----- */
+@media projection {
+/*
+** Plone Presentation style sheet for CSS2-capable browsers.
+** Copyright Plone Foundation, et al.
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will 
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade. 
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+body {
+    background: White url(http://www.openplans.org/logo.jpg) no-repeat fixed 95% 95%;
+    font-family: Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    font-size: 50px !important;
+    color: Black;
+    margin: 0;
+    padding: 0;
+    min-width: 0px !important;
+}
+
+#visual-portal-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+#portal-column-content {
+    margin: 0 !important;
+}
+
+#portal-column-content #content {
+    padding: 1em;
+    margin: 0 !important;
+}
+
+h1, h2 {
+    font-size: 50px !important;
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-style: solid;
+    border-width: 1px;
+    padding-top: 0em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    margin: 1em 0 0 0;
+    page-break-before: always;
+    font-weight: normal;
+}
+
+h1.documentFirstHeading { 
+    /* Trick to avoid getting an initial blank page */
+    page-break-before: avoid; 
+} 
+
+dl, ol, ul {
+    font-size: 40px !important;
+    text-align: left;
+    margin-top: 0.5em;
+}
+
+dt {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-style: solid;
+    border-width: 1px;
+    display: inline;
+    padding-right: 0.5em;
+}
+
+dd {
+    margin-bottom: 0.25em;
+}
+
+li {
+    margin: 0 0 0.5em 0;
+}
+
+p {
+    /* This hides evertything that is a normal paragraph, so you can write 
+    presentations with additional notes that only show up in print/web.
+    If you want normal paragraphs to show up, remove this selector. */
+    display: none;
+}
+
+.documentDescription {
+    font-size: 40px !important;
+    font-weight: normal;
+    margin-top: 4em;
+    text-align: center !important;
+}
+
+ul { 
+    list-style-image: url(http://www.openplans.org/bulletBig.gif); 
+}
+
+pre { 
+    font-size: 25px;
+    padding: 0.5em;
+    font-weight: bold;
+    background-color: #f4f8f9;
+    border: 1px dashed #b7ced3;
+}
+
+code {
+    background-color: #f4f8f9;
+    border-color: #b7ced3;
+    border-style: dashed;
+    border-width: 1px;
+    padding: 0.1em 0.25em;
+}
+
+a {
+    color: #256e81 !important;
+}
+
+div.top,
+#portal-logo,
+.hiddenStructure,
+#portal-searchbox,
+#portal-siteactions,
+#portal-globalnav,
+#portal-personaltools,
+#portal-breadcrumbs,
+#portal-column-one,
+#portal-column-two,
+.contentViews,
+.contentActions,
+.help,
+.legend,
+div.portalMessage,
+div.documentActions,
+.documentByLine,
+.netscape4,
+#portal-footer,
+#portal-colophon,
+input,
+.skipnav {
+    /* Hides all the elements irrelevant for presentations */
+    display: none;
+}
+
+div#portal-columns div#visual-column-wrapper,
+div#portal-columns div#visual-column-wrapper div#portal-column-content {
+    width: 100%;
+}
+
+div#portal-columns div#visual-column-wrapper div#portal-column-content {
+    padding: 0;
+    margin: 0;
+}
+
+div#portal-columns div#visual-column-wrapper div#portal-column-content * {
+    text-align: left;
+}
+
+#content,
+.group {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+#content {
+    margin: 0 1em;
+}
+
+table.listing,
+table.listing td {
+    border: 1pt solid black;
+    border-collapse: collapse;
+}
+
+a, a:link, a:visited {
+    color: #520;
+    background: transparent;
+}
+
+/*  */
+
+}
+
+
+/* ----- print.css ----- */
+@media print {
+/*
+** Plone Print style sheet for CSS2-capable browsers.
+** Copyright Plone Foundation, et al
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will 
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade. 
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+div.top,
+#portal-logo,
+#portal-siteactions,
+.hiddenStructure,
+#portal-searchbox,
+#portal-globalnav,
+#portal-personaltools,
+#portal-breadcrumbs,
+#portal-column-one,
+#portal-column-two,
+.contentViews,
+.contentActions,
+.help,
+.legend,
+div.portalMessage,
+div.documentActions,
+.documentByLine,
+.netscape4,
+#portal-footer,
+#portal-colophon,
+.skipnav,
+.visualNoPrint {
+    /* Hides all the elements irrelevant for printing */
+    display: none;
+}
+
+body {
+    font-family: Baskerville, Georgia, Garamond, Times, serif;
+    font-size: 11pt !important;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+    border: none;
+    font-family: Baskerville, Georgia, Garamond, Times, serif;
+}
+
+div, p, ul, dl, ol {
+    width: auto !important;
+}
+
+ul, ol, dl {
+    padding-right: 0.5em;	
+}
+
+ul { 
+    list-style-type: square;
+}
+
+
+.documentDescription {
+    font-weight: bold;
+}
+
+pre {
+    border: 1pt dotted black;
+    white-space: pre;
+    font-size: 8pt;
+    overflow: auto;
+    padding: 1em 0;
+}
+
+table.listing,
+table.listing td {
+    border: 1pt solid black;
+    border-collapse: collapse;
+}
+
+a {
+    color: Black !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+}
+
+a:link, a:visited {
+    color: #520;
+    background: transparent;
+}
+
+/* Uncomment this to get link addresses inserted along with the link text
+   when you print.
+
+#content a:link:after, 
+#content a:visited:after {
+   content: " [" attr(href) "] ";
+}
+*/
+}
+
+
+/* ----- mobile.css ----- */
+@media handheld {
+/*
+** Plone style sheet for mobile/handheld browsers. Mainly tested on Opera
+** for mobile devices, feedback/donations to help support other platforms
+** are welcome.
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+body {
+    font: 69% Verdana, Lucida-Grande, Lucida, Helvetica, Arial, sans-serif;
+    background-color: White;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    font-size: 100%;
+}
+
+
+a {
+    color: #256e81;
+    background-color: transparent;
+}
+img {
+    border: none;
+    vertical-align: middle;
+}
+p {
+    margin: 0.5em 0em 1em 0em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+    border-bottom: 1px solid #b7ced3;
+}
+
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+    color: #333333 ! important; 
+}
+
+h1 {
+    font-size: 160%;
+}
+
+h2 {
+    font-size: 150%;
+}
+
+h3 {
+    font-size: 140%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 120%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 100%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 85%;
+    border-bottom: none;
+    font-weight: bold;
+}
+
+label {
+    font-weight: bold;
+}
+
+/* searchbox style and positioning */
+#portal-searchbox {
+    font-size: 10px;
+}
+
+
+#portal-globalnav {
+    /* Navigational Plone Tabs(tm), implemented by customizing the a and li tags */
+    background-color: transparent;
+    border-collapse: collapse;
+    padding: 0;
+    padding-left: 0.2em;
+    list-style: none;
+    margin: 0;
+    height: auto;
+    line-height: normal;
+}
+#portal-globalnav li {
+    display: inline;
+}
+#portal-globalnav li a {
+    /* The normal, unselected tabs. They are all links */
+    background-color: transparent;
+    border-color: #b7ced3;
+    border-width: 1px; 
+    border-style: solid solid none solid;
+    color: #256e81;
+    height: auto;
+    margin-right: 0.1em;
+    padding: 0em 0.2em;
+    text-decoration: none;
+    text-transform: lowercase;
+}
+#portal-globalnav li.selected a {
+    /* The selected tab. There's only one of this */
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    border-bottom: #f4f8f9 1px solid;
+    color: #256e81;
+}
+
+#portal-personaltools {
+    /* Bar with personalized menu (user preferences, favorites etc) */
+    background-color: #f4f8f9;
+    border-top-color: #b7ced3;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-bottom-color: #b7ced3;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    color: #333333;
+    margin: 0;
+    text-align: right;
+    text-transform: lowercase;
+    list-style: none;
+}
+
+#portal-personaltools li {
+    margin-left: 0.2em;
+    display: inline;
+}
+#portal-personaltools li a {
+    text-decoration: none;
+    color: #256e81;
+}
+.visualCaseSensitive {
+    text-transform: none;
+}
+#portal-breadcrumbs {
+    /* The path bar, including breadcrumbs and add to favorites */
+    border-bottom-color: #b7ced3;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    text-transform: lowercase;
+}
+
+.contentViews {
+    background-color: transparent;
+    border-collapse: collapse;
+    padding-left: 0.1em;
+    line-height: normal;
+    margin: 0.2em 0 0 0;
+    /* white-space: nowrap; */
+    list-style: none;
+    border: 1px solid #de7c07;
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+}
+.contentViews li {
+    display: inline;
+}
+.contentViews li a {
+    background-color: transparent;
+    border: 1px solid #de7c07;
+    border-style: solid;
+    color: #db4800;
+    height: auto;
+    margin-right: 0.2em;
+    padding: 0;
+    line-height: normal;
+    text-decoration: none;
+    text-transform: lowercase;
+    z-index: 1;
+}
+.contentViews .selected a {
+    background-color: #fff297;
+    border-bottom: #fff297 1px solid;
+    color: #db4800;
+}
+
+/*
+** begin ECMAScript Content Action Menus
+*/
+
+.contentActions {
+    border-collapse: collapse;
+    background-color: #fff297;
+    border-left: 1px solid #de7c07;
+    border-right: 1px solid #de7c07;
+    color: #db4800;
+    text-align: right;
+    text-transform: lowercase;
+    padding: 0 0 0 0.2em;
+    z-index: 2;
+    height: 1.2em;
+}
+
+.contentActions ul,
+.contentActions li {
+    margin: 0;
+    list-style: none;
+    list-style-image: none;
+    display: inline;
+    color: #333333;
+    text-align: left;
+}
+
+.contentActions ul {
+    padding: 0;
+    margin: 0;
+}
+.contentActions li {
+    float: right;
+    background-image: url(http://www.openplans.org/arrowDownAlternative.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    z-index: 4;
+    border-left: 1px solid #de7c07;
+    padding: 0 0 0 0.2em;
+    margin: 0 0.2em 0 0;
+}
+
+.actionItems li {
+    background-image: none;
+}
+
+.contentActions a {
+    text-decoration: none;
+    color: #db4800;
+    padding: 0 0.6em 0 0;
+}
+
+.contentActions .actionMenu .actionMenuContent {
+    display: none;
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    right: -1px;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.contentActions .actionMenu .actionMenuContent ul {
+    display: block;
+    background: #fff297;
+    border: 1px #de7c07;
+    border-style: none solid solid solid;
+    margin: 0.2em 0 0 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.actionMenu .actionMenuContent li {
+    font-size: 10px !important;
+    float: none;
+    background: transparent;
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.actionMenu .actionMenuContent li a {
+    display: block;
+    white-space: nowrap;
+    padding: 0 0.2em;
+    margin: 0.2em 0;
+}
+
+.actionMenu .actionMenuContent .actionSeparator a {
+    margin-top: 0.2em;
+    padding-top: 0.2em;
+    border-top: 1px solid #de7c07;
+}
+
+/*
+** end ECMAScript Content Action Menus
+*/
+
+.documentEditable .documentContent {
+    border: 1px solid #de7c07;
+    padding: 0.5em;
+}
+
+/* .system-message and #error-handling are reST error indicators */
+.portalMessage,
+.system-message,
+#error-handling {
+    background-color: #ffce7b;
+    border: 1px solid #ffa500;
+    color: #333333;
+    font-size: 85%;
+    font-weight: bold;
+    margin: 2em 0em 1em 0em;
+    padding: 0.5em 1em;
+    vertical-align: middle;
+}
+.portalMessage a {
+    color: #333333;
+}
+.documentDescription {
+    /* The summary text describing the document */
+    font-weight: bold;
+    display: block;
+    margin: 0.5em 0em;
+}
+.documentByLine {
+    text-align: right;
+    font-size: 85%;
+    clear: both;
+    font-weight: normal;
+    color: #76797c;
+}
+
+#portal-footer {
+    background-color: #f4f8f9;
+    border-top: 1px solid #b7ced3;
+    border-bottom: 1px solid #b7ced3;
+    float: none;
+    margin: 2em 0em 1em 0em;
+    padding: 0.5em 0em 1em 0em;
+    text-align: center;
+}
+
+.hiddenStructure,
+#portal-logo,
+#portal-searchbox,
+#portal-siteactions,
+#portal-column-one,
+#portal-column-two,
+.addFavorite,
+.documentActions,
+#portal-colophon,
+.netscape4
+ {
+    display: none;
+}
+
+
+/*  */
+
+}
+
+
+/* ----- deprecated.css ----- */
+@media screen {
+/* Deprecated CSS elements - do not depend on these, they will disappear in
+   the next version of Plone. They are here for backwards compatibility only. */
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+/* Classes that were introduced erroneously in Plone 2.1. Will disappear in 3.0. */
+
+.portletItemSingle {
+    margin: 0;
+    padding: 1em;
+    border: 1px solid #b7ced3;
+    border-top: none;
+}
+
+dd.portletItemLast {
+    margin: 0;
+    padding: 0.25em 1em;
+    border: 1px solid #b7ced3;
+    border-style: none solid;
+}
+
+/* Old div-based portlet syntax - this is deprecated and will be removed in plone 3.0, please use the new
+   definition list-based portlets above in your products. */
+
+div.portlet {
+    border: none;
+    margin-bottom: 1em;
+    padding: 0;
+}
+
+div.portlet a {
+    text-decoration: none;
+}
+
+/* Compensation when rendering portlets in the content area */
+#region-content .portlet {
+    font-size: 94%;
+}
+
+div.portlet h4 { /* The new base portlet header, h5 and h6 will be for use inside
+                 the portlet in the upcoming versions. */
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    padding: 0em 0.3em 0em 1em;
+    text-transform: lowercase;
+    display: block;
+    font-size: 1em;
+    font-weight: normal;
+}
+div.portlet h5 {
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    padding: 0em 1em 0em 1em;
+    text-transform: lowercase;
+    display: inline;
+    font-size: 1em;
+    font-weight: normal;
+    white-space: nowrap;
+    position: relative;
+    top: -1px;
+}
+div.portlet h6 {
+    background-color: #f4f8f9;
+    border: 1px solid #b7ced3;
+    padding: 0em 0.3em 0em 1em;
+    text-transform: lowercase;
+    display: block;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+div.portletBody {
+    position: relative;
+    top: -1px;
+    background: transparent;
+    border: 1px solid #b7ced3;
+}
+div.portletDetails {
+    text-align: right;
+}
+
+div.portletContent {
+    padding: 1em;
+}
+div.portletAction {
+    float: right;
+    width: 0.8em;
+    text-align: center;
+    display: block;
+    text-transform: none;
+    border-left: 1px solid #b7ced3;
+    padding-left: 0.3em;
+}
+
+div.portlet h1,
+div.portlet h2,
+div.portlet h3,
+div.portlet h4 {
+    margin: 0;
+    padding: 0;
+}
+
+div.portlet input {
+    font-size: 100%;
+}
+
+div.portletSyndication {
+    display: block;
+    float: left; 
+    border: 1px solid #8cacbb; 
+    background-color: #dee7ec;
+    font-size: 85%;
+}
+
+a.portletMore {
+    display: block;
+    text-align: right;
+}
+
+div.portletFooter {
+    padding: 0.5em 1em 1em 1em;
+}
+
+/* Old navigation tree styling */
+
+.navIcon,
+.navIconRoot {
+    position: relative;
+    right: 20px;
+}
+
+.navItemText {
+    margin-left: -20px;
+}
+
+.navRootItem,
+.navItem {
+    margin: 0 0 0.2em 0;
+    border: 1px solid White;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: 0 1px;
+    padding: 0.1em 0.25em 0.2em 20px;
+    margin: 1px 0;
+}
+
+.currentNavItem {
+    background-color: #f4f8f9;
+    color: #256e81;
+    border: 1px solid #b7ced3;
+}
+
+.portletNavigationTreeItem {
+    margin: 0;
+}
+
+.portletNavigationTreeItem a {
+    display: block;
+    text-decoration: none;
+    padding: 0.5em 0 0.5em 1.75em;
+    background-repeat: no-repeat;
+    background-position: 0 3px;
+    border: 1px solid White;
+}
+
+.portletNavigationTreeItem a:hover,
+.currentNavItem {
+    background-color: #f4f8f9;
+    color: #256e81;
+    border: 1px solid #b7ced3 !important;
+}
+
+/* The new navtree level structure. */
+
+.portletNavigationLevel0 {
+    margin: 0;
+}
+
+
+/* The old navtree levels. */
+
+.navLevel1 { margin-left: 0em; }
+.navLevel2 { margin-left: 1em; }
+.navLevel3 { margin-left: 2em; }
+.navLevel4 { margin-left: 3em; }
+.navLevel5 { margin-left: 4em; }
+.navLevel6 { margin-left: 4.5em; }
+.navLevel7 { margin-left: 5em;   }
+.navLevel8 { margin-left: 5.5em; }
+
+
+/*  */
+
+}
+
+
+/* ----- generated.css ----- */
+@media screen {
+/*
+** Plone style sheet - styles for programmatically generated elements
+**
+** Style sheet documentation can be found at http://plone.org/documentation
+**
+** You should preferrably use ploneCustom.css to add your own CSS classes and to
+** customize your portal, as these are the base fundaments of Plone, and will
+** change and be refined in newer versions. Keeping your changes in
+** ploneCustom.css will make it easier to upgrade.
+**
+** Feel free to use whole or parts of this for your own designs, but give credit
+** where credit is due.
+**
+*/
+
+/*  (do not remove this :) */
+/*  (not this either :) */
+
+/* generated icon classes for content types should be applied to wrapper spans
+   instead of on the link class itself because of bugs in Internet Explorer's
+   rendering engine. It will flicker on hover if not.
+   Full explanation can be found at 
+   http://plone.org/documentation/how-to/flickering-background-images-internet-explorer */
+
+      .contenttype-anonymailertool,
+    .actionMenu .contenttype-anonymailertool a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-anonymailertool { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-anonymailertool a:hover,
+    #portlet-navigation-tree .contenttype-anonymailertool a:hover,
+    #portlet-navigation-tree .contenttype-anonymailertool a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-anonymailertool,
+    #portlet-navigation-tree .contenttype-anonymailertool {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-anonymailertool a:hover,
+    * html #portlet-navigation-tree .contenttype-anonymailertool a:hover,
+    * html #portlet-navigation-tree .contenttype-anonymailertool a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-anonymailertool { 
+        display: block; 
+    }
+        .contenttype-atdocument,
+    .actionMenu .contenttype-atdocument a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-atdocument { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-atdocument a:hover,
+    #portlet-navigation-tree .contenttype-atdocument a:hover,
+    #portlet-navigation-tree .contenttype-atdocument a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-atdocument,
+    #portlet-navigation-tree .contenttype-atdocument {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-atdocument a:hover,
+    * html #portlet-navigation-tree .contenttype-atdocument a:hover,
+    * html #portlet-navigation-tree .contenttype-atdocument a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-atdocument { 
+        display: block; 
+    }
+        .contenttype-cachetool,
+    .actionMenu .contenttype-cachetool a:hover { 
+        background-image: url(http://www.openplans.org/cachesetup_tool_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-cachetool { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-cachetool a:hover,
+    #portlet-navigation-tree .contenttype-cachetool a:hover,
+    #portlet-navigation-tree .contenttype-cachetool a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/cachesetup_tool_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-cachetool,
+    #portlet-navigation-tree .contenttype-cachetool {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-cachetool a:hover,
+    * html #portlet-navigation-tree .contenttype-cachetool a:hover,
+    * html #portlet-navigation-tree .contenttype-cachetool a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-cachetool { 
+        display: block; 
+    }
+        .contenttype-changeset,
+    .actionMenu .contenttype-changeset a:hover { 
+        background-image: url(http://www.openplans.org/changeset.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-changeset { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-changeset a:hover,
+    #portlet-navigation-tree .contenttype-changeset a:hover,
+    #portlet-navigation-tree .contenttype-changeset a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/changeset.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-changeset,
+    #portlet-navigation-tree .contenttype-changeset {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-changeset a:hover,
+    * html #portlet-navigation-tree .contenttype-changeset a:hover,
+    * html #portlet-navigation-tree .contenttype-changeset a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-changeset { 
+        display: block; 
+    }
+        .contenttype-contentcacherule,
+    .actionMenu .contenttype-contentcacherule a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-contentcacherule { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-contentcacherule a:hover,
+    #portlet-navigation-tree .contenttype-contentcacherule a:hover,
+    #portlet-navigation-tree .contenttype-contentcacherule a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-contentcacherule,
+    #portlet-navigation-tree .contenttype-contentcacherule {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-contentcacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-contentcacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-contentcacherule a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-contentcacherule { 
+        display: block; 
+    }
+        .contenttype-controltool,
+    .actionMenu .contenttype-controltool a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-controltool { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-controltool a:hover,
+    #portlet-navigation-tree .contenttype-controltool a:hover,
+    #portlet-navigation-tree .contenttype-controltool a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-controltool,
+    #portlet-navigation-tree .contenttype-controltool {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-controltool a:hover,
+    * html #portlet-navigation-tree .contenttype-controltool a:hover,
+    * html #portlet-navigation-tree .contenttype-controltool a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-controltool { 
+        display: block; 
+    }
+        .contenttype-discussion-item,
+    .actionMenu .contenttype-discussion-item a:hover { 
+        background-image: url(http://www.openplans.org/discussionitem_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-discussion-item { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-discussion-item a:hover,
+    #portlet-navigation-tree .contenttype-discussion-item a:hover,
+    #portlet-navigation-tree .contenttype-discussion-item a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/discussionitem_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-discussion-item,
+    #portlet-navigation-tree .contenttype-discussion-item {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-discussion-item a:hover,
+    * html #portlet-navigation-tree .contenttype-discussion-item a:hover,
+    * html #portlet-navigation-tree .contenttype-discussion-item a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-discussion-item { 
+        display: block; 
+    }
+        .contenttype-document,
+    .actionMenu .contenttype-document a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-document { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-document a:hover,
+    #portlet-navigation-tree .contenttype-document a:hover,
+    #portlet-navigation-tree .contenttype-document a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-document,
+    #portlet-navigation-tree .contenttype-document {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-document a:hover,
+    * html #portlet-navigation-tree .contenttype-document a:hover,
+    * html #portlet-navigation-tree .contenttype-document a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-document { 
+        display: block; 
+    }
+        .contenttype-event,
+    .actionMenu .contenttype-event a:hover { 
+        background-image: url(http://www.openplans.org/event_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-event { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-event a:hover,
+    #portlet-navigation-tree .contenttype-event a:hover,
+    #portlet-navigation-tree .contenttype-event a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/event_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-event,
+    #portlet-navigation-tree .contenttype-event {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-event a:hover,
+    * html #portlet-navigation-tree .contenttype-event a:hover,
+    * html #portlet-navigation-tree .contenttype-event a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-event { 
+        display: block; 
+    }
+        .contenttype-favorite,
+    .actionMenu .contenttype-favorite a:hover { 
+        background-image: url(http://www.openplans.org/favorite_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-favorite { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-favorite a:hover,
+    #portlet-navigation-tree .contenttype-favorite a:hover,
+    #portlet-navigation-tree .contenttype-favorite a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/favorite_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-favorite,
+    #portlet-navigation-tree .contenttype-favorite {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-favorite a:hover,
+    * html #portlet-navigation-tree .contenttype-favorite a:hover,
+    * html #portlet-navigation-tree .contenttype-favorite a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-favorite { 
+        display: block; 
+    }
+        .contenttype-file,
+    .actionMenu .contenttype-file a:hover { 
+        background-image: url(http://www.openplans.org/file_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-file { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-file a:hover,
+    #portlet-navigation-tree .contenttype-file a:hover,
+    #portlet-navigation-tree .contenttype-file a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/file_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-file,
+    #portlet-navigation-tree .contenttype-file {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-file a:hover,
+    * html #portlet-navigation-tree .contenttype-file a:hover,
+    * html #portlet-navigation-tree .contenttype-file a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-file { 
+        display: block; 
+    }
+        .contenttype-fileattachment,
+    .actionMenu .contenttype-fileattachment a:hover { 
+        background-image: url(http://www.openplans.org/file_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-fileattachment { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-fileattachment a:hover,
+    #portlet-navigation-tree .contenttype-fileattachment a:hover,
+    #portlet-navigation-tree .contenttype-fileattachment a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/file_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-fileattachment,
+    #portlet-navigation-tree .contenttype-fileattachment {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-fileattachment a:hover,
+    * html #portlet-navigation-tree .contenttype-fileattachment a:hover,
+    * html #portlet-navigation-tree .contenttype-fileattachment a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-fileattachment { 
+        display: block; 
+    }
+        .contenttype-folder,
+    .actionMenu .contenttype-folder a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-folder { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-folder a:hover,
+    #portlet-navigation-tree .contenttype-folder a:hover,
+    #portlet-navigation-tree .contenttype-folder a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-folder,
+    #portlet-navigation-tree .contenttype-folder {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-folder a:hover,
+    * html #portlet-navigation-tree .contenttype-folder a:hover,
+    * html #portlet-navigation-tree .contenttype-folder a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-folder { 
+        display: block; 
+    }
+        .contenttype-headerset,
+    .actionMenu .contenttype-headerset a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-headerset { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-headerset a:hover,
+    #portlet-navigation-tree .contenttype-headerset a:hover,
+    #portlet-navigation-tree .contenttype-headerset a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-headerset,
+    #portlet-navigation-tree .contenttype-headerset {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-headerset a:hover,
+    * html #portlet-navigation-tree .contenttype-headerset a:hover,
+    * html #portlet-navigation-tree .contenttype-headerset a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-headerset { 
+        display: block; 
+    }
+        .contenttype-headersetfolder,
+    .actionMenu .contenttype-headersetfolder a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-headersetfolder { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-headersetfolder a:hover,
+    #portlet-navigation-tree .contenttype-headersetfolder a:hover,
+    #portlet-navigation-tree .contenttype-headersetfolder a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-headersetfolder,
+    #portlet-navigation-tree .contenttype-headersetfolder {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-headersetfolder a:hover,
+    * html #portlet-navigation-tree .contenttype-headersetfolder a:hover,
+    * html #portlet-navigation-tree .contenttype-headersetfolder a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-headersetfolder { 
+        display: block; 
+    }
+        .contenttype-image,
+    .actionMenu .contenttype-image a:hover { 
+        background-image: url(http://www.openplans.org/image_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-image { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-image a:hover,
+    #portlet-navigation-tree .contenttype-image a:hover,
+    #portlet-navigation-tree .contenttype-image a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/image_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-image,
+    #portlet-navigation-tree .contenttype-image {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-image a:hover,
+    * html #portlet-navigation-tree .contenttype-image a:hover,
+    * html #portlet-navigation-tree .contenttype-image a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-image { 
+        display: block; 
+    }
+        .contenttype-imageattachment,
+    .actionMenu .contenttype-imageattachment a:hover { 
+        background-image: url(http://www.openplans.org/image_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-imageattachment { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-imageattachment a:hover,
+    #portlet-navigation-tree .contenttype-imageattachment a:hover,
+    #portlet-navigation-tree .contenttype-imageattachment a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/image_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-imageattachment,
+    #portlet-navigation-tree .contenttype-imageattachment {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-imageattachment a:hover,
+    * html #portlet-navigation-tree .contenttype-imageattachment a:hover,
+    * html #portlet-navigation-tree .contenttype-imageattachment a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-imageattachment { 
+        display: block; 
+    }
+        .contenttype-ironicwiki,
+    .actionMenu .contenttype-ironicwiki a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-ironicwiki { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-ironicwiki a:hover,
+    #portlet-navigation-tree .contenttype-ironicwiki a:hover,
+    #portlet-navigation-tree .contenttype-ironicwiki a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-ironicwiki,
+    #portlet-navigation-tree .contenttype-ironicwiki {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-ironicwiki a:hover,
+    * html #portlet-navigation-tree .contenttype-ironicwiki a:hover,
+    * html #portlet-navigation-tree .contenttype-ironicwiki a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-ironicwiki { 
+        display: block; 
+    }
+        .contenttype-large-plone-folder,
+    .actionMenu .contenttype-large-plone-folder a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-large-plone-folder { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-large-plone-folder a:hover,
+    #portlet-navigation-tree .contenttype-large-plone-folder a:hover,
+    #portlet-navigation-tree .contenttype-large-plone-folder a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-large-plone-folder,
+    #portlet-navigation-tree .contenttype-large-plone-folder {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-large-plone-folder a:hover,
+    * html #portlet-navigation-tree .contenttype-large-plone-folder a:hover,
+    * html #portlet-navigation-tree .contenttype-large-plone-folder a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-large-plone-folder { 
+        display: block; 
+    }
+        .contenttype-link,
+    .actionMenu .contenttype-link a:hover { 
+        background-image: url(http://www.openplans.org/link_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-link { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-link a:hover,
+    #portlet-navigation-tree .contenttype-link a:hover,
+    #portlet-navigation-tree .contenttype-link a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/link_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-link,
+    #portlet-navigation-tree .contenttype-link {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-link a:hover,
+    * html #portlet-navigation-tree .contenttype-link a:hover,
+    * html #portlet-navigation-tree .contenttype-link a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-link { 
+        display: block; 
+    }
+        .contenttype-macrocacherule,
+    .actionMenu .contenttype-macrocacherule a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-macrocacherule { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-macrocacherule a:hover,
+    #portlet-navigation-tree .contenttype-macrocacherule a:hover,
+    #portlet-navigation-tree .contenttype-macrocacherule a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-macrocacherule,
+    #portlet-navigation-tree .contenttype-macrocacherule {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-macrocacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-macrocacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-macrocacherule a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-macrocacherule { 
+        display: block; 
+    }
+        .contenttype-macrofolder,
+    .actionMenu .contenttype-macrofolder a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-macrofolder { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-macrofolder a:hover,
+    #portlet-navigation-tree .contenttype-macrofolder a:hover,
+    #portlet-navigation-tree .contenttype-macrofolder a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-macrofolder,
+    #portlet-navigation-tree .contenttype-macrofolder {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-macrofolder a:hover,
+    * html #portlet-navigation-tree .contenttype-macrofolder a:hover,
+    * html #portlet-navigation-tree .contenttype-macrofolder a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-macrofolder { 
+        display: block; 
+    }
+        .contenttype-mailing-list,
+    .actionMenu .contenttype-mailing-list a:hover { 
+        background-image: url(http://www.openplans.org/mailboxer_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-mailing-list { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-mailing-list a:hover,
+    #portlet-navigation-tree .contenttype-mailing-list a:hover,
+    #portlet-navigation-tree .contenttype-mailing-list a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/mailboxer_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-mailing-list,
+    #portlet-navigation-tree .contenttype-mailing-list {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-mailing-list a:hover,
+    * html #portlet-navigation-tree .contenttype-mailing-list a:hover,
+    * html #portlet-navigation-tree .contenttype-mailing-list a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-mailing-list { 
+        display: block; 
+    }
+        .contenttype-member,
+    .actionMenu .contenttype-member a:hover { 
+        background-image: url(http://www.openplans.org/user.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-member { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-member a:hover,
+    #portlet-navigation-tree .contenttype-member a:hover,
+    #portlet-navigation-tree .contenttype-member a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/user.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-member,
+    #portlet-navigation-tree .contenttype-member {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-member a:hover,
+    * html #portlet-navigation-tree .contenttype-member a:hover,
+    * html #portlet-navigation-tree .contenttype-member a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-member { 
+        display: block; 
+    }
+        .contenttype-memberdatacontainer,
+    .actionMenu .contenttype-memberdatacontainer a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-memberdatacontainer { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-memberdatacontainer a:hover,
+    #portlet-navigation-tree .contenttype-memberdatacontainer a:hover,
+    #portlet-navigation-tree .contenttype-memberdatacontainer a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-memberdatacontainer,
+    #portlet-navigation-tree .contenttype-memberdatacontainer {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-memberdatacontainer a:hover,
+    * html #portlet-navigation-tree .contenttype-memberdatacontainer a:hover,
+    * html #portlet-navigation-tree .contenttype-memberdatacontainer a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-memberdatacontainer { 
+        display: block; 
+    }
+        .contenttype-news-item,
+    .actionMenu .contenttype-news-item a:hover { 
+        background-image: url(http://www.openplans.org/newsitem_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-news-item { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-news-item a:hover,
+    #portlet-navigation-tree .contenttype-news-item a:hover,
+    #portlet-navigation-tree .contenttype-news-item a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/newsitem_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-news-item,
+    #portlet-navigation-tree .contenttype-news-item {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-news-item a:hover,
+    * html #portlet-navigation-tree .contenttype-news-item a:hover,
+    * html #portlet-navigation-tree .contenttype-news-item a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-news-item { 
+        display: block; 
+    }
+        .contenttype-open-mailing-list,
+    .actionMenu .contenttype-open-mailing-list a:hover { 
+        background-image: url(http://www.openplans.org/mailboxer_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-open-mailing-list { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-open-mailing-list a:hover,
+    #portlet-navigation-tree .contenttype-open-mailing-list a:hover,
+    #portlet-navigation-tree .contenttype-open-mailing-list a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/mailboxer_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-open-mailing-list,
+    #portlet-navigation-tree .contenttype-open-mailing-list {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-open-mailing-list a:hover,
+    * html #portlet-navigation-tree .contenttype-open-mailing-list a:hover,
+    * html #portlet-navigation-tree .contenttype-open-mailing-list a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-open-mailing-list { 
+        display: block; 
+    }
+        .contenttype-openmember,
+    .actionMenu .contenttype-openmember a:hover { 
+        background-image: url(http://www.openplans.org/user.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-openmember { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-openmember a:hover,
+    #portlet-navigation-tree .contenttype-openmember a:hover,
+    #portlet-navigation-tree .contenttype-openmember a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/user.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-openmember,
+    #portlet-navigation-tree .contenttype-openmember {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-openmember a:hover,
+    * html #portlet-navigation-tree .contenttype-openmember a:hover,
+    * html #portlet-navigation-tree .contenttype-openmember a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-openmember { 
+        display: block; 
+    }
+        .contenttype-openmembership,
+    .actionMenu .contenttype-openmembership a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-openmembership { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-openmembership a:hover,
+    #portlet-navigation-tree .contenttype-openmembership a:hover,
+    #portlet-navigation-tree .contenttype-openmembership a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-openmembership,
+    #portlet-navigation-tree .contenttype-openmembership {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-openmembership a:hover,
+    * html #portlet-navigation-tree .contenttype-openmembership a:hover,
+    * html #portlet-navigation-tree .contenttype-openmembership a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-openmembership { 
+        display: block; 
+    }
+        .contenttype-openproject,
+    .actionMenu .contenttype-openproject a:hover { 
+        background-image: url(http://www.openplans.org/openproject_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-openproject { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-openproject a:hover,
+    #portlet-navigation-tree .contenttype-openproject a:hover,
+    #portlet-navigation-tree .contenttype-openproject a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/openproject_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-openproject,
+    #portlet-navigation-tree .contenttype-openproject {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-openproject a:hover,
+    * html #portlet-navigation-tree .contenttype-openproject a:hover,
+    * html #portlet-navigation-tree .contenttype-openproject a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-openproject { 
+        display: block; 
+    }
+        .contenttype-openroster,
+    .actionMenu .contenttype-openroster a:hover { 
+        background-image: url(http://www.openplans.org/openproject_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-openroster { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-openroster a:hover,
+    #portlet-navigation-tree .contenttype-openroster a:hover,
+    #portlet-navigation-tree .contenttype-openroster a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/openproject_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-openroster,
+    #portlet-navigation-tree .contenttype-openroster {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-openroster a:hover,
+    * html #portlet-navigation-tree .contenttype-openroster a:hover,
+    * html #portlet-navigation-tree .contenttype-openroster a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-openroster { 
+        display: block; 
+    }
+        .contenttype-openteam,
+    .actionMenu .contenttype-openteam a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-openteam { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-openteam a:hover,
+    #portlet-navigation-tree .contenttype-openteam a:hover,
+    #portlet-navigation-tree .contenttype-openteam a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-openteam,
+    #portlet-navigation-tree .contenttype-openteam {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-openteam a:hover,
+    * html #portlet-navigation-tree .contenttype-openteam a:hover,
+    * html #portlet-navigation-tree .contenttype-openteam a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-openteam { 
+        display: block; 
+    }
+        .contenttype-plone-site,
+    .actionMenu .contenttype-plone-site a:hover { 
+        background-image: url(http://www.openplans.org/site_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-plone-site { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-plone-site a:hover,
+    #portlet-navigation-tree .contenttype-plone-site a:hover,
+    #portlet-navigation-tree .contenttype-plone-site a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/site_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-plone-site,
+    #portlet-navigation-tree .contenttype-plone-site {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-plone-site a:hover,
+    * html #portlet-navigation-tree .contenttype-plone-site a:hover,
+    * html #portlet-navigation-tree .contenttype-plone-site a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-plone-site { 
+        display: block; 
+    }
+        .contenttype-poiissue,
+    .actionMenu .contenttype-poiissue a:hover { 
+        background-image: url(http://www.openplans.org/PoiIssue.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-poiissue { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-poiissue a:hover,
+    #portlet-navigation-tree .contenttype-poiissue a:hover,
+    #portlet-navigation-tree .contenttype-poiissue a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/PoiIssue.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-poiissue,
+    #portlet-navigation-tree .contenttype-poiissue {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-poiissue a:hover,
+    * html #portlet-navigation-tree .contenttype-poiissue a:hover,
+    * html #portlet-navigation-tree .contenttype-poiissue a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-poiissue { 
+        display: block; 
+    }
+        .contenttype-poipsctracker,
+    .actionMenu .contenttype-poipsctracker a:hover { 
+        background-image: url(http://www.openplans.org/PoiTracker.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-poipsctracker { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-poipsctracker a:hover,
+    #portlet-navigation-tree .contenttype-poipsctracker a:hover,
+    #portlet-navigation-tree .contenttype-poipsctracker a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/PoiTracker.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-poipsctracker,
+    #portlet-navigation-tree .contenttype-poipsctracker {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-poipsctracker a:hover,
+    * html #portlet-navigation-tree .contenttype-poipsctracker a:hover,
+    * html #portlet-navigation-tree .contenttype-poipsctracker a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-poipsctracker { 
+        display: block; 
+    }
+        .contenttype-poiresponse,
+    .actionMenu .contenttype-poiresponse a:hover { 
+        background-image: url(http://www.openplans.org/PoiResponse.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-poiresponse { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-poiresponse a:hover,
+    #portlet-navigation-tree .contenttype-poiresponse a:hover,
+    #portlet-navigation-tree .contenttype-poiresponse a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/PoiResponse.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-poiresponse,
+    #portlet-navigation-tree .contenttype-poiresponse {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-poiresponse a:hover,
+    * html #portlet-navigation-tree .contenttype-poiresponse a:hover,
+    * html #portlet-navigation-tree .contenttype-poiresponse a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-poiresponse { 
+        display: block; 
+    }
+        .contenttype-poitracker,
+    .actionMenu .contenttype-poitracker a:hover { 
+        background-image: url(http://www.openplans.org/PoiTracker.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-poitracker { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-poitracker a:hover,
+    #portlet-navigation-tree .contenttype-poitracker a:hover,
+    #portlet-navigation-tree .contenttype-poitracker a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/PoiTracker.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-poitracker,
+    #portlet-navigation-tree .contenttype-poitracker {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-poitracker a:hover,
+    * html #portlet-navigation-tree .contenttype-poitracker a:hover,
+    * html #portlet-navigation-tree .contenttype-poitracker a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-poitracker { 
+        display: block; 
+    }
+        .contenttype-policyhttpcachemanagercacherule,
+    .actionMenu .contenttype-policyhttpcachemanagercacherule a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-policyhttpcachemanagercacherule { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-policyhttpcachemanagercacherule a:hover,
+    #portlet-navigation-tree .contenttype-policyhttpcachemanagercacherule a:hover,
+    #portlet-navigation-tree .contenttype-policyhttpcachemanagercacherule a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-policyhttpcachemanagercacherule,
+    #portlet-navigation-tree .contenttype-policyhttpcachemanagercacherule {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-policyhttpcachemanagercacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-policyhttpcachemanagercacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-policyhttpcachemanagercacherule a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-policyhttpcachemanagercacherule { 
+        display: block; 
+    }
+        .contenttype-richdocument,
+    .actionMenu .contenttype-richdocument a:hover { 
+        background-image: url(http://www.openplans.org/RichDocument.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-richdocument { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-richdocument a:hover,
+    #portlet-navigation-tree .contenttype-richdocument a:hover,
+    #portlet-navigation-tree .contenttype-richdocument a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/RichDocument.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-richdocument,
+    #portlet-navigation-tree .contenttype-richdocument {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-richdocument a:hover,
+    * html #portlet-navigation-tree .contenttype-richdocument a:hover,
+    * html #portlet-navigation-tree .contenttype-richdocument a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-richdocument { 
+        display: block; 
+    }
+        .contenttype-rulefolder,
+    .actionMenu .contenttype-rulefolder a:hover { 
+        background-image: url(http://www.openplans.org/folder_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-rulefolder { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-rulefolder a:hover,
+    #portlet-navigation-tree .contenttype-rulefolder a:hover,
+    #portlet-navigation-tree .contenttype-rulefolder a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/folder_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-rulefolder,
+    #portlet-navigation-tree .contenttype-rulefolder {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-rulefolder a:hover,
+    * html #portlet-navigation-tree .contenttype-rulefolder a:hover,
+    * html #portlet-navigation-tree .contenttype-rulefolder a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-rulefolder { 
+        display: block; 
+    }
+        .contenttype-smartlink,
+    .actionMenu .contenttype-smartlink a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-smartlink { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-smartlink a:hover,
+    #portlet-navigation-tree .contenttype-smartlink a:hover,
+    #portlet-navigation-tree .contenttype-smartlink a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-smartlink,
+    #portlet-navigation-tree .contenttype-smartlink {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-smartlink a:hover,
+    * html #portlet-navigation-tree .contenttype-smartlink a:hover,
+    * html #portlet-navigation-tree .contenttype-smartlink a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-smartlink { 
+        display: block; 
+    }
+        .contenttype-team,
+    .actionMenu .contenttype-team a:hover { 
+        background-image: url(http://www.openplans.org/team_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-team { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-team a:hover,
+    #portlet-navigation-tree .contenttype-team a:hover,
+    #portlet-navigation-tree .contenttype-team a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/team_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-team,
+    #portlet-navigation-tree .contenttype-team {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-team a:hover,
+    * html #portlet-navigation-tree .contenttype-team a:hover,
+    * html #portlet-navigation-tree .contenttype-team a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-team { 
+        display: block; 
+    }
+        .contenttype-team-membership,
+    .actionMenu .contenttype-team-membership a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-team-membership { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-team-membership a:hover,
+    #portlet-navigation-tree .contenttype-team-membership a:hover,
+    #portlet-navigation-tree .contenttype-team-membership a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-team-membership,
+    #portlet-navigation-tree .contenttype-team-membership {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-team-membership a:hover,
+    * html #portlet-navigation-tree .contenttype-team-membership a:hover,
+    * html #portlet-navigation-tree .contenttype-team-membership a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-team-membership { 
+        display: block; 
+    }
+        .contenttype-teamroster,
+    .actionMenu .contenttype-teamroster a:hover { 
+        background-image: url(http://www.openplans.org/roster_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-teamroster { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-teamroster a:hover,
+    #portlet-navigation-tree .contenttype-teamroster a:hover,
+    #portlet-navigation-tree .contenttype-teamroster a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/roster_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-teamroster,
+    #portlet-navigation-tree .contenttype-teamroster {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-teamroster a:hover,
+    * html #portlet-navigation-tree .contenttype-teamroster a:hover,
+    * html #portlet-navigation-tree .contenttype-teamroster a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-teamroster { 
+        display: block; 
+    }
+        .contenttype-teamspace,
+    .actionMenu .contenttype-teamspace a:hover { 
+        background-image: url(http://www.openplans.org/teamspace_icon.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-teamspace { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-teamspace a:hover,
+    #portlet-navigation-tree .contenttype-teamspace a:hover,
+    #portlet-navigation-tree .contenttype-teamspace a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/teamspace_icon.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-teamspace,
+    #portlet-navigation-tree .contenttype-teamspace {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-teamspace a:hover,
+    * html #portlet-navigation-tree .contenttype-teamspace a:hover,
+    * html #portlet-navigation-tree .contenttype-teamspace a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-teamspace { 
+        display: block; 
+    }
+        .contenttype-teamstool,
+    .actionMenu .contenttype-teamstool a:hover { 
+        background-image: url(http://www.openplans.org/teams_tool.png); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-teamstool { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-teamstool a:hover,
+    #portlet-navigation-tree .contenttype-teamstool a:hover,
+    #portlet-navigation-tree .contenttype-teamstool a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/teams_tool.png);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-teamstool,
+    #portlet-navigation-tree .contenttype-teamstool {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-teamstool a:hover,
+    * html #portlet-navigation-tree .contenttype-teamstool a:hover,
+    * html #portlet-navigation-tree .contenttype-teamstool a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-teamstool { 
+        display: block; 
+    }
+        .contenttype-templatecacherule,
+    .actionMenu .contenttype-templatecacherule a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-templatecacherule { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-templatecacherule a:hover,
+    #portlet-navigation-tree .contenttype-templatecacherule a:hover,
+    #portlet-navigation-tree .contenttype-templatecacherule a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-templatecacherule,
+    #portlet-navigation-tree .contenttype-templatecacherule {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-templatecacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-templatecacherule a:hover,
+    * html #portlet-navigation-tree .contenttype-templatecacherule a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-templatecacherule { 
+        display: block; 
+    }
+        .contenttype-topic,
+    .actionMenu .contenttype-topic a:hover { 
+        background-image: url(http://www.openplans.org/topic_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-topic { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-topic a:hover,
+    #portlet-navigation-tree .contenttype-topic a:hover,
+    #portlet-navigation-tree .contenttype-topic a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/topic_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-topic,
+    #portlet-navigation-tree .contenttype-topic {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-topic a:hover,
+    * html #portlet-navigation-tree .contenttype-topic a:hover,
+    * html #portlet-navigation-tree .contenttype-topic a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-topic { 
+        display: block; 
+    }
+        .contenttype-wickeddoc,
+    .actionMenu .contenttype-wickeddoc a:hover { 
+        background-image: url(http://www.openplans.org/document_icon.gif); 
+        background-repeat: no-repeat; 
+        background-position: 0% 0%;
+    }
+    /* Holly hack to prevent items from shifting to the left in IE*/
+    * html .contenttype-wickeddoc { 
+        height: 1%;
+    }
+    #portal-sitemap .contenttype-wickeddoc a:hover,
+    #portlet-navigation-tree .contenttype-wickeddoc a:hover,
+    #portlet-navigation-tree .contenttype-wickeddoc a.navTreeCurrentItem {
+        background-image: url(http://www.openplans.org/document_icon.gif);
+        background-repeat: no-repeat;
+        background-position: 0% 3px;
+    }
+    #portal-sitemap .contenttype-wickeddoc,
+    #portlet-navigation-tree .contenttype-wickeddoc {
+        background-position: 0% 4px;
+    }
+    * html #portal-sitemap .contenttype-wickeddoc a:hover,
+    * html #portlet-navigation-tree .contenttype-wickeddoc a:hover,
+    * html #portlet-navigation-tree .contenttype-wickeddoc a.navTreeCurrentItem {
+        position: relative;
+    }
+    .listing .contenttype-wickeddoc { 
+        display: block; 
+    }
+  
+    .actionicon-plone-sendto { 
+        background-image: url(http://www.openplans.org/mail_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-print { 
+        background-image: url(http://www.openplans.org/print_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-rss { 
+        background-image: url(http://www.openplans.org/rss.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-extedit { 
+        background-image: url(http://www.openplans.org/extedit_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-addtofavorites { 
+        background-image: url(http://www.openplans.org/favorite_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-QuickInstaller { 
+        background-image: url(http://www.openplans.org/product_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-PloneReconfig { 
+        background-image: url(http://www.openplans.org/logoIcon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-UsersGroups { 
+        background-image: url(http://www.openplans.org/group.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-UsersGroups2 { 
+        background-image: url(http://www.openplans.org/group.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-MemberPrefs { 
+        background-image: url(http://www.openplans.org/user.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-MemberPassword { 
+        background-image: url(http://www.openplans.org/lock_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-MailHost { 
+        background-image: url(http://www.openplans.org/mail_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-PortalSkin { 
+        background-image: url(http://www.openplans.org/skins_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-errorLog { 
+        background-image: url(http://www.openplans.org/error_log_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-ZMI { 
+        background-image: url(http://www.openplans.org/zope_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-SearchSettings { 
+        background-image: url(http://www.openplans.org/search_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-NavigationSettings { 
+        background-image: url(http://www.openplans.org/navigation_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-full_screen { 
+        background-image: url(http://www.openplans.org/fullscreenexpand_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-PlonePortletsAdd { 
+        background-image: url(http://www.openplans.org/skins_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-CacheSetupPrefs { 
+        background-image: url(http://www.openplans.org//misc_/CacheSetup/cachesetup_tool_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-versioning { 
+        background-image: url(http://www.openplans.org/versioning.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-cmfmember { 
+        background-image: url(http://www.openplans.org//misc_/CMFMember/cmfmember_control_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-cmfmemberMigration { 
+        background-image: url(http://www.openplans.org//misc_/CMFMember/cmfmember_control_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-orphans { 
+        background-image: url(http://www.openplans.org//misc_/CMFMember/cmfmember_control_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-memberdata { 
+        background-image: url(http://www.openplans.org//misc_/CMFMember/cmfmember_control_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-cmfmemberImportCSV { 
+        background-image: url(http://www.openplans.org//misc_/CMFMember/cmfmember_control_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-TeamSpacePrefs { 
+        background-image: url(http://www.openplans.org/teams_tool.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-object_buttons-cut { 
+        background-image: url(http://www.openplans.org/cut_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-object_buttons-copy { 
+        background-image: url(http://www.openplans.org/copy_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-object_buttons-paste { 
+        background-image: url(http://www.openplans.org/paste_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-object_buttons-delete { 
+        background-image: url(http://www.openplans.org/delete_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-kupu { 
+        background-image: url(http://www.openplans.org/kupuimages/kupu_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-portal_atct { 
+        background-image: url(http://www.openplans.org/topic_icon.gif) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-ics { 
+        background-image: url(http://www.openplans.org/icon_export_ical.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-vcs { 
+        background-image: url(http://www.openplans.org/icon_export_vcal.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-rotate_clockwise { 
+        background-image: url(http://www.openplans.org/icon_rotate_clockwise.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-rotate_counter_clockwise { 
+        background-image: url(http://www.openplans.org/icon_rotate_counter_clockwise.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-rotate_180 { 
+        background-image: url(http://www.openplans.org/icon_rotate_180.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-flip_horizontal { 
+        background-image: url(http://www.openplans.org/icon_flip_horizontal.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-plone-flip_vertical { 
+        background-image: url(http://www.openplans.org/icon_flip_vertical.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+    .actionicon-controlpanel-placefulworkflow { 
+        background-image: url(http://www.openplans.org/placefulworkflow_icon.png) !important; 
+        background-repeat: no-repeat; 
+        background-position: 0% 50%;
+    }
+
+/* Extra padding class for the generated icons - we have to do it
+   this way because of the IE flicker bug on hovering. */
+
+.visualIconPadding,
+.actionMenu .actionMenuContent .visualIconPadding {
+    padding-left: 18px;
+    margin-left: -1px;
+}
+
+.visualIconReplace {
+    background: transparent;
+    display: block !important;
+    border: 0;
+    margin: 0;
+    padding: 0 0 0 18px !important;
+    overflow: hidden;
+    width: 0px !important;
+    width /**/: 18px;
+}
+
+/*  */
+
+}
+
