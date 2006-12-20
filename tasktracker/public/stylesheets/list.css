@@ -12,6 +12,7 @@
 }
 
 table {
+   border-spacing: 0px;
    align: center;
    text-align: center;
    width: 100%;

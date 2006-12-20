@@ -237,7 +237,7 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
-        c.previewTextLength = 0
+        #c.previewTextLength = 0
         c.flat = True
         return render_response('zpt', 'task.show')
 

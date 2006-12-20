@@ -30,7 +30,8 @@
 </span>
   <div class="second-line">
   <span tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
-    &nbsp;<span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
+    &nbsp;
+    <span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
   </span></div>
 </td>
 
