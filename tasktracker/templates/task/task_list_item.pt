@@ -1,15 +1,12 @@
 <metal:macro metal:define-macro="show_task">
 
 <metal:do use-macro="here/task_item/macros/show_task">
+</metal:do>
 
-<metal:slot fill-slot="post_task">
 <tal:for repeat="atask atask/liveChildren">
 <metal:do use-macro="here/task_list_item/macros/show_task" />
-
 </tal:for>
-</metal:slot>
 
-</metal:do>
 
 <!-- subtasks -->
 
