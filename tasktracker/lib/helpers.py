@@ -413,7 +413,7 @@ def render_action(action):
 
 def field_last_updated(task, field):
     the_version = None
-    for version in reversed(task.versions):
+    for version in reversed(list(task.versions)):
         if field.title() in version.getChangedFields():
             the_version = version
             break

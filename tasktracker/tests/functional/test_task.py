@@ -71,6 +71,7 @@ class TestTaskController(TestController):
         res.mustcontain("The new task body")
 
     def _getElementsByTagName(self, body, tagname):
+        """ This is a total hack and should not be used """
         elements = []
         start = -1
         while 1:
@@ -321,7 +322,7 @@ class TestTaskController(TestController):
         res.mustcontain("newowner")
 
         #find the old version
-        versions = task.versions
+        versions = list(task.versions)
         assert len(versions) == 1
         version = versions[0]
 
@@ -331,3 +332,6 @@ class TestTaskController(TestController):
         version.destroySelf()
         task.destroySelf()
         tl.destroySelf()
+
+    def can_claim_tasks(self):
+        pass

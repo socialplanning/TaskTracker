@@ -20,6 +20,7 @@
 
 from sqlobject import *
 from sqlobject.inheritance import InheritableSQLObject
+from sqlobject.versioning import Versioning
 from sqlobject.sqlbuilder import *
 from sqlobject.events import *
 from pylons.database import PackageHub
@@ -32,21 +33,6 @@ __connection__ = hub
 # Don't forget to update soClasses, below
 
 import datetime
-
-def create_version(klass, obj):
-    """Stores the old version of an item before it's updated."""
-    args = {}
-    columns = klass.sqlmeta.columns
-    for column in columns.keys():
-        if column not in ["updated", "id", "origID"]:
-            args[column] = getattr(obj, column)
-
-    obj.updated = datetime.datetime.now()
-    args['updated'] = obj.updated
-    args['updated_by'] = c.username
-    args['origID'] = obj.id
-
-    return klass(**args)
 
 class OutgoingEmail(SQLObject):
     envelope_from_address = StringCol()
@@ -64,7 +50,6 @@ class Notification(SQLObject):
     created = DateTimeCol(default=datetime.datetime.now)
     notified = BoolCol(default=False)
     importance = IntCol()
-    oldVersion = ForeignKey("Version")
     triggering_watcher = ForeignKey("Watcher")
     handled = BoolCol(default=False)
     
@@ -73,56 +58,6 @@ class Notification(SQLObject):
             return "task"
         else:
             return "task_list"
-
-class Versionable(InheritableSQLObject):
-    doneConstruction = BoolCol(default=False)
-
-class Version(InheritableSQLObject):
-    """Represents an old version of an item."""
-
-    updated = DateTimeCol()
-    updated_by = StringCol()
-    orig = ForeignKey("Versionable")
-
-    def nextVersion(self):
-        version = Version.select(AND(Version.q.origID == self.orig.id, Version.q.updated > self.updated), limit=1, orderBy=Version.q.updated)
-        if version.count():
-            return version[0]
-        else:
-            return self.orig
-
-    def getChangedFields(self):
-        next = self.nextVersion()
-        columns = self.__class__.sqlmeta.columns
-        fields = []
-        for column in columns:
-            if column not in ["updated", "id", "origID", "sort_index"]:
-                if getattr(self, column) != getattr(next, column):
-                    fields.append(column.title())
-
-        return fields        
-
-class TaskVersion(Version):
-
-    deadline = DateTimeCol()
-    live = BoolCol(default=True)    
-    owner = StringCol()
-    priority = StringCol(default="None")
-    private = BoolCol()
-    sort_index = IntCol()
-    status = StringCol()
-    task_list = ForeignKey("TaskList")
-    text = StringCol()
-    title = StringCol()
-
-
-class TaskListVersion(Version):
-
-    title = StringCol()
-    live = BoolCol()
-    text = StringCol()
-    sort_index = IntCol()
-    initial_assign = IntCol()
 
 class Watcher(SQLObject):
     username = StringCol()
@@ -210,17 +145,16 @@ class TaskListPermission(SQLObject):
 
 
 def _task_sort_index():
-    index = max([t.sort_index for t in Task.selectBy(live=True, doneConstruction=True)] + [0])
+    index = max([t.sort_index for t in Task.selectBy(live=True)] + [0])
     if index is None:
         return 0
     else:
         return index + 1
 
-class Task(Versionable):
+class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
-    version_class = TaskVersion
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
@@ -238,7 +172,7 @@ class Task(Versionable):
     title = StringCol()
     updated = DateTimeCol(default=datetime.datetime.now)
     updated_by = StringCol()
-    versions = MultipleJoin("Version", joinColumn="orig_id", orderBy='updated')
+    versions = Versioning()
     watchers = MultipleJoin("Watcher")
 
     def getWatcher(self, username):
@@ -269,7 +203,6 @@ class Task(Versionable):
             kwargs['owner'] = c.username
 
         super(Task, self)._create(id, **kwargs)
-        self.doneConstruction = True
 
     def set(self, **kwargs):
         kwargs['updated_by'] = c.username
@@ -387,7 +320,7 @@ class Task(Versionable):
         return next
 
     def actions(self):
-        return sorted(self.comments + self.versions, key=_by_date)
+        return sorted(self.comments + list(self.versions), key=_by_date)
 
 def _by_date(obj):
     if hasattr(obj, 'date'):
@@ -405,7 +338,7 @@ class Comment(SQLObject):
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
-    index = max([tl.sort_index for tl in TaskList.selectBy(doneConstruction=True)] + [0])
+    index = max([tl.sort_index for tl in TaskList.select()] + [0])
     if index is None:
         return 0
     else:
@@ -420,7 +353,7 @@ class TaskListFeature(SQLObject):
     task_list = ForeignKey("TaskList")
     value = StringCol()
 
-class TaskList(Versionable):
+class TaskList(SQLObject):
     _cacheValue = False
     class sqlmeta:
         defaultOrder = 'sort_index'
@@ -435,7 +368,7 @@ class TaskList(Versionable):
     title = StringCol()
     updated = DateTimeCol(default=datetime.datetime.now)
     updated_by = StringCol()
-    versions = MultipleJoin("Version", joinColumn="orig_id", orderBy='updated')
+    versions = Versioning()
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")
@@ -547,7 +480,6 @@ class TaskList(Versionable):
         for status in statuses:
             Status(name=status, task_list = self.id)
 
-        self.doneConstruction = True
         trans.commit()
 
     def isOwnedBy(self, username):
@@ -562,20 +494,6 @@ class TaskList(Versionable):
 
         super(TaskList, self).destroySelf()
 
-
-def task_row_update(task, args):
-    if len(args) == 1 and args.has_key('updated'):
-        return
-    create_version(TaskVersion, task)
-
-def task_list_row_update(task, args):
-    if len(args) == 1 and args.has_key('updated'):
-        return
-    create_version(TaskListVersion, task)
-
-listen(task_row_update, Task, RowUpdateSignal)
-listen(task_list_row_update, TaskList, RowUpdateSignal)
-
 soClasses = [
 Action,
 Comment,
@@ -585,14 +503,10 @@ Project,
 Role,
 Status,
 Task,
-TaskVersion,
 TaskList,
 TaskListFeature,
 TaskListPermission,
 TaskListRole,
-TaskListVersion,
 User,
-Version,
-Versionable,
 Watcher,
 ]
