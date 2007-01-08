@@ -36,9 +36,12 @@ class TestTaskController(TestController):
         task = lists[0].tasks[0]
 
         assert task.status == 'not done'
-        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'done'})
+        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'true'})
         assert task.status == "done"
-        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'__no_such_status__'})
+        try:
+            res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'__no_such_status__'})
+        except AssertionError:
+            pass
         assert task.status == "done"
      
     def test_show_create(self):
