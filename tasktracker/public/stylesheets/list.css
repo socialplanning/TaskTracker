@@ -239,3 +239,7 @@ span.editable:hover {
   text-decoration: underline;
   color: #00f;
 }
+
+#movable_add_task {
+  background-color: #ddd;
+}
