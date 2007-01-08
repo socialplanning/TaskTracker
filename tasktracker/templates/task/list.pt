@@ -9,6 +9,7 @@
 
 <!-- list headers -->
 
+<span id="permalink" tal:attributes="permalink c/permalink" />
 <table id="tasks" class="task_list" hasReorderableTasks="True">
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 

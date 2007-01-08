@@ -368,6 +368,21 @@ function filterListByAllFields() {
 	});
 }
 
+function sortAndFilter() {
+    var options = $('permalink').getAttribute("permalink");
+    options = options.split(" ");
+    var i;
+    for( i = 0; i < options.length; ++i ) {
+	var key = options[i].split(":");
+	var val = key[1];
+	key = key[0];
+	if( key == "sortBy" ) {
+	    sortBy(val);
+	}
+    }
+
+}
+
 function restoreAddTask() { 
     $('add_task_anchor').appendChild($('movable_add_task'));
     showTaskCreate();
@@ -945,3 +960,4 @@ function add_unfold(node) {
 }
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
+addLoadEvent(sortAndFilter);

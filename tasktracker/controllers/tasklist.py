@@ -75,6 +75,10 @@ class TasklistController(BaseController):
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0
         c.depth = 0
+        c.permalink = ""
+        for param in request.GET:
+            if param in "sortBy".split():
+                c.permalink = "%s%s:%s " % (c.permalink, param, request.GET[param])
         return render_response('zpt', 'task.list')
 
     @attrs(action='create')
