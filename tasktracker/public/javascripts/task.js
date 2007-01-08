@@ -361,6 +361,7 @@ function filterListByAllFields() {
 	    if( !filter )
 		return;
 	    var filtervalue = filter.value;
+	    setPermalink(field, filtervalue);
 	    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
 	    if (filtervalue == "All")
 		return;
@@ -965,6 +966,8 @@ function sortBy(column) {
     var otherorder = (order == 'up') ? 'down' : 'up';
     addClass($(column + '-' + otherorder + '-arrow'), 'grayed-out');
     removeClass($(column + '-' + order + '-arrow'), "grayed-out");
+    
+    setPermalink("sortBy", column);
 
     // todo rename this
     sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
@@ -990,6 +993,31 @@ function unfold () {
 
 function add_unfold(node) {
 	node.onclick = unfold.bind(node);
+}
+
+function setPermalink(newkey, newval) {
+    var a_perm = $('permalink');
+    var permalink = a_perm.getAttribute('permalink');
+    var items = permalink.split(";");
+    var i;
+    for( i = 0; i < items.length; ++i ) {
+	var key = items[i].split(":");
+	var val = key[1];
+	var key = key[0];
+	if( key == newkey ) {
+	    if( newval == "All" )
+		permalink = permalink.replace(key + ":" + val + ";", '');
+	    else
+		permalink = permalink.replace(key + ":" + val, newkey + ':' + newval);
+	    a_perm.setAttribute('permalink', permalink);
+	    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink").replace(/:/g, "=").replace(/;/g, "&");
+	    return;
+	}
+    }
+    if( newval == 'All' ) return;
+    permalink += ( newkey + ":" + newval + ';' );
+    a_perm.setAttribute('permalink', permalink);
+    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink").replace(/:/g, "=").replace(/;/g, "&");
 }
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });

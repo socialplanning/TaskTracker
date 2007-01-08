@@ -2,14 +2,13 @@
 <hr/><br/>
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">
 << return to list of lists</a>&nbsp;
-<a href="#nevermind">permalink this view</a>
+<a id="permalink" tal:attributes="permalink c/permalink;" base="" href="">permalink this view</a>
 </span><br/>
 
 <metal:do use-macro="here/task_list_title/macros/show_title"/>
 
 <!-- list headers -->
 
-<span id="permalink" tal:attributes="permalink c/permalink" />
 <table id="tasks" class="task_list" hasReorderableTasks="True">
 <metal:macro metal:use-macro="here/task_list_header/macros/show_header" />
 
