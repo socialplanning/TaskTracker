@@ -390,11 +390,11 @@ filterLookups.updated['In the past week'] = '-7,0';
 
 function sortAndFilter() {
     var options = $('permalink').getAttribute("permalink");
-    options = options.split(";");
+    options = options.split("&");
     var i;
     var needToFilter = false;
     for( i = 0; i < options.length; ++i ) {
-	var key = options[i].split(":");
+	var key = options[i].split("=");
 	var val = key[1];
 	key = key[0];
 	if( key == "sortBy" ) {
@@ -998,26 +998,26 @@ function add_unfold(node) {
 function setPermalink(newkey, newval) {
     var a_perm = $('permalink');
     var permalink = a_perm.getAttribute('permalink');
-    var items = permalink.split(";");
+    var items = permalink.split("&");
     var i;
     for( i = 0; i < items.length; ++i ) {
-	var key = items[i].split(":");
+	var key = items[i].split("=");
 	var val = key[1];
 	var key = key[0];
 	if( key == newkey ) {
 	    if( newval == "All" )
-		permalink = permalink.replace(key + ":" + val + ";", '');
+		permalink = permalink.replace(key + "=" + val + "&", '');
 	    else
-		permalink = permalink.replace(key + ":" + val, newkey + ':' + newval);
+		permalink = permalink.replace(key + "=" + val, newkey + '=' + newval);
 	    a_perm.setAttribute('permalink', permalink);
-	    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink").replace(/:/g, "=").replace(/;/g, "&");
+	    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
 	    return;
 	}
     }
     if( newval == 'All' ) return;
-    permalink += ( newkey + ":" + newval + ';' );
+    permalink += ( newkey + "=" + newval + '&' );
     a_perm.setAttribute('permalink', permalink);
-    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink").replace(/:/g, "=").replace(/;/g, "&");
+    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
 }
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
