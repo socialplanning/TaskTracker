@@ -407,6 +407,11 @@ def render_action(action):
         fields = action.getChangedFields()
         if not fields:
             return ''
+        for field in ['Sort_Index', 'Parentid']:
+            if field in fields:
+                fields.remove (field)
+        if not fields:
+            return ''
         comment = "<b>%s updated %s by %s</b>" % (", ".join (fields), prettyDate(action.updated), action.updated_by)
     return '<li>%s</li>' % comment
 
