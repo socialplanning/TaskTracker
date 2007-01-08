@@ -368,19 +368,54 @@ function filterListByAllFields() {
 	});
 }
 
+filterLookups = new Object;
+filterLookups.deadline = new Object;
+filterLookups.deadline['Past due'] = '-1';
+filterLookups.deadline['Due today'] = '0';
+filterLookups.deadline['Due tomorrow'] = '1';
+filterLookups.deadline['Due in the next week'] = '0,7';
+filterLookups.deadline['No deadline'] = 'None';
+
+filterLookups.priority = new Object;
+filterLookups.priority['No priority'] = 'None';
+
+filterLookups.owner = new Object;
+filterLookups.owner['No owner'] = 'None';
+
+filterLookups.updated = new Object;
+filterLookups.updated['Today'] = '0';
+filterLookups.updated['Yesterday'] = '-1';
+filterLookups.updated['In the past week'] = '-7,0';
+
 function sortAndFilter() {
     var options = $('permalink').getAttribute("permalink");
-    options = options.split(" ");
+    options = options.split(";");
     var i;
+    var needToFilter = false;
     for( i = 0; i < options.length; ++i ) {
 	var key = options[i].split(":");
 	var val = key[1];
 	key = key[0];
 	if( key == "sortBy" ) {
 	    sortBy(val);
-	}
-    }
+	} else {  // filters are the only other possibilities; it's the controller's responsibility to restrict param keys
+	    var filter = $(key + "_filter");
+	    if( filter ) { // no one's restricting values, though
+		filter.value = val;
 
+		if( filter.value != val ) {
+		    // filterLookups is a dict that lets us specify user-friendly versions of filter options
+		    val = filterLookups[key][val];
+		    filter.value = val;
+		}
+		    
+		if( filter.value == val ) // we don't bother filtering unless the value is a valid option
+		    needToFilter = true;
+	    }
+	}
+	if( needToFilter )
+	    filterListByAllFields();
+    }
 }
 
 function restoreAddTask() { 
@@ -459,7 +494,6 @@ function changeField(task_id, fieldname) {
     field.disabled = true;
     var url = '/task/change_field/' + task_id + '?field=' + fieldname;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
-    console.log(value);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
@@ -522,7 +556,6 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
-    console.log(req);
     if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {
