@@ -235,6 +235,12 @@ class TaskController(BaseController):
 
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
+    @attrs(action='private')
+    def update_private(self, id):
+        c.task = self._getTask(int(id))
+        c.task.private = request.params['private'] == 'true'
+        return render_response('zpt', 'task._private', fragment=True)
+
     def _getTask(self, id):
         try:
             return Task.get(int(id))

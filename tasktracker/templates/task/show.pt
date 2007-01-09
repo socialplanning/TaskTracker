@@ -73,6 +73,11 @@
 </table>
 
 
+
+<span tal:condition="python: h.has_permission(controller='task', action='update_private', id=c.task.id)"  id="private">
+<metal:do use-macro="here/_private/macros/private"/>
+</span>
+
 <tal:if condition="python: h.has_permission(controller='task', action='comment', id=c.task.id)">
 
 <span id="comment" class="unfolded command">add comment</span>&nbsp;&nbsp;

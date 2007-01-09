@@ -129,8 +129,9 @@ class TasklistController(BaseController):
         #anyone can change task status
         make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))
 
-        #only managers can assign and update list
+        #only managers can assign and update list and deal with private tasks
         make_permission('task_assign', tasklist, Role.getLevel('ListOwner'))
+        make_permission('task_private', tasklist, Role.getLevel('ListOwner'))
         make_permission('tasklist_update', tasklist, Role.getLevel('ListOwner'))
 
         #anyone can comment
@@ -209,9 +210,3 @@ class TasklistController(BaseController):
         c.flash = "Deleted."
         return Response.redirect_to(action='index')
     
-    @attrs(action='private')
-    def private(self):
-        """This is a dummy method to deal with private tasks."""
-        pass
-
-
