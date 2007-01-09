@@ -35,7 +35,6 @@
   </span></div>
 </td>
 
-<!-- <form tal:attributes="action string:/task/update/${atask/id}"> -->
 
 <td class="status-column">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>

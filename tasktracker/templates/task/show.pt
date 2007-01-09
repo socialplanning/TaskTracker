@@ -63,7 +63,6 @@
    <ul id="activity">
     <tal:nada repeat="action python: h.preview_list(c.task.actions())">
      <span tal:replace="structure python: h.render_action(action)"/>
-     <hr/>
     </tal:nada>
    </ul>
   </td>
@@ -104,7 +103,7 @@
 </tal:if>
 
 <tal:if condition="python: h.has_permission(controller='task', action='update', id=c.task.id)">
-<span tal:replace="structure python: h.link_to('delete this task',
+<span tal:replace="structure python: h.secure_link_to('delete this task',
    confirm='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id))"/>
 </tal:if>
 

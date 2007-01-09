@@ -1,6 +1,6 @@
 <!-- Please also see show_preferences for the non-editable version -->
 
-<span tal:replace="structure python: h.form(h.url(action='update'), method='post')" />
+<span tal:replace="structure python: h.secure_form(h.url(action='update'), method='post')" />
 
 <div id="title" class="editable unfolded">
 <h1 tal:content="c/tasklist/title" />

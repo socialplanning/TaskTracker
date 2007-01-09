@@ -505,7 +505,8 @@ function failedAddingTask(req) {
 function changeField(task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
     field.disabled = true;
-    var url = '/task/change_field/' + task_id + '?field=' + fieldname;
+    var authenticator = $('authenticator').value;
+    var url = '/task/change_field/' + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + value,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});

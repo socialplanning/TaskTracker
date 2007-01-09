@@ -35,11 +35,18 @@ class TestTaskController(TestController):
         res.mustcontain(lists[0].title)
         task = lists[0].tasks[0]
 
+        authenticator = None
+        for form in res.forms.values():
+            if form.get('authenticator', None):
+                authenticator = form['authenticator'].value
+                break
+        assert authenticator
+
         assert task.status == 'not done'
-        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'true'})
+        res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'true', 'authenticator':authenticator})
         assert task.status == "done"
         try:
-            res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'__no_such_status__'})
+            res2 = app.post('/task/change_field/%s' % task.id, params={'field':'status', 'status':'__no_such_status__', 'authenticator':authenticator})
         except AssertionError:
             pass
         assert task.status == "done"

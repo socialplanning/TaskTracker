@@ -148,6 +148,7 @@ class TasklistController(BaseController):
             if manager and not manager in administrators:
                 TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
 
+    @authenticate
     @attrs(action='create')
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
@@ -180,6 +181,7 @@ class TasklistController(BaseController):
         else:
             return filled_render('tasklist.show_preferences', c.tasklist, p)
 
+    @authenticate
     @validate(schema=CreateListForm(), form='show_update')  
     @attrs(action='update')
     @catches_errors
@@ -202,6 +204,7 @@ class TasklistController(BaseController):
         except LookupError:
             raise NoSuchIdError("No such tasklist ID: %s" % id)
 
+    @authenticate
     @attrs(action='create')
     @catches_errors
     def destroy(self, id, *args, **kwargs):

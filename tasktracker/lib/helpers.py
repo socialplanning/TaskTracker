@@ -36,6 +36,7 @@ import imp, os
 
 from formencode import htmlfill
 from tasktracker.lib.base import render_response
+from tasktracker.lib.secure_forms import *
 
 from tasktracker.lib.pretty_date import prettyDate
 from random import random
@@ -418,7 +419,7 @@ def render_action(action):
         if not fields:
             return ''
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.updated), action.updated_by)
-    return '<li>%s</li>' % comment
+    return '<li>%s<hr/></li>' % comment
 
 
 def field_last_updated(task, field):

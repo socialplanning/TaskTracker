@@ -60,6 +60,7 @@ class TaskController(BaseController):
                 clean[param] = params[param]
         return clean
     
+    @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog)
     @catches_errors
@@ -143,6 +144,7 @@ class TaskController(BaseController):
             c.parentID = 0
         return render_response('zpt', 'task.show_create')
 
+    @authenticate
     @attrs(action='create', watchdog=TaskCreateWatchdog)
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
@@ -200,6 +202,7 @@ class TaskController(BaseController):
         c.owner = c.oldtask.owner
         return render_response('zpt', 'task.show_update')
 
+    @authenticate
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
     @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
@@ -235,6 +238,7 @@ class TaskController(BaseController):
 
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
+    @authenticate
     @attrs(action='private')
     def update_private(self, id):
         c.task = self._getTask(int(id))
@@ -260,6 +264,7 @@ class TaskController(BaseController):
         c.flat = True
         return render_response('zpt', 'task.show')
 
+    @authenticate
     @attrs(action='update')
     @catches_errors
     def destroy(self, id, *args, **kwargs):
@@ -267,6 +272,7 @@ class TaskController(BaseController):
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
+    @authenticate
     @attrs(action='create')
     def create_tasks(self):
         tasks = request.params['tasks']

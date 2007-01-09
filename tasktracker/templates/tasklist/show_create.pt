@@ -5,7 +5,7 @@ tasks by area, or by sub-project.  For example, there might be a task
 list for tasks around the office, and another task list for organizing
 opposition to a proposed law.
 
-<span tal:replace="structure python: h.form(h.url(action='create'), method='post')" />
+<span tal:replace="structure python: h.secure_form(h.url(action='create'), method='post')" />
 
 <metal:do use-macro="here/_form/macros/form" />
 

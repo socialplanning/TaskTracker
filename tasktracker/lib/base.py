@@ -76,6 +76,8 @@ def catches_errors(f):
     new_f.func_name = f.func_name
     return new_f
 
+from tasktracker.lib.secure_forms import authenticate
+
 def attrs(**kwds):
     def decorate(f):
         for k in kwds:
