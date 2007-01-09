@@ -309,7 +309,7 @@ class Task(SQLObject):
 
         conn = hub.getConnection()
         trans = conn.transaction()
-        tasks = [t[1] for t in reversed(sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)]))]
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)], reverse=True)]
         trans.commit()
         
         next = None
