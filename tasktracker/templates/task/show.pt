@@ -4,8 +4,7 @@
 &lt;&lt; return to tasklist</a>&nbsp;
 
 <a tal:attributes="href python:h.url_for(controller='tasklist', action='index')">
-&lt;&lt; return to list of lists</a>&nbsp;
-<a href="#permalink">permalink this task</a>
+&lt;&lt; return to list of lists</a>
 </span><br/>
 
 <metal:do use-macro="here/task_list_title/macros/show_title"/>
