@@ -217,8 +217,11 @@ class TaskController(BaseController):
         if not p['owner']:
             del p['owner']
 
-        if not 'private' in p.keys():
-            p['private'] = False
+        if c.task.tasklist.isListOwner(c.username):
+            if not 'private' in p.keys():
+                p['private'] = False
+        else:
+            p['private'] = c.task.private
 
         if p.has_key('text'):
             p['text'] = p['text'].replace('\n', "<br>")
