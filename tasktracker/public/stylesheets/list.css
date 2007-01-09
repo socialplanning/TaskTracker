@@ -231,13 +231,13 @@ span.editable:hover {
 .command {
   cursor:pointer;
   text-decoration: underline;
-  color: #00f;
+  color: #256e81;
 }
 
 .removable_list_item {
   cursor:pointer;
   text-decoration: underline;
-  color: #00f;
+  color: #256e81;
 }
 
 #movable_add_task {
