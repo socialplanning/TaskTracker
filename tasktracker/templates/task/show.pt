@@ -36,10 +36,23 @@
 <b>All activity:</b>
 
 <ul id="activity">
-<li>Task created <span tal:replace="python: h.prettyDate(c.task.created)"/> by <span tal:replace="c/task/creator"/> </li>
-<tal:nada repeat="action python: c.task.actions()">
-<span tal:replace="structure python: h.render_action(action)"/>
-</tal:nada>
+ <table id="activity-table">
+  <tr>
+  Task created by <span tal:replace="c/task/creator"/>
+  <span tal:replace="structure python:h.prettyDate(c.task.created)"/>
+  </tr>
+  <tal:nada repeat="action python: c.task.actions()">
+   <tr>
+
+    <td width="75%">
+     <span tal:replace="structure python: h.render_action(action)"/>
+    </td>
+
+    <td align="center">&nbsp;</td>
+
+   </tr>
+  </tal:nada>
+ </table>
 </ul>
 
 <hr>

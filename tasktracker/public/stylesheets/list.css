@@ -243,3 +243,25 @@ span.editable:hover {
 #movable_add_task {
   background-color: #ddd;
 }
+
+#activity {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 5em;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+#activity-table {
+   border-spacing: 0px;
+   align: left;
+   text-align: left;
+   width: 100%;
+   background-color: #fff;
+}
+
+#activity-insert {
+   background-color: #ddd;
+   padding: 3px;
+   text-align: center;
+}

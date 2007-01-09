@@ -14,13 +14,12 @@
 
 <!-- the actual task list -->
 
-<!-- <ul > -->
   <tal:for repeat="atask c/tasks">
     
     <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
     
   </tal:for>
-<!-- </ul> -->
+
 </table>
 
 <br clear="both" />
