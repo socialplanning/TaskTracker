@@ -389,6 +389,9 @@ filterLookups.updated['Yesterday'] = '-1';
 filterLookups.updated['In the past week'] = '-7,0';
 
 function sortAndFilter() {
+    if( !hasReorderableTasks() )
+	return;
+
     var options = $('permalink').getAttribute("permalink");
     options = options.split("&");
     var i;
