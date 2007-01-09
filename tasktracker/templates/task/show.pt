@@ -28,42 +28,43 @@
   </metal:do>
 </table>
 
-<span tal:replace="structure python:h.editableField(c.task, 'text')"/>
+<table id="activity-table">
+ <tr>
+  <td width="75%">
 
-<br>
-<b tal:condition="python: h.field_last_updated(c.task, 'text')" id="description_updated">Description last updated <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/></b>
-<b tal:condition="python: not h.field_last_updated(c.task, 'text')" id="description_updated">Description never updated</b>
-<hr>
+   <span tal:replace="structure python:h.editableField(c.task, 'text')"/>
+   <br/>
+   <b tal:condition="python: h.field_last_updated(c.task, 'text')"
+      id="description_updated">
+      Description last updated 
+      <span tal:replace="structure python: h.field_last_updated(c.task, 'text')"/>
+   </b>
+   <b tal:condition="python: not h.field_last_updated(c.task, 'text')"
+      id="description_updated">Description never updated
+   </b>
+   <hr/>
 
-<br/>
-<b>All activity:</b>
-
-<ul id="activity">
- <table id="activity-table">
-  <tal:nada repeat="action python: c.task.actions()">
-   <tr>
-
-    <td width="75%">
-      <span tal:replace="structure python: h.render_action(action)"/>
+   <b>All activity:</b>
+  </td>
+  <td>&nbsp;</td>
+ </tr>
+ <tr>
+  <td width="75%">
+   <ul id="activity">
+    <tal:nada repeat="action python: c.task.actions()">
+     <span tal:replace="structure python: h.render_action(action)"/>
      <hr/>
-    </td>
-
-    <td align="center">&nbsp;</td>
-
-   </tr>
-  </tal:nada>
-
-  <tr>
-   <td>
-    <li>
-      Task created by <span tal:replace="c/task/creator"/>
-     <span tal:replace="structure python:h.prettyDate(c.task.created)"/>
-    </li>
-   </td>
-  </tr>
-
- </table>
-</ul>
+    </tal:nada>
+   </ul>
+  </td>
+  <td id="task-detail-sidebar-cell">
+   <div id="task-detail-sidebar" class="small">
+    Task created by <span tal:replace="c/task/creator"/>
+    <span tal:replace="structure python:h.prettyDate(c.task.created)"/>
+   </div>
+  </td>
+ </tr>
+</table>
 
 <hr>
 

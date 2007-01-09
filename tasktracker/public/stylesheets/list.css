@@ -270,3 +270,16 @@ span.editable:hover {
   border: thin solid darkgray; 
   padding: 5px;
 }
+
+#task-detail-sidebar-cell {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+#task-detail-sidebar {
+  background-color: #ddd;
+  padding-left: 10px;
+  padding-right: 3px;
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
