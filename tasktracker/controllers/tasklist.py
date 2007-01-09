@@ -77,7 +77,7 @@ class TasklistController(BaseController):
         c.depth = 0
         c.permalink = ""
         for param in request.GET:
-            if param in "sortBy status deadline priority owner updated".split():
+            if param in "sortBy sortOrder status deadline priority owner updated".split():
                 c.permalink = "%s%s=%s&" % (c.permalink, param, request.GET[param])
         return render_response('zpt', 'task.list')
 

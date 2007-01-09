@@ -393,12 +393,17 @@ function sortAndFilter() {
     options = options.split("&");
     var i;
     var needToFilter = false;
+    var needToSort = false;
+    var sortOrder = false;
     for( i = 0; i < options.length; ++i ) {
 	var key = options[i].split("=");
 	var val = key[1];
 	key = key[0];
 	if( key == "sortBy" ) {
-	    sortBy(val);
+	    needToSort = val;
+	} else if( key == "sortOrder" ) {
+	    if( val == "up" || val == "down" )
+		sortOrder = val;
 	} else {  // filters are the only other possibilities; it's the controller's responsibility to restrict param keys
 	    var filter = $(key + "_filter");
 	    if( filter ) { // no one's restricting values, though
@@ -414,9 +419,13 @@ function sortAndFilter() {
 		    needToFilter = true;
 	    }
 	}
-	if( needToFilter )
-	    filterListByAllFields();
     }
+
+    if( needToSort )
+	sortBy(needToSort, sortOrder);
+
+    if( needToFilter )
+	filterListByAllFields();
 }
 
 function restoreAddTask() { 
@@ -946,14 +955,16 @@ function flattenTask(task_id) {
     collapse.src = collapse.src.replace(/(plus|minus).png$/, "blank.png");
 }
 
-function sortBy(column) {
+function sortBy(column, order) {
     $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
 	    e.hide();
 	});
-    var order;
+
     $A(document.getElementsByClassName("column-heading")).each(function(e) {
 	    if (hasClass(e, column + '-column')) {
-		e.setAttribute('sortOrder', e.getAttribute('sortOrder') == 'up' ? 'down' : 'up');
+		if( !order )
+		    order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
+		e.setAttribute('sortOrder', order);
 		addClass(e, 'selected-column');
 		order = e.getAttribute('sortOrder');
 	    } else {
