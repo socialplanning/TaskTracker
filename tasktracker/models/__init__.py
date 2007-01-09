@@ -320,7 +320,7 @@ class Task(SQLObject):
         return next
 
     def actions(self):
-        return sorted(self.comments + list(self.versions), key=_by_date)
+        return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)
 
 def _by_date(obj):
     if hasattr(obj, 'date'):
