@@ -306,7 +306,6 @@ class Task(SQLObject):
 
     @memoize
     def nextTask(self):
-
         conn = hub.getConnection()
         trans = conn.transaction()
         tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)], reverse=True)]

@@ -119,7 +119,7 @@
 
 <span tal:attributes="style python: test(len(c.task.liveChildren()), '', 'display:none;;')" class="unfolded" id="subtasks">
  This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.
- <span class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); $('tasks alert('ok');">View them.</span><br/>
+ <span class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show();">View them.</span><br/>
 </span>
 
 <span class="folded" id="edit_subtasks">
