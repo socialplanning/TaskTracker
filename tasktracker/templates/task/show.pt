@@ -119,23 +119,23 @@
 <br/><br/>
 
 <span tal:attributes="style python: test(len(c.task.liveChildren()), '', 'display:none;;')" class="unfolded" id="subtasks">
-This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.
-<span class="command">View them.</span><br/>
+ This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.
+ <span class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); $('tasks alert('ok');">View them.</span><br/>
+</span>
 
 <span class="folded" id="edit_subtasks">
-<span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
-hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks
-</span>
+ <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
+  hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks
+ </span>
 
-<table width="100%" id="tasks" class="all_tasks">
+ <table width="100%" id="tasks" class="all_tasks">
   <tal:for repeat="atask c/task/liveChildren">
-    <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
+   <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
   </tal:for>
-</table>
+ </table>
 
-<br/>
-<hr/>
-</span>
+ <br/>
+ <hr/>
 </span>
 
 </div>
