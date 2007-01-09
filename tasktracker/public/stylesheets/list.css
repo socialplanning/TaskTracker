@@ -72,6 +72,14 @@ tr {
    color: gray;
 }
 
+.preview {
+  color: gray;
+}
+
+a.preview-link {
+  color: gray;
+}
+
 td {
     margin: 0px;
     padding-left: 0px;
@@ -274,6 +282,10 @@ span.editable:hover {
 #task-detail-sidebar-cell {
   padding-left: 50px;
   padding-right: 50px;
+}
+
+.task-detail-mainbar {
+  width: 75%;
 }
 
 #task-detail-sidebar {
