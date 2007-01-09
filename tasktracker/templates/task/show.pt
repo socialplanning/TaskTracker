@@ -30,7 +30,7 @@
 
 <table id="activity-table">
  <tr>
-  <td width="75%">
+  <td width="75%" class="small">
 
    <span tal:replace="structure python:h.editableField(c.task, 'text')"/>
    <br/>
@@ -44,14 +44,14 @@
    </b>
    <hr/>
 
-   <b>All activity:</b>
+   <b>Latest activity:</b>
   </td>
   <td>&nbsp;</td>
  </tr>
  <tr>
-  <td width="75%">
+  <td width="75%" class="small">
    <ul id="activity">
-    <tal:nada repeat="action python: c.task.actions()">
+    <tal:nada repeat="action python: h.preview_list(c.task.actions())">
      <span tal:replace="structure python: h.render_action(action)"/>
      <hr/>
     </tal:nada>
@@ -64,9 +64,14 @@
    </div>
   </td>
  </tr>
+
+ <tr>
+  <td width="75%">
+   <hr/>
+  </td>
+ </tr>
 </table>
 
-<hr>
 
 <tal:if condition="python: h.has_permission(controller='task', action='comment', id=c.task.id)">
 

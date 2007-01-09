@@ -399,6 +399,11 @@ def shorter(text):
         hidden_id = 'hidden_' + str(random())[2:]
         return '<span id="%s">%s</span> <span id="more_%s" onclick="%s.show(); more_%s.hide();">(more...)</span>' % (hidden_id, segment, hidden_id, hidden_id, hidden_id)
 
+def preview_list(list, previewLength=5):
+    if len(list) < previewLength:
+        return list
+    return list[:previewLength]
+
 def render_action(action):
     if isinstance(action, Comment):
         comment = html2safehtml(action.text)
