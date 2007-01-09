@@ -265,3 +265,8 @@ span.editable:hover {
    padding: 3px;
    text-align: center;
 }
+
+#wrap-task-details {
+  border: thin solid darkgray; 
+  padding: 5px;
+}

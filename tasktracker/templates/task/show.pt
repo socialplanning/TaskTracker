@@ -11,16 +11,19 @@
 
 <br/><br/>
 
-<span tal:condition="c/task/previousTask">
-&lt; &lt; previous task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.previousTask().id)" tal:content="python:c.task.previousTask().title"/>
-</span>
+<table tal:condition="c/task/previousTask" tal:define="atask c/task/previousTask" class="task_list" width="100%">
+ <metal:do metal:use-macro="here/task_item/macros/show_task" />
+</table>
 
-<div style="border: thin solid darkgray; padding:5px;">
+<div id="wrap-task-details">
 
 <table class="task_list" tal:define="atask c/task" width="100%" >
   <metal:do metal:use-macro="here/task_item/macros/show_task">
     <metal:slot fill-slot="task_title">
-      <span tal:replace="structure python:h.editableField(atask, 'title')"/> &middot;
+      <span tal:content="structure python:h.editableField(atask, 'title')"
+            tal:attributes="class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
+	         test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
+		 test(atask.parentID == 0, 'root-task', 'sub-task'));"/>
     </metal:slot>
   </metal:do>
 </table>
@@ -64,7 +67,6 @@
 
 <hr>
 
-
 <tal:if condition="python: h.has_permission(controller='task', action='comment', id=c.task.id)">
 
 <span id="comment" class="unfolded command">add comment</span>&nbsp;&nbsp;
@@ -79,7 +81,6 @@
 </form>
 </div>
 </tal:if>
-
 
 <tal:if condition="python: h.has_permission(controller='task', action='update', id=c.task.id)">
 <span tal:replace="structure python: h.link_to('delete this task',
@@ -97,31 +98,32 @@
 <br/><br/>
 
 <span tal:attributes="style python: test(len(c.task.liveChildren()), '', 'display:none;;')" class="unfolded" id="subtasks">
-This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.  <span class="command">View them.</span><br/>
+This task has <span tal:content="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks.
+<span class="command">View them.</span><br/>
 
 <span class="folded" id="edit_subtasks">
 <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
 hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks
 </span>
+
 <table width="100%" id="tasks" class="all_tasks">
   <tal:for repeat="atask c/task/liveChildren">
-    
     <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
-    
   </tal:for>
 </table>
- <br>
-<hr>
+
+<br/>
+<hr/>
 </span>
 </span>
 
+</div>
 
 <br/>
 
-<span tal:condition="c/task/nextTask">
-next task: <a tal:attributes="href python: h.url_for(controller='task', action='show', id=c.task.nextTask().id)" tal:content="python:c.task.nextTask().title"/> &gt; &gt; 
-</span>
-
+<table tal:condition="c/task/nextTask" tal:define="atask c/task/nextTask" class="task_list" width="100%">
+ <metal:do metal:use-macro="here/task_item/macros/show_task" />
+</table>
 
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">
 <span metal:fill-slot="pre_footer"> <a tal:attributes="href python:h.url_for(action='show', controller='tasklist', id=c.task.task_listID)">Go back to the task list</a> | </span>
