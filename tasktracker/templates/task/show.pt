@@ -93,7 +93,9 @@
 </tal:if>
 
 <metal:do use-macro="here/_hideable_show_create/macros/show">
-<a metal:fill-slot="subtask_link" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)" onclick="showTaskCreate();return false;">[ + ] add a sub-task</a>
+<metal:slot metal:fill-slot="subtask_link">
+[ + ]<a tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id)"
+   onclick="showTaskCreate();return false;">add a sub-task</a></metal:slot>
 <metal:macro fill-slot="parentID">
 <input type="hidden" name="parentID" tal:attributes="value c/task/id" />
 </metal:macro>
@@ -112,11 +114,13 @@
   hide <span tal:replace="python: len(c.task.liveDescendents())" class="num_subtasks"/> sub-tasks
  </span>
 
+ <div class="child_tasks">
  <table width="100%" id="tasks" class="all_tasks">
   <tal:for repeat="atask c/task/liveChildren">
    <metal:do metal:use-macro="here/task_list_item/macros/show_task" />
   </tal:for>
  </table>
+ </div>
 
  <br/>
  <hr/>

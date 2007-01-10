@@ -255,7 +255,7 @@ span.editable:hover {
 #activity {
   list-style: none;
   margin-left: 0;
-  padding-left: 5em;
+  padding-left: 25px;
   padding-bottom: 0;
   margin-bottom: 0;
 }
@@ -275,8 +275,12 @@ span.editable:hover {
 }
 
 #wrap-task-details {
-  border: thin solid darkgray; 
-  padding: 5px;
+  padding-top: 5px;
+}
+
+.child_tasks {
+  padding-left: 25px;
+  padding-top: 5px;
 }
 
 #task-detail-sidebar-cell {
