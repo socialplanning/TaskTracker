@@ -13,15 +13,6 @@
 
 <table tal:condition="c/task/previousTask" tal:define="atask c/task/previousTask" class="task_list preview" width="100%">
  <metal:do metal:use-macro="here/task_item/macros/show_task">
-  <metal:slot fill-slot="task_title">
-   <a tal:content="python: h.previewText(atask.title, 20)" 
-      tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
-      title atask/text;
-      class python: 'preview-link task_item %s %s' % (test(atask.status=='done', 'completed-task',
-      test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-      test(atask.parentID == 0, 'root-task', 'sub-task'));
-      id string:title_${atask/id}" />
-  </metal:slot>
   <metal:slot fill-slot="second_line"/>
  </metal:do>
 </table>
@@ -145,15 +136,6 @@
 
 <table tal:condition="c/task/nextTask" tal:define="atask c/task/nextTask" class="task_list preview" width="100%">
  <metal:do metal:use-macro="here/task_item/macros/show_task">
-  <metal:slot fill-slot="task_title">
-   <a tal:content="python: h.previewText(atask.title, 20)" 
-      tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
-      title atask/text;
-      class python: 'preview-link task_item %s %s' % (test(atask.status=='done', 'completed-task',
-      test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-      test(atask.parentID == 0, 'root-task', 'sub-task'));
-      id string:title_${atask/id}" />
-  </metal:slot>
   <metal:slot fill-slot="second_line"/>
  </metal:do>
 </table>

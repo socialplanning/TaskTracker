@@ -262,6 +262,8 @@ class TaskController(BaseController):
         c.url_from = url_for(controller='task', action='show', id=id)
         c.previewTextLength = 0
         c.flat = True
+        c.task_detail = True
+        c.isPreview = True
         return render_response('zpt', 'task.show')
 
     @authenticate

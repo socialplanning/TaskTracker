@@ -18,9 +18,10 @@
   <a tal:content="python: h.previewText(atask.title, 20)" 
      tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
      title atask/text;
-     class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
-     test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-     test(atask.parentID == 0, 'root-task', 'sub-task'));
+     class python: 'task_item %s %s%s' % (test(atask.status=='done', 'completed-task',
+     	   	   	      	          test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
+					  test(atask.parentID == 0, 'root-task', 'sub-task'),
+     					  test(c.isPreview, ' preview-link', ''));
      id string:title_${atask/id}" />
 </metal:macro>
 
@@ -29,45 +30,39 @@
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 </span>
 
- <metal:macro define-slot="second_line">
-  <div class="second-line">
+ <div tal:condition="not:c/task_detail" class="second-line">
   <span tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
     &nbsp;
     <span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
   </span></div>
- </metal:macro>
 
 </td>
 
 
 <td class="status-column">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
- <metal:macro define-slot="second_line">
- <div class="second-line">&nbsp;</div>
- </metal:macro>
+ <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
 </td>
 
 <td class="deadline-column" tal:condition="python: atask.task_list.hasFeature('deadlines')">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
-  <metal:macro define-slot="second_line">
-   <div class="second-line">&nbsp;</div>
-  </metal:macro>
+   <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
 </td>
 
 
 <td class="priority-column">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
- <metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
+ <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
 </td>
 
 <td class="owner-column">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
-<metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
+ <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
 </td>
 
 <td class="updated-column">
  <span tal:replace="structure python: h.readableDate(atask.updated)"/>
- <metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
+ <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
 </td>
 
 </tr>
