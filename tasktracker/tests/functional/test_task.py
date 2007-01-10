@@ -337,7 +337,7 @@ class TestTaskController(TestController):
         version = versions[0]
 
         assert version.owner == "" 
-        assert version.updated == task.created
+        assert version.dateArchived == task.created
 
         version.destroySelf()
         task.destroySelf()

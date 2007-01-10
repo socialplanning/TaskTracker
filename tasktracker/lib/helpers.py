@@ -418,7 +418,7 @@ def render_action(action):
                 fields.remove (field)
         if not fields:
             return ''
-        comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.updated), action.updated_by)
+        comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), action.updatedBy)
     return '<li>%s<hr/></li>' % comment
 
 
@@ -430,4 +430,4 @@ def field_last_updated(task, field):
             break
     if not the_version:
         return ""
-    return "<b>%s by %s</b>" % (prettyDate(the_version.updated), the_version.updated_by)
+    return "<b>%s by %s</b>" % (prettyDate(the_version.updated), the_version.updatedBy)

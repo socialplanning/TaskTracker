@@ -170,10 +170,16 @@ class Task(SQLObject):
     task_list = ForeignKey("TaskList")
     text = StringCol(default="")
     title = StringCol()
-    updated = DateTimeCol(default=datetime.datetime.now)
-    updated_by = StringCol()
-    versions = Versioning()
+    versions = Versioning(extraCols=dict(updatedBy = StringCol(default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
+
+    def get_updated(self):
+        if self.versions.count():
+            return self.versions[-1].dateArchived
+        else:
+            return self.created
+
+    updated = property(get_updated)
 
     def getWatcher(self, username):
         return Watcher.selectBy(username=username, taskID=self.id)[0]
@@ -194,7 +200,6 @@ class Task(SQLObject):
             kwargs['status'] = task_list.statuses[0].name
         assert kwargs['status']
 
-        kwargs['updated_by'] = c.username
         kwargs['sort_index'] = _task_sort_index()
         kwargs.setdefault('parentID', 0)
         kwargs['live'] = True
@@ -203,12 +208,6 @@ class Task(SQLObject):
             kwargs['owner'] = c.username
 
         super(Task, self)._create(id, **kwargs)
-
-    def set(self, **kwargs):
-        kwargs['updated_by'] = c.username
-        kwargs['updated'] = datetime.datetime.now()
-
-        super(Task, self).set(**kwargs)
 
     def _set_live(self, value):
         if getattr(self, 'id', None):
@@ -306,6 +305,7 @@ class Task(SQLObject):
 
     @memoize
     def nextTask(self):
+
         conn = hub.getConnection()
         trans = conn.transaction()
         tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)], reverse=True)]
@@ -325,7 +325,7 @@ def _by_date(obj):
     if hasattr(obj, 'date'):
         return obj.date
     else:
-        return obj.updated
+        return obj.dateArchived
 
 class Comment(SQLObject):
     class sqlmeta:
@@ -365,16 +365,23 @@ class TaskList(SQLObject):
     tasks = MultipleJoin("Task")
     text = StringCol()
     title = StringCol()
-    updated = DateTimeCol(default=datetime.datetime.now)
-    updated_by = StringCol()
-    versions = Versioning()
+    versions = Versioning(extraCols=dict(updatedBy = StringCol(default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")
     statuses = MultipleJoin("Status")
     initial_assign = IntCol(default=0)
-    other_level =  IntCol()
-    member_level =  IntCol()
+    other_level =  IntCol(default=1)
+    member_level =  IntCol(default=1)
+
+
+    def get_updated(self):
+        if self.versions.count():
+            return self.versions[-1].dateArchived
+        else:
+            return self.created
+
+    updated = property(get_updated)
 
     def isListOwner(self, username):
         list_owner_role = Role.getByName('ListOwner')
@@ -429,8 +436,6 @@ class TaskList(SQLObject):
             started = False
             super(TaskList, self).set(**kwargs)
             
-        kwargs['updated_by'] = c.username
-        kwargs['updated'] = datetime.datetime.now()
         if not started:
             return
 
@@ -461,7 +466,6 @@ class TaskList(SQLObject):
     def _create(self, id, **kwargs):
         username = kwargs.pop('username')
         params = self._clean_params(kwargs)
-        params['updated_by'] = c.username
         conn = hub.getConnection()
         trans = conn.transaction()
 
