@@ -28,38 +28,46 @@
   <span tal:condition="atask/comments" tal:replace="python:'%d comments' % len(atask.comments)" />
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 </span>
+
+ <metal:macro define-slot="second_line">
   <div class="second-line">
   <span tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
     &nbsp;
     <span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
   </span></div>
+ </metal:macro>
+
 </td>
 
 
 <td class="status-column">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
+ <metal:macro define-slot="second_line">
  <div class="second-line">&nbsp;</div>
+ </metal:macro>
 </td>
 
 <td class="deadline-column" tal:condition="python: atask.task_list.hasFeature('deadlines')">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
-<div class="second-line">&nbsp;</div>
+  <metal:macro define-slot="second_line">
+   <div class="second-line">&nbsp;</div>
+  </metal:macro>
 </td>
 
 
 <td class="priority-column">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
-<div class="second-line">&nbsp;</div>
+ <metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
 </td>
 
 <td class="owner-column">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
-<div class="second-line">&nbsp;</div>
+<metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
 </td>
 
 <td class="updated-column">
  <span tal:replace="structure python: h.readableDate(atask.updated)"/>
-<div class="second-line">&nbsp;</div>
+ <metal:macro define-slot="second_line"><div class="second-line">&nbsp;</div></metal:macro>
 </td>
 
 </tr>

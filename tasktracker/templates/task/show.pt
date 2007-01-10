@@ -22,6 +22,7 @@
       test(atask.parentID == 0, 'root-task', 'sub-task'));
       id string:title_${atask/id}" />
   </metal:slot>
+  <metal:slot fill-slot="second_line"/>
  </metal:do>
 </table>
 
@@ -35,6 +36,7 @@
 	         test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
 		 test(atask.parentID == 0, 'root-task', 'sub-task'));"/>
     </metal:slot>
+    <metal:slot fill-slot="second_line"/>
   </metal:do>
 </table>
 
@@ -152,6 +154,7 @@
       test(atask.parentID == 0, 'root-task', 'sub-task'));
       id string:title_${atask/id}" />
   </metal:slot>
+  <metal:slot fill-slot="second_line"/>
  </metal:do>
 </table>
 
