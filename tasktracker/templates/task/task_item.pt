@@ -2,9 +2,10 @@
 
 <tr tal:attributes="parentID atask/parentID; id string:task_${atask/id}; task_id atask/id; sort_index atask/sort_index;
     owner atask/owner; deadline atask/deadline; priority atask/priority; status atask/status; updated atask/updated;
+    is_preview python: test(exists('is_preview'), 'True', 'False'); no_second_row python: test(exists('no_second_row'), 'True', 'False');
     class python: '%s taskrow task-item' % test(h.has_permission('task', 'update', id=atask.id), 'deletable', 'nondeletable');">
 
-<td class="title-column"> 
+<td class="title-column">
 <span tal:attributes="id string:draggable_${atask/id}; depth python: atask.depth() - c.depth" class="taskitem draggable">
 
       <span tal:condition="not: c/flat"

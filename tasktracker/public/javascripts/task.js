@@ -508,7 +508,11 @@ function changeField(task_id, fieldname) {
     var authenticator = $('authenticator').value;
     var url = '/task/change_field/' + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
-    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post', parameters:fieldname + '=' + value,
+    var taskrow = $('task_' + task_id);
+    var is_preview = taskrow.getAttribute("is_preview");
+    var no_second_line = taskrow.getAttribute("no_second_line");
+    var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
+				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview + "&no_second_line=" + no_second_line,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 

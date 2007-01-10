@@ -43,8 +43,9 @@ class EditTaskForm(formencode.Schema):
     siblingID = formencode.validators.Int(not_empty = True)
     task_listID = formencode.validators.Int()
     text = formencode.validators.String()
+    is_preview = Bool(not_empty = True)
+    no_second_line = Bool(not_empty = True)
     private = NotEmpty()
-
 
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
 def _field_permission(param):    
@@ -84,12 +85,23 @@ class TaskController(BaseController):
                     newfield = 'not done'
             else:
                 assert newfield in [s.name for s in task.task_list.statuses]
+
+        # find out if the old taskrow wants us to render its replacement a particular way
+        is_preview = None
+        if self.form_result['is_preview'] == True:
+            is_preview = True
+        no_second_line = None
+        if self.form_result['no_second_line'] == True:
+            no_second_line = True
+
+        import pdb; pdb.set_trace()
         if not old == newfield:
             setattr(task, field, newfield)
+
         c.task = task
         c.depth = 0
         #return render_text(getattr(task, field))
-        return render_body('zpt', 'task.task_item', atask=c.task)
+        return render_body('zpt', 'task.task_item', atask=c.task, no_second_row=no_second_line, is_preview=is_preview)
 
     @attrs(action='open')
     def auto_complete_for(self, id):
