@@ -11,24 +11,16 @@
 
 <br/><br/>
 
-<table tal:condition="c/task/previousTask" tal:define="atask c/task/previousTask" class="task_list preview" width="100%">
- <metal:do metal:use-macro="here/task_item/macros/show_task">
-  <metal:slot fill-slot="second_line"/>
- </metal:do>
+<table tal:condition="c/task/previousTask" class="task_list preview" width="100%">
+ <tal:nada tal:define="atask c/task/previousTask; no_second_row string:True; is_preview string:True">
+  <metal:do metal:use-macro="here/task_item/macros/show_task" />
+ </tal:nada>
 </table>
 
 <div id="wrap-task-details">
 
-<table class="task_list" tal:define="atask c/task" width="100%" >
-  <metal:do metal:use-macro="here/task_item/macros/show_task">
-    <metal:slot fill-slot="task_title">
-      <span tal:content="structure python:h.editableField(atask, 'title')"
-            tal:attributes="class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
-	         test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-		 test(atask.parentID == 0, 'root-task', 'sub-task'));"/>
-    </metal:slot>
-    <metal:slot fill-slot="second_line"/>
-  </metal:do>
+<table class="task_list" width="100%" tal:define="atask c/task; editableTitle string:True; no_second_row string:True">
+ <metal:do metal:use-macro="here/task_item/macros/show_task" />
 </table>
 
 <table id="activity-table">
@@ -134,10 +126,10 @@
 
 <br/>
 
-<table tal:condition="c/task/nextTask" tal:define="atask c/task/nextTask" class="task_list preview" width="100%">
- <metal:do metal:use-macro="here/task_item/macros/show_task">
-  <metal:slot fill-slot="second_line"/>
- </metal:do>
+<table tal:condition="c/task/nextTask" class="task_list preview" width="100%">
+ <tal:nada tal:define="atask c/task/nextTask; no_second_row string:True; is_preview string:True">
+  <metal:do metal:use-macro="here/task_item/macros/show_task" />
+ </tal:nada>
 </table>
 
 <metal:do metal:use-macro="here/task_list_footer/macros/show_footer">

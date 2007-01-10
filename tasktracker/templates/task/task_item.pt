@@ -15,14 +15,21 @@
 
   <!-- title -->
 <metal:macro define-slot="task_title">
-  <a tal:content="python: h.previewText(atask.title, 20)" 
+
+  <span tal:condition="exists:editableTitle" tal:content="structure python:h.editableField(atask, 'title')"
+            tal:attributes="class python: 'task_item %s %s' % (test(atask.status=='done', 'completed-task',
+	         test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
+		 test(atask.parentID == 0, 'root-task', 'sub-task'));"/>
+
+  <a tal:condition="not:exists:editableTitle" tal:content="python: h.previewText(atask.title, 20)" 
      tal:attributes="href python:h.url_for(controller='task', action='show', id=atask.id);
      title atask/text;
-     class python: 'task_item %s %s%s' % (test(atask.status=='done', 'completed-task',
-     	   	   	      	          test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
-					  test(atask.parentID == 0, 'root-task', 'sub-task'),
-     					  test(c.isPreview, ' preview-link', ''));
+     class python:'task_item %s %s%s' % (test(atask.status=='done', 'completed-task',
+     	   	   	      	      	      test(h.isOverdue(atask.deadline), 'overdue-task', 'uncompleted-task')),
+					 test(atask.parentID == 0, 'root-task', 'sub-task'),
+					 test(exists('is_preview'), ' preview-link', ''));
      id string:title_${atask/id}" />
+
 </metal:macro>
 
   <span tal:condition="atask/uncompletedChildren" class="small" tal:content="python:'(%d tasks left)' % len(atask.uncompletedChildren())" />
@@ -30,7 +37,7 @@
   <span tal:condition="atask/private" tal:replace="string: -- (private)" />
 </span>
 
- <div tal:condition="not:c/task_detail" class="second-line">
+ <div tal:condition="not:exists:no_second_row" class="second-line">
   <span tal:attributes="style python:'clear:both;; margin-left: %dpx;;' % ((atask.depth() - c.depth) * 15 + 25);">
     &nbsp;
     <span tal:replace="python:h.previewText(atask.text, c.previewTextLength)"/>
@@ -41,28 +48,28 @@
 
 <td class="status-column">
  <span tal:replace="structure python:h.editableField(atask, 'status')"/>
- <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
+ <div tal:condition="not:exists:no_second_row" class="second-line">&nbsp;</div>
 </td>
 
 <td class="deadline-column" tal:condition="python: atask.task_list.hasFeature('deadlines')">
  <span tal:replace="structure python:h.editableField(atask, 'deadline')"/>
-   <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
+   <div tal:condition="not:exists:no_second_row" class="second-line">&nbsp;</div>
 </td>
 
 
 <td class="priority-column">
  <span tal:replace="structure python:h.editableField(atask, 'priority')"/>
- <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
+ <div tal:condition="not:exists:no_second_row" class="second-line">&nbsp;</div>
 </td>
 
 <td class="owner-column">
  <span tal:replace="structure python:h.editableField(atask, 'owner')"/>
- <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
+ <div tal:condition="not:exists:no_second_row" class="second-line">&nbsp;</div>
 </td>
 
 <td class="updated-column">
  <span tal:replace="structure python: h.readableDate(atask.updated)"/>
- <div tal:condition="not:c/task_detail" class="second-line">&nbsp;</div>
+ <div tal:condition="not:exists:no_second_row" class="second-line">&nbsp;</div>
 </td>
 
 </tr>
