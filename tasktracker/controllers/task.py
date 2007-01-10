@@ -94,7 +94,6 @@ class TaskController(BaseController):
         if self.form_result['no_second_line'] == True:
             no_second_line = True
 
-        import pdb; pdb.set_trace()
         if not old == newfield:
             setattr(task, field, newfield)
 
