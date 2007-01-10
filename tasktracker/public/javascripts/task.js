@@ -983,6 +983,7 @@ function sortBy(column, order) {
     removeClass($(column + '-' + order + '-arrow'), "grayed-out");
     
     setPermalink("sortBy", column);
+    setPermalink("sortOrder", order);
 
     // todo rename this
     sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
