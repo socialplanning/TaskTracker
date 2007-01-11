@@ -62,7 +62,7 @@ preview-link
 </a>
 %
 
-% if atask.uncompletedChildren:
+% if atask.uncompletedChildren():
 <span class="small"> (<% len(atask.uncompletedChildren()) %> tasks left) </span>
 %
 % if atask.comments:

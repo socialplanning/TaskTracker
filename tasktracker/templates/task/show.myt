@@ -97,7 +97,7 @@
 <br/><br/>
 
 <span 
-% if len(c.task.liveChildren()):
+% if not len(c.task.liveChildren()):
 style = "display:none;"
 %
 class="unfolded" id="subtasks">
