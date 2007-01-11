@@ -72,8 +72,7 @@ class QueryController(BaseController):
 
         c.results = lists
         c.depth = 0
-        c.flat = True
-        return render_response('zpt', 'task.flat_list')
+        return render_response('zpt', 'task.flat_list', flat=True)
 
     def _sorted_select(self, query):
         return Task.select(query, orderBy='task_list_id')

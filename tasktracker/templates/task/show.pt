@@ -11,15 +11,18 @@
 
 <br/><br/>
 
+<!-- The previous task -->
+
 <table tal:condition="c/task/previousTask" class="task_list preview" width="100%">
- <tal:nada tal:define="atask c/task/previousTask; no_second_row string:True; is_preview string:True">
+ <tal:nada tal:define="atask c/task/previousTask; no_second_row string:True; is_preview string:True; flat string:True;">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
  </tal:nada>
 </table>
 
 <div id="wrap-task-details">
 
-<table class="task_list" width="100%" tal:define="atask c/task; editableTitle string:True; no_second_row string:True">
+<!-- The current task -->
+<table class="task_list" width="100%" tal:define="atask c/task; editableTitle string:True; no_second_row string:True; flat string:True">
  <metal:do metal:use-macro="here/task_item/macros/show_task" />
 </table>
 
@@ -130,8 +133,10 @@
 
 <br/>
 
+<!-- The next task -->
+
 <table tal:condition="c/task/nextTask" class="task_list preview" width="100%">
- <tal:nada tal:define="atask c/task/nextTask; no_second_row string:True; is_preview string:True">
+ <tal:nada tal:define="atask c/task/nextTask; no_second_row string:True; is_preview string:True; flat string:True">
   <metal:do metal:use-macro="here/task_item/macros/show_task" />
  </tal:nada>
 </table>

@@ -45,6 +45,7 @@ class EditTaskForm(formencode.Schema):
     text = formencode.validators.String()
     is_preview = Bool(not_empty = True)
     no_second_line = Bool(not_empty = True)
+    is_flat = Bool(not_empty = True)
     private = NotEmpty()
 
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
@@ -93,6 +94,9 @@ class TaskController(BaseController):
         no_second_line = None
         if self.form_result['no_second_line'] == True:
             no_second_line = True
+        is_flat = None
+        if self.form_result['is_flat'] == True:
+            is_flat = True
 
         if not old == newfield:
             setattr(task, field, newfield)
@@ -100,7 +104,7 @@ class TaskController(BaseController):
         c.task = task
         c.depth = 0
         #return render_text(getattr(task, field))
-        return render_body('zpt', 'task.task_item', atask=c.task, no_second_row=no_second_line, is_preview=is_preview)
+        return render_body('zpt', 'task.task_item', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, flat=is_flat)
 
     @attrs(action='open')
     def auto_complete_for(self, id):
@@ -272,7 +276,6 @@ class TaskController(BaseController):
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
         c.previewTextLength = 0
-        c.flat = True
         return render_response('zpt', 'task.show')
 
     @authenticate
