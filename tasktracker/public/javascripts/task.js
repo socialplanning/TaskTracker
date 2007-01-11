@@ -442,8 +442,6 @@ function restoreAddTask() {
 function doneAddingTask(req) {
     var parentID = parseInt($('add_task_form_parentID').getAttribute("value"));
     var siblingID = parseInt($('add_task_form_siblingID').getAttribute("value"));
-    console.log("parentID: " + parentID);
-    console.log("siblingID: " + siblingID);
     var new_fragment = evalHTML(req.responseText);
     var new_item = new_fragment.firstChild; 
 
@@ -1043,4 +1041,3 @@ function setPermalink(newkey, newval) {
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
-addLoadEvent(restoreAddTask);
