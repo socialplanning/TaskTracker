@@ -104,7 +104,7 @@ class TaskController(BaseController):
         c.task = task
         c.depth = 0
 
-        return render_body('task/task_item.myt', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, flat=is_flat)
+        return render_response('task/task_item.myt', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, flat=is_flat, fragment=True)
 
     @attrs(action='open')
     def auto_complete_for(self, id):
