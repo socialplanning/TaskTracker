@@ -430,4 +430,4 @@ def field_last_updated(task, field):
             break
     if not the_version:
         return ""
-    return "<b>%s by %s</b>" % (prettyDate(the_version.updated), the_version.updatedBy)
+    return "<b>%s by %s</b>" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
