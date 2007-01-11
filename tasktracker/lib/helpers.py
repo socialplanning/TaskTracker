@@ -432,11 +432,14 @@ def task_item_tr(task, is_preview, no_second_row, is_flat):
     tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, task.id, task.id)]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
-        tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
+            tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
 
-    tr.append('is_preview = "%s" ' % is_preview)
-    tr.append('no_second_row = "%s" ' % no_second_row)
-    tr.append('is_flat = "%s" ' % is_flat)
+    if is_preview:
+        tr.append('is_preview = "%s" ' % is_preview)
+    if no_second_row:
+        tr.append('no_second_row = "%s" ' % no_second_row)
+    if is_flat:
+        tr.append('is_flat = "%s" ' % is_flat)
 
     tr.append('class = "taskrow task-item ')
     if has_permission('task', 'update', id=task.id):

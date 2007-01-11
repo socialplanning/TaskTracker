@@ -510,8 +510,9 @@ function changeField(task_id, fieldname) {
     var taskrow = $('task_' + task_id);
     var is_preview = taskrow.getAttribute("is_preview");
     var no_second_line = taskrow.getAttribute("no_second_line");
+    var is_flat = taskrow.getAttribute("is_flat");
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
-				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview + "&no_second_line=" + no_second_line,
+				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview + "&no_second_line=" + no_second_line + "&is_flat=" + is_flat,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
