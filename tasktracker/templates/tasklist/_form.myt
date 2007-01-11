@@ -1,23 +1,23 @@
-<metal:macro define-macro="form">
+
 
 <label for="title">Name:</label><br/>
-<span tal:replace="structure python: h.text_field('title', size=80)" /><br/>
+<% h.text_field('title', size=80) %><br/>
 
 <label for="text">Description:</label><br/>
-<span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
+<% h.text_area('text', rows=10, cols=80) %><br/>
 
 <label for="managers">Managers:</label><br/>
-<metal:do use-macro="here/_managers/macros/managers"/>
+<& _managers.myt &>
 
 <br/>
 <br/>
 
 <!-- Permissions -->
-<metal:do use-macro="here/_permissions/macros/permissions"/>
+<& _permissions.myt &>
 <!-- Features -->
 
 <br/>
-Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
+Extra Features <% h.help('These are optional') %><br/>
 <input type="checkbox" id="feature_deadlines" name="feature_deadlines" value="1" class="features"/>
 <label for="feature_deadlines">Deadlines</label><br/>
 
@@ -25,7 +25,7 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
 <label for="custom_status">Custom status</label><br/>
 
 <div id="edit_statuses" style="display:none; margin-left: 3em;">
-<span tal:replace="structure python: h.editable_list('statuses', [], ['done'])" />
+<% h.editable_list('statuses', [], ['done']) %>
 
    <input type="hidden" value="" id="statuses" name="statuses">
    <input id="add_status" name="add_status" size="20" type="text" value="" />
@@ -42,7 +42,6 @@ By default, tasks are initially assigned to:<br/>
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
 
-<span tal:replace="structure python: h.submit('Submit')" />
+<% h.submit('Submit') %>
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
 
-</metal:macro>

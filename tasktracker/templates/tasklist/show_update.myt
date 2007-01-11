@@ -1,19 +1,25 @@
 <!-- Please also see show_preferences for the non-editable version -->
 
-<span tal:replace="structure python: h.secure_form(h.url(action='update'), method='post')" />
+<% h.secure_form(h.url(action='update'), method='post') %>
 
 <div id="title" class="editable unfolded">
-<h1 tal:content="c/tasklist/title" />
+<h1> <% c.tasklist.title %></h1>
 </div>
 <div id="edit_title" class="folded">
-<span tal:replace="structure python: h.text_field('title')" /><br/>
+<% h.text_field('title') %><br/>
 </div>
 
 <div id="text" class="editable unfolded">
-<span tal:content="python: test(c.tasklist.text, c.tasklist.text, '[no description]')" />
+<span>
+% if c.tasklist.text:
+<% c.tasklist.text %>
+% else:
+[no description]
+%
+</span>
 </div>
 <div id="edit_text" class="folded">
-<span tal:replace="structure python: h.text_area('text', rows=10, cols=80)" /><br/>
+<% h.text_area('text', rows=10, cols=80) %><br/>
 </div>
 
 <br/>
@@ -22,12 +28,14 @@
 <label for="managers">Managers:</label><br/>
 <div id="managers_div" class="unfolded editable">
 <ul>
-     <li tal:repeat="manager python:c.managers + c.administrators" tal:content="manager"/>
+% for manager in c.managers + c.administrators:
+     <li> <% manager %> </li>
+%
 </ul>
 </div>
 <div id="edit_managers_div" class="folded">
 
-<metal:do use-macro="here/_managers/macros/managers"/>
+<& _managers.myt &>
 </div>
 
 <br/>
@@ -35,7 +43,7 @@
 
 <!-- Permissions -->
 <span onclick="show_permissions();" class="editable" id="permissions_section">
-<metal:do use-macro="here/_permissions/macros/permissions"/>
+<& _permissions.myt &>
 </span>
 <script>
 function show_permissions() {
@@ -60,16 +68,15 @@ for (var i = 0; i < 5; i ++) {
 <!-- Features -->
 
 <br/>
-Extra Features <span tal:replace="structure python: h.help('These are optional')"/><br/>
+Extra Features <% h.help('These are optional') %><br/>
 
 
 <div id="deadlines" class="editable unfolded">
-  <span tal:condition="c/feature_deadlines">
+% if c.feature_deadlines:
     Tasks have deadlines
-  </span>
-  <span tal:condition="not: c/feature_deadlines">
+% else:
     Tasks do not have deadlines
-  </span>
+%
   <br/>
 </div>
 <div id="edit_deadlines" class="folded">
@@ -77,12 +84,11 @@ Extra Features <span tal:replace="structure python: h.help('These are optional')
 </div>
 
 
-<span tal:condition="c/feature_custom_status">
-This list has custom task statuses.  The statuses are: <span tal:replace="python: ', '.join([s.name for s in c.tasklist.statuses])" />
-</span>
-<span tal:condition="not: c/feature_custom_status">
+% if c.feature_custom_status:
+This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
+% else:
 Tasks do not have custom statuses. 
-</span>
+%
 <br/>
 
 <div id="edit_private" class="folded">
@@ -90,15 +96,14 @@ Tasks do not have custom statuses.
 </div>
 
 <div id="private" class="editable unfolded">
-<span tal:condition="c/feature_private_tasks">
+% if c.feature_private_tasks:
 This list has private tasks.
 <script>
 $('feature_private_tasks').onclick=function() {return confirm('All private tasks will be made public.  Proceed?')};
 </script>
-</span>
-<span tal:condition="not: c/feature_private_tasks">
+% else:
 This list does not have private tasks.
-</span>
+%
 <br/>
 </div>
 
@@ -106,12 +111,11 @@ This list does not have private tasks.
 
 <div id="initial_assign" class="unfolded editable">
     By default, tasks are initially
-    <span tal:condition="c/tasklist/initial_assign">
+% if c.tasklist.initial_assign:
       unassigned 
-    </span>
-    <span tal:condition="not: c/tasklist/initial_assign">
+% else:
       assigned to the person who created them
-    </span>
+%
 </div>
 <div id="edit_initial_assign" class="folded">
   By default, tasks are initially assigned to:<br/>
@@ -120,8 +124,8 @@ This list does not have private tasks.
 </div>
 <br/>
 
-<span tal:replace="structure python: h.submit('Submit')" />
-<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
+<% h.submit('Submit') %>
+<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';"/>
 
 <script language="JavaScript">
 
@@ -129,4 +133,4 @@ This list does not have private tasks.
    
 </script>
 
-<span tal:replace="structure python: h.end_form()" />
+</form>

@@ -1,4 +1,0 @@
-<form tal:attributes="action python:h.url_for(action='create', controller='watcher')" method="post">
-
-<metal:do use-macro="here/_form/macros/form" />
-</form>

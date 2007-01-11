@@ -65,7 +65,7 @@ class TasklistController(BaseController):
     @attrs(action='open')    
     def index(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
-        return render_response('zpt', 'tasklist.index')
+        return render_response('tasklist/index.myt')
 
     @attrs(action='show')
     @catches_errors
@@ -79,13 +79,13 @@ class TasklistController(BaseController):
         for param in request.GET:
             if param in "sortBy sortOrder status deadline priority owner updated".split():
                 c.permalink = "%s%s=%s&" % (c.permalink, param, request.GET[param])
-        return render_response('zpt', 'task.list')
+        return render_response('task/list.myt')
 
     @attrs(action='create')
     def show_create(self):
         c.managers = []
         c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
-        return render_response('zpt', 'tasklist.show_create')
+        return render_response('tasklist/show_create.myt')
 
     def _apply_role(self, members, tasklist, role):
         for member in members:
@@ -177,9 +177,9 @@ class TasklistController(BaseController):
             setattr(c, 'feature_' + feature.name, 1)
 
         if has_permission('tasklist', 'update'):
-            return filled_render('tasklist.show_update', c.tasklist, p)
+            return filled_render('tasklist/show_update.myt', c.tasklist, p)
         else:
-            return filled_render('tasklist.show_preferences', c.tasklist, p)
+            return filled_render('tasklist/show_preferences.myt', c.tasklist, p)
 
     @authenticate
     @validate(schema=CreateListForm(), form='show_update')  

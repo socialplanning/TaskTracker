@@ -136,7 +136,7 @@ CustomDropzone.prototype = (new Rico.Dropzone()).extend( {
 
 var myrules = {
     '.draggable' : function(element) {
-	
+
 	element.onclick = function(e) {
 	    e = e || event;
 	    if (hasClass(element, 'drag')) {

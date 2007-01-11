@@ -1,1 +1,40 @@
+<html>
+<head>
+% if c.title:
+<% c.title %>
+% else:
+Todo list
+% 
+<link rel="Shortcut Icon" href="/favicon.ico">
+<% h.javascript_include_tag('behaviour.js') %>
+<% h.javascript_include_tag('prototype.js') %>
+<% h.javascript_include_tag('rico.js') %>
+<% h.javascript_include_tag('effects.js') %>
+<% h.javascript_include_tag('helpers.js') %>
+<% h.javascript_include_tag('task.js') %>
+<% h.javascript_include_tag('pretty-date.js') %>
+<% h.javascript_include_tag('builder.js') %>
+<% h.javascript_include_tag('controls.js') %>
+<% h.javascript_include_tag('editable_list.js') %>
+<% h.javascript_include_tag('datebocks_engine.js') %>
+<% h.javascript_include_tag('calendar.js') %>
+<% h.javascript_include_tag('calendar-setup.js') %>
+<% h.javascript_include_tag('calendar-en.js') %>
+<% h.javascript_include_tag('datebocks_window.js') %>
+<% h.stylesheet_link_tag('plone-base.css') %>
+<% h.stylesheet_link_tag('list.css') %>
+<% h.stylesheet_link_tag('datebocks_engine.css') %>
+<% h.stylesheet_link_tag('calendar-blue.css') %>
+
+</head>
+<body>
+<div id="portal-columns" style="position:relative;">
+<div style="background-color:#edf">
+Logged in as: <% c.username %>
+<span style="position:absolute;right:2ex;">Project: <% c.project.title %></span>
+</div>
 % m.call_next()
+</div>
+
+</body>
+</html>

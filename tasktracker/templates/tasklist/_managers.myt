@@ -1,6 +1,4 @@
-<metal:macro define-macro="managers">
-
-<span tal:replace="structure python: h.editable_list('managers', c.managers, c.administrators)"/>
+<% h.editable_list('managers', c.managers, c.administrators) %>
 
 <span class="autocomplete">
   <label for="manager" id="add_manager" class="unfolded">[ + ] add manager</label>
@@ -16,4 +14,3 @@
   '../../../task/auto_complete_for/manager', {})</script>
 </span>
 
-</metal:macro>

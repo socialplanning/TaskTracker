@@ -20,6 +20,7 @@
 
 from tasktracker.tests import *
 from tasktracker.models import *
+import re
 
 class TestTaskController(TestController):
     def test_index(self):
@@ -68,7 +69,7 @@ class TestTaskController(TestController):
         res = form.submit()
 
         # the response should consist of the new task's table row
-        res.mustcontain('<tr status="not done"')        
+        assert re.search('<tr[^>]*status\s*=\s*"not done"', res.body)
         res.mustcontain("The new task title")
         res.mustcontain("The new task body")
 

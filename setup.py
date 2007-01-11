@@ -30,7 +30,7 @@ setup(
     install_requires=[
       "Pylons==dev,>=0.9.4a", 
       "PasteScript", 
-      "ZPTKit==dev,>=0.4.2a", 
+      "Myghty",
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
       "uuid"],

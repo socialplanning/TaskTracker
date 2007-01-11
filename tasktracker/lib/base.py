@@ -267,4 +267,4 @@ class BaseController(WSGIController):
         # the action or route vars here
         return WSGIController.__call__(self, environ, start_response)
 
-from tasktracker.controllers.layouts import render_response
+

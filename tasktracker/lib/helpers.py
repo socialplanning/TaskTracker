@@ -376,7 +376,7 @@ def sqlobject_to_dict(obj):
     return out
 
 def filled_render(template, obj, extra_dict={}):
-    response = render_response('zpt', template)
+    response = render_response(template)
     d = sqlobject_to_dict(obj)
     d.update(extra_dict)
     response.content = [htmlfill.render("".join(response.content), d)]
@@ -399,11 +399,6 @@ def shorter(text):
 
         hidden_id = 'hidden_' + str(random())[2:]
         return '<span id="%s">%s</span> <span id="more_%s" onclick="%s.show(); more_%s.hide();">(more...)</span>' % (hidden_id, segment, hidden_id, hidden_id, hidden_id)
-
-def preview_list(list, previewLength=5):
-    if len(list) < previewLength:
-        return list
-    return list[:previewLength]
 
 def render_action(action):
     if isinstance(action, Comment):
@@ -431,3 +426,46 @@ def field_last_updated(task, field):
     if not the_version:
         return ""
     return "<b>%s by %s</b>" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
+
+
+def task_item_tr(task, is_preview, no_second_row, is_flat):
+    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, task.id, task.id)]
+
+    for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
+        tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
+
+    tr.append('is_preview = "%s" ' % is_preview)
+    tr.append('no_second_row = "%s" ' % no_second_row)
+    tr.append('is_flat = "%s" ' % is_flat)
+
+    tr.append('class = "taskrow task-item ')
+    if has_permission('task', 'update', id=task.id):
+        tr.append ('deletable ')
+    else:
+        tr.append ('nondeletable ')
+    tr.append ('">')
+    return "".join(tr)
+             
+
+def test(cond, true, false):
+    if cond:
+        return true
+    else:
+        return false
+
+special_plurals = dict(child='children')
+
+def plural(word, count):
+    try:
+        count = len(count)
+    except:
+        pass
+
+    plural = special_plurals.get(word, None)
+    if plural:
+        return plural
+        
+    if word.endswith("x") or word.endswith("s") or word.endswith("ch") or word.endswith("sh"):
+        return word + "es"
+    else:
+        return word + "s"

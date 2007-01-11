@@ -103,8 +103,8 @@ class TaskController(BaseController):
 
         c.task = task
         c.depth = 0
-        #return render_text(getattr(task, field))
-        return render_body('zpt', 'task.task_item', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, flat=is_flat)
+
+        return render_body('task/task_item.myt', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, flat=is_flat)
 
     @attrs(action='open')
     def auto_complete_for(self, id):
@@ -157,7 +157,7 @@ class TaskController(BaseController):
             c.parentID = request.params['parentID']
         else:
             c.parentID = 0
-        return render_response('zpt', 'task.show_create')
+        return render_response('task/show_create.myt')
 
     @authenticate
     @attrs(action='create', watchdog=TaskCreateWatchdog)
@@ -186,7 +186,7 @@ class TaskController(BaseController):
         c.depth = 0
         if siblingID > 0:
             self._move_below_sibling(c.task.id, siblingID)
-        return render_body('zpt', 'task.task_list_item', atask=c.task)
+        return render_body('task/task_list_item.myt', atask=c.task)
 
     @attrs(action='claim')
     @catches_errors
@@ -215,7 +215,7 @@ class TaskController(BaseController):
     def show_update(self, id, *args, **kwargs):
         c.oldtask = self._getTask(int(id))        
         c.owner = c.oldtask.owner
-        return render_response('zpt', 'task.show_update')
+        return render_response('task/show_update.myt')
 
     @authenticate
     @attrs(action='update', watchdog=TaskUpdateWatchdog)
@@ -258,7 +258,7 @@ class TaskController(BaseController):
     def update_private(self, id):
         c.task = self._getTask(int(id))
         c.task.private = request.params['private'] == 'true'
-        return render_response('zpt', 'task._private', fragment=True)
+        return render_response('task/_private.myt', fragment=True)
 
     def _getTask(self, id):
         try:
@@ -276,7 +276,7 @@ class TaskController(BaseController):
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
         c.previewTextLength = 0
-        return render_response('zpt', 'task.show')
+        return render_response('task/show.myt')
 
     @authenticate
     @attrs(action='update')
@@ -302,4 +302,4 @@ class TaskController(BaseController):
     def show_create_tasks(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(int(id))
         c.task_listID = id
-        return render_response('zpt', 'task.show_create_tasks')
+        return render_response('task/show_create_tasks.myt')

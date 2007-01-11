@@ -1,1 +1,0 @@
-You don't have an email address set in your profile.  Please <a tal:attributes="href c/user_info/edit_user_link">set one</a>.

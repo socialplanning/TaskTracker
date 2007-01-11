@@ -45,7 +45,8 @@ def make_app(global_conf, **app_conf):
     # Load our Pylons configuration defaults
     config = load_environment()
     config.init_app(global_conf, app_conf, package='tasktracker')
-    config.add_template_engine('zpt','tasktracker.templates',{})        
+    #config.add_template_engine('zpt','tasktracker.templates',{})
+    #config.add_template_engine('myghty','tasktracker.templates',{}) 
     # Load our default Pylons WSGI app and make g available
     app = pylons.wsgiapp.PylonsApp(config, 
 	helpers=tasktracker.lib.helpers,

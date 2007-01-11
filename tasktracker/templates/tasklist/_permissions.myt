@@ -1,4 +1,4 @@
-<metal:macro define-macro="permissions">
+
 This project's team members can:
 <ul id="member_permissions"></ul>
 Anyone else can:
@@ -102,4 +102,3 @@ function other_permission_set(index) {
 
 
 </script>
-</metal:macro>
