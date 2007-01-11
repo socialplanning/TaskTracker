@@ -34,7 +34,8 @@
 <div class="draggable" id="movable_add_task" parentID="0" siblingID="0" style="padding:0px;  margin:0px; line-height: 1em;">
 <metal:do use-macro="here/_hideable_show_create/macros/show">
 <div metal:fill-slot="subtask_link">
-[ + ]<a id="add_a_task" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)" onclick="return false;">add a task</a>
+[ + ]<a id="add_a_task" tal:attributes="href python:h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)"
+    	onclick="return false;">add a task</a>
 </div>
 </metal:do>
 </div></div>

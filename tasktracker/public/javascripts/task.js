@@ -434,15 +434,16 @@ function sortAndFilter() {
 function restoreAddTask() { 
     $('add_task_anchor').appendChild($('movable_add_task'));
     showTaskCreate();
-    $('add_task_form').getInputs()[1].setAttribute("value", 0);
-    $('add_task_form').getInputs()[2].setAttribute("value", 0);
+    $('add_task_form_parentID').setAttribute("value", 0);
+    $('add_task_form_siblingID').setAttribute("value", 0);
     return false;
 }
 
 function doneAddingTask(req) {
-    var forminputs = $('add_task_form').getInputs();
-    var parentID = parseInt(forminputs[1].getAttribute("value"));
-    var siblingID = parseInt(forminputs[2].getAttribute("value"));
+    var parentID = parseInt($('add_task_form_parentID').getAttribute("value"));
+    var siblingID = parseInt($('add_task_form_siblingID').getAttribute("value"));
+    console.log("parentID: " + parentID);
+    console.log("siblingID: " + siblingID);
     var new_fragment = evalHTML(req.responseText);
     var new_item = new_fragment.firstChild; 
 
@@ -832,8 +833,8 @@ function doDrop(child, drop_target, a) {
     if (!child.id.match("draggable")) {  // TODO be more specific
 	if (drop_target.id.match(/^title_/)) {   // drop under a parent node
 	    id = parseInt(drop_target.id.replace(/^title_/, ''));
-	    $('add_task_form').getInputs()[1].setAttribute("value", id);
-	    $('add_task_form').getInputs()[2].setAttribute("value", 0);
+	    $('add_task_form_parentID').setAttribute("value", id);
+	    $('add_task_form_siblingID').setAttribute("value", 0);
 	    var new_parent = $('task_' + id);
 	    var tr = document.createElement("TR");
 	    tr.className = "taskrow";
@@ -842,8 +843,8 @@ function doDrop(child, drop_target, a) {
 	    // todo indentation
 	} else {   // drop after a sibling node
 	    id = parseInt(drop_target.id.replace(/^handle_/, ''));
-	    $('add_task_form').getInputs()[1].setAttribute("value", 0);
-	    $('add_task_form').getInputs()[2].setAttribute("value", id);
+	    $('add_task_form_parentID').setAttribute("value", 0);
+	    $('add_task_form_siblingID').setAttribute("value", id);
 	    var new_sibling = $('task_' + id);
 	    var ul = new_sibling.parentNode;
 	    var li = document.createElement("li");
@@ -1042,3 +1043,4 @@ function setPermalink(newkey, newval) {
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
+addLoadEvent(restoreAddTask);
