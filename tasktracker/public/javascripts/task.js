@@ -497,7 +497,6 @@ function doneAddingTask(req) {
 
     return;
 }
-doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
@@ -545,12 +544,13 @@ function updateTaskItem(task_id) {
     else {
 	var db = new DateBocks();
 	var date = taskitem.getAttribute('deadline');
-	var now = new Date();
-	if (date && db.parseDateString(date) < now) {
-	    completed = 'overdue-task';
+	completed = 'uncompleted-task';
+	if( date && date != 'None' ) {
+	    var now = new Date();
+	    if (date && db.parseDateString(date) < now) {
+		completed = 'overdue-task';
+	    }
 	}
-	else
-	    completed = 'uncompleted-task';
     }
     var root;
     if (taskitem.childNodes[1].nodeType == 1) {
@@ -660,6 +660,8 @@ function doneMovingTask(req) {
     }
     updateTaskItem(task_id);
 }
+
+doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function showTaskCreate() {
     $('create').show();
