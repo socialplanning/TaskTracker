@@ -24,9 +24,7 @@ editable_title = False
   completed-task
 % elif h.isOverdue(atask.deadline):
     overdue-task
-% else:
-    uncompleted-task
-%
+% 
 
 % if atask.parentID:
 sub-task
