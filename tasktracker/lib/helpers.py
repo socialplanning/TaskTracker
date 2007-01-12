@@ -418,7 +418,7 @@ def render_action(action, last_action=False):
     if isinstance(action, Comment):
         comment = html2safehtml(action.text)
         user = action.user
-        if str(user) == c.username:
+        if user == c.username:
             user = "you"
         comment += "<br/>Comment from %s by %s" % (prettyDate(action.date), user)
     else:
@@ -437,7 +437,7 @@ def render_action(action, last_action=False):
             fields.remove('Private')
             fields.append('Privacy')
         user = action.updatedBy
-        if str(user) == c.username:
+        if user == c.username:
             user = "you"
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     if last_action:
