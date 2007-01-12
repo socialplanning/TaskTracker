@@ -495,7 +495,7 @@ function doneAddingTask(req) {
 }
 doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
-
+succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
     console.log("failed to add task");
@@ -600,10 +600,17 @@ function succeededChangingField(req) {
 	parent.childTasks.removeItem(oldVersion);
     }
 
+    var fieldname = this[1];
+    if ($('post_edit_task')) {
+	func = eval($('post_edit_task').getAttribute('func'));
+	func(task_id, fieldname);
+    }
+
     oldVersion.parentNode.replaceChild(newNode, oldVersion);
     newNode = $('task_' + task_id);
     newNode.childTasks = oldVersion.childTasks;
-    if( parent ) {
+
+    if( parent && parent.getAttribute('is_flat') != ' True' ) {
 	if ( len_of(parent.childTasks) ) {
 	    if( place >= parent.childTasks.length )
 		parent.childTasks[length] = newNode;
@@ -615,27 +622,6 @@ function succeededChangingField(req) {
     }
 
     enableDragDrop(newNode);
-    var fieldname = this[1];
-    /*
-    var field = $(fieldname + '_' + task_id);
-    var newvalue = (field.value ? field.value : "No " + fieldname);
-    field.setAttribute('originalvalue', newvalue);
-    field.disabled = false;
-    field.style.color = "black"; 
-    var label = $(fieldname + '-label_' + task_id);
-    if (fieldname == 'deadline') {
-	label.innerHTML = pretty_date_from_text(newvalue);
-    } else {
-	label.innerHTML = newvalue;
-    }
-    $('task_' + task_id).setAttribute(fieldname, req.responseText);
-    updateTaskItem(task_id);
-    hideChangeableField(task_id, fieldname);
-    */
-    if ($('post_edit_task')) {
-	func = eval($('post_edit_task').getAttribute('func'));
-	func(task_id, fieldname);
-    }
 
 }
 
