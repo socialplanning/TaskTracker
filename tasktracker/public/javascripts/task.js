@@ -515,10 +515,11 @@ function changeField(task_id, fieldname) {
     var no_second_row = taskrow.getAttribute("no_second_row");
     var is_flat = taskrow.getAttribute("is_flat");
     var editable_title = taskrow.getAttribute("editable_title");
+    var depth = $("global-values").getAttribute('depth');
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
 				                "&no_second_row=" + no_second_row + "&is_flat=" + is_flat + 
-				                "&editable_title=" + editable_title,
+				                "&editable_title=" + editable_title + "&depth=" + depth,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]),
 				     onFailure:failedChangingField.bind([task_id, fieldname])});
 }

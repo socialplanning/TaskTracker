@@ -7,6 +7,8 @@
 
 <& task_list_title.myt &>
 
+<span id="global-values" style="display:none" depth="<% c.depth %>"></span>
+
 <br/><br/>
 
 <!-- The previous task -->

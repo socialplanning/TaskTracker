@@ -47,6 +47,7 @@ class EditTaskForm(formencode.Schema):
     no_second_row = StringBoolean(not_empty = True)
     is_flat = StringBoolean(not_empty = True)
     editable_title = StringBoolean(not_empty = True)
+    depth = Int()
     private = NotEmpty()
 
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
@@ -93,12 +94,12 @@ class TaskController(BaseController):
         no_second_row = self.form_result.get('no_second_row', None)
         is_flat = self.form_result.get('is_flat', None)
         editable_title = self.form_result.get('editable_title', None)
-
+        depth = self.form_result.get('depth', 0)
         if not old == newfield:
             setattr(task, field, newfield)
 
         c.task = task
-        c.depth = 0
+        c.depth = depth
 
         return render_response('task/task_item.myt', atask=c.task, fragment=True,
                                no_second_row=no_second_row, is_preview=is_preview, is_flat=is_flat, editable_title=editable_title)
