@@ -187,12 +187,16 @@ var myrules = {
 
 Behaviour.register(myrules);
 
+function hasTasks() {
+    return ($('tasks'));
+}
+
 function hasReorderableTasks() {
     return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");
 }
 
 function setTaskParents() {
-    if (hasReorderableTasks()) {
+    if( hasTasks() ) {
 	$A($('tasks').getElementsByClassName('task-item')).each(function(task) {
 		var parentID;
 		var parent;
@@ -389,7 +393,7 @@ filterLookups.updated['Yesterday'] = '-1';
 filterLookups.updated['In the past week'] = '-7,0';
 
 function sortAndFilter() {
-    if( !hasReorderableTasks() )
+    if( !hasReorderableTasks() || !$('permalink') )
 	return;
 
     var options = $('permalink').getAttribute("permalink");
@@ -610,7 +614,7 @@ function succeededChangingField(req) {
     newNode = $('task_' + task_id);
     newNode.childTasks = oldVersion.childTasks;
 
-    if( parent && parent.getAttribute('is_flat') != ' True' ) {
+    if( parent && parent.getAttribute('is_flat') != 'True' ) {
 	if ( len_of(parent.childTasks) ) {
 	    if( place >= parent.childTasks.length )
 		parent.childTasks[length] = newNode;
@@ -1007,6 +1011,7 @@ function add_unfold(node) {
 
 function setPermalink(newkey, newval) {
     var a_perm = $('permalink');
+    if( !a_perm ) return;
     var permalink = a_perm.getAttribute('permalink');
     var items = permalink.split("&");
     var i;

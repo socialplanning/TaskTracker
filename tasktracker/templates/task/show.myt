@@ -100,7 +100,7 @@ class="unfolded" id="subtasks">
  </span>
 
  <div class="child_tasks">
- <table width="100%" id="tasks" class="all_tasks">
+ <table width="100%" id="tasks" class="all_tasks" hasReorderableTasks="True">
 % for atask in c.task.liveChildren():
 <& task_list_item.myt, atask=atask &>
 %
