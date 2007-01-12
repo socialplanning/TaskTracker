@@ -194,7 +194,9 @@ ul.task_list {
 }
 
 .uncompleted-task {
-   color: blue;
+  cursor:pointer;
+  text-decoration: underline;
+  color: #256e81;
 }
 
 .root-task {
@@ -203,6 +205,9 @@ ul.task_list {
 
 .sub-task { 
 
+}
+
+.editable {
 }
 
 span.editable:hover {
