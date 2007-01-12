@@ -77,7 +77,7 @@
 % 
 % if h.has_permission(controller='task', action='update_private', id=c.task.id):
 <span id="private">
-<& _private.myt &>|
+<& _private.myt &>
 </span>
 %
 % if h.has_permission(controller='task', action='update', id=c.task.id):
