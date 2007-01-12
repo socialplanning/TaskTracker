@@ -145,8 +145,9 @@ function change_description_updated(task_id, field_name) {
     console.log("here");
     if( field_name == 'text' ) {
         $('description_updated').innerHTML = "Description last updated Today by you";
+	field_name = 'description';
     }
-
+    field_name = field_name[0].toUpperCase() + field_name.substr(1);
     var b = Builder.node('b', field_name + " updated Today by you");
     var li = Builder.node('li', {}, [b, Builder.node('hr')]);
     $('activity').insertBefore(li, $('activity').childNodes[0]);

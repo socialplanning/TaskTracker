@@ -413,6 +413,9 @@ def render_action(action):
                 fields.remove (field)
         if not fields:
             return ''
+        if 'Text' in fields:
+            fields.remove('Text')
+            fields.append('Description')
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), action.updatedBy)
     return '<li>%s<hr/></li>' % comment
 
