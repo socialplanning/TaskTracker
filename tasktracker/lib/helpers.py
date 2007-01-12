@@ -428,18 +428,16 @@ def field_last_updated(task, field):
     return "<b>%s by %s</b>" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
 
 
-def task_item_tr(task, is_preview, no_second_row, is_flat):
+def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
     tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, task.id, task.id)]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
             tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
 
-    if is_preview:
-        tr.append('is_preview = "%s" ' % is_preview)
-    if no_second_row:
-        tr.append('no_second_row = "%s" ' % no_second_row)
-    if is_flat:
-        tr.append('is_flat = "%s" ' % is_flat)
+    tr.append('is_preview = "%s" ' % is_preview)
+    tr.append('no_second_row = "%s" ' % no_second_row)
+    tr.append('is_flat = "%s" ' % is_flat)
+    tr.append('editable_title = "%s" ' % editable_title)
 
     tr.append('class = "taskrow task-item ')
     if has_permission('task', 'update', id=task.id):

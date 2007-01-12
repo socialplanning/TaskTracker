@@ -20,7 +20,7 @@
 
 <!-- The current task -->
 <table class="task_list" width="100%">
-<& task_item.myt, atask = c.task, no_second_row = True, is_preview = True, is_flat = True, editable_title = True &>
+<& task_item.myt, atask = c.task, no_second_row = True, is_preview = False, is_flat = True, editable_title = True &>
 </table>
 
 <table id="activity-table">

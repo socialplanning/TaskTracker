@@ -1,12 +1,12 @@
 <%args>
 atask
-is_preview = None
-no_second_row = None
-is_flat = None
-editable_title = None
+is_preview = False
+no_second_row = False
+is_flat = False
+editable_title = False
 </%args>
 
-<% h.task_item_tr (atask, is_preview, no_second_row, is_flat) %>
+<% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
 
 <td class="title-column">
 <span id="draggable_<% atask.id %>" depth="<% atask.depth() - c.depth %>" class="taskitem draggable">
@@ -42,7 +42,7 @@ root-task
      title = "<% atask.text %>"
      class = "task_item 
 % if atask.status == 'done':
-  completed-task
+    completed-task
 % elif h.isOverdue(atask.deadline):
     overdue-task
 % else:

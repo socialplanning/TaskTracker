@@ -43,9 +43,10 @@ class EditTaskForm(formencode.Schema):
     siblingID = formencode.validators.Int(not_empty = True)
     task_listID = formencode.validators.Int()
     text = formencode.validators.String()
-    is_preview = Bool(not_empty = True)
-    no_second_line = Bool(not_empty = True)
-    is_flat = Bool(not_empty = True)
+    is_preview = StringBoolean(not_empty = True)
+    no_second_row = StringBoolean(not_empty = True)
+    is_flat = StringBoolean(not_empty = True)
+    editable_title = StringBoolean(not_empty = True)
     private = NotEmpty()
 
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
@@ -88,15 +89,10 @@ class TaskController(BaseController):
                 assert newfield in [s.name for s in task.task_list.statuses]
 
         # find out if the old taskrow wants us to render its replacement a particular way
-        is_preview = None
-        if self.form_result['is_preview'] == True:
-            is_preview = True
-        no_second_line = None
-        if self.form_result['no_second_line'] == True:
-            no_second_line = True
-        is_flat = None
-        if self.form_result['is_flat'] == True:
-            is_flat = True
+        is_preview = self.form_result.get('is_preview', None)
+        no_second_row = self.form_result.get('no_second_row', None)
+        is_flat = self.form_result.get('is_flat', None)
+        editable_title = self.form_result.get('editable_title', None)
 
         if not old == newfield:
             setattr(task, field, newfield)
@@ -104,7 +100,8 @@ class TaskController(BaseController):
         c.task = task
         c.depth = 0
 
-        return render_response('task/task_item.myt', atask=c.task, no_second_row=no_second_line, is_preview=is_preview, is_flat=is_flat, fragment=True)
+        return render_response('task/task_item.myt', atask=c.task, fragment=True,
+                               no_second_row=no_second_row, is_preview=is_preview, is_flat=is_flat, editable_title=editable_title)
 
     @attrs(action='open')
     def auto_complete_for(self, id):

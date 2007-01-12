@@ -509,11 +509,15 @@ function changeField(task_id, fieldname) {
     var value = (field.type == 'checkbox') ? field.checked : field.value;
     var taskrow = $('task_' + task_id);
     var is_preview = taskrow.getAttribute("is_preview");
-    var no_second_line = taskrow.getAttribute("no_second_line");
+    var no_second_row = taskrow.getAttribute("no_second_row");
     var is_flat = taskrow.getAttribute("is_flat");
+    var editable_title = taskrow.getAttribute("editable_title");
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
-				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview + "&no_second_line=" + no_second_line + "&is_flat=" + is_flat,
-				     onSuccess:doneChangingField.bind([task_id, fieldname]), onFailure:failedChangingField.bind([task_id, fieldname])});
+				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
+				                "&no_second_row=" + no_second_row + "&is_flat=" + is_flat + 
+				                "&editable_title=" + editable_title,
+				     onSuccess:doneChangingField.bind([task_id, fieldname]),
+				     onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
 function viewChangeableField(task_id, fieldname) {
