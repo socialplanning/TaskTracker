@@ -117,7 +117,7 @@ def sortableColumn(field, fieldname = None):
     </th>""" % (field, field, field, fieldname, field, field, field)
     return span
 
-def editableField(task, field):
+def editableField(task, field, ifNone = None):
     editable = has_permission('task', 'change_field', id=task.id, field=field)
     if field == 'owner':
         #this is fairly complicated.  Cases:
@@ -149,7 +149,9 @@ def editableField(task, field):
         out.append("%s %s </span>" % (span, span_contents))
     
         if not contents:
-            contents = "No %s" % field
+            contents = ifNone
+            if contents is None:
+                contents = "No %s" % field
         elif field == 'deadline':
             contents = readableDate(contents)
 

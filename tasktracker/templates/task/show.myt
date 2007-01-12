@@ -27,14 +27,12 @@
  <tr>
   <td class="small task-detail-mainbar">
 
-<% h.editableField(c.task, 'text') %>
+<% h.editableField(c.task, 'text', 'Add a description') %>
    <br/>
    <b id="description_updated">
 % if h.field_last_updated(c.task, 'text'):
       Description last updated 
    <%  h.field_last_updated(c.task, 'text') %>
-% else:
-   Description never updated
 %
    </b>
    <hr/>
