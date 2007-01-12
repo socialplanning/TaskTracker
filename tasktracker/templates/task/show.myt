@@ -29,7 +29,7 @@
 
 <% h.editableField(c.task, 'text', 'Add a description') %>
    <br/>
-   <b id="description_updated">
+   <b id="description_updated_<% c.task.id %>">
 % if h.field_last_updated(c.task, 'text'):
       Description last updated 
    <% h.field_last_updated(c.task, 'text') %>
@@ -43,10 +43,8 @@
  </tr>
  <tr>
   <td class="small task-detail-mainbar">
-   <ul id="activity">
-% for action in c.task.actions()[:5]:
-      <%  h.render_action(action) %>
-%
+   <ul id="activity_<% c.task.id %>" class="activity_list">
+    <%  h.render_actions(c.task.actions()) %>
    </ul>
   </td>
   <td id="task-detail-sidebar-cell">
@@ -135,15 +133,20 @@ class="unfolded" id="subtasks">
 
 <script>
 function change_description_updated(task_id, field_name) {
-    console.log("here");
-    if( field_name == 'text' ) {
-        $('description_updated').innerHTML = "Description last updated Today by you";
+    var desc = $('description_updated_' + task_id);
+    if( desc ) {
+      if( field_name == 'text' ) {
+        desc.innerHTML = "Description last updated Today by you";
 	field_name = 'description';
+      }
     }
-    field_name = field_name[0].toUpperCase() + field_name.substr(1);
-    var b = Builder.node('b', field_name + " updated Today by you");
-    var li = Builder.node('li', {}, [b, Builder.node('hr')]);
-    $('activity').insertBefore(li, $('activity').childNodes[0]);
+    var act = $('activity_' + task_id);
+    if( act ) {
+      field_name = field_name[0].toUpperCase() + field_name.substr(1);
+      var b = Builder.node('b', field_name + " updated Today by you");
+      var li = Builder.node('li', {}, [b, Builder.node('hr')]);
+      act.insertBefore(li, act.childNodes[0]);
+    }
 }
 
 function count_subtasks() {
