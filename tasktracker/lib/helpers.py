@@ -417,7 +417,10 @@ def render_actions(actions, cutoff=5):
 def render_action(action, last_action=False):
     if isinstance(action, Comment):
         comment = html2safehtml(action.text)
-        comment += "<br/>Comment from %s by %s" % (prettyDate(action.date), action.user)
+        user = action.user
+        if str(user) == c.username:
+            user = "you"
+        comment += "<br/>Comment from %s by %s" % (prettyDate(action.date), user)
     else:
         fields = action.getChangedFields()
         if not fields:
@@ -433,7 +436,10 @@ def render_action(action, last_action=False):
         if 'Private' in fields:
             fields.remove('Private')
             fields.append('Privacy')
-        comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), action.updatedBy)
+        user = action.updatedBy
+        if str(user) == c.username:
+            user = "you"
+        comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     if last_action:
         hr = ''
     else:
