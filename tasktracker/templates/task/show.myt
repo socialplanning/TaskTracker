@@ -68,10 +68,11 @@
 % if h.has_permission(controller='task', action='comment', id=c.task.id):
 <span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;|</span>
 <div id="edit_comment" class="folded">
- <form action="<% h.url_for(action='comment', task_id=c.task.id) %>" id="add_comment_form" method="post">
+ <form id="add_comment_form" method="post">
   <label for="text">Comment:<label><br/>
-  <textarea name="text" cols=80 rows=5></textarea><br/>
-  <input type="submit" value="comment" name="comment">
+  <textarea name="text" id="enter_comment_here" cols=80 rows=5></textarea><br/>
+  <% h.submit_to_remote("comment", "comment", url=h.url_for(action='comment', task_id=c.task.id),
+     complete="change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
  </form>
 </div>
 % 
@@ -134,7 +135,7 @@ class="unfolded" id="subtasks">
 <span id="post_edit_task" func="change_description_updated"></span>
 
 <script>
-function change_description_updated(task_id, field_name) {
+function change_description_updated(task_id, field_name, comment_text) {
     var desc = $('description_updated_' + task_id);
     if( desc ) {
       if( field_name == 'text' ) {
@@ -145,8 +146,14 @@ function change_description_updated(task_id, field_name) {
     var act = $('activity_' + task_id);
     if( act ) {
       field_name = field_name[0].toUpperCase() + field_name.substr(1);
-      var b = Builder.node('b', field_name + " updated Today by you");
-      var li = Builder.node('li', {}, [b, Builder.node('hr')]);
+      if( field_name == 'Comment' ) {
+        var b = Builder.node('b', field_name + " from Today by you");
+	var span = Builder.node('span', comment_text);
+	var li = Builder.node('li', {}, [span, Builder.node('br'), b, Builder.node('hr')]);
+      } else {
+        var b = Builder.node('b', field_name + " updated Today by you");
+	var li = Builder.node('li', {}, [b, Builder.node('hr')]);
+      }
       act.insertBefore(li, act.childNodes[0]);
     }
 }
