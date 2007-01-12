@@ -271,8 +271,10 @@ def _ownerFilter(onblur = None, tasklist = None):
 def _textArea(task):
     orig = task.text
     area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, 
-                     content=orig, rows=10, cols=80)
-    button = submit('submit', onclick = 'changeField(%d, "text"); return false;' % task.id)
+                     content=orig, rows=5, cols=80)
+    onclick = """changeField(%d, "text"); $("text-form_%d").hide(); $("text-label_%d").innerHTML = $("text_%d").value; 
+                 $("text-label_%d").show(); return false;""" % (task.id, task.id, task.id, task.id, task.id)
+    button = submit('submit', onclick = onclick)
     return area + button
 
 def _titleInput(task):

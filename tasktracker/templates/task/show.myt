@@ -32,7 +32,7 @@
    <b id="description_updated">
 % if h.field_last_updated(c.task, 'text'):
       Description last updated 
-   <%  h.field_last_updated(c.task, 'text') %>
+   <% h.field_last_updated(c.task, 'text') %>
 %
    </b>
    <hr/>
