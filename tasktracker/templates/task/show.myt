@@ -142,14 +142,14 @@ class="unfolded" id="subtasks">
 
 <script>
 function change_description_updated(task_id, field_name) {
-    if (field_name == 'text') {
+    console.log("here");
+    if( field_name == 'text' ) {
         $('description_updated').innerHTML = "Description last updated Today by you";
     }
 
     var b = Builder.node('b', field_name + " updated Today by you");
-    var li = Builder.node('li', {}, [b]);
-    $('activity').appendChild(li);
-
+    var li = Builder.node('li', {}, [b, Builder.node('hr')]);
+    $('activity').insertBefore(li, $('activity').childNodes[0]);
 }
 
 function count_subtasks() {
