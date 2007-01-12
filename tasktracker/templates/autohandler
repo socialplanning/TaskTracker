@@ -2,8 +2,6 @@
 <head>
 % if c.title:
 <% c.title %>
-% else:
-Todo list
 % 
 <link rel="Shortcut Icon" href="/favicon.ico">
 <% h.javascript_include_tag('behaviour.js') %>
