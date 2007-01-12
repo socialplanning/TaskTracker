@@ -183,7 +183,7 @@ class TaskController(BaseController):
         c.depth = 0
         if siblingID > 0:
             self._move_below_sibling(c.task.id, siblingID)
-        return render_body('task/task_list_item.myt', atask=c.task)
+        return render_response('task/task_list_item.myt', atask=c.task, fragment=True)
 
     @attrs(action='claim')
     @catches_errors
