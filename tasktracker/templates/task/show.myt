@@ -65,26 +65,21 @@
 </table>
 
 
-% if h.has_permission(controller='task', action='update_private', id=c.task.id):
-<span  id="private">
-<& _private.myt &>
-</span>
-%
 % if h.has_permission(controller='task', action='comment', id=c.task.id):
-
-<span id="comment" class="unfolded command">add comment</span>&nbsp;&nbsp;
+<span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;|</span>
 <div id="edit_comment" class="folded">
-
-<form action="<% h.url_for(action='comment', task_id=c.task.id) %>" id="add_comment_form" method="post">
-
-<label for="text">Comment:<label><br/>
- <textarea name="text" cols=80 rows=10></textarea><br/>
-
-<input type="submit" value="comment" name="comment">
-</form>
+ <form action="<% h.url_for(action='comment', task_id=c.task.id) %>" id="add_comment_form" method="post">
+  <label for="text">Comment:<label><br/>
+  <textarea name="text" cols=80 rows=5></textarea><br/>
+  <input type="submit" value="comment" name="comment">
+ </form>
 </div>
 % 
-
+% if h.has_permission(controller='task', action='update_private', id=c.task.id):
+<span id="private">
+<& _private.myt &>|
+</span>
+%
 % if h.has_permission(controller='task', action='update', id=c.task.id):
 <% h.secure_link_to('delete this task',
    confirm='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
