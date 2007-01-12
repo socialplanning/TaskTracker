@@ -92,8 +92,6 @@
    confirm='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
 %
 
-<& _hideable_show_create.myt, subtask_link = '[ + ]<a href="%s" onclick="showTaskCreate();return false;">add a sub-task</a>' % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id), parentID = '<input type="hidden" name="parentID" value ="%s"' %  c.task.id  &>
-
 <br/><br/>
 
 <span 
@@ -124,6 +122,8 @@ class="unfolded" id="subtasks">
 
 </div>
 
+<& _hideable_show_create.myt, subtask_link = '[ + ]<a href="%s" onclick="showTaskCreate();return false;">add a sub-task</a>' % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id), parentID = '<input type="hidden" name="parentID" value ="%s"' %  c.task.id  &>
+
 <br/>
 
 <!-- The next task -->
@@ -134,7 +134,7 @@ class="unfolded" id="subtasks">
 </table>
 %
 
-<& task_list_footer.myt, pre_footer = h.link_to('Go back to the task list', h.url_for(action='show', controller='tasklist', id=c.task.task_listID)) + '| </span>' &>
+<& task_list_footer.myt, pre_footer = h.link_to('Go back to the task list', h.url_for(action='show', controller='tasklist', id=c.task.task_listID)) + ' | ' &>
 
 <span id="post_add_task" func="count_subtasks"></span>
 

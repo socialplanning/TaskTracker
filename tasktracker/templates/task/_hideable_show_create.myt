@@ -5,9 +5,9 @@ subtask_link = ''
 % if h.has_permission('task', 'create', task_listID=c.tasklist.id):
 <span id="create_section" class="create_section">
 
-<span id="show_create">
+<div id="show_create">
 <% subtask_link %>
-</span>
+</div>
 
 <a name="create_anchor" id="create_anchor"/>
 <div id="create" style="display:none;">
