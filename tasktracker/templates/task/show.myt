@@ -90,13 +90,13 @@
 style = "display:none;"
 %
 class="unfolded" id="subtasks">
- This task has  <span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
+ This task has <span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
  <span class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show();">View them.</span><br/>
 </span>
 
 <span class="folded" id="edit_subtasks">
  <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
-  hide <span class="num_subtasks"><% len(c.task.liveDescendents()) %></span> sub-tasks
+  hide sub-tasks
  </span>
 
  <div class="child_tasks">

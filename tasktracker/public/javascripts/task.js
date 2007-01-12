@@ -494,9 +494,9 @@ function doneAddingTask(req) {
     if ($('post_add_task')) {
 	eval($('post_add_task').getAttribute('func'))();
     }
-
     return;
 }
+
 doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
