@@ -872,8 +872,7 @@ function doDrop(child, drop_target, a) {
     }
 }
 
-// todo make this sort respect parenting
-function sortULBy(ul, column, forward, parentID) {
+function sortListBy(ul, column, forward, parentID) {
     if( !parentID ) parentID = "0";
     items = $A(ul.getElementsByClassName('task-item')).filter( function(i) {
 	    return i.getAttribute("parentID") == parentID;
@@ -911,7 +910,7 @@ function sortULBy(ul, column, forward, parentID) {
 		    ul.appendChild(i);
 		});	    
 	    if( len_of(x.childTasks) )
-		sortULBy($('tasks'), column, forward, x.getAttribute("task_id"));
+		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"));
 	});
 }
 
@@ -986,8 +985,7 @@ function sortBy(column, order) {
     setPermalink("sortBy", column);
     setPermalink("sortOrder", order);
 
-    // todo rename this
-    sortULBy($('tasks'), column, order == 'up' ? 1 : -1);
+    sortListBy($('tasks'), column, order == 'up' ? 1 : -1);
 }
 
 var initialized = false;
