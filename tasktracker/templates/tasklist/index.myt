@@ -27,8 +27,8 @@
   <% h.link_to(list.title, h.url_for(action='show', id=list.id)) %>
 </li>
 %
+%
 </ul>
-
 %
 
 % if h.has_permission('tasklist', 'show_create'): 
