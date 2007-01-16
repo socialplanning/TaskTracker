@@ -6,7 +6,22 @@ is_flat = False
 editable_title = False
 </%args>
 
+<%closure second_line>
+% if not no_second_row:
+ <div class="second-line">&nbsp;</div>
+%
+</%closure>
+
 <% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
+
+% if not atask.task_list.hasFeature('custom_status'):
+<td class="status-column">
+<div class="first_line">
+<% h.editableField(atask, 'status') %>
+</div>
+<& second_line &>
+</td>
+% #endif
 
 <td class="title-column">
 <div class="first_line">
@@ -82,18 +97,14 @@ preview-link
 %
 </td>
 
-<%closure second_line>
-% if not no_second_row:
- <div class="second-line">&nbsp;</div>
-%
-</%closure>
-
+% if atask.task_list.hasFeature('custom_status'):
 <td class="status-column">
 <div class="first_line">
 <% h.editableField(atask, 'status') %>
 </div>
 <& second_line &>
 </td>
+% #endif
 
 % if  atask.task_list.hasFeature('deadlines'):
 <td class="deadline-column">
