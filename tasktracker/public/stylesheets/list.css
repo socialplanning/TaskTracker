@@ -7,7 +7,7 @@ table {
 }
 
 td { height: 3.5em; padding: 0;}
-tr.task-filter-controls td { height: 1.75em; }
+tr.task-filter-controls td, td#breaking-row { height: 1.75em; }
 .first_line, .second-line { height: 50%; padding: 0 .25em; }
 .first_line {  background-color: #DDD; }
 .second-line {  background-color: #FFF; }

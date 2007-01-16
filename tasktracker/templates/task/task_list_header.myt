@@ -31,5 +31,7 @@
 </tr>
 
 <tr class="second-line">
-<td colspan="6">&nbsp;</td>
+
+<td colspan="6" id="breaking-row">&nbsp;</td>
+
 </tr>
