@@ -148,7 +148,8 @@ function change_description_updated(task_id, field_name, comment_text) {
       field_name = field_name[0].toUpperCase() + field_name.substr(1);
       if( field_name == 'Comment' ) {
         var b = Builder.node('b', field_name + " from Today by you");
-	var span = Builder.node('span', comment_text);
+	var span = Builder.node('span');
+	span.innerHTML = comment_text;
 	var li = Builder.node('li', {}, [span, Builder.node('br'), b, Builder.node('hr')]);
       } else {
         var b = Builder.node('b', field_name + " updated Today by you");
