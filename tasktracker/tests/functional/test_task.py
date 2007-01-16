@@ -204,7 +204,6 @@ class TestTaskController(TestController):
         form.fields['text'][0].value = "This is a test comment."
 
         res = form.submit()
-        res = res.follow()
 
         res.mustcontain("This is a test comment.")
 
