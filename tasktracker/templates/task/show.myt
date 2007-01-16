@@ -31,12 +31,12 @@
 
 <% h.editableField(c.task, 'text', 'Add a description') %>
    <br/>
-   <b id="description_updated_<% c.task.id %>">
+   <span id="description_updated_<% c.task.id %>">
 % if h.field_last_updated(c.task, 'text'):
       Description last updated 
    <% h.field_last_updated(c.task, 'text') %>
 %
-   </b>
+   </span>
    <hr/>
 
    <b>Latest activity:</b>
@@ -68,11 +68,11 @@
 % if h.has_permission(controller='task', action='comment', id=c.task.id):
 <span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;|</span>
 <div id="edit_comment" class="folded">
- <form id="add_comment_form" method="post">
+ <% h.secure_form_remote_tag(html=dict(id="add_comment_form"), url=h.url_for(action='comment', task_id=c.task.id),
+     complete="change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
   <label for="text">Comment:<label><br/>
   <textarea name="text" id="enter_comment_here" cols=80 rows=5></textarea><br/>
-  <% h.submit_to_remote("comment", "comment", url=h.url_for(action='comment', task_id=c.task.id),
-     complete="change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
+  <% h.submit("comment") %>
  </form>
 </div>
 % 

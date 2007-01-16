@@ -206,7 +206,6 @@ class TaskController(BaseController):
         c.task = Task.get(int(id))
         c.comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
         return Response(c.comment.text)
-#        return Response.redirect_to(action='show',id=c.task.id)
 
     @attrs(action='update')
     @catches_errors
