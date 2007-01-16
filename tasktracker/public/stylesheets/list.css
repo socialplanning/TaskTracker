@@ -274,6 +274,7 @@ span.editable:hover {
 
 .task-detail-mainbar {
   width: 75%;
+  vertical-align: top;
 }
 
 #task-detail-sidebar {
