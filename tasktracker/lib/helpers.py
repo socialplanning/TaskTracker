@@ -405,16 +405,28 @@ def shorter(text):
         return '<span id="%s">%s</span> <span id="more_%s" onclick="%s.show(); more_%s.hide();">(more...)</span>' % (hidden_id, segment, hidden_id, hidden_id, hidden_id)
 
 def render_actions(actions, cutoff=5):
-    returns = []
-    actionslice = actions[:cutoff]
-    for action in actionslice:
-        last_action = False
-        if action == actionslice[-1]:
-            last_action = True
-        returns.append(render_action(action, last_action))
-    return "\n".join(returns)
+    if cutoff == 0:
+        cutoff = len(actions)
 
-def render_action(action, last_action=False):
+    rendered_actions = []
+
+    count = 0
+    for action in actions:
+        result = render_action(action)
+        if not result:
+            continue
+        count += 1
+        rendered_actions.append(result)
+        if count >= cutoff:
+            break
+
+    if not rendered_actions:
+        return ''
+    head = "\n".join (map (lambda action : "<li>%s<hr></li>\n" % action, rendered_actions[:-1]))
+    tail = "<li>%s</li>" % rendered_actions[-1]
+    return "%s\n%s" % (head, tail)
+
+def render_action(action):
     if isinstance(action, Comment):
         comment = html2safehtml(action.text)
         user = action.user
@@ -440,11 +452,7 @@ def render_action(action, last_action=False):
         if user == c.username:
             user = "you"
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
-    if last_action:
-        hr = ''
-    else:
-        hr = "<hr/>"
-    return '<li>%s%s</li>' % (comment, hr)
+    return '%s' % (comment)
 
 
 def field_last_updated(task, field):
