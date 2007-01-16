@@ -51,11 +51,6 @@ tr {
    width: 100%;
 }
 
-.undroppable {
-   background-color: maroon;
-   color: pink;
-}
-
 .grayed-out {
    color: gray;
 }
@@ -177,6 +172,10 @@ ul.task_list {
   cursor:pointer;
   text-decoration: underline;
   color: #256e81;
+}
+
+.undroppable {
+
 }
 
 .root-task {
