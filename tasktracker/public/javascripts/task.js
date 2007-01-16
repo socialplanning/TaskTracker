@@ -838,14 +838,15 @@ function doDrop(child, drop_target, a) {
 	    insertAfter(tr, new_parent);
 	    // todo indentation
 	} else {   // drop after a sibling node
+	    // todo look into this block sometime. does it ever happen?
 	    id = parseInt(drop_target.id.replace(/^handle_/, ''));
 	    $('add_task_form_parentID').setAttribute("value", 0);
 	    $('add_task_form_siblingID').setAttribute("value", id);
 	    var new_sibling = $('task_' + id);
-	    var ul = new_sibling.parentNode;
-	    var li = document.createElement("li");
-	    li.className = "taskrow";
-	    li.appendChild(child);
+	    var new_parent = new_sibling.parentNode;
+	    var tr = document.createElement("TR");
+	    tr.className = "taskrow";
+	    tr.appendChild(child);
 	    insertAfter(child, new_sibling);
 	}
 	return;
