@@ -210,7 +210,7 @@ def _ownerInput(task):
     if task.owner:
         orig = task.owner    
 
-        input = text_field('owner', autocomplete="off", originalvalue=orig, size=15,
+        input = text_field('owner', autocomplete="off", originalvalue=orig, size=15, style='',
                            id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
         span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
         script = """<script type="text/javascript">

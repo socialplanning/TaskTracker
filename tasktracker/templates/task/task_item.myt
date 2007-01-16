@@ -9,6 +9,7 @@ editable_title = False
 <% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
 
 <td class="title-column">
+<div class="first_line">
 <span id="draggable_<% atask.id %>" depth="<% atask.depth() - c.depth %>" class="taskitem draggable">
 % if not is_flat:
 <% h.image_tag(h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
@@ -59,7 +60,7 @@ preview-link
 <% h.previewText(atask.title, 20) %>
 </a>
 %
-
+&nbsp;
 % if atask.uncompletedChildren():
 <span class="small"> (<span class="num_subtasks"><% len(atask.uncompletedChildren()) %></span> tasks left) </span>
 %
@@ -70,6 +71,7 @@ preview-link
 -- (private)
 %
 </span>
+</div>
 
 % if not no_second_row:
  <div class="second-line">
@@ -87,29 +89,39 @@ preview-link
 </%closure>
 
 <td class="status-column">
+<div class="first_line">
 <% h.editableField(atask, 'status') %>
+</div>
 <& second_line &>
 </td>
 
 % if  atask.task_list.hasFeature('deadlines'):
 <td class="deadline-column">
+<div class="first_line">
 <% h.editableField(atask, 'deadline') %>
+</div>
 <& second_line &>
 </td>
 %
 
 <td class="priority-column">
+<div class="first_line">
 <% h.editableField(atask, 'priority') %>
+</div>
 <& second_line &>
 </td>
 
 <td class="owner-column">
+<div class="first_line">
 <% h.editableField(atask, 'owner') %>
+</div>
 <& second_line &>
 </td>
 
 <td class="updated-column">
+<div class="first_line">
 <%  h.readableDate(atask.updated) %>
+</div>
 <& second_line &>
 </td>
 

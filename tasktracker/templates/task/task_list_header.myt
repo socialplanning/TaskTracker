@@ -11,7 +11,7 @@
 
 <% h.sortableColumn('priority') %>
 
-<% h.sortableColumn('owner', 'assigned to') %>
+<% h.sortableColumn('owner', 'assigned&nbsp;to') %>
 
 <% h.sortableColumn('updated', 'updated') %>
 
@@ -30,5 +30,5 @@
 </tr>
 
 <tr class="second-line">
-<td colspan="6"><p>&nbsp;</p></td>
+<td colspan="6">&nbsp;</td>
 </tr>

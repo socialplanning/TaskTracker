@@ -1,3 +1,32 @@
+table {
+  border-collapse: collapse;
+}
+
+.title-column, .updated-column {
+  white-space: nowrap;
+}
+
+td { height: 3.5em; padding: 0; }
+tr.task-filter-controls td { height: 1.75em; }
+.first_line, .second-line { height: 50%; padding: 0 .25em; }
+.first_line {  background-color: #DDD; }
+.second-line {  background-color: #FFF; }
+
+input {
+  width: 100%;
+  height: 100%;
+  background: none;  
+  border: none;
+  font: inherit;
+  font-style: italic;
+}
+
+input[type="checkbox"] { width: auto; height: auto;}
+
+select { width: 100%; height: 100%; background: none; background-color: #DDD; border: none; font: inherit; }
+
+select:focus { height: 1.65em;}
+
 body {
    margin-left: 5%;
    margin-right: 5%;
@@ -9,54 +38,12 @@ body {
    font-size: 80%;
 }
 
-.second-line {
-  background-color: white;
-  width: 100%
-}
-
 .filter-line {
   background-color: #ddd;
   width: 100%
 }
 
-.selected-column {
-
-}
-
-table {
-   border-spacing: 0px;
-   align: center;
-   text-align: center;
-   width: 100%;
-   background-color: #ddd;
-}
-
-.title-column {
-   text-align: left;
-}
-
-.status-column {
-   text-align: center;
-   width: 15%;
-}
-
-.priority-column {
-   text-align: center;
-   width: 15%;
-}
-
-.deadline-column {
-   text-align: center;
-   width: 15%;
-}
-
-.owner-column {
-   text-align: center;
-   width: 15%;
-}
-
-.updated-column {
-   text-align: center;
+.selected-column,.title-column, .status-column, .priority-column,.deadline-column,.owner-column,.updated-column {
    width: 15%;
 }
 
@@ -81,22 +68,14 @@ a.preview-link {
   color: gray;
 }
 
-td {
-    margin: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    vertical-align: top;
-}
-
 .task_list {
 	list-style-type: none;
         list-style-image: none; 
-	padding-left: 0px;
+	padding-left: 0;
 }
 
 .handle {
-	padding: 0px 4px 0px 4px;
+	padding: 0 4px 0 4px;
 }
 
 .customDraggable {
@@ -114,13 +93,13 @@ td {
 /*from scriptaculous*/
 span.autocomplete {
     background-color:white;
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
 }
 span.autocomplete ul {
     list-style-type:none;
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
     border: 1px dashed black;
 }
 span.autocomplete ul li.selected {
@@ -169,7 +148,7 @@ ul.task_list {
 }
 
 .create_section {
-   padding: 10px;
+   padding: 10;
 }
 
 .column-heading span {
@@ -192,6 +171,7 @@ ul.task_list {
     text-decoration: line-through;
     color: gray
 }
+
 
 .uncompleted-task {
   cursor:pointer;
@@ -227,7 +207,7 @@ span.editable:hover {
 .undecorated_list {
   list-style-type: none;
   list-style-image: none; 
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 .selected-permission {
@@ -267,7 +247,7 @@ span.editable:hover {
 }
 
 #activity-table {
-   border-spacing: 0px;
+   border-spacing: 0;
    align: left;
    text-align: left;
    width: 100%;
@@ -290,8 +270,8 @@ span.editable:hover {
 }
 
 #task-detail-sidebar-cell {
-  padding-left: 50px;
-  padding-right: 50px;
+  padding-left: 50;
+  padding-right: 50;
 }
 
 .task-detail-mainbar {
@@ -300,8 +280,8 @@ span.editable:hover {
 
 #task-detail-sidebar {
   background-color: #ddd;
-  padding-left: 10px;
+  padding-left: 10;
   padding-right: 3px;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 100;
+  padding-bottom: 100;
 }
