@@ -19,7 +19,7 @@ tr.column-heading {
   background-color: #DDD;
 }
 
-.first_line, .second-line { display: block; width: 100%; height: 50%; padding: 0 .25em; }
+.first_line, .second-line { /* display: block; */ width: 100%; height: 50%; padding: 0 .25em; }
 .first_line {  background-color: #DDD; }
 .second-line {  background-color: #FFF; }
 
