@@ -14,14 +14,12 @@ editable_title = False
 
 <% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
 
-% if not atask.task_list.hasFeature('custom_status'):
 <td class="status-column">
 <div class="first_line">
 <% h.editableField(atask, 'status') %>
 </div>
 <& second_line &>
 </td>
-% #endif
 
 <td class="title-column">
 <div class="first_line">
@@ -96,15 +94,6 @@ preview-link
   </span></div>
 %
 </td>
-
-% if atask.task_list.hasFeature('custom_status'):
-<td class="status-column">
-<div class="first_line">
-<% h.editableField(atask, 'status') %>
-</div>
-<& second_line &>
-</td>
-% #endif
 
 % if  atask.task_list.hasFeature('deadlines'):
 <td class="deadline-column">
