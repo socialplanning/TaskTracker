@@ -169,13 +169,11 @@ def editableField(task, field, ifNone = None):
     return " ".join(out)
 
 def _selectjs(field, id):
-    def _onblur(field, id):
-        return '$("%s-form_%d").hide(); $("%s-label_%d").show();' % (field, id, field, id)
 
     def _onchange(field, id):
         return 'changeField(%d, "%s");'  % (id, field)
 
-    return dict(onblur=_onblur(field, id), onchange=_onchange(field, id))
+    return dict(onchange=_onchange(field, id))
 
 def _prioritySelect(task):
     priority = task.priority
@@ -215,7 +213,7 @@ def _ownerInput(task):
         span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
         script = """<script type="text/javascript">
              new Ajax.Autocompleter('owner_%d',
-             'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {});</script>""" % (task.id, task.id)
+             'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {afterUpdateElement:function() { changeField (%s, 'owner');}});</script>""" % (task.id, task.id, task.id)
         return "%s\n%s\n%s" % (input, span, script)
 
 def columnFilter(field, tasklist = None):

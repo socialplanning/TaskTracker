@@ -36,6 +36,11 @@
 if(typeof Effect == 'undefined')
   throw("controls.js requires including script.aculo.us' effects.js library");
 
+var changeEventsDisabled = false;
+function reEnableChangeEvents() {
+    changeEventsDisabled = false;
+}
+
 var Autocompleter = {}
 Autocompleter.Base = function() {};
 Autocompleter.Base.prototype = {
@@ -175,6 +180,7 @@ Autocompleter.Base.prototype = {
   },
   
   onClick: function(event) {
+    changeEventsDisabled = false;
     var element = Event.findElement(event, 'LI');
     this.index = element.autocompleteIndex;
     this.selectEntry();
@@ -182,7 +188,8 @@ Autocompleter.Base.prototype = {
   },
   
   onBlur: function(event) {
-    // needed to make click events working
+    changeEventsDisabled = true;
+    setTimeout(reEnableChangeEvents, 250);
     setTimeout(this.hide.bind(this), 250);
     this.hasFocus = false;
     this.active = false;     
@@ -253,7 +260,7 @@ Autocompleter.Base.prototype = {
       this.element.value = value;
     }
     this.element.focus();
-    
+
     if (this.options.afterUpdateElement)
       this.options.afterUpdateElement(this.element, selectedElement);
   },

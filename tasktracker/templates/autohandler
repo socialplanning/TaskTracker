@@ -25,7 +25,8 @@
 <% h.stylesheet_link_tag('calendar-blue.css') %>
 
 </head>
-<body>
+<body id="body" change_url="<%h.url_for(controller='task', action='change_field', id='') %>">
+
 <div id="portal-columns" style="position:relative;">
 <div style="background-color:#edf">
 Logged in as: <% c.username %>

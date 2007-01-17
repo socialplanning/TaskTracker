@@ -50,6 +50,9 @@ class EditTaskForm(formencode.Schema):
     depth = Int()
     private = NotEmpty()
 
+def _assignment_permitted(new_owner):
+    return (h.has_permission(controller='task', action='assign') or new_owner == c.username and h.has_permission(controller='task', action='claim'))
+
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
 def _field_permission(param):    
     return _actions[param['field']]
@@ -88,6 +91,13 @@ class TaskController(BaseController):
                     newfield = 'not done'
             else:
                 assert newfield in [s.name for s in task.task_list.statuses]
+
+        #special case for owner
+
+        if field == "owner":
+            assert _assignment_permitted(newfield)
+            print newfield, [u['username'] for u in c.usermapper.project_members()]
+            assert newfield in [u['username'] for u in c.usermapper.project_members()]
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)
@@ -226,7 +236,7 @@ class TaskController(BaseController):
         assert new_parent_id != c.task.id
         p['task_listID'] = c.task.task_listID
 
-        if not (h.has_permission(controller='task', action='assign') or p['owner'] == c.username and h.has_permission(controller='task', action='claim')):
+        if not _assignment_permitted(p['owner']):
             del p['owner']
 
         if not p['owner']:

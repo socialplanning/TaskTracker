@@ -505,10 +505,15 @@ function failedAddingTask(req) {
 }
 
 function changeField(task_id, fieldname) {
+    if (changeEventsDisabled) {
+	return;
+    }
     var field = $(fieldname + '_' + task_id);
     field.disabled = true;
     var authenticator = $('authenticator').value;
-    var url = '/task/change_field/' + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
+    
+    var base_url = $('body').getAttribute('change_url');
+    var url = base_url + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
     var taskrow = $('task_' + task_id);
     var is_preview = taskrow.getAttribute("is_preview");
@@ -524,13 +529,23 @@ function changeField(task_id, fieldname) {
 				     onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
+
+var selected_form;
+var selected_label;
+
 function viewChangeableField(task_id, fieldname) {
-    $(fieldname + '-label_' + task_id).hide();
-    $(fieldname + '-form_' + task_id).show();
+    selected_form = $(fieldname + '-form_' + task_id);
+    selected_label = $(fieldname + '-label_' + task_id);
+    selected_label.hide();
+    selected_form.show();
     $(fieldname + '_' + task_id).focus();
 }
 
 function hideChangeableField(task_id, fieldname) {
+    console.log ("hiding", selected_form, $(fieldname + '-form_' + task_id));
+    selected_form = null;
+    selected_label = null;
+
     $(fieldname + '-form_' + task_id).hide();
     $(fieldname + '-label_' + task_id).show();
 }
@@ -1037,5 +1052,31 @@ function setPermalink(newkey, newval) {
     a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
 }
 
+function onBodyClick(event) {
+    trigger = Event.element(event);
+
+    //is the trigger in the selected form?
+
+    node = trigger;
+    while (node.parentNode) {
+	if (node == selected_form) {
+	    return; //let this be handled elsewhere.
+	}
+	node = node.parentNode;
+    }
+
+    if (selected_form) {
+
+	selected_form.hide();
+	selected_form = null;
+	selected_label.show();
+	selected_label = null;
+    }
+}
+
+document.addEventListener("mousedown", onBodyClick, true);
+
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
+
+
