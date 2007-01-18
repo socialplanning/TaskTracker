@@ -143,7 +143,7 @@ def editableField(task, field, ifNone = None):
         return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, **_selectjs('status', task.id))
 
     if editable:
-        span = """<span class="%s-column" id="%s-form_%d" style="display:none">""" % (field, field, task.id)
+        span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
 
         span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
         out.append("%s %s </span>" % (span, span_contents))
@@ -155,9 +155,9 @@ def editableField(task, field, ifNone = None):
         elif field == 'deadline':
             contents = readableDate(contents)
 
-        out.append("""<span class="%s-column editable" """ % field)
+        out.append("""<span class="editable" """)
     else:
-        out.append("""<span class="%s-column" """ % field)
+        out.append("""<span """)
 
     out.append("""id="%s-label_%d" """ % (field, task.id))
 
