@@ -614,8 +614,6 @@ DateBocks.prototype = {
 	    }    
         }
         catch (e) {
-            input.className = this.messageSpanErrorClass;
-            
             if (messageSpan) {
                 var message = e.message;
                 // Fix for IE6 bug

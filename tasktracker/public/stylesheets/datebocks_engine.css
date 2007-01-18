@@ -10,10 +10,6 @@
   color: red;
 }
 
-.dateBocks input.error {
-  background-color: pink;
-}
- 
 .dateBocks span {
 	list-style: none;
 	padding: 0 0px 0 0;
