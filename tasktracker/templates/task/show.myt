@@ -66,7 +66,7 @@
 
 
 % if h.has_permission(controller='task', action='comment', id=c.task.id):
-<span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;|</span>
+<span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;</span>
 <div id="edit_comment" class="folded">
  <% h.secure_form_remote_tag(html=dict(id="add_comment_form"), url=h.url_for(action='comment', task_id=c.task.id),
      complete="change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
@@ -76,6 +76,9 @@
  </form>
 </div>
 % 
+
+% if c.task.task_list.hasFeature("private_tasks"):
+|
 % if h.has_permission(controller='task', action='update_private', id=c.task.id):
 <span id="private">
 <& _private.myt &>
@@ -84,6 +87,7 @@
 % if h.has_permission(controller='task', action='update', id=c.task.id):
 <% h.secure_link_to('delete this task',
    confirm='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
+%
 %
 
 <br/><br/>
