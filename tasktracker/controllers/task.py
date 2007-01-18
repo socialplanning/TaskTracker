@@ -96,7 +96,6 @@ class TaskController(BaseController):
 
         if field == "owner":
             assert _assignment_permitted(newfield)
-            print newfield, [u['username'] for u in c.usermapper.project_members()]
             assert newfield in [u['username'] for u in c.usermapper.project_members()]
 
         # find out if the old taskrow wants us to render its replacement a particular way
