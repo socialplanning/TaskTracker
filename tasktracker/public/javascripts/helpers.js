@@ -141,5 +141,10 @@ function addLoadEvent(func) {
 }
 
 function toggle(obj) {
-    obj.style.display = (obj.style.display != 'none' ? 'none' : '');  //todo hey, this is no good.
+    if( obj.style.display == 'none' ) {
+	obj.style.display = obj.getAttribute('desired_display');
+    } else {
+	obj.setAttribute('desired_display', obj.style.display);
+	obj.style.display = 'none';
+    }
 }

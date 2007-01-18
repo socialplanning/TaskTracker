@@ -511,7 +511,6 @@ function changeField(task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
     field.disabled = true;
     var authenticator = $('authenticator').value;
-    
     var base_url = $('body').getAttribute('change_url');
     var url = base_url + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
@@ -874,7 +873,8 @@ function doDrop(child, drop_target, a) {
     if (drop_target.id.match(/^title_/)) {   // drop under a parent node
         id = parseInt(drop_target.id.replace(/^title_/, ''));
         var new_parent = $('task_' + id);
-	new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+	var base_url = $('body').getAttribute("move_url");
+	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
             onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}),
             onFailure:debugThing});
