@@ -1066,11 +1066,11 @@ function onBodyClick(event) {
     }
 
     if (selected_form) {
-
 	selected_form.hide();
 	selected_form = null;
 	selected_label.show();
 	selected_label = null;
+
     }
 }
 

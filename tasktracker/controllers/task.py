@@ -111,7 +111,7 @@ class TaskController(BaseController):
         c.task = task
         c.depth = depth
 
-        return render_response('task/task_item.myt', atask=c.task, fragment=True,
+        return render_response('task/task_item.myt', fragment=True, atask=c.task,
                                no_second_row=no_second_row, is_preview=is_preview, is_flat=is_flat, editable_title=editable_title)
 
     @attrs(action='open')
