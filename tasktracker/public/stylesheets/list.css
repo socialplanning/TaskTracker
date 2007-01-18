@@ -31,6 +31,9 @@ table.task_list {
     td.status-column {
       width: 1%;
     }
+    td.status-column[custom_statuses="True"] {
+      width: 5%;
+    }
     td.title-column {
       width: 30%;
     }
@@ -68,10 +71,6 @@ select:focus { height: 90%;}
 .filter-line {
   background-color: #ddd;
   width: auto;
-}
-
-.status-column {
-  text-align: left;
 }
 
 .grayed-out {
