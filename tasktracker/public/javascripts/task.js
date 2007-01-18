@@ -186,7 +186,7 @@ var myrules = {
 
 };
 
-Behaviour.register(myrules);
+Behavior.register(myrules);
 
 function hasTasks() {
     return ($('tasks'));

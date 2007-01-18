@@ -4,8 +4,8 @@
 <% c.title %>
 % 
 <link rel="Shortcut Icon" href="/favicon.ico">
-<% h.javascript_include_tag('behaviour.js') %>
 <% h.javascript_include_tag('prototype.js') %>
+<% h.javascript_include_tag('behavior.js') %>
 <% h.javascript_include_tag('rico.js') %>
 <% h.javascript_include_tag('effects.js') %>
 <% h.javascript_include_tag('helpers.js') %>
