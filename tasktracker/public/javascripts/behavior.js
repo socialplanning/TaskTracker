@@ -33,21 +33,22 @@
 var Behavior = {
     rules : [],
     apply : function () {
-	Behavior.rules.each (function (ruleset) {
-		$H(ruleset).each(function (rule) {
-			if (rule instanceof Function)
-			    return;
+	$A(Behavior.rules).each (function (ruleset) {
+		//should be using prototype's each here, but it is stupid.
+		for (rule in ruleset) {
+		    if (rule instanceof Function)
+			return;
 
-			elements = $$(rule);
-			elements.each (function (element) {
-				ruleset[rule] (element)
-			    });
-		    });
+		    var elements = $$(rule);
+		    elements.each (function (element) {
+			    ruleset[rule] (element);
+			});
+		}
 	    });
     },
 
     register : function (rules) {
-	this.rules.push(rules);
+	Behavior.rules.push(rules);
     },
 
     init : function () {
