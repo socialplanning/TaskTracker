@@ -36,6 +36,15 @@ function showFilterColumn(field) {
     $(field + '_filter').focus();
 }
 
+var AddTaskDraggable = Class.create();
+AddTaskDraggable.prototype = (new Rico.Draggable()).extend( {
+	initialize: function( element, name ) {
+	    this.type        = 'AddTask';
+	    this.refElement  = $(element);
+	    this.htmlElement  = this.refElement;
+	    this.name        = name;
+	},
+    });
 
 var CustomDraggable = Class.create();
 CustomDraggable.prototype = (new Rico.Draggable()).extend( {
@@ -62,15 +71,7 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 
 	cancelDrag: function() {
 	    removeClass(this.refElement, 'drag');
-	    this.owner.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
-	    var reg = function(list) {
-		$A(list).each(function(node) {
-			removeClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
-			reg(node.childTasks);
-			node.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
-		    })
-	    };
-	    reg(this.owner.childTasks);
+	    this.endDrag();
 	},
 
 	endDrag: function() {
@@ -218,6 +219,8 @@ function createDragDrop() {
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
+
+	//dndMgr.registerDraggable( new AddTaskDraggable('movable_add_task', 'movable_add_task') );
 
 	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
 	if ($('trash')) {
@@ -842,15 +845,17 @@ function doDrop(child, drop_target, a) {
         return;
     }
     // if it's "add a task" element
-    if (!child.id.match("draggable")) {  // TODO be more specific
-	if (drop_target.id.match(/^title_/)) {   // drop under a parent node
+    if( !child.id.match("draggable") ) {  // TODO be more specific
+	if( drop_target.id.match(/^title_/) ) {   // drop under a parent node
 	    id = parseInt(drop_target.id.replace(/^title_/, ''));
 	    $('add_task_form_parentID').setAttribute("value", id);
 	    $('add_task_form_siblingID').setAttribute("value", 0);
 	    var new_parent = $('task_' + id);
 	    var tr = document.createElement("TR");
 	    tr.className = "taskrow";
-	    tr.appendChild(child);
+	    var td = document.createElement("TD");
+	    td.appendChild(child);
+	    tr.appendChild(td);
 	    insertAfter(tr, new_parent);
 	    // todo indentation
 	} else {   // drop after a sibling node
