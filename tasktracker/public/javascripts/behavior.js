@@ -34,7 +34,7 @@ var Behavior = {
     rules : [],
     apply : function () {
 	Behavior.rules.each (function (ruleset) {
-		ruleset.each(function (rule) {
+		$H(ruleset).each(function (rule) {
 			if (rule instanceof Function)
 			    return;
 
