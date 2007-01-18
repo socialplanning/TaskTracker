@@ -49,12 +49,12 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 
 	startDrag: function() {
 	    addClass(this.refElement, 'drag');
-	    dndMgr.deregisterDropZone(this.owner.dropzone);
+	    this.owner.dropzones.each( function(dropzone) { dndMgr.deregisterDropZone(dropzone) } );
 	    var dereg = function(list) {
 		$A(list).each(function(node) {
 			addClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
 			dereg(node.childTasks);
-			dndMgr.deregisterDropZone(node.dropzone);
+			node.dropzones.each( function(dropzone) { dndMgr.deregisterDropZone(dropzone) } );
 		    })
 	    };
 	    dereg(this.owner.childTasks);
@@ -62,24 +62,24 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 
 	cancelDrag: function() {
 	    removeClass(this.refElement, 'drag');
-	    dndMgr.registerDropZone(this.owner.dropzone);
+	    this.owner.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
 	    var reg = function(list) {
 		$A(list).each(function(node) {
 			removeClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
 			reg(node.childTasks);
-			dndMgr.registerDropZone(node.dropzone);
+			node.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
 		    })
 	    };
 	    reg(this.owner.childTasks);
 	},
 
 	endDrag: function() {
-	    dndMgr.registerDropZone(this.owner.dropzone);
+	    this.owner.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
 	    var reg = function(list) {
 		$A(list).each(function(node) {
 			removeClass($('draggable_' + node.getAttribute("task_id")), 'undroppable');
 			reg(node.childTasks);
-			dndMgr.registerDropZone(node.dropzone);
+			node.dropzones.each( function(dropzone) { dndMgr.registerDropZone(dropzone) } );
 		    })
 	    };
 	    reg(this.owner.childTasks);
@@ -218,6 +218,7 @@ function createDragDrop() {
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
+
 	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
 	if ($('trash')) {
 	    Droppables.add('trash', {
@@ -231,8 +232,9 @@ function createDragDrop() {
 function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
     dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
-    dndMgr.registerDropZone( node.dropzone = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
-    dndMgr.registerDropZone( new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+    node.dropzones = [];
+    dndMgr.registerDropZone( node.dropzones[0] = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
+    dndMgr.registerDropZone( node.dropzones[1] = new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
 }
 
 function setupEmptyList() {
