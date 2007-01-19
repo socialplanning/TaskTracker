@@ -506,3 +506,14 @@ def plural(word, count):
         return word + "es"
     else:
         return word + "s"
+
+def taskListUpdated(taskList):
+    updated = taskList.updated
+    for task in taskList.tasks:
+        if task.updated > updated:
+            updated = task.updated
+
+    return updated
+
+def atomTime(when):
+    return when.strftime("%Y-%m-%dT%H:%M:%SZ") #note the time zone Z.

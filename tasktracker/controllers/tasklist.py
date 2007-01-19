@@ -208,8 +208,19 @@ class TasklistController(BaseController):
     @attrs(action='create')
     @catches_errors
     def destroy(self, id, *args, **kwargs):
-        c.tasklist = self.getTaskList(int(id))
+        c.tasklist = self._getTaskList(int(id))
         c.tasklist.live = False
         c.flash = "Deleted."
         return Response.redirect_to(action='index')
-    
+
+    @attrs(action='show')    
+    def atom(self, id):
+        c.tasklist = self._getTaskList(int(id))
+        tasks = sorted(c.tasklist.tasks, compareDates)[:15]
+
+        return Response(render('tasklist/atom.myt', fragment=True), mimetype='application/atom+xml')
+
+#note the reverse order
+def compareDates(a, b):
+    delta = b.updated - a.updated
+    return delta.days * 86400 + delta.seconds
