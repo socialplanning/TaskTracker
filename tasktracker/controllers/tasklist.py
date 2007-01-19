@@ -59,7 +59,7 @@ def set_features(p):
 class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
-        return [t for t in TaskList.selectBy(projectID = c.project.id)
+        return [t for t in TaskList.selectBy(projectID = c.project.id, live = True)
                 if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
 
     @attrs(action='open')    
@@ -71,6 +71,7 @@ class TasklistController(BaseController):
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
+        assert c.tasklist.live
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0
@@ -210,7 +211,6 @@ class TasklistController(BaseController):
     def destroy(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
         c.tasklist.live = False
-        c.flash = "Deleted."
         return Response.redirect_to(action='index')
 
     @attrs(action='show')    

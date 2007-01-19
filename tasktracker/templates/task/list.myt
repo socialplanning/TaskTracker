@@ -54,5 +54,8 @@
 %
 &nbsp;
 -->
-<% h.link_to('view list preferences', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %>
+<% h.link_to('view list preferences', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %> 
+&nbsp;
+<% h.secure_link_to('delete this list', h.url_for(action='destroy', controller='tasklist', id=c.tasklist.id)) %>
+
 </span>
