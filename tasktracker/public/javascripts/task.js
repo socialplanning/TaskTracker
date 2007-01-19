@@ -1170,13 +1170,7 @@ function moveSecondBeforeFirst(a, b) {
 	
 }
 
-if (document.addEventListener) {
-    document.addEventListener("mousedown", onBodyClick, true);
-}
-else {
-    // use ie semi-equivalent 
-    document.attachEvent("onmousedown", onBodyClick ); 
-}
+Event.observe (document, 'mousedown', onBodyClick);
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
