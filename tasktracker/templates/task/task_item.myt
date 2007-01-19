@@ -52,7 +52,7 @@ root-task
 % else:
   <a href = "<% h.url_for(controller='task', action='show', id=atask.id) %>"
      title = "<% atask.text %>"
-     class = "task_item 
+     class = "task_item truncated 
 % if atask.status == 'done':
     completed-task
 % elif h.isOverdue(atask.deadline):
@@ -70,7 +70,7 @@ root-task
 preview-link
 %
 " id = "title_<% atask.id %>" >
-<% h.previewText(atask.title, 20) %>
+<% atask.title %>
 </a>
 %
 &nbsp;
@@ -120,7 +120,7 @@ preview-link
 
 <td class="updated-column">
 <div class="first_line">
-<%  h.readableDate(atask.updated) %>
+<% h.readableDate(atask.updated).replace(" ", "&nbsp;") %>
 </div>
 <& second_line &>
 </td>

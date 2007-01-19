@@ -153,7 +153,7 @@ def editableField(task, field, ifNone = None):
             if contents is None:
                 contents = "No %s" % field
         elif field == 'deadline':
-            contents = readableDate(contents)
+            contents = readableDate(contents).replace(" ", "&nbsp;")
 
         out.append("""<span class="editable" """)
     else:
