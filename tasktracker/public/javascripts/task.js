@@ -42,7 +42,6 @@ AddTaskDraggable.prototype = (new Rico.Draggable()).extend( {
 	    this.type        = 'AddTask';
 	    this.refElement  = $(element);
 	    this.htmlElement  = this.refElement;
-	    if( !this.htmlElement ) console.log(element + " failed addta.");
 	    this.name        = name;
 	}
     });
@@ -75,7 +74,6 @@ TaskItemDraggable.prototype = (new Rico.Draggable()).extend( {
 	    this.type        = 'Custom';
 	    this.refElement  = $(refElement);
 	    this.htmlElement = $(htmlElement);
-	    if( !this.htmlElement ) console.log(element + " failed taskit.");
 	    this.owner       = $(owner);
 	    this.name        = name;
 	},
@@ -157,7 +155,6 @@ var TaskItemDropzone = Class.create();
 TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	initialize: function( htmlElement, refElement, owner ) {
 	    this.htmlElement     = $(htmlElement);
-	    if( !this.htmlElement ) console.log(htmlElement + " failed taskitdrop.");
 	    this.refElement      = $(refElement);
 	    this.owner           = $(owner);
 	    this.absoluteRect    = null;
@@ -616,7 +613,6 @@ function viewChangeableField(task_id, fieldname) {
 }
 
 function hideChangeableField(task_id, fieldname) {
-    console.log ("hiding", selected_form, $(fieldname + '-form_' + task_id));
     selected_form = null;
     selected_label = null;
 
