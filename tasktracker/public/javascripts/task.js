@@ -42,16 +42,40 @@ AddTaskDraggable.prototype = (new Rico.Draggable()).extend( {
 	    this.type        = 'AddTask';
 	    this.refElement  = $(element);
 	    this.htmlElement  = this.refElement;
+	    if( !this.htmlElement ) console.log(element + " failed addta.");
 	    this.name        = name;
 	},
     });
 
-var CustomDraggable = Class.create();
-CustomDraggable.prototype = (new Rico.Draggable()).extend( {
+var ColumnDraggable = Class.create();
+ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
+	initialize: function( name ) {
+	    this.type        = 'Column';
+	    this.htmlElement = $(name + '-heading');
+	    this.name        = name;
+	},
+
+	getSingleObjectDragGUI: function() {
+	    var el = this.htmlElement;
+	    
+	    var div = document.createElement("div");
+	    div.className = 'customDraggable';
+	    
+	    div.style.width = this.htmlElement.offsetWidth;
+
+	    var text = el.innerHTML;
+	    new Insertion.Top( div, text );
+	    return div;
+	}
+    });
+
+var TaskItemDraggable = Class.create();
+TaskItemDraggable.prototype = (new Rico.Draggable()).extend( {
 	initialize: function( htmlElement, refElement, owner, name ) {
 	    this.type        = 'Custom';
 	    this.refElement  = $(refElement);
 	    this.htmlElement = $(htmlElement);
+	    if( !this.htmlElement ) console.log(element + " failed taskit.");
 	    this.owner       = $(owner);
 	    this.name        = name;
 	},
@@ -100,13 +124,40 @@ CustomDraggable.prototype = (new Rico.Draggable()).extend( {
 	}
     } );
 
+var ColumnDropzone = Class.create();
+ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
+	initialize: function( name ) {
+	    this.colName         = name;
+	    this.htmlElement     = $(name + '-heading');
+	    this.absoluteRect    = null;
+	    this.acceptedObjects = [];
+	},
 
+	canAccept: function(draggableObjects) { 
+	    var l = draggableObjects.length;
+	    var i;
+	    for (i = 0; i < l; i++) {
+		if( draggableObjects[i].type != 'Column' ) return false;
+	    }
+	    return true;
+	},
 
+	activate: function() { return; },
+	
+	accept: function(draggableObjects) {
+	    var l = draggableObjects.length;
+	    var i;
+	    for (i = 0; i < l; i++) {
+		moveSecondBeforeFirst(this.colName, draggableObjects[i].name);
+	    }
+	}
+    } );
 
-var CustomDropzone = Class.create();
-CustomDropzone.prototype = (new Rico.Dropzone()).extend( {
+var TaskItemDropzone = Class.create();
+TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	initialize: function( htmlElement, refElement, owner ) {
 	    this.htmlElement     = $(htmlElement);
+	    if( !this.htmlElement ) console.log(htmlElement + " failed taskitdrop.");
 	    this.refElement      = $(refElement);
 	    this.owner           = $(owner);
 	    this.absoluteRect    = null;
@@ -123,6 +174,15 @@ CustomDropzone.prototype = (new Rico.Dropzone()).extend( {
 
 	hideHover: function() {
 	    removeClass(this.htmlElement, 'drop');
+	},
+
+	canAccept: function(draggableObjects) { 
+	    var l = draggableObjects.length;
+	    var i;
+	    for (i = 0; i < l; i++) {
+		if( draggableObjects[i].type == 'Column' ) return false;
+	    }
+	    return true;
 	},
 	
 	accept: function(draggableObjects) {
@@ -212,6 +272,11 @@ function setTaskParents() {
     }
 }
 
+function createColumnDragDrop(field) {
+    dndMgr.registerDraggable( new ColumnDraggable(field) );
+    dndMgr.registerDropZone( new ColumnDropzone(field) );
+}
+
 function createDragDrop() {
     if (!initialized && hasReorderableTasks()) {
         initialized = true;
@@ -219,6 +284,11 @@ function createDragDrop() {
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
+
+	if( $('deadline-heading') ) createColumnDragDrop('deadline');
+	if( $('updated-heading') ) createColumnDragDrop('updated');
+	if( $('priority-heading') ) createColumnDragDrop('priority');
+	if( $('owner-heading') ) createColumnDragDrop('owner');
 
 	//dndMgr.registerDraggable( new AddTaskDraggable('movable_add_task', 'movable_add_task') );
 
@@ -234,10 +304,10 @@ function createDragDrop() {
 
 function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
-    dndMgr.registerDraggable( node.draggable = new CustomDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
+    dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
     node.dropzones = [];
-    dndMgr.registerDropZone( node.dropzones[0] = new CustomDropzone( 'title_' + id, 'title_' + id, node.id ) );
-    dndMgr.registerDropZone( node.dropzones[1] = new CustomDropzone( 'handle_' + id, 'handle_' + id ) );
+    dndMgr.registerDropZone( node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id ) );
+    dndMgr.registerDropZone( node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id ) );
 }
 
 function setupEmptyList() {
@@ -1079,6 +1149,25 @@ function onBodyClick(event) {
 	selected_label = null;
 
     }
+}
+
+function moveSecondBeforeFirst(a, b) {
+    var x = a + '-column';
+    var y = b + '-column';
+    $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
+	    var one = row.getElementsByClassName(x)[0];
+	    var two = row.getElementsByClassName(y)[0];
+	    if( one && two ) {
+		row.insertBefore(two, one);
+		/*  this would be good if this was supposed to be a swap.
+		var cloneA = one.cloneNode(true);
+		var cloneB = two.cloneNode(true);
+		row.replaceChild(cloneB, one);
+		row.replaceChild(cloneA, two);
+		*/
+	    }
+	});
+	
 }
 
 document.addEventListener("mousedown", onBodyClick, true);

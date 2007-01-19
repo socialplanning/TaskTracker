@@ -16,7 +16,6 @@ table.task_list {
   .title-column, .updated-column {
     white-space: nowrap;
   }
-
   tr.task-filter-controls td, td#breaking-row {
     height: 1.75em;
   }

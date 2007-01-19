@@ -1,6 +1,6 @@
 <tr class="column-heading">
 
-<th class="status-column">&nbsp;</th>
+<th id="status-heading" class="status-column">&nbsp;</th>
 <% h.sortableColumn('status', klass="title-column") %>
 
 % if c.tasklist.hasFeature('deadlines'):
