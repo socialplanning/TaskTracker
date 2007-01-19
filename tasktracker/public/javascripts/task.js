@@ -1174,7 +1174,8 @@ if (document.addEventListener) {
     document.addEventListener("mousedown", onBodyClick, true);
 }
 else {
-    document.attachEvent("mousedown", onBodyClick, true); 
+    // use ie semi-equivalent 
+    document.attachEvent("onmousedown", onBodyClick ); 
 }
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
