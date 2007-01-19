@@ -46,12 +46,13 @@
 <a href="#nevermind" onclick="restoreAddTask(); return false;">add a task</a>
 %
 &nbsp;
+<!--
 % if not c.tasklist.isWatchedBy(c.username):
-
 <% h.link_to('watch this list', url=h.url_for(action='show_create', controller='watcher', targetID=c.tasklist.id, type='tasklist')) %>
 % else:
 <% h.link_to('edit watch settings', url=h.url_for(action='show_update', controller='watcher', id=c.tasklist.getWatcher(c.username).id)) %>
 %
 &nbsp;
+-->
 <% h.link_to('view list preferences', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %>
 </span>
