@@ -44,7 +44,7 @@ AddTaskDraggable.prototype = (new Rico.Draggable()).extend( {
 	    this.htmlElement  = this.refElement;
 	    if( !this.htmlElement ) console.log(element + " failed addta.");
 	    this.name        = name;
-	},
+	}
     });
 
 var ColumnDraggable = Class.create();
@@ -1170,7 +1170,12 @@ function moveSecondBeforeFirst(a, b) {
 	
 }
 
-document.addEventListener("mousedown", onBodyClick, true);
+if (document.addEventListener) {
+    document.addEventListener("mousedown", onBodyClick, true);
+}
+else {
+    document.attachEvent("mousedown", onBodyClick, true); 
+}
 
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);

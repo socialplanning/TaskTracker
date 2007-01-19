@@ -30,6 +30,11 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
+// no-op logging for IE:
+if (typeof console == 'undefined') {
+    console = {log: function (msg) {}};
+}
+
 function safeify(func, name) {
       return function () {
           try {
