@@ -24,7 +24,7 @@ from sqlobject.versioning import Versioning
 from sqlobject.sqlbuilder import *
 from sqlobject.events import *
 from pylons.database import PackageHub
-from pylons import c
+from pylons import c, g
 from tasktracker.lib.memoize import memoize
 
 hub = PackageHub("tasktracker", pool_connections=False)
@@ -33,6 +33,8 @@ __connection__ = hub
 # Don't forget to update soClasses, below
 
 import datetime
+
+import os
 
 class OutgoingEmail(SQLObject):
     envelope_from_address = StringCol()
@@ -321,6 +323,46 @@ class Task(SQLObject):
     def actions(self):
         return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)
 
+    def revertToDate(self, date):
+        versions_in_future = []
+        for version in reversed(list(self.versions)):
+            if version.dateArchived < date:
+                break
+            #archive the data
+            versions_in_future.append(version)
+
+        comments_in_future = []
+        for comment in reversed(list(self.comments)):
+            if comment.date < date:
+                break
+            comments_in_future.append(comment)
+
+        #do the reversion
+        version.revert()
+
+        #now we need to make sure the task is consistent
+        if task.live:
+            if not task.parent.live:
+                task.parent = 0
+            
+        #store and delete all future versions (including the one we just created)
+
+        histdir = os.path.join(g.obsolete_future_history_dir, 'task', str(self.id))
+        if not os.path.exists(histdir):
+            os.makedirs(histdir)
+
+        now = datetime.datetime.now().isoformat()
+        histfile = os.path.join(histdir, now)
+        f = open(histfile, "w")
+        for version in versions_in_future:
+            print >>f, "TaskVersion(%s)" % ", ".join (['%s = %s' % (k, repr(v)) for k,v in version.sqlmeta.asDict().items()])
+            version.destroySelf()
+        for comment in comments_in_future:
+            print >>f, "Comment(%s)" % ", ".join (['%s = %s' % (k, repr(v)) for k,v in comment.sqlmeta.asDict().items()])
+            comment.destroySelf()
+        f.close()
+
+
 def _by_date(obj):
     if hasattr(obj, 'date'):
         return obj.date
@@ -373,7 +415,6 @@ class TaskList(SQLObject):
     initial_assign = IntCol(default=0)
     other_level =  IntCol(default=1)
     member_level =  IntCol(default=1)
-
 
     def get_updated(self):
         if self.versions.count():

@@ -51,6 +51,8 @@ class Globals(object):
             your global variables.
             
         """
+        self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
+
         self.events = {}
         if app_conf.get('atom_store_link', None):
             from tasktracker.lib.store_notes import AtomStoreLink

@@ -43,6 +43,9 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 
 openplans_wrapper = ZWSGIFakeEnv
 
+#note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
+obsolete_future_history_dir = %(here)s/afh
+
 atom_store_link = http://localhost:8080
 
 [app:test]
