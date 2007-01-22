@@ -25,12 +25,13 @@
 
 <div id="edit_statuses" style="display:none; margin-left: 3em;">
 <% h.editable_list('statuses', [], ['done']) %>
-
+   <form>
    <input type="hidden" value="" id="statuses" name="statuses">
    <input id="add_status" name="add_status" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
-
-
+   <input type="submit" name="submit" value="Cancel" onclick="$('edit_statuses').hide(); $('custom_status').checked=false; return false;"/>
+   </form>
+   <br/><br/>
 </div>
 
 <input type="checkbox" name="feature_private_tasks" id="feature_private_tasks" value="1" class="features"/>
@@ -39,7 +40,7 @@
 <br/>
 By default, tasks are initially assigned to:<br/>
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
-<input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+<input type="radio" name="initial_assign" value="1"/> Unassigned <br/><br/>
 
 <% h.submit('Submit') %>
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index'; return false;" />

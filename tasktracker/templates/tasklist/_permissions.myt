@@ -10,7 +10,6 @@ Anyone else can:
 <input type="hidden" name="other_level" id="other_level_old" value="0">
 
 <script>
-//'
 var options = ["not even see this list", "view this list", "and claim tasks", "and create new tasks", "and edit any task"];
 var lists = ['member', 'other'];
 checked = {};
