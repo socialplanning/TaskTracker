@@ -1,7 +1,7 @@
 
-<% c.project.title %>'s team members can:
+<b><% c.project.title %>'s team members can:</b>
 <ul id="member_permissions"></ul>
-Anyone else can:
+<b>Anyone else can:</b>
 <ul id="other_permissions"></ul>
 
 <!-- these will be filled in by htmlfill, and then deleted by js -->

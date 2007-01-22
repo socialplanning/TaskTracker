@@ -271,3 +271,7 @@ span.editable:hover {
   padding-top: 100;
   padding-bottom: 100;
 }
+
+label {
+  font-weight: normal;
+}

@@ -1,11 +1,11 @@
 
-<label for="title">Name:</label><br/>
+<label for="title"><b>Name:</b></label><br/>
 <% h.text_field('title', size=80) %><br/>
 
-<label for="text">Description:</label><br/>
+<label for="text"><b>Description:</b></label><br/>
 <% h.text_area('text', rows=10, cols=80) %><br/>
 <br/>
-<label for="managers">Managers:</label><br/>
+<label for="managers"><b>Managers:</b></label><br/>
 <& _managers.myt &>
 
 <br/>
@@ -16,7 +16,7 @@
 <!-- Features -->
 
 <br/>
-<label>Extra Features:</label> <% h.help('These are optional') %><br/>
+<label><b>Extra Features:</b></label><br/>
 <input type="checkbox" id="feature_deadlines" name="feature_deadlines" value="1" class="features"/>
 <label for="feature_deadlines">Specify deadlines</label><br/>
 
@@ -38,7 +38,7 @@
 <label for="feature_private_tasks">Authorize private tasks on this list</label><br/>
 
 <br/>
-By default, tasks are initially assigned to:<br/>
+<b>By default, tasks are initially assigned to:</b><br/>
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/><br/>
 
