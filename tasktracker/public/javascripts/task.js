@@ -550,7 +550,7 @@ function doneAddingTask(req) {
     enableDragDrop(new_item);
 
 
-    Behaviour.apply();
+    Behavior.apply();
 
     $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
