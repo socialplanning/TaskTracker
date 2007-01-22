@@ -138,7 +138,7 @@ def editableField(task, field, ifNone = None):
         checked = False
         if task.status == 'done':
             checked = True
-        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, **_selectjs('status', task.id))
+        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, **_checkboxClickjs('status', task.id))
 
     if editable:
         span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
@@ -172,6 +172,14 @@ def _selectjs(field, id):
         return 'changeField(%d, "%s");'  % (id, field)
 
     return dict(onchange=_onchange(field, id))
+
+def _checkboxClickjs(field, id): 
+
+    def _onchange(field, id):
+        return 'changeField(%d, "%s");'  % (id, field)
+
+    return dict(onclick=_onchange(field, id))
+
 
 def _prioritySelect(task):
     priority = task.priority
