@@ -16,12 +16,12 @@
 <!-- Features -->
 
 <br/>
-Extra Features <% h.help('These are optional') %><br/>
+<label>Extra Features:</label> <% h.help('These are optional') %><br/>
 <input type="checkbox" id="feature_deadlines" name="feature_deadlines" value="1" class="features"/>
-<label for="feature_deadlines">Deadlines</label><br/>
+<label for="feature_deadlines">Specify deadlines</label><br/>
 
 <input type="checkbox" name="feature_custom_status" value="1" class="features" onclick="$('edit_statuses').toggle();" id="custom_status"/>
-<label for="custom_status">Custom status</label><br/>
+<label for="custom_status">Allow custom status</label><br/>
 
 <div id="edit_statuses" style="display:none; margin-left: 3em;">
 <% h.editable_list('statuses', [], ['done']) %>
@@ -34,7 +34,7 @@ Extra Features <% h.help('These are optional') %><br/>
 </div>
 
 <input type="checkbox" name="feature_private_tasks" id="feature_private_tasks" value="1" class="features"/>
-<label for="feature_private_tasks">Private tasks</label><br/>
+<label for="feature_private_tasks">Authorize private tasks on this list</label><br/>
 
 <br/>
 By default, tasks are initially assigned to:<br/>

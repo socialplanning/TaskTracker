@@ -1,5 +1,5 @@
 
-This project's team members can:
+<% c.project.title %>'s team members can:
 <ul id="member_permissions"></ul>
 Anyone else can:
 <ul id="other_permissions"></ul>
