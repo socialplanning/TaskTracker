@@ -9,5 +9,5 @@ tasks
 left)</span>
 <br />
 % if c.tasklist.text:
-<h3><% c.tasklist.text %></h3>
+<% c.tasklist.text %>
 %

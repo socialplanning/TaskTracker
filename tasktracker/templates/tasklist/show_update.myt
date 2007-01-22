@@ -25,7 +25,7 @@
 <br/>
 
 
-<label for="managers">Managers:</label><br/>
+<label for="managers"><b>Managers:</b></label><br/>
 <div id="managers_div" class="unfolded editable">
 <ul>
 % for manager in c.managers + c.administrators:
@@ -68,7 +68,7 @@ for (var i = 0; i < 5; i ++) {
 <!-- Features -->
 
 <br/>
-Extra Features <% h.help('These are optional') %><br/>
+<b>Extra Features:</b><br/>
 
 
 <div id="deadlines" class="editable unfolded">
