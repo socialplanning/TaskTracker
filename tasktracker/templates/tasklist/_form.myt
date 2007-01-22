@@ -1,5 +1,4 @@
 
-
 <label for="title">Name:</label><br/>
 <% h.text_field('title', size=80) %><br/>
 
@@ -43,5 +42,5 @@ By default, tasks are initially assigned to:<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
 
 <% h.submit('Submit') %>
-<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';" />
+<input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index'; return false;" />
 
