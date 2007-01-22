@@ -57,7 +57,7 @@ input[type="text"][id^="deadline_"] {
   font-style: italic;
 }
 
-input[type="text"]#title { width: 100%; }
+input[type="text"]#title { width: 50%; }
 
 input[type="checkbox"] { width: auto; height: auto; }
 

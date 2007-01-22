@@ -4,7 +4,7 @@ cancel_button
 <% h.secure_form_remote_tag(url=h.url_for(controller='task', action='create'),
       			     success='return doneAddingTask(request);', failure='failedAddingTask', html=dict(id='add_task_form')) %>
 
-Add task or sub-task:
+Add task:
 
 <br/><br/>
 <input type="hidden" name="task_listID" value="<%c.task_listID%>" />
@@ -22,8 +22,8 @@ Add task or sub-task:
 %
 <p>
 <div id="hideable_add_description">
-<a id="show_description" href="#nevermind">
-Add description</a>
+<a id="show_description" href="#nevermind" class="small">
+Add description</a><br/><br/>
 </div>
 
 <div id="description_field" style="display:none;">
