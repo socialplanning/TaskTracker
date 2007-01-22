@@ -69,9 +69,7 @@ root-task
 % if is_preview:
 preview-link
 %
-" id = "title_<% atask.id %>" >
-<% atask.title %>
-</a>
+" id = "title_<% atask.id %>" ><% atask.title %></a>
 %
 &nbsp;
 % if atask.uncompletedChildren():
