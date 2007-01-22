@@ -275,7 +275,12 @@ class TaskController(BaseController):
     @attrs(action='show')
     @catches_errors
     def show(self, id, *args, **kwargs):
-        c.task = self._getTask(int(id))
+        version = request.params.get('version', None)
+        if version:
+            c.version = version
+            c.task = Task.versions.versionClass.get(version)
+        else:
+            c.task = self._getTask(int(id))
         c.parentID = int(id)
         c.tasklist = c.task.task_list
         c.task_listID = c.tasklist.id        
