@@ -338,12 +338,12 @@ class Task(SQLObject):
             comments_in_future.append(comment)
 
         #do the reversion
-        version.revert()
+        version.restore()
 
         #now we need to make sure the task is consistent
-        if task.live:
-            if not task.parent.live:
-                task.parent = 0
+        if self.live:
+            if self.parentID and not self.parent.live:
+                self.parentID = 0
             
         #store and delete all future versions (including the one we just created)
 
