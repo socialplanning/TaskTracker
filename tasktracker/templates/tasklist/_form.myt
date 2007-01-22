@@ -4,7 +4,7 @@
 
 <label for="text">Description:</label><br/>
 <% h.text_area('text', rows=10, cols=80) %><br/>
-
+<br/>
 <label for="managers">Managers:</label><br/>
 <& _managers.myt &>
 

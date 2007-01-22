@@ -85,11 +85,11 @@ function addItem(list, item) {
 
 
 function add_delete_button(node) {
-    var button = Builder.node('span', '[ - ]');
+    var button = Builder.node('span', {className : "command"}, '[ - ]');
     node.appendChild(button);
 
     var del = function () { deleteItem(node); };
-    node.onclick = del;
+    button.onclick = del;
 }
 
 with_items ("removable_list_item", add_delete_button, document.childNodes[0]);
