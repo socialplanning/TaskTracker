@@ -57,6 +57,8 @@ openplans_wrapper = ZWSGIFakeEnv
 
 atom_store_link =
 
+obsolete_future_history_dir = %(here)s/afh-test
+
 ############################################################
 ## Deliverance-enabled example
 ############################################################
