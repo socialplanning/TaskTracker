@@ -26,6 +26,7 @@
 	float: left;
 }
 
-.dateBocks input {
-	width: 100px;
+.dateBocksInput input {
+	display: inline; 
+	width: 75px;
 }
