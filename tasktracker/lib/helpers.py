@@ -210,17 +210,16 @@ def _statusSelect(task):
                   id='status_%d' % task.id, **_selectjs('status', task.id))
 
 def _ownerInput(task):
-    orig = "No owner"
-    if task.owner:
-        orig = task.owner    
-
-        input = text_field('owner', autocomplete="off", originalvalue=orig, size=15, style='',
-                           id="owner_%d" % task.id, value=task.owner, **_selectjs("owner", task.id))
-        span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % task.id
-        script = """<script type="text/javascript">
+    orig = task.owner    
+    id = task.id
+    input = text_field('owner', autocomplete="off", originalvalue=orig, size=15, style='',
+                       id="owner_%d" % id, value=task.owner, **_selectjs("owner", id))
+    span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % id
+    script = """<script type="text/javascript">
              new Ajax.Autocompleter('owner_%d',
-             'owner_auto_complete_%d', '../../../task/auto_complete_for/owner', {afterUpdateElement:function() { changeField (%s, 'owner');}});</script>""" % (task.id, task.id, task.id)
-        return "%s\n%s\n%s" % (input, span, script)
+             'owner_auto_complete_%d', '../../../task/auto_complete_for/owner',
+             {afterUpdateElement:function() { changeField (%s, 'owner');}});</script>""" % (id, id, id)
+    return "%s\n%s\n%s" % (input, span, script)
 
 def columnFilter(field, tasklist = None):
     out = []

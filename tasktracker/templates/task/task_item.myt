@@ -93,7 +93,7 @@ preview-link
 %
 </td>
 
-% if  atask.task_list.hasFeature('deadlines'):
+% if atask.task_list.hasFeature('deadlines'):
 <td class="deadline-column">
 <div class="first_line">
 <% h.editableField(atask, 'deadline') %>
