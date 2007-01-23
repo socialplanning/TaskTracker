@@ -30,8 +30,8 @@ table.task_list {
     td.status-column {
       width: 1%;
     }
-    td.status-column[custom_statuses="True"] {
-      width: 5%;
+    td.custom-status {
+      width: 8%;
     }
     td.title-column {
       width: 30%;

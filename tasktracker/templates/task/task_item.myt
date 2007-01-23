@@ -14,7 +14,12 @@ editable_title = False
 
 <% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
 
-<td class="status-column" custom_statuses = <% atask.task_list.hasFeature('custom_status') %> >
+<td class="status-column 
+% if atask.task_list.hasFeature('custom_status'): 
+  custom-status 
+%
+">
+
 <div class="first_line">
 <% h.editableField(atask, 'status') %>
 </div>

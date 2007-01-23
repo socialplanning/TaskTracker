@@ -1,7 +1,7 @@
 <tr class="column-heading">
 
-<th id="status-heading" class="status-column">&nbsp;</th>
-<% h.sortableColumn('status', klass="title-column") %>
+
+<% h.sortableColumn('status', klass="title-column", colspan=2) %>
 
 % if c.tasklist.hasFeature('deadlines'):
  <% h.sortableColumn('deadline') %>
@@ -17,8 +17,8 @@
 
 <tr class="task-filter-controls">
 
-<td class="taskitem status-column filter-line">&nbsp;</td>
-<td class="title-column filter-line"><%  h.columnFilter('status', c.tasklist) %></td>
+
+<td class="title-column filter-line" colspan="2"><%  h.columnFilter('status', c.tasklist) %></td>
 
 % if c.tasklist.hasFeature('deadlines'):
 <td class="deadline-column filter-line">
