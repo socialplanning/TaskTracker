@@ -40,6 +40,7 @@ from tasktracker.lib.secure_forms import *
 
 from tasktracker.lib.pretty_date import prettyDate
 from random import random
+
 def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
@@ -522,3 +523,4 @@ def taskListUpdated(taskList):
 
 def atomTime(when):
     return when.strftime("%Y-%m-%dT%H:%M:%SZ") #note the time zone Z.
+

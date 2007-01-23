@@ -28,6 +28,8 @@ from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
 from pylons.templating import render_response as render_body
 
+from dateutil.parser import parse as dateparse
+
 class EditTaskForm(formencode.Schema):  
     pre_validators = [formencode.variabledecode.NestedVariables]
     allow_extra_fields = True
@@ -271,6 +273,13 @@ class TaskController(BaseController):
             return Task.get(int(id))
         except LookupError:
             raise NoSuchIdError("No such task ID: %s" % id)
+
+    @attrs(action='private')
+    def revertToDate(self, id):
+        c.task = self._getTask(int(id))
+        date = dateparse(request.params['date'])
+        c.task.revertToDate(date)
+        return self.show(id)
 
     @attrs(action='show')
     @catches_errors

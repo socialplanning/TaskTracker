@@ -325,25 +325,31 @@ class Task(SQLObject):
 
     def revertToDate(self, date):
         versions_in_future = []
+        TaskVersion = Task.versions.versionClass
+        last_good_version = TaskVersion.select(AND(TaskVersion.q.masterID==self.id, TaskVersion.q.dateArchived < date)).orderBy('dateArchived')[-1]
+
+        #do the reversion
+        last_good_version.restore()
+
+        #now we need to make sure the task is consistent
+        if self.live:
+            if self.parentID and not self.parent.live:
+                self.parentID = 0
+
         for version in reversed(list(self.versions)):
             if version.dateArchived < date:
                 break
             #archive the data
             versions_in_future.append(version)
 
+        if not version:
+            return #nothing changed since date
+
         comments_in_future = []
         for comment in reversed(list(self.comments)):
             if comment.date < date:
                 break
             comments_in_future.append(comment)
-
-        #do the reversion
-        version.restore()
-
-        #now we need to make sure the task is consistent
-        if self.live:
-            if self.parentID and not self.parent.live:
-                self.parentID = 0
             
         #store and delete all future versions (including the one we just created)
 
@@ -354,12 +360,15 @@ class Task(SQLObject):
         now = datetime.datetime.now().isoformat()
         histfile = os.path.join(histdir, now)
         f = open(histfile, "w")
+
         for version in versions_in_future:
             print >>f, "TaskVersion(%s)" % ", ".join (['%s = %s' % (k, repr(v)) for k,v in version.sqlmeta.asDict().items()])
             version.destroySelf()
+
         for comment in comments_in_future:
             print >>f, "Comment(%s)" % ", ".join (['%s = %s' % (k, repr(v)) for k,v in comment.sqlmeta.asDict().items()])
             comment.destroySelf()
+
         f.close()
 
 
