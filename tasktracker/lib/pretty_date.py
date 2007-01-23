@@ -37,7 +37,7 @@ def _pretty_date_engine(now, date):
 	return "Tomorrow"
     
     if (diff < 7 and diff > 0):
-	return date.strftime("%a")
+	return date.strftime("%A")
     
     if (diff < 90 and date.year == now.year):
 	return date.strftime("%B %e")

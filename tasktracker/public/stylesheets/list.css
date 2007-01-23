@@ -62,7 +62,7 @@ input.auto-size { width: auto; height: auto; }
 select:focus { height: 90%;}
 
 .small {
-   font-size: 80%;
+   font-size: 0.9 em;
 }
 
 .filter-line {
@@ -200,7 +200,7 @@ span.editable:hover {
 
 #movable_add_task {
   background-color: #ddd;
-  padding: 10 10 10 10; 
+  padding: 1em;
 }
 
 .activity_list {

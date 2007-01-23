@@ -7,7 +7,8 @@ task
 tasks
 %
 left)</span>
-<br />
+<br /><br/>
 % if c.tasklist.text:
 <% c.tasklist.text %>
+<br/><br/>
 %

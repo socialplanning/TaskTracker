@@ -9,7 +9,7 @@ subtask_link = ''
 <% subtask_link %>
 </div>
 
-<a name="create_anchor" id="create_anchor"/>
+<a name="create_anchor" id="create_anchor"></a>
 <div id="create" style="display:none;">
 
 % cancel_button = """<input type="submit" onclick="$('create').hide(); $('show_create').show(); return false;" name="cancel" value="cancel" tabindex=5/>"""

@@ -31,7 +31,7 @@ Add description</a><br/><br/>
 <% h.text_area_r('oldtask', 'text', rows=5, cols=80, tabindex=2, autocomplete='off') %>
 <br/>
 <a href="#nevermind" id="hide_description"
-   onclick="$('description_field').hide(); $('hideable_add_description').show();">Hide description</a>
+   onclick="$('description_field').hide(); $('hideable_add_description').show();">Hide description</a><br/><br/>
 </div>
 
 <p>
