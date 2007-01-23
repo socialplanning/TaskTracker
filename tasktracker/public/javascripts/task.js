@@ -521,6 +521,10 @@ function doneAddingTask(req) {
     var new_fragment = evalHTML(req.responseText);
     var new_item = new_fragment.firstChild; 
 
+    var placeholder = $('no_tasks_placeholder');
+    if( placeholder ) {
+	placeholder.parentNode.removeChild(placeholder);
+    }
     var table = $('tasks');
     if (siblingID != 0){ 
 	var sibling = $('task_' + siblingID);

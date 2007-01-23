@@ -18,6 +18,10 @@
 <& task_list_item.myt, atask=atask &>
 %
 
+% if not c.tasks:
+<tr id="no_tasks_placeholder"><td colspan=6>There are no tasks on this list yet.</td></tr>
+%
+
 </table>
 
 <br clear="both" />
