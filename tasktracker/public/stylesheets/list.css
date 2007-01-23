@@ -143,7 +143,7 @@ a.sortarrow:visited, a.sortarrow:link {
 }
 
 .create_section {
-   padding: 10;   /* 10 what?  what is this? */
+   padding: 0 0 0 0; 
 }
 
 .task_cell {
@@ -200,6 +200,7 @@ span.editable:hover {
 
 #movable_add_task {
   background-color: #ddd;
+  padding: 10 10 10 10; 
 }
 
 .activity_list {

@@ -33,13 +33,13 @@
 <!-- the create setup -->
 
 <div id="add_task_anchor">
-<div class="draggable" id="movable_add_task" parentID="0" siblingID="0" style="padding:0px;  margin:0px; line-height: 1em;">
-<span class="handle">
+<div class="draggable" id="movable_add_task" parentID="0" siblingID="0" style="margin:0px; line-height: 1em;">
+<div class="handle">
 
 % subtask_link = """<div>[ + ]<a id="add_a_task" href = %s onclick="return false;">add a task</a> </div>""" % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)
 <& _hideable_show_create.myt, subtask_link=subtask_link &>
 
-</span>
+</div>
 </div></div>
 
 <!-- ----------------------------- -->
