@@ -78,13 +78,13 @@ class QueryController(BaseController):
         return Task.select(query, orderBy='task_list_id')
 
     @attrs(action='loggedin')
-    def my_tasks(self):
+    def show_my_tasks(self):
         c.list_name = "My tasks"
         results = self._sorted_select(AND(Task.q.owner == c.username, Task.q.live == True))
         return self._render(results)
 
     @attrs(action='open')
-    def project_tasks(self):
+    def show_project_tasks(self):
         c.list_name = "All tasks in a project"
         results = []
         for tl in TaskList.selectBy(projectID = c.project.id):
@@ -92,7 +92,7 @@ class QueryController(BaseController):
         return self._render(results)
 
     @attrs(action='open')
-    def tasklist_tasks(self, id):
+    def show_tasklist_tasks(self, id):
         c.list_name = "All tasks in a task list"
         results = self._sorted_select(AND(Task.q.task_listID == id, Task.q.live == True))
         return self._render(results)

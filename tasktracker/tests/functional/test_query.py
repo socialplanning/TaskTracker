@@ -31,7 +31,7 @@ class TestTaskController(TestController):
         
         app = self.getApp('admin')
 
-        res = app.get(url_for(controller='query', action='my_tasks'))
+        res = app.get(url_for(controller='query', action='show_my_tasks'))
         res.mustcontain('theproject - testing task query')
         res.mustcontain('My task')
         assert 'Her task' not in res
@@ -46,7 +46,7 @@ class TestTaskController(TestController):
         
         app = self.getApp('admin')
 
-        res = app.get(url_for(controller='query', action='project_tasks'))
+        res = app.get(url_for(controller='query', action='show_project_tasks'))
         res.mustcontain('A task')
 
         for x in [task, tl]:
@@ -62,7 +62,7 @@ class TestTaskController(TestController):
 
         app = self.getApp('admin')
 
-        res = app.get(url_for(controller='query', action='tasklist_tasks', id=tl.id))
+        res = app.get(url_for(controller='query', action='show_tasklist_tasks', id=tl.id))
         res.mustcontain('A task')
         assert 'Not here' not in res
 

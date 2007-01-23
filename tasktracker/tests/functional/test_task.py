@@ -323,7 +323,7 @@ class TestTaskController(TestController):
         
         app = self.getApp('admin')
 
-        res = app.get(url_for(
+        res = app.post(url_for(
                 controller='task', action='assign', id=task.id, owner='newowner'))
 
         res = app.get(url_for(
