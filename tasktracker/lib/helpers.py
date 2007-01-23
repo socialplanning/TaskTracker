@@ -139,7 +139,7 @@ def editableField(task, field, ifNone = None):
         checked = False
         if task.status == 'done':
             checked = True
-        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, **_checkboxClickjs('status', task.id))
+        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
 
     if editable:
         span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
@@ -187,14 +187,16 @@ def _prioritySelect(task):
     id = task.id
     onchange = 'changeField(%d, "priority");'  % task.id
     return select('priority', options_for_select([(s, s) for s in 'High Medium Low None'.split()], priority),
-                  method='post', originalvalue=priority, id='priority_%d' % id, **_selectjs('priority', id))
+                  method='post', originalvalue=priority, id='priority_%d' % id, class_="low-profile-widget", **_selectjs('priority', id))
 
 def _deadlineInput(task):
     orig = "No deadline"
     if task.deadline:
         orig = task.deadline
+    input_attrs = dict(originalvalue=str(orig)) 
+    input_attrs['class'] = 'low-profile-widget'; 
     return datebocks_field('atask', 'deadline', options={'dateType':"'us'"}, attributes={'id':'deadline_%d' % task.id}, 
-                           input_attributes=dict(originalvalue=str(orig)), value=task.deadline)
+                           input_attributes=input_attrs, value=task.deadline)
                         
 def _statusSelect(task):
     statuses = task.task_list.statuses
@@ -208,13 +210,13 @@ def _statusSelect(task):
 
     return select('status', options_for_select(status_names, task.status), 
                   method='post', originalvalue=task.status,
-                  id='status_%d' % task.id, **_selectjs('status', task.id))
+                  id='status_%d' % task.id, class_="low-profile-widget", **_selectjs('status', task.id))
 
 def _ownerInput(task):
     orig = task.owner    
     id = task.id
     input = text_field('owner', autocomplete="off", originalvalue=orig, size=15, style='',
-                       id="owner_%d" % id, value=task.owner, **_selectjs("owner", id))
+                       id="owner_%d" % id, value=task.owner, class_="low-profile-widget", **_selectjs("owner", id))
     span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % id
     script = """<script type="text/javascript">
              new Ajax.Autocompleter('owner_%d',
@@ -235,11 +237,13 @@ def _deadlineFilter(onblur = None, tasklist = None):
     return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Due tomorrow',1),
                                                          ('Due in the next week',"0,7"), ('No deadline','None'), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
+                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _updatedFilter(onblur = None, tasklist = None):
     return select('updated_filter', options_for_select([('Today', 0), ('Yesterday', -1), ('In the past week',"-7,0"), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='updated_filter', 
+                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _priorityFilter(onblur = None, tasklist = None):
@@ -247,6 +251,7 @@ def _priorityFilter(onblur = None, tasklist = None):
     options.extend([('No priority','None'), ('All','All')])
     return select('priority_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='priority_filter',
+                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _statusFilter(onblur = None, tasklist = None):
@@ -256,6 +261,7 @@ def _statusFilter(onblur = None, tasklist = None):
         status_dict[status] = status
     return select('status_filter', options_for_select(status_dict.items(), 'All'),
                   method='post', originalvalue='All', id='status_filter', 
+                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _ownerFilter(onblur = None, tasklist = None):
@@ -270,6 +276,7 @@ def _ownerFilter(onblur = None, tasklist = None):
     options.extend([("No owner", ""), ("All","All")])
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
+                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _textArea(task):
