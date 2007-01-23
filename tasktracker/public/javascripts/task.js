@@ -325,7 +325,7 @@ function filterDeadline() {
     }
     if (filtervalue == 'None') {
 	$A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-		if (node.getAttribute('deadline'))
+		if (node.getAttribute('deadline') != 'None')
 		    node.hide();
 	    });
 	return;
@@ -334,6 +334,7 @@ function filterDeadline() {
     var dates = filtervalue.split(",");
     var min; 
     var max;
+
     if (dates.length == 1) {
 	min = -1 * parseInt(dates[0]);
 	max = parseInt(dates[0]);
@@ -347,7 +348,7 @@ function filterDeadline() {
     byThisDate.setDate(byThisDate.getDate() + max + 1);
     $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 	    var deadline = node.getAttribute('deadline');
-	    if (deadline) {
+	    if (deadline != 'None') {
 		var db = new DateBocks();
 		var nodeDate = db.parseDateString(deadline);
 		if (!(nodeDate < byThisDate)) {
