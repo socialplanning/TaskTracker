@@ -36,7 +36,7 @@ class EditTaskForm(formencode.Schema):
     filter_extra_fields = True
     ignore_key_missing = True
     title = NotEmpty()
-    deadline = formencode.compound.All(DateValidator(earliest_date=datetime.date.today),
+    deadline = formencode.compound.All(DateValidator(),
                                        DateConverter())
     status = String(not_empty = True)
     priority = formencode.validators.OneOf("High Medium Low None".split())
@@ -84,7 +84,7 @@ class TaskController(BaseController):
             old = old.date()
 
         #special case for status if only two statuses are present.
-        if field == 'status':
+        elif field == 'status':
             if not task.task_list.hasFeature('custom_status'):
                 assert newfield in ('true', 'false')
                 if newfield == 'true':
@@ -96,7 +96,7 @@ class TaskController(BaseController):
 
         #special case for owner
 
-        if field == "owner":
+        elif field == "owner":
             assert _assignment_permitted(newfield)
             assert newfield in [u['username'] for u in c.usermapper.project_members()]
 
