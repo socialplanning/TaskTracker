@@ -17,7 +17,6 @@ Add task:
 % if c.tasklist.hasFeature('private_tasks'):
 <div style="display:inline;">
   <% h.check_box_r('oldtask', 'private', tabindex=3) %> make this task private
-  <% h.help('Private tasks can only be seen by list administrators') %>
 </div>
 %
 <p>

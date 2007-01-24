@@ -116,6 +116,7 @@ span.autocomplete ul li.selected {
 }
 span.autocomplete ul li {
     list-style-type:none;
+    background-color: white;
     display:block;
     margin:0;
     padding:0;
