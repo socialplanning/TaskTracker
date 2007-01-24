@@ -66,10 +66,6 @@ input.auto-size { width: auto; height: auto; }
 
 select:focus { height: 90%;}
 
-.small {
-   font-size: 0.9 em;
-}
-
 .filter-line {
   background-color: #ddd;
   width: auto;
@@ -255,4 +251,8 @@ span.editable:hover {
 
 label {
   font-weight: normal;
+}
+
+.small {
+   font-size: 0.9em;
 }
