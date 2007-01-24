@@ -68,6 +68,7 @@ select:focus { height: 90%;}
 .filter-line {
   background-color: #ddd;
   width: auto;
+  text-align: center;
 }
 
 .grayed-out {

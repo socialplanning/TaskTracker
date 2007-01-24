@@ -13,4 +13,3 @@
   <script type="text/javascript">new Ajax.Autocompleter('manager', 'manager_auto_complete', 
   '../../../task/auto_complete_for/manager', {})</script>
 </span>
-

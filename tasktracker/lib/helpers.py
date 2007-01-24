@@ -241,13 +241,13 @@ def _deadlineFilter(onblur = None, tasklist = None):
     return select('deadline_filter', options_for_select([('Past due', -1), ('Due today', 0), ('Due tomorrow',1),
                                                          ('Due in the next week',"0,7"), ('No deadline','None'), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='deadline_filter', 
-                  class_="low-profile-widget", 
+#                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _updatedFilter(onblur = None, tasklist = None):
     return select('updated_filter', options_for_select([('Today', 0), ('Yesterday', -1), ('In the past week',"-7,0"), ('All','All')], 'All'),
                   method='post', originalvalue='All', id='updated_filter', 
-                  class_="low-profile-widget", 
+#                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _priorityFilter(onblur = None, tasklist = None):
@@ -255,7 +255,7 @@ def _priorityFilter(onblur = None, tasklist = None):
     options.extend([('No priority','None'), ('All','All')])
     return select('priority_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='priority_filter',
-                  class_="low-profile-widget", 
+#                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _statusFilter(onblur = None, tasklist = None):
@@ -265,7 +265,7 @@ def _statusFilter(onblur = None, tasklist = None):
         status_dict[status] = status
     return select('status_filter', options_for_select(status_dict.items(), 'All'),
                   method='post', originalvalue='All', id='status_filter', 
-                  class_="low-profile-widget", 
+#                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _ownerFilter(onblur = None, tasklist = None):
@@ -280,7 +280,7 @@ def _ownerFilter(onblur = None, tasklist = None):
     options.extend([("No owner", ""), ("All","All")])
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', 
-                  class_="low-profile-widget", 
+#                  class_="low-profile-widget", 
                   onblur=onblur, onchange=onblur)
 
 def _textArea(task):
