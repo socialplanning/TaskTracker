@@ -496,9 +496,11 @@ def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
         tr.append("""onclick = "document.location = '%s'" """ % url_for(controller='task', action='show', id=id))
     tr.append('class = "taskrow task-item ')
     if has_permission('task', 'update', id=id):
-        tr.append ('deletable ')
+        tr.append('deletable')
     else:
-        tr.append ('nondeletable ')
+        tr.append('nondeletable')
+    if task.status == 'done':
+        tr.append(' completed-task')
     tr.append ('">')
     return "".join(tr)
              

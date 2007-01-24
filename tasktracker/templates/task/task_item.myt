@@ -12,7 +12,7 @@ editable_title = False
 %
 </%closure>
 
-<% h.task_item_tr (atask, is_preview, no_second_row, is_flat, editable_title) %>
+<% h.task_item_tr(atask, is_preview, no_second_row, is_flat, editable_title) %>
 
 <td class="status-column 
 % if atask.task_list.hasFeature('custom_status'): 
