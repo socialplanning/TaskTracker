@@ -78,7 +78,13 @@ preview-link
 %
 &nbsp;
 % if atask.uncompletedChildren():
-<span class="small"> (<span class="num_subtasks"><% len(atask.uncompletedChildren()) %></span> tasks left) </span>
+<span class="small"> (<span class="num_subtasks"><% len(atask.uncompletedChildren()) %></span> 
+% if len(atask.uncompletedChildren()) > 1:
+tasks
+% else:
+task
+%
+left) </span>
 %
 % if atask.comments:
 <span class="small"> <% len(atask.comments) %>
