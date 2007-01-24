@@ -21,7 +21,7 @@ editable_title = False
 ">
 
 <div class="first_line">
-<% h.editableField(atask, 'status') %>
+<% h.editableField(atask, 'status', uneditable = is_preview) %>
 </div>
 <& second_line &>
 </td>
@@ -52,7 +52,7 @@ root-task
 %
 ">
 
-<% h.editableField(atask, 'title') %>
+<% h.editableField(atask, 'title', uneditable = is_preview) %>
 </span>
 % else:
   <a href = "<% h.url_for(controller='task', action='show', id=atask.id) %>"
@@ -107,7 +107,7 @@ comment
 % if atask.task_list.hasFeature('deadlines'):
 <td class="deadline-column">
 <div class="first_line">
-<% h.editableField(atask, 'deadline') %>
+<% h.editableField(atask, 'deadline', uneditable = is_preview) %>
 </div>
 <& second_line &>
 </td>
@@ -115,14 +115,14 @@ comment
 
 <td class="priority-column">
 <div class="first_line">
-<% h.editableField(atask, 'priority') %>
+<% h.editableField(atask, 'priority', uneditable = is_preview) %>
 </div>
 <& second_line &>
 </td>
 
 <td class="owner-column">
 <div class="first_line">
-<% h.editableField(atask, 'owner') %>
+<% h.editableField(atask, 'owner', uneditable = is_preview) %>
 </div>
 <& second_line &>
 </td>

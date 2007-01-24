@@ -75,11 +75,11 @@ select:focus { height: 90%;}
 }
 
 .preview {
-  color: gray;
+  color: #aaa;
 }
 
 a.preview-link {
-  color: gray;
+  color: #aaa;
 }
 
 .handle {

@@ -116,8 +116,11 @@ def sortableColumn(field, fieldname = None, klass = None, colspan=1):
     </th>""" % (field, klass or "%s-column" % field, colspan, field, field, fieldname or field, field, field, field)
     return span
 
-def editableField(task, field, ifNone = None):
-    editable = has_permission('task', 'change_field', id=task.id, field=field)
+def editableField(task, field, ifNone = None, uneditable = False):
+    if uneditable:
+        editable = False
+    else:
+        editable = has_permission('task', 'change_field', id=task.id, field=field)
     if field == 'owner':
         #this is fairly complicated.  Cases:
         #1. person is a list owner.  Then what's there now is good.
@@ -139,7 +142,8 @@ def editableField(task, field, ifNone = None):
         checked = False
         if task.status == 'done':
             checked = True
-        return check_box('status', enabled=editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
+        
+        return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
 
     if editable:
         span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
@@ -478,7 +482,8 @@ def field_last_updated(task, field):
 
 
 def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
-    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, task.id, task.id)]
+    id = task.id
+    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, id, id)]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
             tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
@@ -487,9 +492,10 @@ def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
     tr.append('no_second_row = "%s" ' % no_second_row)
     tr.append('is_flat = "%s" ' % is_flat)
     tr.append('editable_title = "%s" ' % editable_title)
-
+    if is_preview:
+        tr.append("""onclick = "document.location = '%s'" """ % url_for(controller='task', action='show', id=id))
     tr.append('class = "taskrow task-item ')
-    if has_permission('task', 'update', id=task.id):
+    if has_permission('task', 'update', id=id):
         tr.append ('deletable ')
     else:
         tr.append ('nondeletable ')
