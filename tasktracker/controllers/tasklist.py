@@ -86,6 +86,8 @@ class TasklistController(BaseController):
     def show_create(self):
         c.managers = []
         c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        if c.username not in c.administrators:
+            c.administrators.append(c.username)
         return render_response('tasklist/show_create.myt')
 
     def _apply_role(self, members, tasklist, role):
