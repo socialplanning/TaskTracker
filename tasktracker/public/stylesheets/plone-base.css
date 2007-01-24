@@ -413,11 +413,7 @@ del {
 
 .error {
     /* Class for error indication in forms */
-    background-color: #ffce7b;
-    border: 1px solid #ffa500;
-    padding: 1em;
-    margin: 0 0 1em 0;
-    width: 95%;
+    border: 1px solid red;
 }
 
 .error .fieldRequired {
