@@ -8,7 +8,7 @@ editable_title = False
 
 <%closure second_line>
 % if not no_second_row:
- <div class="second-line">&nbsp;</div>
+ <div class="second-line"></div>
 %
 </%closure>
 
@@ -104,7 +104,6 @@ comment
 % if not no_second_row:
  <div class="second-line">
   <span style = "clear:both; margin-left: <% (atask.depth() - c.depth) * 15 + 25 %>px;">
-    &nbsp;
     <% h.previewText(atask.text, c.previewTextLength) %>
   </span></div>
 %
