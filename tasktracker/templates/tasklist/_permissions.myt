@@ -14,9 +14,9 @@ var options = ["not even see this list", "view this list", "and claim tasks", "a
 var lists = ['member', 'other'];
 checked = {};
 lists.each(function(list_name) {
-	list = $(list_name + '_permissions');
+	var list = $(list_name + '_permissions');
 	list.className = "undecorated_list";
-	options.each (function(option, index) {
+	options.each(function(option, index) {
 		var button = Builder.node('input', {
 			id : list_name + '_level_' + index,
 			name : list_name + '_level', 
@@ -29,12 +29,14 @@ lists.each(function(list_name) {
 		list.appendChild(li);
 	    });
 	//select the permission that was set on the server
-	old = $(list_name + '_level_old');
+	var old = $(list_name + '_level_old');
 	$(list_name + '_level_' + old.value).checked = true;
 	show_selected(list_name, old.value);
     });
-
 lists.each(function(list_name) {
+        // move "not even see this list" to the bottom of the list in the next three lines.
+        var m = $(list_name + '_item_0');
+	m.parentNode.appendChild(m);
 	old = $(list_name + '_level_old');
 	eval(list_name + '_permission_set')(old.value);
 	old.parentNode.removeChild(old);
