@@ -22,7 +22,7 @@ lists.each(function(list_name) {
 			name : list_name + '_level', 
 			value : index, 
 			type : "radio", 
-			onclick : list_name + '_permission_set(' + index + ')'
+			onclick : "permission_set(" + index + ", '" + list_name + "')"
 		    });
                 var label = Builder.node('label', {'for' : button.id}, option);
 		var li = Builder.node('li', {id : list_name + '_item_' + index}, [button, label]);
@@ -38,7 +38,7 @@ lists.each(function(list_name) {
         var m = $(list_name + '_item_0');
 	m.parentNode.appendChild(m);
 	old = $(list_name + '_level_old');
-	eval(list_name + '_permission_set')(old.value);
+	permission_set(old.value, list_name);
 	old.parentNode.removeChild(old);
     });
 
@@ -56,15 +56,18 @@ function show_selected(list_name, index) {
     }
 }
 
-function member_permission_set(index) {
+function permission_set(index, type) {
     //disable inappropriate options on 'anyone else'; enable appropriate ones
-    other_selected = null;
+    var other = 'other';
+    if( type == other ) other = 'member';
+
+    var selected = null;
     for (var i = 0; i < options.length; ++ i) {
-	var radio = $('other_level_' + i);
+	var radio = $(other + '_level_' + i);
 	if (radio.checked) {
-	    other_selected = radio;
+	    selected = radio;
 	}
-	if (i > index) {
+	if( (other == 'other' && i > index) || (other == 'member' && i < index) ) {
 	    radio.disabled = true;
 	    addClass(radio.parentNode, "disabled-permission");
 	} else {
@@ -72,33 +75,11 @@ function member_permission_set(index) {
 	    removeClass(radio.parentNode, "disabled-permission");
 	}
     }
-    if (other_selected.value > index) {
-	$('other_level_' + index).checked = true;
+    if( (other == 'other' && selected.value > index) || (other == 'member' && selected.value < index) ) {
+	$(other + '_level_' + index).checked = true;
     }
 
-    show_selected('member', index);
-}
-function other_permission_set(index) {
-    //disable inappropriate options on 'member'; enable appropriate ones
-    member_selected = null;
-    for (var i = 0; i < options.length; ++ i) {
-	var radio = $('member_level_' + i);
-	if (radio.checked) {
-	    member_selected = radio;
-	}
-	if (i < index) {
-	    radio.disabled = true;
-	    addClass(radio.parentNode, "disabled-permission");
-	} else {
-	    radio.disabled = false;
-	    removeClass(radio.parentNode, "disabled-permission");
-	}
-    }
-    if (member_selected.value < index) {
-	$('member_level_' + index).checked = true;
-    }
-
-    show_selected('other', index);
+    show_selected(type, index);
 }
 
 
