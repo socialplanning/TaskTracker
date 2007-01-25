@@ -39,7 +39,6 @@ lists.each(function(list_name) {
 	m.parentNode.appendChild(m);
 	old = $(list_name + '_level_old');
 	permission_set(old.value, list_name);
-	old.parentNode.removeChild(old);
     });
 
 function show_selected(list_name, index) {
@@ -82,5 +81,11 @@ function permission_set(index, type) {
     show_selected(type, index);
 }
 
+function cull_old() {
+  var old = $('member_level_old');
+  old.parentNode.removeChild(old);
+  old = $('other_level_old');
+  old.parentNode.removeChild(old);
+}
 
 </script>

@@ -40,6 +40,6 @@
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/><br/>
 
-<% h.submit('Submit') %>
+<% h.submit('Submit', onclick='cull_old();') %>
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index'; return false;" />
 

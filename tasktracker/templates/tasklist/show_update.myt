@@ -47,21 +47,31 @@
 </span>
 <script>
 function show_permissions() {
+  lists.each(function(list_name) {
+      for (var i = 0; i < 5; i ++) {  
+        var item = $(list_name + '_item_' + i);
+        var button = $(list_name + '_level_' + i);
+	item.show();
+        button.show();
+      }
+  });
+  removeClass($('permissions_section'), 'editable');
+  $('permissions_section').title = null;
+}
+
+// on startup for show_update, hide radio buttons
+// and hide all options that are not true.
 lists.each(function(list_name) {
-for (var i = 0; i < 5; i ++) {  button = $(list_name + '_level_' + i);
-  button.show();
-}
-});
-removeClass($('permissions_section'), 'editable');
-$('permissions_section').title = null;
-}
-//on startup for show_update, hide radio buttons
-lists.each(function(list_name) {
-for (var i = 0; i < 5; i ++) {
-  button = $(list_name + '_level_' + i);
-  button.hide();
-}
-});
+    for( var i = 0; i < 5; ++i ) {
+      var old = parseInt( $(list_name + '_level_old').value );
+      if( i > old || ( !i && old ) ) {
+        var item = $(list_name + '_item_' + i);
+	item.hide();
+      }
+      var button = $(list_name + '_level_' + i);
+      button.hide();
+    }
+  });
 </script>
 
 
@@ -124,7 +134,7 @@ This list does not have private tasks.
 </div>
 <br/>
 
-<% h.submit('Submit') %>
+<% h.submit('Submit', onclick='cull_old();') %>
 <input type="submit" name="Cancel" value="Cancel" onclick="document.location='/tasklist/index';"/>
 
 <script language="JavaScript">
