@@ -31,6 +31,8 @@ import pylons.wsgiapp
 from tasktracker.config.environment import load_environment
 
 from tasktracker.lib.fakeenv import ZWSGIFakeEnv
+from tasktracker.lib.cookieauth import CookieAuth
+
 import tasktracker.lib.app_globals as app_globals
 import tasktracker.lib.helpers
 
@@ -82,7 +84,7 @@ def make_app(global_conf, **app_conf):
     # @@@ Establish the Registry for this application @@@
     app = RegistryManager(app)
 
-    if config.app_conf.has_key('openplans_wrapper'):
+    if config.app_conf.get('openplans_wrapper') == 'ZWSGIFakeEnv':
         users = {'anon' : 'Anonymous',
                  'auth' : 'Authenticated',
                  'member' : 'ProjectMember',
@@ -91,5 +93,7 @@ def make_app(global_conf, **app_conf):
                  }
         
         app = ZWSGIFakeEnv(app, users)
+    elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
+        app = CookieAuth(app)
 
     return app
