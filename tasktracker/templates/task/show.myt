@@ -73,6 +73,7 @@
   <label for="text">Comment:<label><br/>
   <textarea name="text" id="enter_comment_here" cols=80 rows=5></textarea><br/>
   <% h.submit("comment") %>
+  <% h.submit("cancel", onclick="$('edit_comment').hide(); $('comment').show(); return false;") %>
  </form>
 </div>
 % 

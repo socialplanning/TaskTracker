@@ -284,13 +284,15 @@ def _ownerFilter(onblur = None, tasklist = None):
                   onblur=onblur, onchange=onblur)
 
 def _textArea(task):
+    id = task.id
     orig = task.text
-    area = text_area('text_%d' % task.id, id = 'text_%d' % task.id, originalvalue=orig, 
+    area = text_area('text_%d' % id, id = 'text_%d' % id, originalvalue=orig, 
                      content=orig, rows=5, cols=80)
     onclick = """changeField(%d, "text"); $("text-form_%d").hide(); $("text-label_%d").innerHTML = $("text_%d").value; 
-                 $("text-label_%d").show(); return false;""" % (task.id, task.id, task.id, task.id, task.id)
+                 $("text-label_%d").show(); return false;""" % (id, id, id, id, id)
     button = submit('submit', onclick = onclick)
-    return area + button
+    cancel = submit('cancel', onclick = "hideChangeableField(%d, 'text'); return false;" % id)
+    return "%s %s %s" % (area, button, cancel)
 
 def _titleInput(task):
     orig = task.title
