@@ -214,8 +214,11 @@ class TaskController(BaseController):
     @attrs(action='comment', watchdog=TaskCommentWatchdog)
     @catches_errors
     def comment(self, id, *args, **kwargs):
+        comment = request.params["text"].strip()
+        if not len(comment):
+            return Response('')
         c.task = Task.get(int(id))
-        c.comment = Comment(text=request.params["text"].replace('\n', "<br>"), user=c.username, task=c.task)
+        c.comment = Comment(text=comment.replace('\n', "<br>"), user=c.username, task=c.task)
         return Response(c.comment.text)
 
     @attrs(action='update')
