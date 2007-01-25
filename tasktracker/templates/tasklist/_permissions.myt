@@ -1,8 +1,15 @@
 
+<table><tbody><tr valign="top" padding="50px;">
+<td>
 <b><% c.project.title %>'s team members can:</b>
 <ul id="member_permissions"></ul>
+</td>
+<td width="20;">&nbsp;</td>
+<td>
 <b>Anyone else can:</b>
 <ul id="other_permissions"></ul>
+</td>
+</tr></tbody></table>
 
 <!-- these will be filled in by htmlfill, and then deleted by js -->
 
