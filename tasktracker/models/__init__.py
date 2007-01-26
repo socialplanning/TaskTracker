@@ -295,7 +295,7 @@ class Task(SQLObject):
     def previousTask(self):
         conn = hub.getConnection()
         trans = conn.transaction()
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)])]
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
         trans.commit()
 
         prev = None
@@ -310,7 +310,7 @@ class Task(SQLObject):
 
         conn = hub.getConnection()
         trans = conn.transaction()
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID)], reverse=True)]
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)], reverse=True)]
         trans.commit()
         
         next = None

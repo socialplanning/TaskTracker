@@ -239,6 +239,19 @@ var myrules = {
 	    $('text').focus();  // TODO this line seems to cause a javascript exception (but still works)
 	    return false;
 	}
+    },
+
+    '.post-link' : function(element) { 
+	var form = Builder.node('form', {action: element.getAttribute("href"), method: 'POST'});
+	form.style.display = 'inline';
+	element.parentNode.insertBefore(form, element);
+	element.onclick = function() {
+	    var msg = element.getAttribute("confirm_msg");
+	    if( (msg && confirm(msg)) || !msg ) {
+		form.submit();
+	    }
+	    return false;
+	}
     }
 
 };
