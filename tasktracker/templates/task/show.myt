@@ -72,8 +72,8 @@
      complete="if( request.responseText.length ) change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
   <label for="text">Comment:<label><br/>
   <textarea name="text" id="enter_comment_here" cols=80 rows=5></textarea><br/>
-  <% h.submit("comment") %>
-  <% h.submit("cancel", onclick="$('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show(); return false;") %>
+  <% h.submit("comment", onclick="if( $('enter_comment_here').value.length < 1 ) { cancel_comment(); return false; }") %>
+  <% h.submit("cancel", onclick="cancel_comment(); return false;") %>
  </form>
 </div>
 % 
@@ -140,6 +140,12 @@ class="unfolded" id="subtasks">
 <span id="post_edit_task" func="change_description_updated"></span>
 
 <script>
+function cancel_comment() {
+   $('enter_comment_here').value = '';
+   $('edit_comment').hide();
+   $('comment').show();
+}
+
 function change_description_updated(task_id, field_name, comment_text) {
     var desc = $('description_updated_' + task_id);
     if( desc ) {

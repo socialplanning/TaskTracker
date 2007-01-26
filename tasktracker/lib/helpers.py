@@ -31,7 +31,7 @@ from tasktracker.models import Task, TaskList, Comment
 
 from datebocks_helper import datebocks_field
 
-from stripogram import html2safehtml, html2text
+from stripogram import html2safehtml
 import imp, os
 
 from formencode import htmlfill

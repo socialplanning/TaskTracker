@@ -236,9 +236,13 @@ span.editable:hover {
   padding-right: 50;
 }
 
-.task-detail-mainbar {
+td.task-detail-mainbar {
   width: 75%;
   vertical-align: top;
+}
+
+td.task-detail-mainbar ul li {
+  overflow: hidden;
 }
 
 #task-detail-sidebar {
