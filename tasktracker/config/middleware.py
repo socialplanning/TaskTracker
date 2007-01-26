@@ -94,6 +94,6 @@ def make_app(global_conf, **app_conf):
         
         app = ZWSGIFakeEnv(app, users)
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
-        app = CookieAuth(app)
+        app = CookieAuth(app, config.app_conf.get('openplans_instance'))
 
     return app

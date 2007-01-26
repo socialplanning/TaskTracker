@@ -41,7 +41,9 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 # execute malicious code after an exception is raised.
 #set debug = false
 
-openplans_wrapper = ZWSGIFakeEnv
+openplans_wrapper = CookieAuth
+
+openplans_instance = http://localhost:8080/openplans/
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 obsolete_future_history_dir = %(here)s/afh

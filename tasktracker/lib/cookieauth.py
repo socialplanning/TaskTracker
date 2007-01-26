@@ -65,11 +65,13 @@ class UserMapper:
         return members
 
 class CookieAuth(object):
-    def __init__(self, app):
+    def __init__(self, app, openplans_instance):
         self.app = app
         self.conf = appconfig('config:development.ini', relative_to=conf_dir)
         CONFIG.push_process_config({'app_conf': self.conf.local_conf,
                                     'global_conf': self.conf.global_conf})
+
+        self.openplans_instance = openplans_instance
 
     def authenticate (self, environ):
         try:
@@ -127,7 +129,7 @@ class CookieAuth(object):
         else:
             status = "303 See Other"
             url = 'http://%s/%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
-            headers = [('Location', 'http://localhost:8080/openplans/login_form?came_from=%s' % url)]
+            headers = [('Location', '%slogin_form?came_from=%s' % (self.openplans_instance, url))]
             start_response(status, headers)
             return []
 
