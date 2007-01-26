@@ -6,7 +6,7 @@
 <span>
 % if c.tasklist.text:
 <% c.tasklist.text %>
-% else
+% else:
 [no description]
 %
 </span>
