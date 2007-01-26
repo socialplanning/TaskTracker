@@ -117,11 +117,18 @@ class BaseController(WSGIController):
         c.project = project
         c.id = params.get('id')
 
-        if not self._authorize(project, action, params):
-            redirect_to(controller='error', action='document', message='Not permitted')
-            #raise SecurityException("IMPROPER AUTHENTICATION")
-
+        
+        c.username = request.environ.get('REMOTE_USER', 'anonymous')
         params['username'] = c.username
+
+
+        if not self._authorize(project, action, params):
+            if c.username == 'anonymous':
+                #no username *and* needs more permissions -- maybe a login will help
+                abort(403, 'Login required')
+            else:
+                #they're logged in but still don't have the necessary permissions
+                redirect_to(controller='error', action='document', message='Not permitted')
 
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
@@ -222,11 +229,8 @@ class BaseController(WSGIController):
             raise Exception("No such role %s" % role_name)
         c.level = role[0].level
 
-        username = environ.get('REMOTE_USER', 'anonymous')
-        c.username = username
-
-        c.user_info = request.environ.get('topp.user_info', None)
-        c.project_permission_level = request.environ.get('topp.project_permission_level', None)
+        c.user_info = environ.get('topp.user_info', None)
+        c.project_permission_level = environ.get('topp.project_permission_level', None)
         c.usermapper = environ['topp.project_members']
 
         func = getattr(self, action)
@@ -247,8 +251,7 @@ class BaseController(WSGIController):
 
         if action_verb == 'loggedin':
             if c.username == 'anonymous':
-                #FIXME: this www-authenticate header is unnecessary.
-                abort(401, 'Not Authorized', headers=[('WWW-Authenticate', 'dummy')])
+                abort(403, 'Forbidden')
             else:
                 return True
 
@@ -256,7 +259,6 @@ class BaseController(WSGIController):
             return True
 
         params = dict(params)
-        params['username'] = username
         params.update(request.params)
         return self._has_permission(controller, action_verb, params)
 

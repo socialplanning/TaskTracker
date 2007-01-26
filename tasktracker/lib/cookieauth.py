@@ -23,6 +23,8 @@ from paste.deploy import CONFIG, appconfig
 from pylons import c
 from pylons.helpers import redirect_to
 
+from paste.wsgilib import intercept_output
+
 import os, sys
 import base64
 
@@ -86,10 +88,6 @@ class CookieAuth(object):
                 return False
 
 
-            environ['topp.project_members'] = UserMapper()
-            environ['topp.project_name'] = 'theproject'
-            environ['topp.project_permission_level'] = 'closed'
-
             environ['REMOTE_USER'] = username
 
             environ['topp.user_info'] = dict(username = username, 
@@ -108,30 +106,39 @@ class CookieAuth(object):
 
         except KeyError:
             return False            
+        
 
-    def memberlist(self, project):
-        return []
+    def needs_redirection(self, status, headers):
+        return status.startswith('403')
 
     def __call__(self, environ, start_response):
 
-        environ['topp.memberlist'] = self.memberlist
+        self.authenticate(environ)
 
-        safe = False
-        if environ['PATH_INFO'] == '/favicon.ico':
-            safe = True
-        if environ['PATH_INFO'].startswith("/stylesheets"):
-            import os
-            if os.path.exists('tasktracker' + environ['PATH_INFO']):
-                safe = True
-        
-        if safe or self.authenticate(environ):
-            return self.app(environ, start_response)
-        else:
+        environ['topp.project_name'] = 'theproject'
+        environ['topp.project_members'] = UserMapper()
+        environ['topp.project_permission_level'] = 'closed'
+
+        status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        
+
+        if status:
             status = "303 See Other"
             url = 'http://%s/%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
             headers = [('Location', '%slogin_form?came_from=%s' % (self.openplans_instance, url))]
             start_response(status, headers)
             return []
+        else:
+            return body
+
+
+        #if self.authenticate(environ):
+        #    return 
+        #else:
+        #    status = "303 See Other"
+        #    url = 'http://%s/%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
+        #    headers = [('Location', '%slogin_form?came_from=%s' % (self.openplans_instance, url))]
+        #    start_response(status, headers)
+        #    return []
 
 
 
