@@ -1191,10 +1191,9 @@ Rico.DragAndDrop.prototype = {
    },
 
    _startDrag: function(e) {
-	for ( var i = 0 ; i < this.currentDragObjects.length ; i++ ){
-	    console.log(this.currentDragObjects[i].htmlElement);
+	for ( var i = 0 ; i < this.currentDragObjects.length ; i++ )
          this.currentDragObjects[i].startDrag();
-	}
+	
       this._makeDraggableObjectVisible(e);
    },
 

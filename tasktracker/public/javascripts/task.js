@@ -66,7 +66,6 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 			subtractOne = true;
 		    }
 		    else col.tmpIndex = subtractOne ? i - 1: i;
-		    console.log(col.id, col.tmpIndex);
 		});
 
 	    // when a column is picked up, that column gets a class for css styling
@@ -178,7 +177,6 @@ ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
 
 	showHover: function(draggableObjects, e) {
 	    var inLeftHalf = this.__mouseInMyLeftHalf(e);
-	    console.log(inLeftHalf ? "LEFT" : "RGIHT");
 
 	    // first, let's find out whether the columns are already in the correct position
 	    var thisColIndex = this.htmlElement.tmpIndex;
@@ -186,18 +184,14 @@ ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
 		thisColIndex -= 0.5;
 	    else
 		thisColIndex += 0.5;
-	    console.log(ColumnDropzone.lastColIndex, this.htmlElement.tmpIndex, thisColIndex);
 	    if( thisColIndex == ColumnDropzone.lastColIndex ) {
-		console.log("was just at " + this.htmlElement.id);
 		return;
 	    }
 	    
 	    // at this point, we know we have to do an insertion
 	    if( inLeftHalf ) {
-		console.log("on left half of " + this.htmlElement.id);
 		moveSecondBeforeFirst(this.colName, draggableObjects[0].name);
 	    } else {
-		console.log("RIGHT half of " + this.htmlElement.id);
 		moveSecondAfterFirst(this.colName, draggableObjects[0].name);
 	    }
 	    ColumnDropzone.lastColIndex = thisColIndex;
