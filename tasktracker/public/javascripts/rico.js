@@ -1179,13 +1179,13 @@ Rico.DragAndDrop.prototype = {
       var n = this.dropZones.length;
       for ( var i = 0 ; i < n ; i++ ) {
          if ( ! this._mousePointInDropZone( e, this.dropZones[i] ) )
-            this.dropZones[i].hideHover();
+            this.dropZones[i].hideHover(this.currentDragObjects);
       }
 
       for ( var i = 0 ; i < n ; i++ ) {
          if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
             if ( this.dropZones[i].canAccept(this.currentDragObjects) )
-               this.dropZones[i].showHover();
+               this.dropZones[i].showHover(this.currentDragObjects);
          }
       }
    },
@@ -1265,7 +1265,7 @@ Rico.DragAndDrop.prototype = {
       for ( var i = 0 ; i < n ; i++ ) {
          if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
             if ( this.dropZones[i].canAccept(this.currentDragObjects) ) {
-               this.dropZones[i].hideHover();
+               this.dropZones[i].hideHover(this.currentDragObjects);
                this.dropZones[i].accept(this.currentDragObjects);
                foundDropZone = true;
                break;
@@ -1311,7 +1311,7 @@ Rico.DragAndDrop.prototype = {
       for ( var i = 0 ; i < n ; i++ ) {
          var dropZone = this.dropZones[i];
          if ( dropZone.canAccept(this.currentDragObjects) )
-            dropZone.activate();
+            dropZone.activate(this.currentDragObjects);
       }
 
       this.activatedDropZones = true;
