@@ -74,16 +74,18 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 		});
 	},
 
-	endDrag: function() { 
+	__finishDrag: function() { 
 	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
 		    removeClass(col, "currently-dragged-column");
 		});
 	},
 
+	endDrag: function() { 
+	    this.__finishDrag();
+	},
+
 	cancelDrag: function() {
-	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
-		    removeClass(col, "currently-dragged-column");
-		});
+	    this.__finishDrag();
 	},
 
 	getSingleObjectDragGUI: function() {
@@ -1216,14 +1218,17 @@ function onBodyClick(event) {
     }
 }
 
-function moveSecondBeforeFirst(a, b) {
+function moveSecondNextToFirst(a, b, before) {
     var x = a + '-column';
     var y = b + '-column';
     $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
 	    var one = row.getElementsByClassName(x)[0];
 	    var two = row.getElementsByClassName(y)[0];
 	    if( one && two ) {
-		row.insertBefore(two, one);
+		if( before )
+		    row.insertBefore(two, one);
+		else
+		    insertAfter(two, one);
 	    }
 	});
     /*  this would be good if this was supposed to be a swap.
@@ -1231,25 +1236,15 @@ function moveSecondBeforeFirst(a, b) {
 	var cloneB = two.cloneNode(true);
 	row.replaceChild(cloneB, one);
 	row.replaceChild(cloneA, two);
-    */	
+    */
+}
+
+function moveSecondBeforeFirst(a, b) {
+    moveSecondNextToFirst(a, b, true);
 }
 
 function moveSecondAfterFirst(a, b) {
-    var x = a + '-column';
-    var y = b + '-column';
-    $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
-	    var one = row.getElementsByClassName(x)[0];
-	    var two = row.getElementsByClassName(y)[0];
-	    if( one && two ) {
-		insertAfter(two, one);
-	    }
-	});
-    /*  this would be good if this was supposed to be a swap.
-	var cloneA = one.cloneNode(true);
-	var cloneB = two.cloneNode(true);
-	row.replaceChild(cloneB, one);
-	row.replaceChild(cloneA, two);
-    */	
+    moveSecondNextToFirst(a, b, false);
 }
 
 Event.observe (document, 'mousedown', onBodyClick);
