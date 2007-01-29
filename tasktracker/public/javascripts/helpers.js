@@ -153,3 +153,14 @@ function toggle(obj) {
 	obj.style.display = 'none';
     }
 }
+
+function insertAfter(new_node, after) {
+    if( after.nextSibling ) {
+        after.parentNode.insertBefore(new_node, after.nextSibling);
+    } else {
+        after.parentNode.appendChild(new_node);
+    }
+}
+
+function debugThing() { 
+}

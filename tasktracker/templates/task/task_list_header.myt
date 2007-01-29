@@ -1,4 +1,4 @@
-<tr class="column-heading">
+<tr id="column-heading" class="column-heading">
 
 <% h.sortableColumn('status', klass="title-column", colspan=2) %>
 

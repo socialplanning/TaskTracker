@@ -1185,15 +1185,16 @@ Rico.DragAndDrop.prototype = {
       for ( var i = 0 ; i < n ; i++ ) {
          if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
             if ( this.dropZones[i].canAccept(this.currentDragObjects) )
-               this.dropZones[i].showHover(this.currentDragObjects);
+		this.dropZones[i].showHover(this.currentDragObjects, e);
          }
       }
    },
 
    _startDrag: function(e) {
-      for ( var i = 0 ; i < this.currentDragObjects.length ; i++ )
+	for ( var i = 0 ; i < this.currentDragObjects.length ; i++ ){
+	    console.log(this.currentDragObjects[i].htmlElement);
          this.currentDragObjects[i].startDrag();
-
+	}
       this._makeDraggableObjectVisible(e);
    },
 

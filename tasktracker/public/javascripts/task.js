@@ -52,6 +52,39 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 	    this.type        = 'Column';
 	    this.htmlElement = $(name + '-heading');
 	    this.name        = name;
+	    this.parent      = $('column-heading');
+	},
+
+	startDrag: function() {
+	    var element = this.htmlElement;
+	    var subtractOne = false;
+	    
+	    // when a column is picked up, all the other draggable/droppable column headers are assigned ordered indices
+	    $A(this.parent.getElementsByClassName("draggable-column-heading")).each( function(col, i) {
+		    if( col == element ) {
+			col.tmpIndex = null;
+			subtractOne = true;
+		    }
+		    else col.tmpIndex = subtractOne ? i - 1: i;
+		    console.log(col.id, col.tmpIndex);
+		});
+
+	    // when a column is picked up, that column gets a class for css styling
+	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
+		    addClass(col, "currently-dragged-column");
+		});
+	},
+
+	endDrag: function() { 
+	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
+		    removeClass(col, "currently-dragged-column");
+		});
+	},
+
+	cancelDrag: function() {
+	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
+		    removeClass(col, "currently-dragged-column");
+		});
 	},
 
 	getSingleObjectDragGUI: function() {
@@ -124,30 +157,65 @@ TaskItemDraggable.prototype = (new Rico.Draggable()).extend( {
 
 var ColumnDropzone = Class.create();
 ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
+	lastColIndex: -1,
+
 	initialize: function( name ) {
 	    this.colName         = name;
 	    this.htmlElement     = $(name + '-heading');
 	    this.absoluteRect    = null;
 	    this.acceptedObjects = [];
+	    this.halfWidth = this.htmlElement.offsetWidth / 2;
 	},
 
 	canAccept: function(draggableObjects) { 
-	    var l = draggableObjects.length;
-	    var i;
-	    for (i = 0; i < l; i++) {
-		if( draggableObjects[i].type != 'Column' ) return false;
-	    }
+	    var l = draggableObjects[0];
+	    if( l.type != 'Column' ) return false;
+	    if( l.name == this.colName ) return false; 
 	    return true;
 	},
 
-	activate: function() { return; },
-	
-	accept: function(draggableObjects) {
-	    var l = draggableObjects.length;
-	    var i;
-	    for (i = 0; i < l; i++) {
-		moveSecondBeforeFirst(this.colName, draggableObjects[i].name);
+	activate: function(draggableObjects) { return; },
+
+	showHover: function(draggableObjects, e) {
+	    var inLeftHalf = this.__mouseInMyLeftHalf(e);
+	    console.log(inLeftHalf ? "LEFT" : "RGIHT");
+
+	    // first, let's find out whether the columns are already in the correct position
+	    var thisColIndex = this.htmlElement.tmpIndex;
+	    if( inLeftHalf )
+		thisColIndex -= 0.5;
+	    else
+		thisColIndex += 0.5;
+	    console.log(ColumnDropzone.lastColIndex, this.htmlElement.tmpIndex, thisColIndex);
+	    if( thisColIndex == ColumnDropzone.lastColIndex ) {
+		console.log("was just at " + this.htmlElement.id);
+		return;
 	    }
+	    
+	    // at this point, we know we have to do an insertion
+	    if( inLeftHalf ) {
+		console.log("on left half of " + this.htmlElement.id);
+		moveSecondBeforeFirst(this.colName, draggableObjects[0].name);
+	    } else {
+		console.log("RIGHT half of " + this.htmlElement.id);
+		moveSecondAfterFirst(this.colName, draggableObjects[0].name);
+	    }
+	    ColumnDropzone.lastColIndex = thisColIndex;
+	}, 
+
+	hideHover: function(draggableObjects) { return; },
+	
+	__mouseInMyLeftHalf: function(e) {
+	    return e.clientX < ( this.getAbsoluteRect().left + this.halfWidth + (e.offsetX ? document.body.scrollLeft : 0) );
+	},
+
+	/*	__accept: function(draggableObject, e) {
+
+		},*/
+
+	accept: function(draggableObjects) {
+	    ColumnDropzone.lastColLeft = ColumnDropzone.lastColRight = null;
+	    // TODO eventually this should do more, like stuff with the permalink
 	}
     } );
 
@@ -791,17 +859,6 @@ function resetChildDepths(elem) {
     }
 }
 
-function insertAfter(new_node, after) {
-    if( after.nextSibling ) {
-        after.parentNode.insertBefore(new_node, after.nextSibling);
-    } else {
-        after.parentNode.appendChild(new_node);
-    }
-}
-
-function debugThing() { 
-}
-
 function indentTaskItem(task, depth) {
     var children = task.getElementsByTagName('IMG');
     var target; 
@@ -1173,15 +1230,32 @@ function moveSecondBeforeFirst(a, b) {
 	    var two = row.getElementsByClassName(y)[0];
 	    if( one && two ) {
 		row.insertBefore(two, one);
-		/*  this would be good if this was supposed to be a swap.
-		var cloneA = one.cloneNode(true);
-		var cloneB = two.cloneNode(true);
-		row.replaceChild(cloneB, one);
-		row.replaceChild(cloneA, two);
-		*/
 	    }
 	});
-	
+    /*  this would be good if this was supposed to be a swap.
+	var cloneA = one.cloneNode(true);
+	var cloneB = two.cloneNode(true);
+	row.replaceChild(cloneB, one);
+	row.replaceChild(cloneA, two);
+    */	
+}
+
+function moveSecondAfterFirst(a, b) {
+    var x = a + '-column';
+    var y = b + '-column';
+    $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
+	    var one = row.getElementsByClassName(x)[0];
+	    var two = row.getElementsByClassName(y)[0];
+	    if( one && two ) {
+		insertAfter(two, one);
+	    }
+	});
+    /*  this would be good if this was supposed to be a swap.
+	var cloneA = one.cloneNode(true);
+	var cloneB = two.cloneNode(true);
+	row.replaceChild(cloneB, one);
+	row.replaceChild(cloneA, two);
+    */	
 }
 
 Event.observe (document, 'mousedown', onBodyClick);
