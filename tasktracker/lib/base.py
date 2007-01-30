@@ -100,12 +100,11 @@ class MissingSecurityException(Exception):
 def _getRole(environ):
     if not environ.get('REMOTE_USER', None):
         return 'Anonymous'
-    roles = environ['topp.user_info']['roles']
-    roles = dict(zip(roles, roles))
-    interestingRoles = ['Authenticated', 'ProjectMember', 'ProjectAdmin']
-    best = 'Anonymous'
+    userRoles = set(environ['topp.user_info']['roles'])
+    interestingRoles = ['ProjectMember', 'ProjectAdmin']
+    best = 'Authenticated' #if we get this far, we're authenticated
     for role in interestingRoles:
-        if roles.has_key(role):
+        if role in userRoles:
             best = role
 
     return best
@@ -118,12 +117,12 @@ class BaseController(WSGIController):
         c.id = params.get('id')
 
         
-        c.username = request.environ.get('REMOTE_USER', 'anonymous')
+        c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
 
 
         if not self._authorize(project, action, params):
-            if c.username == 'anonymous':
+            if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
                 abort(403, 'Login required')
             else:
@@ -250,7 +249,7 @@ class BaseController(WSGIController):
             return True
 
         if action_verb == 'loggedin':
-            if c.username == 'anonymous':
+            if not c.username:
                 abort(403, 'Forbidden')
             else:
                 return True
