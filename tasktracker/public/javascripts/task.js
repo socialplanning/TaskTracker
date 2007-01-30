@@ -69,13 +69,13 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 		});
 
 	    // when a column is picked up, that column gets a class for css styling
-	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
+	    $A($('tasks').getElementsByClassName(this.name + '-column')).each( function(col) {
 		    addClass(col, "currently-dragged-column");
 		});
 	},
 
 	__finishDrag: function() { 
-	    $A($('tasks').getElementsByClassName(name + '-column')).each( function(col) {
+	    $A($('tasks').getElementsByClassName(this.name + '-column')).each( function(col) {
 		    removeClass(col, "currently-dragged-column");
 		});
 	},

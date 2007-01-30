@@ -261,6 +261,6 @@ label {
    font-size: 0.9em;
 }
 
-currently-dragged-column {
-  /* do something here */
+.currently-dragged-column div {
+  background-color: #ddd;
 }
