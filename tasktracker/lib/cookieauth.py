@@ -133,10 +133,9 @@ class CookieAuth(object):
 
         self.authenticate(environ)
 
-        server = 'http://localhost:8080/openplans/'
         project_name = 'p1'
         environ['topp.project_name'] = project_name
-        environ['topp.project_members'] = UserMapper(environ, project_name, server)
+        environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
         environ['topp.project_permission_level'] = 'closed'
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        
