@@ -43,7 +43,7 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 
 openplans_wrapper = CookieAuth
 
-openplans_instance = http://localhost:8080/openplans/
+openplans_instance = http://localhost:8080/openplans
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 obsolete_future_history_dir = %(here)s/afh

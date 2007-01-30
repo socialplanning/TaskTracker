@@ -4,7 +4,7 @@ import elementtree.ElementTree as ET
 def get_users_for_project(project, server):
 
     h = httplib2.Http()
-    resp, content = h.request(server + "projects/%s/members.xml" % project, "GET")
+    resp, content = h.request("%s/projects/%s/members.xml" % (server, project), "GET")
     tree = ET.fromstring(content)
     members = []
     for member in tree:
