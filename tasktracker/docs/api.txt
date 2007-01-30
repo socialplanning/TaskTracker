@@ -1,0 +1,45 @@
+Tasktracker depends upon an user manager (UM).  The UM allows a user
+to log in.  TaskTracker is configured with a variable called
+openplans_instance, which is the base URL of the UM.  When a user logs
+in, a cookie will be set, consisting of a \0-separated list of
+username, password, and authenticator.  The authenticator is a hmac of
+the former two values with a secret.  The secret is shared between
+Tasktracker and the UM (and any other services to which the UM
+provides authentication).
+
+Tasktracker confirms that the username and password match the
+authenticator, then gives the user all privileges associated
+with that username.
+
+Tasktracker may have to request that a user log in.  To do this, it
+constructs a URL of the form:
+
+openplans_instance + "login_form" + "?came_from=" + some_task_tracker_url
+
+Then it issues a HTTP GET.
+
+The UM should allow the user to log in, and when the user is
+successful, it should redirect them back to the supplied URL.
+
+Tasktracker also needs to get information about projects.  So far, the
+only information needed is a list of members and their roles.  TT
+requests via HTTP GET:
+
+openplans_instance + "projects/" + project name + "/members.xml"
+
+The XML file contains a single 'members' element, which contains zero
+or more member elements.  Each member element consists of a single id
+element containing text (the user's username), and zero or more role
+elements containing text (the user's roles in the project).  Example:
+
+<members>
+<member>
+<id>admin</id>
+<role>ProjectAdmin</role>
+<role>ProjectMember</role>
+</member>
+<member>
+<id>m1</id>
+<role>ProjectMember</role>
+</member>
+</members>
