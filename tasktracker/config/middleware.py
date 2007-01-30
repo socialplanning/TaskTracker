@@ -28,6 +28,8 @@ from pylons.error import error_template
 from pylons.middleware import ErrorHandler, ErrorDocuments, StaticJavascripts, error_mapper
 import pylons.wsgiapp
 
+from beaker.cache import CacheMiddleware
+
 from tasktracker.config.environment import load_environment
 
 from tasktracker.lib.fakeenv import ZWSGIFakeEnv
@@ -61,7 +63,7 @@ def make_app(global_conf, **app_conf):
     # YOUR MIDDLEWARE
     # Put your own middleware here, so that any problems are caught by the error
     # handling middleware underneath
-    
+
     # @@@ Change HTTPExceptions to HTTP responses @@@
     app = httpexceptions.make_middleware(app, global_conf)
     
@@ -95,5 +97,7 @@ def make_app(global_conf, **app_conf):
         app = ZWSGIFakeEnv(app, users)
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
         app = CookieAuth(app, config.app_conf.get('openplans_instance'))
+
+    app = CacheMiddleware(app, global_conf, cache_expiretime = 5, cache_type='memory')
 
     return app

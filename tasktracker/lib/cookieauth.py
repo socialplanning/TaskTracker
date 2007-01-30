@@ -57,14 +57,34 @@ def get_secret():
     return secret
 
 
+from project_members import *
+
+user_cache = None
+
 class UserMapper:
+    def __init__(self, environ, project, server):
+        self.project = project
+        self.server = server
+        global user_cache
+        if not user_cache:
+            user_cache = environ['beaker.cache'].get_cache('project_users')
+
     def project_members(self):
-        names = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
-        members = map (_user_dict, names)
-        for member in members:
-            if member['username'] == 'admin':
-                member['roles'].append('ProjectAdmin')
+        project = self.project
+
+        members = None
+
+        if project in user_cache:
+            try:
+                members = user_cache[project]
+            except KeyError:
+                members = None
+        if not members:
+            members = get_users_for_project(project, self.server)
+            user_cache.set_value(project, members)
+
         return members
+
 
 class CookieAuth(object):
     def __init__(self, app, openplans_instance):
@@ -99,8 +119,6 @@ class CookieAuth(object):
                 environ['topp.user_info']['roles'] = ['ProjectAdmin']
             if username == 'auth':
                 environ['topp.user_info']['roles'] = ['Authenticated']
-            if username == 'anon':
-                environ['topp.user_info']['roles'] = ['Anonymous']
 
             return True
 
@@ -115,8 +133,10 @@ class CookieAuth(object):
 
         self.authenticate(environ)
 
-        environ['topp.project_name'] = 'theproject'
-        environ['topp.project_members'] = UserMapper()
+        server = 'http://localhost:8080/openplans/'
+        project_name = 'p1'
+        environ['topp.project_name'] = project_name
+        environ['topp.project_members'] = UserMapper(environ, project_name, server)
         environ['topp.project_permission_level'] = 'closed'
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        

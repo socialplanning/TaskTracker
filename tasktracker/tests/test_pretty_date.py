@@ -28,8 +28,8 @@ class TestPrettyDate:
             'Today' : date(2006, 1, 1),
             'Tomorrow' : date(2006, 1, 2),
             'Yesterday' : date(2005, 12, 31),
-            'Tue' : date(2006, 1, 3),
-            'Sat' : date(2006, 1, 7),
+            'Tuesday' : date(2006, 1, 3),
+            'Saturday' : date(2006, 1, 7),
             'January  8' : date(2006, 1, 8),
             'December  8, 2006' : date(2006, 12, 8),
             'January  8, 2007' : date(2007, 1, 8)
