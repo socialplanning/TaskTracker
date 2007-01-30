@@ -14,7 +14,7 @@ with that username.
 Tasktracker may have to request that a user log in.  To do this, it
 constructs a URL of the form:
 
-openplans_instance + "login_form" + "?came_from=" + some_task_tracker_url
+openplans_instance + "/login_form" + "?came_from=" + some_task_tracker_url
 
 Then it issues a HTTP GET.
 
@@ -25,7 +25,7 @@ Tasktracker also needs to get information about projects.  So far, the
 only information needed is a list of members and their roles.  TT
 requests via HTTP GET:
 
-openplans_instance + "projects/" + project name + "/members.xml"
+openplans_instance + "/projects/" + project name + "/members.xml"
 
 The XML file contains a single 'members' element, which contains zero
 or more member elements.  Each member element consists of a single id
