@@ -21,11 +21,10 @@
 from tasktracker.models import *
 from paste.deploy import CONFIG, appconfig
 from pylons import c
-from pylons.helpers import redirect_to
 
 from paste.wsgilib import intercept_output
 
-import os, sys
+import os
 import base64
 
 import hmac

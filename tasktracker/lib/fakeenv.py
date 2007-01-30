@@ -22,7 +22,9 @@ from tasktracker.models import *
 from paste.deploy import CONFIG, appconfig
 from pylons import c
 
-import os, sys
+from paste.wsgilib import intercept_output
+
+import os
 conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
@@ -63,10 +65,6 @@ class ZWSGIFakeEnv(object):
             except IndexError:
                 return False
 
-            environ['topp.project_members'] = UserMapper()
-            environ['topp.project_name'] = 'theproject'
-            environ['topp.project_permission_level'] = 'closed'
-
             environ['REMOTE_USER'] = username
 
             environ['topp.user_info'] = dict(username = username, 
@@ -89,26 +87,25 @@ class ZWSGIFakeEnv(object):
     def memberlist(self, project):
         return self.users.keys()
 
+
+    def needs_redirection(self, status, headers):
+        return status.startswith('403')
+
     def __call__(self, environ, start_response):
 
-        environ['topp.memberlist'] = self.memberlist
+        self.authenticate(environ)
 
-        safe = False
-        if environ['PATH_INFO'] == '/favicon.ico':
-            safe = True
-        if environ['PATH_INFO'].startswith("/stylesheets"):
-            import os
-            if os.path.exists('tasktracker' + environ['PATH_INFO']):
-                safe = True
+        environ['topp.memberlist'] = self.memberlist
+        environ['topp.project_members'] = UserMapper()
+        environ['topp.project_name'] = 'theproject'
+        environ['topp.project_permission_level'] = 'closed'
         
-        if safe or self.authenticate(environ):
-            return self.app(environ, start_response)
-        else:
+        status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response) 
+
+        if status:
             status = "401 Authorization Required"
             headers = [('Content-type', 'text/plain'), ('WWW-Authenticate', 'Basic realm="www"')]
             start_response(status, headers)
             return []
-
-
-
-
+        else:
+            return body
