@@ -1178,15 +1178,16 @@ Rico.DragAndDrop.prototype = {
    _updateDropZonesHover: function(e) {
       var n = this.dropZones.length;
       for ( var i = 0 ; i < n ; i++ ) {
-         if ( ! this._mousePointInDropZone( e, this.dropZones[i] ) )
-            this.dropZones[i].hideHover(this.currentDragObjects);
-      }
-
-      for ( var i = 0 ; i < n ; i++ ) {
-         if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
-            if ( this.dropZones[i].canAccept(this.currentDragObjects) )
-		this.dropZones[i].showHover(this.currentDragObjects, e);
-         }
+	  if ( this.dropZones[i].canAccept(this.currentDragObjects) ) {
+	      /* TODO note: the only semantic difference here is that shows and hides happen "at the same time."
+	       *            in the original version all hides occurred, then all shows.
+	       *            i'm not convinced this is a distinction that matters. */
+	      if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
+		  this.dropZones[i].showHover(this.currentDragObjects, e);
+	      } else {
+		  this.dropZones[i].hideHover(this.currentDragObjects);
+	      }
+	  }
       }
    },
 
@@ -1263,14 +1264,15 @@ Rico.DragAndDrop.prototype = {
       var foundDropZone = false;
       var n = this.dropZones.length;
       for ( var i = 0 ; i < n ; i++ ) {
-         if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
-            if ( this.dropZones[i].canAccept(this.currentDragObjects) ) {
-               this.dropZones[i].hideHover(this.currentDragObjects);
-               this.dropZones[i].accept(this.currentDragObjects);
-               foundDropZone = true;
-               break;
-            }
-         }
+	  /* presumably canAccept will usually be faster than _mousePointInDropZone */
+	  if ( this.dropZones[i].canAccept(this.currentDragObjects) ) {
+	      if ( this._mousePointInDropZone( e, this.dropZones[i] ) ) {
+		  this.dropZones[i].hideHover(this.currentDragObjects);
+		  this.dropZones[i].accept(this.currentDragObjects);
+		  foundDropZone = true;
+		  break;
+	      }
+	  }
       }
 
       return foundDropZone;
