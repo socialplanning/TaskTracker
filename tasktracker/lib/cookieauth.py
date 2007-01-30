@@ -149,15 +149,3 @@ class CookieAuth(object):
         else:
             return body
 
-
-        #if self.authenticate(environ):
-        #    return 
-        #else:
-        #    status = "303 See Other"
-        #    url = 'http://%s/%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
-        #    headers = [('Location', '%slogin_form?came_from=%s' % (self.openplans_instance, url))]
-        #    start_response(status, headers)
-        #    return []
-
-
-
