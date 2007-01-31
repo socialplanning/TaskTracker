@@ -30,12 +30,6 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
-function showFilterColumn(field) {
-    $(field + '-filter-label').hide();
-    $(field + '_filter').show();
-    $(field + '_filter').focus();
-}
-
 var AddTaskDraggable = Class.create();
 AddTaskDraggable.prototype = (new Rico.Draggable()).extend( {
 	initialize: function( element, name ) {
@@ -83,7 +77,7 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 	endDrag: function() { 
 	    this.__finishDrag();
 	},
-
+	
 	cancelDrag: function() {
 	    this.__finishDrag();
 	},
@@ -256,6 +250,44 @@ TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	
     } );
 
+function createColumnDragDrop(field) {
+    dndMgr.registerDraggable( new ColumnDraggable(field) );
+    dndMgr.registerDropZone( new ColumnDropzone(field) );
+}
+
+function createDragDrop() {
+    if (!initialized && hasReorderableTasks()) {
+        initialized = true;
+
+        $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
+		enableDragDrop(node);
+	    });
+
+	if( $('deadline-heading') ) createColumnDragDrop('deadline');
+	if( $('updated-heading') ) createColumnDragDrop('updated');
+	if( $('priority-heading') ) createColumnDragDrop('priority');
+	if( $('owner-heading') ) createColumnDragDrop('owner');
+
+	//dndMgr.registerDraggable( new AddTaskDraggable('movable_add_task', 'movable_add_task') );
+	
+	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
+	   if ($('trash')) {
+	   Droppables.add('trash', {
+	   hoverclass : 'drop',
+	   onDrop : destroyTask,
+	   accept : 'deletable'
+	   });*/
+    }
+}
+
+function enableDragDrop(node) {
+    var id = node.getAttribute('task_id');
+    dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
+    node.dropzones = [];
+    dndMgr.registerDropZone( node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id ) );
+    dndMgr.registerDropZone( node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id ) );
+}
+
 var myrules = {
     '.draggable' : function(element) {
 
@@ -322,17 +354,25 @@ var myrules = {
 
 Behavior.register(myrules);
 
+function showFilterColumn(field) {
+    $(field + '-filter-label').hide();
+    $(field + '_filter').show();
+    $(field + '_filter').focus();
+}
+
 function hasTasks() {
-    return ($('tasks'));
+    return $('tasks');
 }
 
 function hasReorderableTasks() {
-    return ($('tasks') && $('tasks').getAttribute("hasReorderableTasks") == "True");
+    var tasks = hasTasks();
+    return tasks && tasks.getAttribute("hasReorderableTasks") == "True";
 }
 
 function setTaskParents() {
-    if( hasTasks() ) {
-	$A($('tasks').getElementsByClassName('task-item')).each(function(task) {
+    var tasks = hasTasks();
+    if( tasks ) {
+	$A(tasks.getElementsByClassName('task-item')).each(function(task) {
 		var parentID;
 		var parent;
 		if( !task.childTasks ) task.childTasks = [];
@@ -341,47 +381,9 @@ function setTaskParents() {
 			parent.childTasks[parent.childTasks.length] = task;
 		    else
 			parent.childTasks = [task]
-		}
+			    }
 	    });
     }
-}
-
-function createColumnDragDrop(field) {
-    dndMgr.registerDraggable( new ColumnDraggable(field) );
-    dndMgr.registerDropZone( new ColumnDropzone(field) );
-}
-
-function createDragDrop() {
-    if (!initialized && hasReorderableTasks()) {
-        initialized = true;
-
-        $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-		enableDragDrop(node);
-	    });
-
-	if( $('deadline-heading') ) createColumnDragDrop('deadline');
-	if( $('updated-heading') ) createColumnDragDrop('updated');
-	if( $('priority-heading') ) createColumnDragDrop('priority');
-	if( $('owner-heading') ) createColumnDragDrop('owner');
-
-	//dndMgr.registerDraggable( new AddTaskDraggable('movable_add_task', 'movable_add_task') );
-
-	/* TODO tell this to use rico instead of scriptaculous before you uncomment it
-	if ($('trash')) {
-	    Droppables.add('trash', {
-		    hoverclass : 'drop',
-			onDrop : destroyTask,
-			accept : 'deletable'
-			});*/
-    }
-}
-
-function enableDragDrop(node) {
-    var id = node.getAttribute('task_id');
-    dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
-    node.dropzones = [];
-    dndMgr.registerDropZone( node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id ) );
-    dndMgr.registerDropZone( node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id ) );
 }
 
 function setupEmptyList() {
@@ -389,10 +391,6 @@ function setupEmptyList() {
     if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length) && !in_task_show)
 	showTaskCreate();
 }
-
-addLoadEvent(createDragDrop);
-addLoadEvent(setupEmptyList);
-addLoadEvent(setTaskParents);
 
 function filterDeadline() {
     var filtervalue = $('deadline_filter').value;
@@ -585,6 +583,22 @@ function sortAndFilter() {
 	filterListByAllFields();
 }
 
+function viewChangeableField(task_id, fieldname) {
+    selected_form = $(fieldname + '-form_' + task_id);
+    selected_label = $(fieldname + '-label_' + task_id);
+    selected_label.hide();
+    selected_form.show();
+    $(fieldname + '_' + task_id).focus();
+}
+
+function hideChangeableField(task_id, fieldname) {
+    selected_form = null;
+    selected_label = null;
+
+    $(fieldname + '-form_' + task_id).hide();
+    $(fieldname + '-label_' + task_id).show();
+}
+
 function restoreAddTask() { 
     $('add_task_anchor').appendChild($('movable_add_task'));
     showTaskCreate();
@@ -598,16 +612,18 @@ function doneAddingTask(req) {
     var siblingID = parseInt($('add_task_form_siblingID').getAttribute("value"));
     var new_fragment = evalHTML(req.responseText);
     var new_item = new_fragment.firstChild; 
-
+    
     var placeholder = $('no_tasks_placeholder');
     if( placeholder ) {
 	placeholder.parentNode.removeChild(placeholder);
     }
     var table = $('tasks');
-    if (siblingID != 0){ 
+    if (siblingID != 0){
+	/* We have been inserted after a sibling. */
 	var sibling = $('task_' + siblingID);
 	insertAfter(new_fragment, sibling);  //todo
     } else if (parentID != 0 && !hasClass(table, 'all_tasks')) {
+	/* We have been inserted under a parent.  */
 	var parent = $('task_' + parentID);
 	insertAfter(new_fragment, parent);  //todo
 	updateTaskItem(parentID);
@@ -615,6 +631,7 @@ function doneAddingTask(req) {
 	    $('movable_add_task').parentNode.appendChild($('movable_add_task'));
 	}
     } else {
+	/* We have been inserted nowhere so append. */
 	target = table; 
 	// scan for magic ie TBODY 
 	for (i = 0; i < table.childNodes.length; ++i) {
@@ -630,7 +647,6 @@ function doneAddingTask(req) {
 
     new_item.childTasks = []; 
     enableDragDrop(new_item);
-
 
     Behavior.apply();
 
@@ -676,31 +692,14 @@ function changeField(task_id, fieldname) {
     var depth = $("global-values"); depth = (depth ? depth.getAttribute('depth') : 0);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
-				                "&no_second_row=" + no_second_row + "&is_flat=" + is_flat + 
-				                "&editable_title=" + editable_title + "&depth=" + depth,
+				     "&no_second_row=" + no_second_row + "&is_flat=" + is_flat + 
+				     "&editable_title=" + editable_title + "&depth=" + depth,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]),
 				     onFailure:failedChangingField.bind([task_id, fieldname])});
 }
 
-
 var selected_form;
 var selected_label;
-
-function viewChangeableField(task_id, fieldname) {
-    selected_form = $(fieldname + '-form_' + task_id);
-    selected_label = $(fieldname + '-label_' + task_id);
-    selected_label.hide();
-    selected_form.show();
-    $(fieldname + '_' + task_id).focus();
-}
-
-function hideChangeableField(task_id, fieldname) {
-    selected_form = null;
-    selected_label = null;
-
-    $(fieldname + '-form_' + task_id).hide();
-    $(fieldname + '-label_' + task_id).show();
-}
 
 function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
@@ -730,12 +729,20 @@ function updateTaskItem(task_id) {
     if( len_of(taskitem.childTasks) ) {
 	expandTask(task_id);
     } else {
-	flattenTask(task_id);  // todo test this half
+	flattenTask(task_id);
     }
     var uncompletedTasks = 0;
+    taskitem.childTasks.each(function(task) {
+	    if (task.getAttribute('status') != 'done')
+		++uncompletedTasks;
+	});
+    taskitem.getElementsByClassName("num_subtasks")[0].innerHTML = uncompletedTasks;
+
+    uncompletedTasks = 0;
+    /* TODO THIS DOES NOT EVEN REMOTELY BELONG HERE. */
     $A(document.getElementsByClassName("task-item")).each(function(task) {
 	    if (task.getAttribute('status') != 'done')
-		uncompletedTasks++;
+		++uncompletedTasks;
 	});
     $('num_uncompleted').innerHTML = uncompletedTasks;
 }
@@ -757,20 +764,45 @@ function doneChangingField(req) {
     }
 }
 
+function updateParentTask(parent) {
+    updateTaskItem(parent.getAttribute("task_id"));
+    var myParentId = parent.getAttribute("parent_id");
+    if( myParentId ) {
+	var myParent = $('task_' + myParentId);
+	if( myParent )
+	    updateParentTask(myParent);
+    }
+}
+
 function succeededChangingField(req) {
     var task_id = this[0];
     var newNode = evalHTML(req.responseText);
     var oldVersion = $('task_' + task_id);
-    var parent = oldVersion.getAttribute("parentID");
-    parent = $('task_' + parent);
+    var parent = $('task_' + oldVersion.getAttribute("parentID"));
+
+    oldVersion.parentNode.replaceChild(newNode, oldVersion);
+    newNode = $('task_' + task_id);
+    newNode.childTasks = oldVersion.childTasks;
+
     var place;
     if( parent && len_of(parent.childTasks) ) {
 	for( place = 0; place < parent.childTasks.length; place++ ) {
 	    if( parent.childTasks[place] == oldVersion )
 		break;
 	}
-	parent.childTasks.removeItem(oldVersion);
     }
+    if( parent && parent.getAttribute('is_flat') != 'True' ) {
+	if ( len_of(parent.childTasks) ) {
+	    if( place >= parent.childTasks.length ) {
+		parent.childTasks[length] = newNode;
+	    } else  {
+		insertBeforeInList(parent.childTasks, newNode, parent.childTasks[place]);
+	    }
+	} else {
+	    parent.childTasks[0] = newNode;
+	}
+    }
+    parent.childTasks.removeItem(oldVersion);
 
     var fieldname = this[1];
     if ($('post_edit_task')) {
@@ -778,22 +810,10 @@ function succeededChangingField(req) {
 	func(task_id, fieldname);
     }
 
-    oldVersion.parentNode.replaceChild(newNode, oldVersion);
-    newNode = $('task_' + task_id);
-    newNode.childTasks = oldVersion.childTasks;
-
-    if( parent && parent.getAttribute('is_flat') != 'True' ) {
-	if ( len_of(parent.childTasks) ) {
-	    if( place >= parent.childTasks.length )
-		parent.childTasks[length] = newNode;
-	    else 
-		insertBeforeInList(parent.childTasks, newNode, parent.childTasks[place]);
-	} else {
-	    parent.childTasks[0] = newNode;
-	}
-    }
-
     enableDragDrop(newNode);
+
+    if( parent )
+	updateParentTask(parent);
 
 }
 
@@ -1249,7 +1269,10 @@ function moveSecondAfterFirst(a, b) {
 
 Event.observe (document, 'mousedown', onBodyClick);
 
+addLoadEvent(createDragDrop);
+addLoadEvent(setupEmptyList);
+addLoadEvent(setTaskParents);
+
 addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
-
 
