@@ -30,7 +30,7 @@ import base64
 import hmac
 import sha
 
-from urllib import unquote
+from urllib import quote, unquote
 from Cookie import BaseCookie
 
 conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
@@ -101,9 +101,9 @@ class CookieAuth(object):
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']
 
-            username, password, auth = base64.decodestring(unquote(morsel.value)).split("\0")
+            username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
             secret = get_secret()
-            if not auth == hmac.new(secret, username + password, sha).hexdigest():
+            if not auth == hmac.new(secret, username, sha).hexdigest():
                 return False
 
 
@@ -141,8 +141,8 @@ class CookieAuth(object):
 
         if status:
             status = "303 See Other"
-            url = 'http://%s/%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
-            headers = [('Location', '%s/login_form?came_from=%s' % (self.openplans_instance, url))]
+            url = 'http://%s%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
+            headers = [('Location', '%s/login_form?came_from=%s' % (self.openplans_instance, quote(url)))]
             start_response(status, headers)
             return []
         else:
