@@ -16,6 +16,11 @@
 
 
 //-------------------- rico.js
+/* TODO
+   for our purposes there will never be more than one active draggable or dropzone (i think).
+   should be able to make this much, much faster with that assumption.
+ */
+
 var Rico = {
   Version: '1.1.2',
   prototypeVersion: parseFloat(Prototype.Version.split(".")[0] + "." + Prototype.Version.split(".")[1])
@@ -1292,10 +1297,12 @@ Rico.DragAndDrop.prototype = {
 
       var absoluteRect = dropZone.getAbsoluteRect();
 
-      return e.clientX  > absoluteRect.left + this._leftOffset(e) &&
-             e.clientX  < absoluteRect.right + this._leftOffset(e) &&
-             e.clientY  > absoluteRect.top + this._topOffset(e)   &&
-             e.clientY  < absoluteRect.bottom + this._topOffset(e);
+      return e.clientY  > absoluteRect.top + this._topOffset(e)   &&
+             e.clientY  < absoluteRect.bottom + this._topOffset(e) &&
+             e.clientX  > absoluteRect.left + this._leftOffset(e) &&
+             e.clientX  < absoluteRect.right + this._leftOffset(e);
+             
+             
    },
 
    _addMouseDownHandler: function( aDraggable )
