@@ -78,8 +78,13 @@ preview-link
 %
 &nbsp;
 
-<span class="small"> (<span class="num_subtasks"><% len(atask.uncompletedChildren()) %></span> 
-% if len(atask.uncompletedChildren()) > 1:
+% num_children = len(atask.uncompletedChildren())
+<span class="small"
+% if not num_children: 
+style="display:none"
+%
+> (<span class="num_subtasks"><% num_children %></span> 
+% if num_children > 1:
 tasks
 % else:
 task

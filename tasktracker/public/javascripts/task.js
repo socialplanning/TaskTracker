@@ -736,7 +736,12 @@ function updateTaskItem(task_id) {
 	    if (task.getAttribute('status') != 'done')
 		++uncompletedTasks;
 	});
-    taskitem.getElementsByClassName("num_subtasks")[0].innerHTML = uncompletedTasks;
+    var num_subtasks = taskitem.getElementsByClassName("num_subtasks")[0];
+    num_subtasks.innerHTML = uncompletedTasks;
+    if( uncompletedTasks == 0 )
+	num_subtasks.parentNode.hide();
+    else
+	num_subtasks.parentNode.show();
 
     uncompletedTasks = 0;
     /* TODO THIS DOES NOT EVEN REMOTELY BELONG HERE. */
