@@ -33,6 +33,7 @@ setup(
       "Myghty",
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
+      "httplib2", 
       "python-dateutil",
       "uuid"],
     packages=find_packages(),
