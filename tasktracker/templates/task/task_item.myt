@@ -74,7 +74,7 @@ root-task
 % if is_preview:
 preview-link
 %
-" id = "title_<% atask.id %>" ><% atask.title %></a>
+" id = "title_<% atask.id %>" ><% h.previewText(atask.title) %></a>
 %
 &nbsp;
 
@@ -111,7 +111,7 @@ comment
 % if not no_second_row:
  <div class="second-line">
   <span style = "clear:both; margin-left: <% (atask.depth() - c.depth) * 15 + 25 %>px;">
-    <% h.previewText(atask.text, c.previewTextLength) %>
+    <% h.previewText(atask.text, 75) %>
   </span></div>
 %
 </td>

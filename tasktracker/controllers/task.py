@@ -298,7 +298,6 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
-        c.previewTextLength = 0
         return render_response('task/show.myt')
 
     @authenticate
