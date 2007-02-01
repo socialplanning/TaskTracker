@@ -83,12 +83,14 @@ preview-link
 % if not num_children: 
 style="display:none"
 %
-> (<span class="num_subtasks"><% num_children %></span> 
+> (<span class="num_subtasks"><% num_children %></span>
+<span class="the-word-task">
 % if num_children > 1:
 tasks
 % else:
 task
 %
+</span>
 left) </span>
 
 % if atask.comments:

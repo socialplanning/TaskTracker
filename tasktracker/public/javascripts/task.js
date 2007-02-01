@@ -745,6 +745,12 @@ function updateTaskItem(task_id) {
 	num_subtasks.parentNode.hide();
     else
 	num_subtasks.parentNode.show();
+    var the_word_task = taskitem.getElementsByClassName("the-word-task")[0];
+    if( uncompletedTasks == 1 )
+	the_word_task.innerHTML = "task";
+    else
+	the_word_task.innerHTML = "tasks";
+    
 
     uncompletedTasks = 0;
     /* TODO THIS DOES NOT EVEN REMOTELY BELONG HERE. */
