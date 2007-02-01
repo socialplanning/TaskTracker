@@ -838,20 +838,28 @@ function doneMovingTask(req) {
     var new_parent_id = this['new_parent_id'];
     var new_sibling_id = this['new_sibling_id'];
 
+    var old_parent;
+    var new_parent;
     if (old_parent_id > 0 && old_parent_id != new_parent_id) {
-        var old_parent = $('task_' + old_parent_id);
+        old_parent = $('task_' + old_parent_id);
         var child = $('task_' + task_id);
 	old_parent.childTasks.removeItem(child);
         if( !len_of(old_parent.childTasks) )
             flattenTask(old_parent_id);
     }
-    if (new_parent_id) {
+    if( new_parent_id ) {
+	new_parent = $('task_' + new_parent_id);
         insertTaskUnderParent(task_id, new_parent_id);
         expandTask(new_parent_id);
-    } else if (new_sibling_id) {
+    } else if( new_sibling_id ) {
+	new_parent = $('task_' + $('task_' + new_sibling_id).getAttribute("parentID"))
         insertTaskAfterSibling(task_id, new_sibling_id);
     }
     updateTaskItem(task_id);
+    if( old_parent )
+	updateParentTask(old_parent);
+    if( new_parent )
+	updateParentTask(new_parent);
 }
 
 doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
