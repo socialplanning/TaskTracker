@@ -78,7 +78,7 @@ preview-link
 %
 &nbsp;
 
-% num_children = len(atask.uncompletedChildren())
+% num_children = len(atask.uncompletedDescendents())
 <span class="small"
 % if not num_children: 
 style="display:none"

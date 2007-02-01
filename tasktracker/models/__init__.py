@@ -264,6 +264,14 @@ class Task(SQLObject):
 
         return [c for c in self.children if c.status != 'done' and c.live and h.has_permission('task', 'show', id=c.id)]
 
+    def uncompletedDescendents(self):
+        descendents = []
+        children = self.uncompletedChildren()
+        for child in children:
+            descendents.append(child)
+            descendents += child.uncompletedDescendents()
+        return descendents
+        
     def isOwnedBy(self, username):
         return self.owner == username            
 

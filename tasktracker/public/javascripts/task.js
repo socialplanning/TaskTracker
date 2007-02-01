@@ -706,7 +706,7 @@ function updateTaskItem(task_id) {
     var taskitem = $('task_' + task_id);
     var handle = $('handle_' + task_id);
     var completed;
-    if (taskitem.getAttribute('status') == 'done') 
+    if( taskitem.getAttribute('status') == 'done' )
 	completed = 'completed-task';
     else {
 	var db = new DateBocks();
@@ -720,7 +720,7 @@ function updateTaskItem(task_id) {
 	}
     }
     var root;
-    if (taskitem.childNodes[1].nodeType == 1) {
+    if( taskitem.childNodes[1].nodeType == 1 ) {
 	root = (parseInt(taskitem.childNodes[1].getAttribute('depth')) === 0) ? 'root-task' : 'sub-task';
     } else {
 	root = 'root-task';
@@ -732,10 +732,13 @@ function updateTaskItem(task_id) {
 	flattenTask(task_id);
     }
     var uncompletedTasks = 0;
-    taskitem.childTasks.each(function(task) {
-	    if (task.getAttribute('status') != 'done')
-		++uncompletedTasks;
-	});
+    var countTasks = function(task) {
+	if( task.getAttribute('status') != 'done' )
+	    ++uncompletedTasks;
+	task.childTasks.each( function(child) { countTasks(child); } );
+    }
+    taskitem.childTasks.each( function(child) { countTasks(child); } );
+
     var num_subtasks = taskitem.getElementsByClassName("num_subtasks")[0];
     num_subtasks.innerHTML = uncompletedTasks;
     if( uncompletedTasks == 0 )
@@ -771,7 +774,7 @@ function doneChangingField(req) {
 
 function updateParentTask(parent) {
     updateTaskItem(parent.getAttribute("task_id"));
-    var myParentId = parent.getAttribute("parent_id");
+    var myParentId = parent.getAttribute("parentID");
     if( myParentId ) {
 	var myParent = $('task_' + myParentId);
 	if( myParent )
@@ -806,8 +809,8 @@ function succeededChangingField(req) {
 	} else {
 	    parent.childTasks[0] = newNode;
 	}
+	parent.childTasks.removeItem(oldVersion);
     }
-    parent.childTasks.removeItem(oldVersion);
 
     var fieldname = this[1];
     if ($('post_edit_task')) {
