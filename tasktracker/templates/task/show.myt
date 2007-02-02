@@ -41,7 +41,7 @@
    </span>
    <hr/>
 
-   <b>Latest activity:</b>
+   <b>Previous activity:</b>
   </td>
   <td>&nbsp;</td>
  </tr>
