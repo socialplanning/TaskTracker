@@ -56,8 +56,9 @@ root-task
 </span>
 % else:
   <a href = "<% h.url_for(controller='task', action='show', id=atask.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=atask.id) %>"
      title = "<% atask.text %>"
-     class = "task_item truncated 
+     class = "task_item truncated uses_permalink 
 % if atask.status == 'done':
     completed-task
 % elif h.isOverdue(atask.deadline):

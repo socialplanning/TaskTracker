@@ -35,15 +35,29 @@ var Behavior = {
     apply : function () {
 	$A(Behavior.rules).each (function (ruleset) {
 		//should be using prototype's each here, but it is stupid.
+		var rule;
 		for (rule in ruleset) {
 		    if (rule instanceof Function)
-			return;
+			continue;
 
 		    var elements = $$(rule);
 		    elements.each (function (element) {
 			    ruleset[rule] (element);
 			});
 		}
+	    });
+    },
+
+    applySelectedRule : function (selector) {
+	$A(Behavior.rules).each (function (ruleset) {
+		var rule = ruleset[selector];
+		if (!rule || !(rule instanceof Function))
+		    return;
+
+		var elements = $$(selector);
+		elements.each (function (element) {
+			rule (element);
+		    });
 	    });
     },
 
@@ -55,6 +69,5 @@ var Behavior = {
 	Event.observe (window, 'load', Behavior.apply);
     }
 };
-
 
 Behavior.init();

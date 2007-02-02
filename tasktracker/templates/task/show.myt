@@ -1,8 +1,10 @@
 <hr/><br/>
 <span class="small">
-<% h.link_to("&lt;&lt; return to tasklist", h.url_for(controller='tasklist', action='show', id=c.task.task_list.id)) %>
-
+<% h.link_to("&lt;&lt; return to tasklist", h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), base_href=h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), id="return_to_tasklist", class_="uses_permalink") %>
+&nbsp;
 <% h.link_to("&lt;&lt; return to list of lists", h.url_for(controller='tasklist', action='index')) %>
+&nbsp;
+<a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">permalink this view</a>
 </span><br/>
 
 <& task_list_title.myt &>

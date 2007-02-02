@@ -298,6 +298,10 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
+        c.permalink = ""
+        for param in request.GET:
+            if param in "sortBy sortOrder status deadline priority owner updated".split():
+                c.permalink = "%s%s=%s&" % (c.permalink, param, request.GET[param])
         return render_response('task/show.myt')
 
     @authenticate

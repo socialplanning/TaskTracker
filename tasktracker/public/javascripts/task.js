@@ -290,7 +290,6 @@ function enableDragDrop(node) {
 
 var myrules = {
     '.draggable' : function(element) {
-
 	element.onclick = function(e) {
 	    e = e || event;
 	    if (hasClass(element, 'drag')) {
@@ -304,7 +303,6 @@ var myrules = {
 		    e.srcElement.doclick(e);
 		}
 	    }
-	    
 	}
     },
 
@@ -332,7 +330,7 @@ var myrules = {
 	    $('hideable_add_description').hide();
 	    $('hideable_title_label').show();
 	    $('description_field').show();
-	    $('text').focus();  // TODO this line seems to cause a javascript exception (but still works)
+	    $('text').focus();
 	    return false;
 	}
     },
@@ -348,7 +346,28 @@ var myrules = {
 	    }
 	    return false;
 	}
-    }
+    },
+
+    'a.uses_permalink' : function(element) {
+	var permalink = $("permalink");
+	if( permalink ) {
+	    element.href = element.getAttribute("base_href") + "?" + permalink.getAttribute("permalink");
+	}
+    }/*,
+
+    'a.uses_permalink' : function(element) {
+	onclick = function() {
+	    var permalink = $("permalink");
+	    if( permalink ) {
+		var do_first = function() {		    
+		    element.href = element.getAttribute("base_href") + "?" + permalink.getAttribute("permalink");
+		    if( do_next ) do_next();
+		};
+		
+		dofirst();
+	    }
+	}
+	}*/
 
 };
 
@@ -366,7 +385,7 @@ function hasTasks() {
 
 function hasReorderableTasks() {
     var tasks = hasTasks();
-    return tasks && tasks.getAttribute("hasReorderableTasks") == "True";
+    return tasks && tasks.getAttribute("hasReorderableTasks") == "True" && tasks.getElementsByTagName("TH").length;
 }
 
 function setTaskParents() {
@@ -1236,6 +1255,7 @@ function setPermalink(newkey, newval) {
     permalink += ( newkey + "=" + newval + '&' );
     a_perm.setAttribute('permalink', permalink);
     a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
+    Behavior.applySelectedRule("a.uses_permalink");
 }
 
 function onBodyClick(event) {
