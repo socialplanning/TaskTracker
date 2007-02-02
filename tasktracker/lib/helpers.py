@@ -123,16 +123,23 @@ def editableField(task, field, ifNone = None, uneditable = False):
         editable = has_permission('task', 'change_field', id=task.id, field=field)
     if field == 'owner':
         #this is fairly complicated.  Cases:
-        #1. person is a list owner.  Then what's there now is good.
-        #2. someone owns task.  Then need just 'owner' and that's it.
-        #3. person can claim task.  then you just need 'claim this' link.
-        #4. else 'no owner'
+        #1. person is a list owner.  Then we need an input box
+        #2. someone owns task, and you can steal it.  'steal this'
+        #3. someone owns task, but you can't steal it.  just 'owner'
+        #4. Nobody owns, but you can claim task.  then you just need 'claim this' link.
+        #5. else 'no owner'
         if not task.task_list.isListOwner(c.username):
+            #can you claim it?
+            if not editable or task.owner == c.username:
+                return task.owner
+
+            pre = ''
+            claimsteal = 'Claim'
             if task.owner:
-                editable = False
-            if editable:
-                return """<input type="hidden" name="owner_%d" id="owner_%d" value="%s">
-                          <a onclick="changeField(%d, &quot;owner&quot;); return false;">Claim this!</a>""" % (task.id, task.id, c.username, task.id)
+                claimsteal = 'Steal'
+                pre = task.owner + " " 
+            return pre + """<input type="hidden" name="owner_%d" id="owner_%d" value="%s">
+                          <a onclick="changeField(%d, &quot;owner&quot;); return false;">%s this!</a>""" % (task.id, task.id, c.username, task.id, claimsteal)
 
 
     out = []
