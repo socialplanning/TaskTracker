@@ -48,7 +48,7 @@
  <tr>
   <td class="small task-detail-mainbar">
    <ul id="activity_<% c.task.id %>" class="activity_list">
-    <%  h.render_actions(c.task.actions()) %>
+    <%  h.render_actions(c.task.actions(), 0) %>
    </ul>
   </td>
   <td id="task-detail-sidebar-cell">
