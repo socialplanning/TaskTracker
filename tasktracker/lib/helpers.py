@@ -502,7 +502,7 @@ def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
     tr.append('is_flat = "%s" ' % is_flat)
     tr.append('editable_title = "%s" ' % editable_title)
     if is_preview:
-        tr.append("""onclick = "document.location = '%s'" """ % url_for(controller='task', action='show', id=id))
+        tr.append("""onclick = "window.location.href = '%s'" """ % url_for(controller='task', action='show', id=id))
     tr.append('class = "taskrow task-item ')
     if has_permission('task', 'update', id=id):
         tr.append('deletable')

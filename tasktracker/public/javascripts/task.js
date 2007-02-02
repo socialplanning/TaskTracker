@@ -320,7 +320,7 @@ var myrules = {
     },
     '.task_item' : function(element) {
 	element.doclick = function() {
-	    document.location = element.href;
+	    window.location.href = element.href;
 	    return false;
 	}
     },

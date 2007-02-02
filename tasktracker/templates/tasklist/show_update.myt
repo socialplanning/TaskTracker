@@ -135,7 +135,7 @@ This list does not have private tasks.
 <br/>
 
 <% h.submit('Submit', onclick='cull_old();') %>
-<% h.submit("Cancel", onclick='document.location="%s"; return false;' % h.url_for(controller='tasklist', action='show')) %>
+<% h.submit("Cancel", onclick='window.location.href="%s"; return false;' % h.url_for(controller='tasklist', action='show')) %>
 
 <script language="JavaScript">
 
