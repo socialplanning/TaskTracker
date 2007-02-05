@@ -21,16 +21,16 @@ Then it issues a HTTP GET.
 The UM should allow the user to log in, and when the user is
 successful, it should redirect them back to the supplied URL.
 
-Tasktracker also needs to get information about projects.  So far, the
-only information needed is a list of members and their roles.  TT
-requests via HTTP GET:
+Tasktracker also needs to get information about projects.  To get a
+list of members and their roles, TT requests via HTTP GET:
 
 openplans_instance + "/projects/" + project name + "/members.xml"
 
 The XML file contains a single 'members' element, which contains zero
-or more member elements.  Each member element consists of a single id
-element containing text (the user's username), and zero or more role
-elements containing text (the user's roles in the project).  Example:
+or more 'member' elements.  Each 'member' element consists of a single
+'id' element containing text (the user's username), and zero or more
+'role' elements containing text (the user's roles in the project).
+Example:
 
 <members>
 <member>
@@ -43,3 +43,16 @@ elements containing text (the user's roles in the project).  Example:
 <role>ProjectMember</role>
 </member>
 </members>
+
+
+To get a project's security policy, TT requests:
+openplans_instance + "/projects/" + project name + "/info.xml"
+
+The XML file contains a single 'info' element, which contains exactly
+one 'policy' element, which contains text.  
+
+Example:
+
+<info>
+<policy>medium_policy</policy>
+</info>
