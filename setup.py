@@ -34,6 +34,7 @@ setup(
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
       "httplib2", 
+      "elementtree", 
       "python-dateutil",
       "uuid"],
     packages=find_packages(),
