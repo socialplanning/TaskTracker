@@ -145,6 +145,16 @@ def editableField(task, field, ifNone = None, uneditable = False):
     out = []
     contents = getattr(task, field)
 
+    if not contents:
+        contents = ifNone
+        if contents is None:
+            contents = "--"
+    elif field == 'deadline':
+        contents = readableDate(contents).replace(" ", "&nbsp;")
+    elif field == 'priority':
+        if contents == 'None':
+            contents = '--'
+
     if field == 'status' and not task.task_list.hasFeature('custom_status'):
         checked = False
         if task.status == 'done':
@@ -158,13 +168,6 @@ def editableField(task, field, ifNone = None, uneditable = False):
         span_contents = "%s <div></div>" % (_fieldHelpers[field](task))
         out.append("%s %s </span>" % (span, span_contents))
     
-        if not contents:
-            contents = ifNone
-            if contents is None:
-                contents = "No %s" % field
-        elif field == 'deadline':
-            contents = readableDate(contents).replace(" ", "&nbsp;")
-
         out.append("""<span class="editable" """)
     else:
         out.append("""<span """)
