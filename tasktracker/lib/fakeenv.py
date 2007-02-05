@@ -98,7 +98,7 @@ class ZWSGIFakeEnv(object):
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = 'theproject'
-        environ['topp.project_permission_level'] = 'closed'
+        environ['topp.project_permission_level'] = 'policy_open'
         
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response) 
 
