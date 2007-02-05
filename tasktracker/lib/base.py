@@ -115,7 +115,6 @@ class BaseController(WSGIController):
         project = Project.getProject(request.environ['topp.project_name'])
         c.project = project
         c.id = params.get('id')
-
         
         c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
