@@ -111,7 +111,7 @@ def setup_config(command, filename, section, vars):
     all = [manager, pm, auth, anon]
     members = [manager, pm, auth]
 
-    setRoles(makeAction(action="tasklist_create"), [pa])
+    setRoles(makeAction(action="tasklist_create"), [pa, pm])
 
     setRoles(makeAction(action="task_show"), all)
     setRoles(makeAction(action="tasklist_show"), all)

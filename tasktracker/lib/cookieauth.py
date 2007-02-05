@@ -56,33 +56,22 @@ def get_secret():
     return secret
 
 
+from cache import get_cached
 from project_members import *
 
-user_cache = None
+def project_policy(*args):
+    info = get_info_for_project(*args)
+    return info['policy']
 
 class UserMapper:
     def __init__(self, environ, project, server):
         self.project = project
         self.server = server
-        global user_cache
-        if not user_cache:
-            user_cache = environ['beaker.cache'].get_cache('project_users')
+        self.environ = environ
 
     def project_members(self):
-        project = self.project
+        return get_cached(self.environ, 'project_users', key=self.project, default_func=get_users_for_project, default_args=[self.project, self.server])
 
-        members = None
-
-        if project in user_cache:
-            try:
-                members = user_cache[project]
-            except KeyError:
-                members = None
-        if not members:
-            members = get_users_for_project(project, self.server)
-            user_cache.set_value(project, members)
-
-        return members
 
 
 class CookieAuth(object):
@@ -135,7 +124,9 @@ class CookieAuth(object):
         project_name = 'p1'
         environ['topp.project_name'] = project_name
         environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
-        environ['topp.project_permission_level'] = 'closed'
+        environ['topp.project_permission_level'] = get_cached(environ, 'project_info', 
+                                                              key=project_name, 
+                                                              default_func=project_policy, default_args=[project_name, self.openplans_instance])
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        
 
