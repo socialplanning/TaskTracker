@@ -87,25 +87,17 @@ class ZWSGIFakeEnv(object):
     def memberlist(self, project):
         return self.users.keys()
 
-
-    def needs_redirection(self, status, headers):
-        return status.startswith('403')
-
     def __call__(self, environ, start_response):
-
-        self.authenticate(environ)
 
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = 'theproject'
         environ['topp.project_permission_level'] = 'policy_open'
         
-        status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response) 
-
-        if status:
+        if not self.authenticate(environ):
             status = "401 Authorization Required"
             headers = [('Content-type', 'text/plain'), ('WWW-Authenticate', 'Basic realm="www"')]
             start_response(status, headers)
             return []
         else:
-            return body
+            return self.app(environ, start_response)
