@@ -154,9 +154,9 @@ class BaseController(WSGIController):
         #special case for creating task lists
         if action_name == 'tasklist_create':
             if c.project_permission_level in ['policy_open', 'policy_medium']:
-                return c.level >= Role.getLevel('ProjectMember')
+                return c.level <= Role.getLevel('ProjectMember')
             else:
-                return c.level >= Role.getLevel('ProjectAdmin')
+                return c.level <= Role.getLevel('ProjectAdmin')
 
         if controller == 'tasklist':
             task_list = TaskList.get(params['id'])
