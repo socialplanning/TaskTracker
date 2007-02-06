@@ -17,14 +17,15 @@
 
 % if c.task.previousTask():
 <table class="task_list preview" width="100%">
-<& task_item.myt, atask = c.task.previousTask(), no_second_row = True, is_preview = True, is_flat = True &>
+<& task_item_row.myt, atask = c.task.previousTask(), is_preview = True, is_flat = True &>
+
 </table>
 %
 <div id="wrap-task-details">
 
 <!-- The current task -->
 <table class="task_list" width="100%">
-<& task_item.myt, atask = c.task, no_second_row = True, is_preview = False, is_flat = True, editable_title = True &>
+<& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
 </table>
 
 <table id="activity-table">
@@ -131,7 +132,7 @@ class="unfolded" id="subtasks">
 
 % if c.task.nextTask():
 <table class="task_list preview" width="100%">
-  <& task_item.myt, atask = c.task.nextTask(), no_second_row = True, is_preview = True, is_flat = True &>
+  <& task_item_row.myt, atask = c.task.nextTask(), no_second_row = True, is_preview = True, is_flat = True &>
 </table>
 %
 

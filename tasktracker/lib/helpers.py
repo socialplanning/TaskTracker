@@ -493,7 +493,7 @@ def field_last_updated(task, field):
     return "%s by %s" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
 
 
-def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
+def task_item_tr(task, is_preview, is_flat, editable_title):
     id = task.id
     tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, id, id)]
 
@@ -501,7 +501,6 @@ def task_item_tr(task, is_preview, no_second_row, is_flat, editable_title):
             tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
 
     tr.append('is_preview = "%s" ' % is_preview)
-    tr.append('no_second_row = "%s" ' % no_second_row)
     tr.append('is_flat = "%s" ' % is_flat)
     tr.append('editable_title = "%s" ' % editable_title)
     if is_preview:

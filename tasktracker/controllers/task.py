@@ -35,7 +35,7 @@ class EditTaskForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     ignore_key_missing = True
-    title = NotEmpty()
+    title = String(not_empty = True, min=1, max=50)
     deadline = formencode.compound.All(DateValidator(),
                                        DateConverter())
     status = String(not_empty = True)
@@ -46,7 +46,6 @@ class EditTaskForm(formencode.Schema):
     task_listID = formencode.validators.Int()
     text = formencode.validators.String()
     is_preview = StringBoolean(not_empty = True)
-    no_second_row = StringBoolean(not_empty = True)
     is_flat = StringBoolean(not_empty = True)
     editable_title = StringBoolean(not_empty = True)
     depth = Int()
@@ -102,7 +101,6 @@ class TaskController(BaseController):
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)
-        no_second_row = self.form_result.get('no_second_row', None)
         is_flat = self.form_result.get('is_flat', None)
         editable_title = self.form_result.get('editable_title', None)
         depth = self.form_result.get('depth', 0)
@@ -112,8 +110,9 @@ class TaskController(BaseController):
         c.task = task
         c.depth = depth
 
-        return render_response('task/task_item.myt', fragment=True, atask=c.task,
-                               no_second_row=no_second_row, is_preview=is_preview, is_flat=is_flat, editable_title=editable_title)
+        return render_response('task/task_item_row.myt', fragment=True, atask=c.task,
+                               is_preview=is_preview, is_flat=is_flat, 
+                               editable_title=editable_title)
 
     @attrs(action='open')
     def auto_complete_for(self, id):

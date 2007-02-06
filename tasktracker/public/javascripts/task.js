@@ -705,13 +705,12 @@ function changeField(task_id, fieldname) {
     var value = (field.type == 'checkbox') ? field.checked : field.value;
     var taskrow = $('task_' + task_id);
     var is_preview = taskrow.getAttribute("is_preview");
-    var no_second_row = taskrow.getAttribute("no_second_row");
     var is_flat = taskrow.getAttribute("is_flat");
     var editable_title = taskrow.getAttribute("editable_title");
     var depth = $("global-values"); depth = (depth ? depth.getAttribute('depth') : 0);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
-				     "&no_second_row=" + no_second_row + "&is_flat=" + is_flat + 
+				     "&is_flat=" + is_flat + 
 				     "&editable_title=" + editable_title + "&depth=" + depth,
 				     onSuccess:doneChangingField.bind([task_id, fieldname]),
 				     onFailure:failedChangingField.bind([task_id, fieldname])});
@@ -1093,6 +1092,15 @@ function doDrop(child, drop_target, a) {
     }
 }
 
+function removeRow(ul, row) {
+    ul.removeChild(row);
+    //find corresponding second line
+    id = row.getAttribute('task_id');
+    row.second_line = $('second_line_' + id);
+    ul.removeChild(row.second_line);
+
+}
+
 function sortListBy(ul, column, forward, parentID) {
     if( !parentID ) parentID = "0";
     items = $A(ul.getElementsByClassName('task-item')).filter( function(i) {
@@ -1120,15 +1128,17 @@ function sortListBy(ul, column, forward, parentID) {
 
     ul = ul.getElementsByTagName("TBODY")[0];
     items.each(function (x) {
-	    ul.removeChild(x);
+	    removeRow(ul, x);
 	    $A(x.childTasks).each(function(i) {
-		    ul.removeChild(i);
+		    removeRow(ul, i);
 		});
 	});
     items.each (function (x) {
 	    ul.appendChild(x);
+	    ul.appendChild(x.second_line);
 	    $A(x.childTasks).each(function(i) {
 		    ul.appendChild(i);
+		    ul.appendChild(i.second_line);
 		});	    
 	    if( len_of(x.childTasks) )
 		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"));

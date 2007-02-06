@@ -1,5 +1,5 @@
 <%args>
-cancel_button
+cancel_button = ''
 </%args>
 <% h.secure_form_remote_tag(url=h.url_for(controller='task', action='create'),
       			     success='return doneAddingTask(request);', failure='failedAddingTask', html=dict(id='add_task_form')) %>
