@@ -263,3 +263,13 @@ label {
 .currently-dragged-column div {
   background-color: #ddd;
 }
+
+ul.command_list {
+  display: inline;
+}
+
+ul.command_list li {
+  border-left: 1px solid #000;
+  list-style: none;
+  display: inline;
+}

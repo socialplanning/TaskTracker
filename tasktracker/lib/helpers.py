@@ -43,6 +43,8 @@ from random import random
 
 import formencode.validators
 
+from urllib import quote
+
 class SafeHTML(formencode.validators.String):
     def to_python(self, value, state):
         return html2safehtml(super(SafeHTML, self).to_python(value, state))
@@ -504,7 +506,7 @@ def task_item_tr(task, is_preview, is_flat, editable_title):
     tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, id, id)]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
-            tr.append('%s = "%s" ' % (prop, getattr(task, prop)))
+        tr.append('%s = "%s" ' % (prop, quote(str(getattr(task, prop)))))
 
     tr.append('is_preview = "%s" ' % is_preview)
     tr.append('is_flat = "%s" ' % is_flat)
