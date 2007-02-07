@@ -1,12 +1,17 @@
 <%args>
 cancel_button = ''
 </%args>
-<% h.secure_form_remote_tag(url=h.url_for(controller='task', action='create'),
-      			     success='return doneAddingTask(request);', failure='failedAddingTask', html=dict(id='add_task_form')) %>
+<% h.secure_form_remote_tag(url=h.url_for(controller='task', action='create_ajax'),
+      			     success='return doneAddingTask(request);', failure='failedAddingTask(request)', html=dict(id='add_task_form')) %>
 
 Add task:
 
-<br/><br/>
+<br/>
+<div id="error" style="color:#f00;">
+
+</div>
+
+<br/>
 <input type="hidden" name="task_listID" value="<%c.task_listID%>" />
 <input type="hidden" id="add_task_form_parentID" name="parentID" value="<%c.parentID%>" />
 <input type="hidden" id="add_task_form_siblingID" name="siblingID" value="0" />

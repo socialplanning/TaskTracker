@@ -627,6 +627,10 @@ function restoreAddTask() {
 }
 
 function doneAddingTask(req) {
+    //clear error
+    $('error').innerHTML = '';
+
+    //place new task in heirarchy
     var parentID = parseInt($('add_task_form_parentID').getAttribute("value"));
     var siblingID = parseInt($('add_task_form_siblingID').getAttribute("value"));
     var new_fragment = evalHTML(req.responseText);
@@ -690,8 +694,11 @@ doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
+    $('error').innerHTML = req.responseText;
     console.log("failed to add task");
 }
+
+failedAddingTask = safeify(failedAddingTask, 'failedAddingTask');
 
 function changeField(task_id, fieldname) {
     if (changeEventsDisabled) {

@@ -163,6 +163,15 @@ class TaskController(BaseController):
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
         return self._create_task(url_from=request.params.get('url_from', None), **self.form_result)
+    @authenticate
+    @attrs(action='create', watchdog=TaskCreateWatchdog)
+    def create_ajax(self, id):
+        try:
+            params = EditTaskForm().to_python(request.params)
+            return self._create_task(url_from=request.params.get('url_from', None), **params)
+        except formencode.api.Invalid, invalid:
+            return render_text(invalid.msg, code=500)
+    
 
     def _create_task(self, url_from = None, **p):
         if not (c.level <= Role.getLevel('ProjectAdmin') or
