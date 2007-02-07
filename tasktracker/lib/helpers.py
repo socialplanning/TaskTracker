@@ -41,6 +41,10 @@ from tasktracker.lib.secure_forms import *
 from tasktracker.lib.pretty_date import prettyDate
 from random import random
 
+from formencode.validators import Wrapper
+
+SafeHTML = Wrapper(to_python=html2safehtml)
+
 def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
@@ -455,7 +459,7 @@ def render_actions(actions, cutoff=5):
 
 def render_action(action):
     if isinstance(action, Comment):
-        comment = html2safehtml(action.text)
+        comment = action.text
         user = action.user
         if user == c.username:
             user = "you"

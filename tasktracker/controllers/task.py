@@ -27,7 +27,6 @@ import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
 from pylons.templating import render_response as render_body
-
 from dateutil.parser import parse as dateparse
 
 class EditTaskForm(formencode.Schema):  
@@ -35,16 +34,16 @@ class EditTaskForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     ignore_key_missing = True
-    title = String(not_empty = True, min=1, max=50)
+    title = h.SafeHTML(not_empty = True, min=1, max=50)
     deadline = formencode.compound.All(DateValidator(),
                                        DateConverter())
-    status = String(not_empty = True)
+    status = h.SafeHTML(not_empty = True)
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
     parentID = formencode.validators.Int(not_empty = True)
     siblingID = formencode.validators.Int(not_empty = True)
     task_listID = formencode.validators.Int()
-    text = formencode.validators.String()
+    text = h.SafeHTML()
     is_preview = StringBoolean(not_empty = True)
     is_flat = StringBoolean(not_empty = True)
     editable_title = StringBoolean(not_empty = True)
