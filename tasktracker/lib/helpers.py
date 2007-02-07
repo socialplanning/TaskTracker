@@ -41,9 +41,11 @@ from tasktracker.lib.secure_forms import *
 from tasktracker.lib.pretty_date import prettyDate
 from random import random
 
-from formencode.validators import Wrapper
+import formencode.validators
 
-SafeHTML = Wrapper(to_python=html2safehtml)
+class SafeHTML(formencode.validators.String):
+    def to_python(self, value, state):
+        return html2safehtml(super(SafeHTML, self).to_python(value, state))
 
 def debugThings(obj = None):
     foo = c
