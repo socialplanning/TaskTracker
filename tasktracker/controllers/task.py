@@ -59,14 +59,6 @@ def _field_permission(param):
     
 class TaskController(BaseController):
     
-    def _clean_params(self, params):
-        allowed_params = ("title", "text", "status", "deadline", "task_listID", "parentID", "siblingID", "owner", "private", "priority")
-        clean = {}
-        for param in allowed_params:
-            if params.has_key(param):
-                clean[param] = params[param]
-        return clean
-    
     @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog)
@@ -170,8 +162,7 @@ class TaskController(BaseController):
     @attrs(action='create', watchdog=TaskCreateWatchdog)
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
-        p = self._clean_params(self.form_result)
-        return self._create_task(url_from=request.params.get('url_from', None), **p)
+        return self._create_task(url_from=request.params.get('url_from', None), **self.form_result)
 
     def _create_task(self, url_from = None, **p):
         if not (c.level <= Role.getLevel('ProjectAdmin') or
@@ -232,7 +223,7 @@ class TaskController(BaseController):
     def update(self, id):
 
         c.task = self._getTask(int(id))
-        p = self._clean_params(self.form_result)
+        p = self.form_result
         new_parent_id = int(p['parentID'])
         assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == c.task.task_listID
         assert new_parent_id != c.task.id
