@@ -703,6 +703,7 @@ function changeField(task_id, fieldname) {
     var base_url = $('body').getAttribute('change_url');
     var url = base_url + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
+    value = encodeURIComponent(value);
     var taskrow = $('task_' + task_id);
     var is_preview = taskrow.getAttribute("is_preview");
     var is_flat = taskrow.getAttribute("is_flat");
@@ -1098,7 +1099,6 @@ function removeRow(ul, row) {
     id = row.getAttribute('task_id');
     row.second_line = $('second_line_' + id);
     ul.removeChild(row.second_line);
-
 }
 
 function sortListBy(ul, column, forward, parentID) {
