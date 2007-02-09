@@ -1156,10 +1156,13 @@ function setCollapse(task_id, val) {
     var node = $('task_' + task_id);
     var button = $('handle_' + task_id);
     var tomatch = val ? "minus.png" : "plus.png";
-    if( val ) 
+    if( val ) {
 	node.show();
-    else 
+        $('second_line_' + task_id).show();
+    } else {
 	node.hide();
+        $('second_line_' + task_id).hide();
+    }
     if( !val || button.src.match("plus.png") )
 	$A(node.childTasks).each(function(n) {
 		setCollapse(n.getAttribute('task_id'), val);
