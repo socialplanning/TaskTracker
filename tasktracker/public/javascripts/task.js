@@ -868,33 +868,31 @@ function failedChangingField(req) {
 }
 
 function doneMovingTask(req) {
-    var task_id = this['task_id'];
-    var old_parent_id = this['old_parent_id'];
-    var new_parent_id = this['new_parent_id'];
-    var new_sibling_id = this['new_sibling_id'];
+    var order = eval(req.responseText);
+    var breaking_row = $$('.breaking-row')[0].parentNode;
 
-    var old_parent;
-    var new_parent;
-    if (old_parent_id > 0 && old_parent_id != new_parent_id) {
-        old_parent = $('task_' + old_parent_id);
-        var child = $('task_' + task_id);
-	old_parent.childTasks.removeItem(child);
-        if( !len_of(old_parent.childTasks) )
-            flattenTask(old_parent_id);
-    }
-    if( new_parent_id ) {
-	new_parent = $('task_' + new_parent_id);
-        insertTaskUnderParent(task_id, new_parent_id);
-        expandTask(new_parent_id);
-    } else if( new_sibling_id ) {
-	new_parent = $('task_' + $('task_' + new_sibling_id).getAttribute("parentID"))
-        insertTaskAfterSibling(task_id, new_sibling_id);
-    }
-    updateTaskItem(task_id);
-    if( old_parent )
-	updateParentTask(old_parent);
-    if( new_parent )
-	updateParentTask(new_parent);
+    var last_task = breaking_row;
+    order.each(function(task_rec) {
+	    var task = $('task_' + task_rec.id);    
+
+	    if (task_rec.has_children) {
+		expandTask(task_rec.id);
+	    } else {
+		flattenTask(task_rec.id);
+	    }
+
+	    var depth = task_rec.depth;
+	    var title = task.getElementsByTagName("SPAN")[0];		
+	    title.setAttribute('depth', depth);
+	    var handle = $$('#task_' + task_rec.id + " .handle")[0];
+	    handle.style.marginLeft = 15 * depth + 'px'; 
+
+	    var second_line = $('second_line_' + task_rec.id);
+	    insertAfter(task, last_task);
+	    insertAfter(second_line, task);
+	    last_task = second_line;
+	});
+
 }
 
 doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
@@ -909,137 +907,22 @@ function showTaskCreate() {
 
 var mode = 'view';
 
-function resetChildDepths(elem) {
-    var children = elem.childTasks;
-    
-    if( len_of(children) ) {
-        var new_depth = parseInt(elem.getElementsByTagName("SPAN")[0].getAttribute('depth')) + 1;
-        $A(children).each(function(child) {
-		var title = child.getElementsByTagName("SPAN")[0];		
-		title.setAttribute('depth', new_depth);
-		indentTaskItem(title, new_depth);
-		resetChildDepths(child);
-	    });
-    }
-}
-
-function indentTaskItem(task, depth) {
-    var children = task.getElementsByTagName('IMG');
-    var target; 
-    for( var i = 0; i < children.length; i++ ) {
-	var child = children[i];
-	if( hasClass(child, 'handle') ) {
-	    target = child; 
-	    break; 
-	}
-    }
-    target.style.marginLeft = 15*depth + 'px'; 
-}
-
-// TODO test this!
-function insertTaskAfterSibling(task_id, sibling_id) {
-    var child = $('task_' + task_id);
-    var new_sibling = $('task_' + sibling_id);
-
-    var parent = $('task_' + new_sibling.getAttribute('parentID'));
-    if( parent ) {
-	insertAfterInList(parent.childTasks, child, new_sibling); 
-    }
-    var sib_ch = new_sibling.childTasks;
-    var preceding_task = (len_of(sib_ch) ? 
-			  sib_ch[sib_ch.length - 1] :
-			  new_sibling);
-    insertAfter(child, preceding_task);
-
-    //update sort_index
-    var new_index = parseInt(new_sibling.getAttribute('sort_index'));
-    var items = $('tasks').getElementsByTagName('task-item');
-    $A(items).each(function(item) {
-	    if (item == child) {
-		item.setAttribute('sort_index', new_index + 1);
-	    } else {
-		var sort_index = parseInt(item.getAttribute('sort_index'));
-		if (sort_index > new_index) {
-		    item.setAttribute('sort_index', sort_index + 1);
-		}
-	    }
-	});
-
-    //update depth
-    var me = $('draggable_' + task_id);
-    if ($('draggable_' + sibling_id).getAttribute('depth') > 0) {	
-	$('task_' + task_id).setAttribute("parentID", new_sibling.getAttribute("parentID"));
-	//	indentTaskItem(me, $('handle_' + sibling_id).style.marginLeft);
-        resetChildDepths(parent);
-    } else {
-        me.setAttribute('depth', 0);
-	$('task_' + task_id).setAttribute("parentID", 0);
-        //title.style.paddingLeft = '0px'; 
-        indentTaskItem(me, 0);
-        resetChildDepths(child);
-    }
-    updateTaskItem(task_id);
-
-    $A(child.childTasks).each(function(node) {
-	    insertTaskUnderParent(node.getAttribute("task_id"), task_id, 1);
-	});
-}
-
-function insertTaskUnderParent(child_id, parent_id, justmove) {
-    var child = $('task_' + child_id);
-    var new_parent = $('task_' + parent_id);
-
-    var table = $('tasks');
-
-    if( !justmove ) {
-	if( len_of(new_parent.childTasks) ) {
-	    insertBeforeInList(new_parent.childTasks, child, new_parent.childTasks[0]);
-	}
-	else {
-	    new_parent.childTasks[0] = child;
-	}
-    }
-    insertAfter(child, new_parent);
-
-    //set child indent
-    var parentdepth = parseInt($('draggable_' + parent_id).getAttribute('depth'));
-    var title = $('draggable_' + child_id);
-    title.setAttribute('depth', parentdepth + 1);
-
-    indentTaskItem(title,parentdepth+1); 
-    resetChildDepths(child);	
-
-    $A(child.childTasks).each(function(node) {
-	    insertTaskUnderParent(node.getAttribute("task_id"), child_id, 1);
-	});
-
-    if( justmove )
-	return;
-
-    child.setAttribute("parentID", parent_id);
-    var items = new_parent.childTasks;
-    //update sort_index
-    $A(items).each(function(item) {
-            var sort_index = parseInt(item.getAttribute('sort_index'));
-            item.setAttribute('sort_index', sort_index + 1);
-        });
-    var sort_index = parseInt(items[0].getAttribute('sort_index'));
-    items[0].setAttribute('sort_index', 0);
-}
-
 function doneDestroyingTask(req) {
     var task_id = this;
     $('task_' + task_id).remove();
+    $('second_line_' + task_id).remove();
 }
 
 function failedDestroyingTask(req) {
     var task_id = this;
-    $('task_' + task_id).show();    
+    $('task_' + task_id).show();
+    $('second_line_' + task_id).show();
 }
 
 function destroyTask(child, drop_target) {
     var task_id = child.getAttribute('task_id');
     $('task_' + task_id).hide();
+    $('second_line_' + task_id).hide();
     var req = new Ajax.Request('/task/destroy/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
         onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask.bind(task_id)});
 }
@@ -1088,14 +971,14 @@ function doDrop(child, drop_target, a) {
 	var base_url = $('body').getAttribute("move_url");
 	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
-            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_parent_id:id}),
+            onSuccess:doneMovingTask,
             onFailure:debugThing});
     } else {   // drop after a sibling node
         id = parseInt(drop_target.id.replace(/^handle_/, ''));
         var new_sibling = $('task_' + id);
         new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
-            onSuccess:doneMovingTask.bind({task_id:task_id, old_parent_id:old_parent_id, new_sibling_id:id}),
+            onSuccess:doneMovingTask,
             onFailure:debugThing});
     }
 }

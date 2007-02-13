@@ -56,6 +56,17 @@ def _assignment_permitted(new_owner):
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
 def _field_permission(param):    
     return _actions[param['field']]
+
+
+def get_child_tasks_in_display_order(task):
+    children = task.liveChildren()
+    if not children:
+        return [task]
+    else:
+        return sum(map(get_child_tasks_in_display_order, children), [task])
+
+def get_tasks_in_display_order(tasklist):
+    return sum(map(get_child_tasks_in_display_order, tasklist.topLevelTasks()), [])
     
 class TaskController(BaseController):
     
@@ -134,6 +145,7 @@ class TaskController(BaseController):
                 task.private = True
         task.moveBelow(new_sibling)
 
+    @jsonify
     @attrs(action='update', watchdog=TaskMoveWatchdog)
     def move(self, id):        
         if request.params.has_key('new_parent'):
@@ -142,7 +154,11 @@ class TaskController(BaseController):
         else:
             new_sibling_id = int(request.params['new_sibling'])
             self._move_below_sibling(id, new_sibling_id)
-        return render_text('ok')
+        
+        task = self._getTask(int(id))
+        tasks = get_tasks_in_display_order(task.task_list)
+        return [dict(id = t.id, depth = t.depth(), has_children = int(bool(len(t.children)))) for t in tasks]
+        #return render_text('ok')
 
     @attrs(action='create')
     @catches_errors

@@ -10,12 +10,12 @@ editable_title = False
 
 </tr>
 
-% if atask.text:
 <tr id="second_line_<% atask.id %>" class="second-line">
+% if atask.text:
 <td colspan="7">
  <div style = "clear:both; margin-left: <% (atask.depth() - c.depth) * 15 + 25 %>px; max-width:80em">
    <% h.previewText(atask.text, 400) %><br/>
 </div>
 </td>
-</tr>
 %
+</tr>
