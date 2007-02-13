@@ -211,12 +211,14 @@ ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
 
 var TaskItemDropzone = Class.create();
 TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
-	initialize: function( htmlElement, refElement, owner ) {
+	initialize: function( htmlElement, refElement, owner, task_id, drop_reparent ) {
 	    this.htmlElement     = $(htmlElement);
 	    this.refElement      = $(refElement);
 	    this.owner           = $(owner);
 	    this.absoluteRect    = null;
 	    this.acceptedObjects = [];
+	    this.task_id = task_id;
+	    this.drop_reparent = drop_reparent;
 	},
 	
 	showHover: function() {
@@ -244,7 +246,7 @@ TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	    var l = draggableObjects.length;
 	    var i;
 	    for (i = 0; i < l; i++) {
-		doDrop(draggableObjects[i].refElement, this.refElement);
+		doDrop(draggableObjects[i].refElement, this.refElement, this);
 	    }
 	}
 	
@@ -284,8 +286,8 @@ function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
     dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
     node.dropzones = [];
-    dndMgr.registerDropZone( node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id ) );
-    dndMgr.registerDropZone( node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id ) );
+    dndMgr.registerDropZone (node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id, id, true));
+    dndMgr.registerDropZone (node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id, node.id, id, false));
 }
 
 var myrules = {
@@ -869,7 +871,7 @@ function failedChangingField(req) {
 
 function doneMovingTask(req) {
     var order = eval(req.responseText);
-    var breaking_row = $$('.breaking-row')[0].parentNode;
+    var breaking_row = $$('#breaking-row')[0].parentNode;
 
     var last_task = breaking_row;
     order.each(function(task_rec) {
@@ -927,7 +929,7 @@ function destroyTask(child, drop_target) {
         onSuccess:doneDestroyingTask.bind(task_id), onFailure:failedDestroyingTask.bind(task_id)});
 }
 
-function doDrop(child, drop_target, a) {
+function doDrop(child, drop_target, dropzone) {
     var id;
     if (drop_target == child) {
         return;
@@ -964,9 +966,8 @@ function doDrop(child, drop_target, a) {
     // otherwise, it's a task
     var task_id = child.id.replace("draggable_", "");
     var old_parent_id = $('task_' + task_id).getAttribute("parentID");
-
-    if (drop_target.id.match(/^title_/)) {   // drop under a parent node
-        id = parseInt(drop_target.id.replace(/^title_/, ''));
+    id = parseInt(dropzone.task_id);
+    if (dropzone.drop_reparent) {   // drop under a parent node
         var new_parent = $('task_' + id);
 	var base_url = $('body').getAttribute("move_url");
 	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
@@ -974,7 +975,6 @@ function doDrop(child, drop_target, a) {
             onSuccess:doneMovingTask,
             onFailure:debugThing});
     } else {   // drop after a sibling node
-        id = parseInt(drop_target.id.replace(/^handle_/, ''));
         var new_sibling = $('task_' + id);
         new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
