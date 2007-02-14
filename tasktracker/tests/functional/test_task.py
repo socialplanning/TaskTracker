@@ -69,7 +69,8 @@ class TestTaskController(TestController):
         res = form.submit()
 
         # the response should consist of the new task's table row
-        assert re.search('<tr[^>]*status\s*=\s*"not done"', res.body)
+        print res.body
+        assert re.search('<tr[^>]*status\s*=\s*"not%20done"', res.body)
         res.mustcontain("The new task title")
         res.mustcontain("The new task body")
 
