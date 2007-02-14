@@ -211,18 +211,19 @@ ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
 
 var TaskItemDropzone = Class.create();
 TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
-	initialize: function( htmlElement, refElement, owner, task_id, drop_reparent ) {
+	initialize: function( htmlElement, refElement, owner, task_id, drop_reparent, indicator) {
 	    this.htmlElement     = $(htmlElement);
 	    this.refElement      = $(refElement);
 	    this.owner           = $(owner);
 	    this.absoluteRect    = null;
 	    this.acceptedObjects = [];
 	    this.task_id = task_id;
+	    this.indicator = $(indicator);
 	    this.drop_reparent = drop_reparent;
 	},
 	
 	showHover: function() {
-	    addClass(this.htmlElement, 'drop');
+	    this.indicator.show();
 	},
 
 	activate: function() {
@@ -230,7 +231,7 @@ TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	},
 
 	hideHover: function() {
-	    removeClass(this.htmlElement, 'drop');
+	    this.indicator.hide();
 	},
 
 	canAccept: function(draggableObjects) { 
@@ -286,8 +287,8 @@ function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
     dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
     node.dropzones = [];
-    dndMgr.registerDropZone (node.dropzones[0] = new TaskItemDropzone( 'title_' + id, 'title_' + id, node.id, id, true));
-    dndMgr.registerDropZone (node.dropzones[1] = new TaskItemDropzone( 'handle_' + id, 'handle_' + id, node.id, id, false));
+    dndMgr.registerDropZone (node.dropzones[0] = new TaskItemDropzone( 'child_dropzone_' + id, 'child_dropzone_' + id, node.id, id, true, 'child_dropzone_indicator_' + id));
+    dndMgr.registerDropZone (node.dropzones[1] = new TaskItemDropzone( 'sibling_dropzone_' + id, 'sibling_dropzone_' + id, node.id, id, false, 'sibling_dropzone_indicator_' + id));
 }
 
 var myrules = {
