@@ -136,6 +136,12 @@ class TaskController(BaseController):
 
     def _move_below_sibling(self, id, siblingID):
         task = self._getTask(int(id))
+
+        if siblingID == 0:
+            task.parentID = 0
+            task.moveToTop()
+            return
+
         new_sibling = Task.get(siblingID)
         assert new_sibling.task_listID == task.task_listID
         task.parentID = new_sibling.parentID

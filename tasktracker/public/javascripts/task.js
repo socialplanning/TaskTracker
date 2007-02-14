@@ -262,6 +262,8 @@ function createDragDrop() {
     if (!initialized && hasReorderableTasks()) {
         initialized = true;
 
+    dndMgr.registerDropZone (new TaskItemDropzone( 'sibling_dropzone_0', 'sibling_dropzone_0', 0, 0, false, 'sibling_dropzone_indicator_0'));
+
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
 	    });
