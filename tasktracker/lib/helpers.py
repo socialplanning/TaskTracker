@@ -32,7 +32,7 @@ from tasktracker.models import Task, TaskList, Comment
 from datebocks_helper import datebocks_field
 
 from stripogram import html2safehtml
-import imp, os
+import sys, os
 
 from formencode import htmlfill
 from tasktracker.lib.base import render_response
@@ -379,8 +379,9 @@ def has_permission(controller, action, **params):
 
     controller_name = controller
 
-    d = 'tasktracker/controllers/%s' % controller_name
-    module = imp.load_module(d, *imp.find_module(d))
+    module_name = 'tasktracker.controllers.%s' % controller_name
+    __import__(module_name)
+    module = sys.modules[module_name]
 
     cap_controller = controller_name[0].upper() + controller_name[1:]
 
