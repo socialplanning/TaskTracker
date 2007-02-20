@@ -448,6 +448,8 @@ def render_actions(actions, cutoff=5):
 
     count = 0
     for action in actions:
+        if 'Created' in action.getChangedFields():
+            continue
         result = render_action(action)
         if not result:
             continue
@@ -475,7 +477,7 @@ def render_action(action):
             return ''
         for field in ['Sort_Index', 'Parentid']:
             if field in fields:
-                fields.remove (field)
+                fields.remove(field)
         if not fields:
             return ''
         if 'Text' in fields:
@@ -485,8 +487,6 @@ def render_action(action):
             fields.remove('Private')
             fields.append('Privacy')
         user = action.updatedBy
-        if user == c.username:
-            user = "you"
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     return '%s' % (comment)
 
