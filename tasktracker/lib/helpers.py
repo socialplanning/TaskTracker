@@ -453,7 +453,7 @@ def render_actions(actions, cutoff=5):
 
     count = 0
     for action in actions:
-        if 'Created' in action.getChangedFields():
+        if not isinstance(action, Comment) and 'Created' in action.getChangedFields():
             continue
         result = render_action(action)
         if not result:
