@@ -63,7 +63,7 @@ input#title { width: 50%; }
 
 input.auto-size { width: auto; height: auto; } 
 
-select:focus { height: 90%;}
+select:focus { height: 0.95em;}
 
 .filter-line {
   background-color: #ddd;
