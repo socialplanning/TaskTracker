@@ -201,12 +201,12 @@ span.editable:hover {
 
 .activity_list {
   list-style: none;
-  margin-left: 0;
+  padding: 0; margin: 0;
   padding-left: 25px;
-  padding-bottom: 0;
-  margin-bottom: 0;
 }
-
+  .activity_list li {
+    padding: 0; margin: 0;
+  }
 #activity-table {
    border-spacing: 0;
    align: left;
