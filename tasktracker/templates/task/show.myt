@@ -96,13 +96,24 @@
 
 <br/><br/>
 
-<span 
+This task
+% if c.task.parentID:
+is part of the
+  <a href = "<% h.url_for(controller='task', action='show', id=c.task.parent.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=c.task.parent.id) %>"
+     title = "<% h.quote(c.task.parent.text) %>"
+     id = "title_<% c.task.parent.id %>"
+     class = "uses_permalink">
+   <% c.task.parent.title %> task</a>.
+% #endif
+<span
 % if not len(c.task.liveChildren()):
 style = "display:none;"
 %
-class="unfolded" id="subtasks">
- This task has <span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
- <span class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show();">View them.</span><br/>
+class="unfolded" id="subtasks">This task has
+<a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;"> 
+<span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
+</a><br/>
 </span>
 
 <span class="folded" id="edit_subtasks">
