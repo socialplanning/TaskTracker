@@ -11,16 +11,6 @@
 
 <span id="global-values" style="display:none" depth="<% c.depth %>"></span>
 
-<br/><br/>
-
-<!-- The previous task -->
-
-% if c.task.previousTask():
-<table class="task_list preview" width="100%">
-<& task_item_row.myt, atask = c.task.previousTask(), is_preview = True, is_flat = True &>
-
-</table>
-%
 <div id="wrap-task-details">
 
 <!-- The current task -->
@@ -139,13 +129,33 @@ class="unfolded" id="subtasks">This task has
 
 <br/>
 
-<!-- The next task -->
-
-% if c.task.nextTask():
-<table class="task_list preview" width="100%">
-  <& task_item_row.myt, atask = c.task.nextTask(), no_second_row = True, is_preview = True, is_flat = True &>
-</table>
+<table width="100%"><tbody>
+<tr>
+<td width="50%">
+% prev = c.task.previousTask()
+% if prev:
+<< previous task: 
+  <a href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
+     title = "<% h.quote(prev.text) %>"
+     id = "title_<% prev.id %>"
+     class = "uses_permalink">
+   <% prev.title %></a>
 %
+</td>
+<td align="right">
+% next = c.task.nextTask()
+% if next:
+next task:
+  <a href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
+     title = "<% h.quote(next.text) %>"
+     id = "title_<% next.id %>"
+     class = "uses_permalink">
+   <% next.title %></a> >>
+%
+</td>
+</tbody></table>
 
 <& task_list_footer.myt, pre_footer = h.link_to('Go back to the task list', h.url_for(action='show', controller='tasklist', id=c.task.task_listID)) + ' | ' &>
 
@@ -172,12 +182,12 @@ function change_description_updated(task_id, field_name, comment_text) {
     if( act ) {
       field_name = field_name[0].toUpperCase() + field_name.substr(1);
       if( field_name == 'Comment' ) {
-        var b = Builder.node('b', field_name + " from Today by you");
+        var b = Builder.node('b', field_name + " from Today by <% c.username %>");
 	var span = Builder.node('span');
 	span.innerHTML = comment_text;
 	var li = Builder.node('li', {}, [span, Builder.node('br'), b, Builder.node('hr')]);
       } else {
-        var b = Builder.node('b', field_name + " updated Today by you");
+        var b = Builder.node('b', field_name + " updated Today by <% c.username %>");
 	var li = Builder.node('li', {}, [b, Builder.node('hr')]);
       }
       act.insertBefore(li, act.childNodes[0]);
