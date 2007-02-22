@@ -416,18 +416,17 @@ function setupEmptyList() {
 	showTaskCreate();
 }
 
-function filterDeadline() {
+function filterDeadline(task) {
     var filtervalue = $('deadline_filter').value;
 
     if (filtervalue == 'All') {
-	return;
+	return false;
     }
     if (filtervalue == 'None') {
-	$A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-		if (node.getAttribute('deadline') != 'None')
-		    node.hide();
-	    });
-	return;
+	if (task.getAttribute('deadline') != 'None') {
+	    task.hide();
+	    return true;
+	}
     }
     
     var dates = filtervalue.split(",");
@@ -445,35 +444,37 @@ function filterDeadline() {
     var byThisDate = new Date();
     minDate.setDate(minDate.getDate() - min);
     byThisDate.setDate(byThisDate.getDate() + max + 1);
-    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-	    var deadline = node.getAttribute('deadline');
-	    if (deadline != 'None') {
-		var db = new DateBocks();
-		var nodeDate = db.parseDateString(deadline);
-		if (!(nodeDate < byThisDate)) {
-		    node.hide();
-		}
-		if (min <= max && !(nodeDate > minDate)) {
-		    node.hide();
-		}
-	    } else {
-		node.hide();
-	    }
-	});
+
+    var deadline = task.getAttribute('deadline');
+    if (deadline != 'None') {
+	var db = new DateBocks();
+	var nodeDate = db.parseDateString(deadline);
+	if (!(nodeDate < byThisDate)) {
+	    task.hide();
+	    return true;
+	}
+	if (min <= max && !(nodeDate > minDate)) {
+	    task.hide();
+	    return true;
+	}
+	return false;
+    } else {
+	task.hide();
+	return true;
+    }
 }
 
-function filterUpdated() {
+function filterUpdated(task) {
     var filtervalue = $('updated_filter').value;
 
     if (filtervalue == 'All') {
-	return;
+	return false;
     }
     if (filtervalue == 'None') {
-	$A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-		if (node.getAttribute('updated'))
-		    node.hide();
-	    });
-	return;
+	if( task.getAttribute('updated') ) {
+	    task.hide();
+	    return true;
+	}
     }
     
     var dates = filtervalue.split(",");
@@ -490,58 +491,87 @@ function filterUpdated() {
     var byThisDate = new Date();
     minDate.setDate(minDate.getDate() - min);  //HERE IS WHERE I AM DOING A HACK
     byThisDate.setDate(byThisDate.getDate() + max + 1);
-    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-	    var deadline = node.getAttribute('updated');
-	    if (deadline) {
-		var db = new DateBocks();
-		var nodeDate = db.parseDateString(deadline);
-		if (!(nodeDate < byThisDate)) {
-		    node.hide();
-		}
-		if (min >= max && !(nodeDate >= minDate)) {
-		    node.hide();
-		}
-	    } else {
-		node.hide();
-	    }
-	});
+
+    var deadline = task.getAttribute('updated');
+    if( deadline ) {
+	var db = new DateBocks();
+	var nodeDate = db.parseDateString(deadline);
+	if( !(nodeDate < byThisDate) ) {
+	    task.hide();
+	    return true;
+	}
+	if( min >= max && !(nodeDate >= minDate) ) {
+	    task.hide();
+	    return true;
+	}
+	return false;
+    } else {
+	task.hide();
+	return true;
+    }
 }
 
-function filterField(fieldname) {
-    if (fieldname == "deadline") {
-	filterDeadline();
-	return;
+function filterField(fieldname, task) {
+    // returns true if the task is filtered away (hidden)
+    if( fieldname == "deadline" ) {
+	return filterDeadline(task);
     }
-    if (fieldname == "updated") {
-	filterUpdated();
-	return;
+    if( fieldname == "updated" ) {
+	return filterUpdated(task);
     }
 			
     filtervalue = $(fieldname + '_filter').value;
-    if (filtervalue == 'All') {
-	return;
+    if( filtervalue == 'All' ) {
+	return false;
     }
-    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-	    if (node.getAttribute(fieldname) != filtervalue) {
-		node.hide();
-	    }
-	});
+
+    if( task.getAttribute(fieldname) != filtervalue ) {
+	task.hide();
+	return true;
+    }
+    
 }
 
 function filterListByAllFields() {
+    /*
+      Each task has an integer depth_adjustment (da) attribute defaulting at 0.
+      When iterating to a task:
+        Show the task
+        task.da := task.parent.da
+	for each filter:
+	  if( hide-flag )
+	    hideTask(task)
+	    When hiding a task:
+              task.da := task.da - 1
+	      reindentTask( task.depth + task.da )
+     */
     $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
+	    var already_filtered = false;
 	    node.show();
-	});
-    $A(["status", "deadline", "priority", "owner", "updated"]).each(function(field){
-	    var filter = $(field + '_filter');
-	    if( !filter )
-		return;
-	    var filtervalue = filter.value;
-	    setPermalink(field, filtervalue);
-	    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
-	    if (filtervalue == "All")
-		return;
-	    filterField(field);
+	    
+	    var parent = $("task_" + node.getAttribute("parentID"));
+	    node.depth_adjustment = 0;
+	    if( parent )
+		node.depth_adjustment = parent.depth_adjustment || 0;
+	    
+	    $A(["status", "deadline", "priority", "owner", "updated"]).each(function(field){
+		    var dont_filter = false;
+		    var filter = $(field + '_filter');
+		    if( !filter )
+			dont_filter = true;
+		    var filtervalue = filter.value;
+		    setPermalink(field, filtervalue);
+		    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
+		    if (filtervalue == "All")
+			dont_filter = true;
+		    if( !dont_filter && !already_filtered ) {
+			if( filterField(field, node) ) {
+			    --node.depth_adjustment;
+			    already_filtered = true;
+			}
+		    }
+		    reindentTask(node.getAttribute("task_id"), node.depth_adjustment);
+		});
 	});
 }
 
@@ -872,6 +902,14 @@ function failedChangingField(req) {
     fieldlabel.style.color = "red";
 }
 
+function reindentTask(task_id, adjustment) {
+    var task = $("task_" + task_id);
+    var title = task.getElementsByTagName("SPAN")[0];
+    var handle = $$('#task_' + task_id + " .handle")[0];
+    var depth = parseInt(title.getAttribute("depth")) + adjustment;
+    handle.style.marginLeft = 15 * depth + 'px';
+}
+
 function doneMovingTask(req) {
     var order = eval(req.responseText);
     var breaking_row = $$('#breaking-row')[0].parentNode;
@@ -887,10 +925,10 @@ function doneMovingTask(req) {
 	    }
 
 	    var depth = task_rec.depth;
-	    var title = task.getElementsByTagName("SPAN")[0];		
+	    var title = task.getElementsByTagName("SPAN")[0];
 	    title.setAttribute('depth', depth);
 	    var handle = $$('#task_' + task_rec.id + " .handle")[0];
-	    handle.style.marginLeft = 15 * depth + 'px'; 
+	    handle.style.marginLeft = 15 * depth + 'px';
 
 	    var second_line = $('second_line_' + task_rec.id);
 	    insertAfter(task, last_task);
