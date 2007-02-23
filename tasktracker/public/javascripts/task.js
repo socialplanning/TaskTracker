@@ -423,10 +423,12 @@ function filterDeadline(task) {
 	return false;
     }
     if (filtervalue == 'None') {
-	if (task.getAttribute('deadline') != 'None') {
+	console.log("ok");
+	console.log(task.getAttribute('deadline'));
+	if( task.getAttribute('deadline') != 'None' ) {
 	    task.hide();
 	    return true;
-	}
+	} else return false;
     }
     
     var dates = filtervalue.split(",");
@@ -474,7 +476,7 @@ function filterUpdated(task) {
 	if( task.getAttribute('updated') ) {
 	    task.hide();
 	    return true;
-	}
+	} else return false;
     }
     
     var dates = filtervalue.split(",");
