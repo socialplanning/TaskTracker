@@ -300,10 +300,14 @@ class Task(SQLObject):
         return path
 
     @memoize
-    def previousTask(self):
+    def previousTask(self, sql=None):
+        query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
+        if sql:
+            query = "%s AND %s" % (query, sql)
         conn = hub.getConnection()
         trans = conn.transaction()
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
+        #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.select(query)])]
         trans.commit()
 
         prev = None
@@ -314,11 +318,15 @@ class Task(SQLObject):
         return prev
 
     @memoize
-    def nextTask(self):
-
+    def nextTask(self, sql=None):
+        query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
+        if sql:
+            query = "%s AND %s" % (query, sql)
         conn = hub.getConnection()
         trans = conn.transaction()
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)], reverse=True)]
+        #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)], reverse=True)]
+        print query
+        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.select(query)], reverse=True)]
         trans.commit()
         
         next = None

@@ -564,3 +564,28 @@ def taskListUpdated(taskList):
 def atomTime(when):
     return when.strftime("%Y-%m-%dT%H:%M:%SZ") #note the time zone Z.
 
+def permalink_to_sql(permalink):
+    terms = permalink.split("&")
+    sql = []
+    for term in terms:
+        if not term: continue
+        key, val = term.split("=")
+        if key == "deadline":
+            import datetime
+            now = datetime.date.today()
+            if val == '-1':
+                sql.append("deadline < '%s'" % now)
+            elif val == '0':
+                sql.append("deadline = '%s'" % now)
+            elif val == '1':
+                now += datetime.timedelta(days=1)
+                sql.append("deadline = '%s'" % now)
+            elif val == '0,7':
+                then = now + datetime.timedelta(days=7)
+                sql.append("deadline >= '%s' AND deadline < '%s'" % (now, then))
+            elif val.lower() == 'none':
+                sql.append("deadline is null")
+            else: continue
+        elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated, sortOrder, sortBy
+            sql.append("%s='%s'" % (key, val))
+    return " AND ".join(sql)

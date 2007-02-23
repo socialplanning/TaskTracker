@@ -132,7 +132,7 @@ class="unfolded" id="subtasks">This task has
 <table id="next-prev-tasks"><tbody>
 <tr>
 <td>
-% prev = c.task.previousTask()
+% prev = c.task.previousTask(h.permalink_to_sql(c.permalink))
 % if prev:
 << previous task: 
   <a href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
@@ -144,7 +144,7 @@ class="unfolded" id="subtasks">This task has
 %
 </td>
 <td align="right">
-% next = c.task.nextTask()
+% next = c.task.nextTask(h.permalink_to_sql(c.permalink))
 % if next:
 next task:
   <a href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
