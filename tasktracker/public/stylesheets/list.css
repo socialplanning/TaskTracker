@@ -8,11 +8,18 @@ table {
   border-collapse: collapse;
 }
 
+table#next-prev-tasks {
+  background-color: #ddd;
+  width: 100%;
+}
+  table#next-prev-tasks td {
+    width: 50%;
+  }
+
 table.task_list {
   padding-left: 0;
   width: 100%;
 }
-
   .title-column, .updated-column {
     white-space: nowrap;
   }
@@ -258,6 +265,10 @@ label {
 
 .small {
    font-size: 0.9em;
+}
+
+.big {
+   font-size: 1.5em;
 }
 
 .currently-dragged-column div {

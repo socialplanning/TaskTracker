@@ -129,9 +129,9 @@ class="unfolded" id="subtasks">This task has
 
 <br/>
 
-<table width="100%"><tbody>
+<table id="next-prev-tasks"><tbody>
 <tr>
-<td width="50%">
+<td>
 % prev = c.task.previousTask()
 % if prev:
 << previous task: 
@@ -139,7 +139,7 @@ class="unfolded" id="subtasks">This task has
      base_href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
      title = "<% h.quote(prev.text) %>"
      id = "title_<% prev.id %>"
-     class = "uses_permalink">
+     class = "uses_permalink big">
    <% prev.title %></a>
 %
 </td>
@@ -151,7 +151,7 @@ next task:
      base_href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
      title = "<% h.quote(next.text) %>"
      id = "title_<% next.id %>"
-     class = "uses_permalink">
+     class = "uses_permalink big">
    <% next.title %></a> >>
 %
 </td>
