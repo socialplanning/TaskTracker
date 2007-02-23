@@ -423,8 +423,6 @@ function filterDeadline(task) {
 	return false;
     }
     if (filtervalue == 'None') {
-	console.log("ok");
-	console.log(task.getAttribute('deadline'));
 	if( task.getAttribute('deadline') != 'None' ) {
 	    task.hide();
 	    return true;
