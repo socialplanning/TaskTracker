@@ -567,6 +567,8 @@ def atomTime(when):
 def permalink_to_sql(permalink):
     terms = permalink.split("&")
     sql = []
+    orderBy = None
+    sortOrder = None
     for term in terms:
         if not term: continue
         key, val = term.split("=")
@@ -588,4 +590,12 @@ def permalink_to_sql(permalink):
             else: continue
         elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated, sortOrder, sortBy
             sql.append("%s='%s'" % (key, val))
-    return " AND ".join(sql)
+        elif key == "sortOrder":
+            if val == "up": sortOrder = "ASC"
+            elif val == "down": sortOrder = "DESC"
+        elif key == "sortBy":
+            orderBy = val
+    body = ""
+    if len(sql):
+        body = "AND %s" % " AND ".join(sql)
+    return (body, orderBy, sortOrder)

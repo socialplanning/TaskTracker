@@ -289,48 +289,71 @@ class Task(SQLObject):
         return depth
 
     @memoize
-    def path(self):
+    def path(self, attr=None):
+        if not attr: attr = "sort_index"
+        #print attr
         path = []
         task = self
         while task.parentID:
-            path.append(task.sort_index)
+            path.append(getattr(task, attr))
             task = task.parent
-        path.append(task.sort_index)
+        path.append(getattr(task, attr))
         path.reverse()
         return path
 
-    @memoize
-    def previousTask(self, sql=None):
+
+#    @memoize
+    def previousTask(self, options=None):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
+        sql = sortOrder = None
+        if options: 
+            sql, orderBy, sortOrder = options
         if sql:
-            query = "%s AND %s" % (query, sql)
+            query = "%s %s" % (query, sql)
+        if not orderBy:
+            orderBy = "sort_index"
         conn = hub.getConnection()
         trans = conn.transaction()
         #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.select(query)])]
+        #print "prevpath: ", [task.path(orderBy) for task in Task.select(query)]
+        #tasks = [t[1] for t in sorted([(task.path(orderBy), task) for task in Task.select(query)])]
+        tasks = Task.select(query)
         trans.commit()
+        
+        root_tasks = [task for task in tasks if task.parentID == 0]
+        sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
 
         prev = None
-        for task in tasks:
+        for task in sorted_tasks:
             if task == self:
                 return prev
             prev = task
         return prev
 
     @memoize
-    def nextTask(self, sql=None):
+    def nextTask(self, options=None):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
+        sql = sortOrder = None
+        if options: 
+            sql, orderBy, sortOrder = options
         if sql:
-            query = "%s AND %s" % (query, sql)
+            query = "%s %s" % (query, sql)
+        if not orderBy:
+            orderBy = "sort_index"
         conn = hub.getConnection()
         trans = conn.transaction()
         #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)], reverse=True)]
-        print query
-        tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.select(query)], reverse=True)]
+        #print "nextpath: ", [task.path(orderBy) for task in Task.select(query)]
+        #tasks = [t[1] for t in sorted([(task.path(orderBy), task) for task in Task.select(query)], reverse=True)]
+        tasks = Task.select(query)
         trans.commit()
         
+        root_tasks = [task for task in tasks if task.parentID == 0]
+        sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
+        sorted_tasks.reverse()
+
         next = None
-        for task in tasks:
+        for task in sorted_tasks:
             if task == self:
                 return next
             next = task
@@ -387,6 +410,29 @@ class Task(SQLObject):
 
         f.close()
 
+def sortedTasks(allowed_tasks, this_level, sort_by):
+    def _cmp(x, y):
+        try:
+            return cmp(x,y)
+        except TypeError:
+            # this isn't even remotely general, but in our current db setup the only way to get here is comparing a datetime with None.
+            if x[0] is None:
+                return 1
+            elif y[0] is None:
+                return -1
+            else:
+                return 0
+    s = []
+    
+    tuples = [(getattr(k, sort_by), k) for k in this_level]
+    print [(t[0], t[1].title) for t in tuples]
+    tuples = sorted(tuples, cmp=_cmp)
+    print [(t[0], t[1].title) for t in tuples]
+    for k in tuples:
+        if k[1] in allowed_tasks:
+            s.append(k[1])
+        s.extend(sortedTasks(allowed_tasks, k[1].children, sort_by))
+    return s
 
 def _by_date(obj):
     if hasattr(obj, 'date'):
