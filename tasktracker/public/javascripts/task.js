@@ -424,7 +424,6 @@ function filterDeadline(task) {
     }
     if (filtervalue == 'None') {
 	if( task.getAttribute('deadline') != 'None' ) {
-	    task.hide();
 	    return true;
 	} else return false;
     }
@@ -450,16 +449,13 @@ function filterDeadline(task) {
 	var db = new DateBocks();
 	var nodeDate = db.parseDateString(deadline);
 	if (!(nodeDate < byThisDate)) {
-	    task.hide();
 	    return true;
 	}
 	if (min <= max && !(nodeDate > minDate)) {
-	    task.hide();
 	    return true;
 	}
 	return false;
     } else {
-	task.hide();
 	return true;
     }
 }
@@ -472,7 +468,6 @@ function filterUpdated(task) {
     }
     if (filtervalue == 'None') {
 	if( task.getAttribute('updated') ) {
-	    task.hide();
 	    return true;
 	} else return false;
     }
@@ -497,16 +492,13 @@ function filterUpdated(task) {
 	var db = new DateBocks();
 	var nodeDate = db.parseDateString(deadline);
 	if( !(nodeDate < byThisDate) ) {
-	    task.hide();
 	    return true;
 	}
 	if( min >= max && !(nodeDate >= minDate) ) {
-	    task.hide();
 	    return true;
 	}
 	return false;
     } else {
-	task.hide();
 	return true;
     }
 }
@@ -526,7 +518,6 @@ function filterField(fieldname, task) {
     }
 
     if( task.getAttribute(fieldname) != filtervalue ) {
-	task.hide();
 	return true;
     }
     
@@ -566,6 +557,9 @@ function filterListByAllFields() {
 			dont_filter = true;
 		    if( !dont_filter && !already_filtered ) {
 			if( filterField(field, node) ) {
+			    node.hide();
+			    var second_line = $('second_line_' + node.getAttribute("task_id"));
+			    if( second_line ) second_line.hide();
 			    --node.depth_adjustment;
 			    already_filtered = true;
 			}
@@ -1031,7 +1025,7 @@ function doDrop(child, drop_target, dropzone) {
 function removeRow(ul, row) {
     ul.removeChild(row);
     //find corresponding second line
-    id = row.getAttribute('task_id');
+    var id = row.getAttribute('task_id');
     row.second_line = $('second_line_' + id);
     ul.removeChild(row.second_line);
 }
