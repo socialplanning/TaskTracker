@@ -762,6 +762,28 @@ function changeField(task_id, fieldname) {
 var selected_form;
 var selected_label;
 
+function recalculateUncompletedChildren(taskitem) {
+    var uncompletedTasks = 0;
+    var countTasks = function(task) {
+	if( task.getAttribute('status') != 'done' )
+	    ++uncompletedTasks;
+	task.childTasks.each( function(child) { countTasks(child); } );
+    }
+    taskitem.childTasks.each( function(child) { countTasks(child); } );
+    
+    var num_subtasks = taskitem.getElementsByClassName("num_subtasks")[0];
+    num_subtasks.innerHTML = uncompletedTasks;
+    if( uncompletedTasks == 0 )
+	num_subtasks.parentNode.hide();
+    else
+	num_subtasks.parentNode.show();
+    var the_word_task = taskitem.getElementsByClassName("the-word-task")[0];
+    if( uncompletedTasks == 1 )
+	the_word_task.innerHTML = "task";
+    else
+	the_word_task.innerHTML = "tasks";
+}
+
 function updateTaskItem(task_id) {
     var tasktext = $('title_' + task_id);
     var taskitem = $('task_' + task_id);
@@ -792,26 +814,8 @@ function updateTaskItem(task_id) {
     } else {
 	flattenTask(task_id);
     }
-    var uncompletedTasks = 0;
-    var countTasks = function(task) {
-	if( task.getAttribute('status') != 'done' )
-	    ++uncompletedTasks;
-	task.childTasks.each( function(child) { countTasks(child); } );
-    }
-    taskitem.childTasks.each( function(child) { countTasks(child); } );
-
-    var num_subtasks = taskitem.getElementsByClassName("num_subtasks")[0];
-    num_subtasks.innerHTML = uncompletedTasks;
-    if( uncompletedTasks == 0 )
-	num_subtasks.parentNode.hide();
-    else
-	num_subtasks.parentNode.show();
-    var the_word_task = taskitem.getElementsByClassName("the-word-task")[0];
-    if( uncompletedTasks == 1 )
-	the_word_task.innerHTML = "task";
-    else
-	the_word_task.innerHTML = "tasks";
     
+    recalculateUncompletedChildren(taskitem);
 
     uncompletedTasks = 0;
     /* TODO THIS DOES NOT EVEN REMOTELY BELONG HERE. */
@@ -840,7 +844,7 @@ function doneChangingField(req) {
 }
 
 function updateParentTask(parent) {
-    updateTaskItem(parent.getAttribute("task_id"));
+    recalculateUncompletedChildren(parent);
     var myParentId = parent.getAttribute("parentID");
     if( myParentId ) {
 	var myParent = $('task_' + myParentId);
