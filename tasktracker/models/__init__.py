@@ -301,9 +301,7 @@ class Task(SQLObject):
         path.reverse()
         return path
 
-
-#    @memoize
-    def previousTask(self, options=None):
+    def adjacentTasks(self, options=None):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
         sql = sortOrder = None
         if options: 
@@ -315,49 +313,24 @@ class Task(SQLObject):
         conn = hub.getConnection()
         trans = conn.transaction()
         #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
-        #print "prevpath: ", [task.path(orderBy) for task in Task.select(query)]
-        #tasks = [t[1] for t in sorted([(task.path(orderBy), task) for task in Task.select(query)])]
+
         tasks = Task.select(query)
         trans.commit()
         
         root_tasks = [task for task in tasks if task.parentID == 0]
         sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
 
-        prev = None
-        for task in sorted_tasks:
-            if task == self:
-                return prev
-            prev = task
-        return prev
+        next = prev = None
+        index = sorted_tasks.index(self)
+        if index > 0:
+            prev = sorted_tasks[index - 1]
+        if index < len(sorted_tasks) - 1:
+            next = sorted_tasks[index + 1]
 
-    @memoize
-    def nextTask(self, options=None):
-        query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
-        sql = sortOrder = None
-        if options: 
-            sql, orderBy, sortOrder = options
-        if sql:
-            query = "%s %s" % (query, sql)
-        if not orderBy:
-            orderBy = "sort_index"
-        conn = hub.getConnection()
-        trans = conn.transaction()
-        #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)], reverse=True)]
-        #print "nextpath: ", [task.path(orderBy) for task in Task.select(query)]
-        #tasks = [t[1] for t in sorted([(task.path(orderBy), task) for task in Task.select(query)], reverse=True)]
-        tasks = Task.select(query)
-        trans.commit()
-        
-        root_tasks = [task for task in tasks if task.parentID == 0]
-        sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
-        sorted_tasks.reverse()
-
-        next = None
-        for task in sorted_tasks:
-            if task == self:
-                return next
-            next = task
-        return next
+        if sortOrder == "DESC":
+            return (next, prev)
+        else:
+            return (prev, next)
 
     def actions(self):
         return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)
@@ -424,10 +397,7 @@ def sortedTasks(allowed_tasks, this_level, sort_by):
                 return 0
     s = []
     
-    tuples = [(getattr(k, sort_by), k) for k in this_level]
-    print [(t[0], t[1].title) for t in tuples]
-    tuples = sorted(tuples, cmp=_cmp)
-    print [(t[0], t[1].title) for t in tuples]
+    tuples = sorted([(getattr(k, sort_by), k) for k in this_level], cmp=_cmp)
     for k in tuples:
         if k[1] in allowed_tasks:
             s.append(k[1])

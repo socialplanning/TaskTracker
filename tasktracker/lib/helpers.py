@@ -588,7 +588,7 @@ def permalink_to_sql(permalink):
             elif val.lower() == 'none':
                 sql.append("deadline is null")
             else: continue
-        elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated, sortOrder, sortBy
+        elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated, sortOrder
             sql.append("%s='%s'" % (key, val))
         elif key == "sortOrder":
             if val == "up": sortOrder = "ASC"
