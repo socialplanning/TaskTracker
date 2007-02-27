@@ -101,30 +101,6 @@ left) </span>
 
 </td>
 
-% if atask.task_list.hasFeature('deadlines'):
-<td class="deadline-column">
-<div class="first_line">
-<% h.editableField(atask, 'deadline', uneditable = is_preview) %>
-</div>
-</td>
-%
-
-<td class="priority-column">
-<div class="first_line">
-<% h.editableField(atask, 'priority', uneditable = is_preview) %>
-</div>
-</td>
-
-<td class="owner-column">
-<div class="first_line">
-<% h.editableField(atask, 'owner', uneditable = is_preview) %>
-</div>
-</td>
-
-<td class="updated-column">
-<div class="first_line">
-<% h.readableDate(atask.updated).replace(" ", "&nbsp;") %>
-</div>
-</td>
+<% h.generateMovableColumns(atask, is_preview, h.getColumnOrder(c.permalink)) %>
 
 </tr>

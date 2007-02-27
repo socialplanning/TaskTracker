@@ -2,15 +2,7 @@
 
 <% h.sortableColumn('status', klass="title-column", colspan=2) %>
 
-% if c.tasklist.hasFeature('deadlines'):
- <% h.sortableColumn('deadline') %>
-%
-
-<% h.sortableColumn('priority') %>
-
-<% h.sortableColumn('owner', 'assigned&nbsp;to') %>
-
-<% h.sortableColumn('updated', 'updated') %>
+<% h.generateMovableColumnHeaders(h.getColumnOrder(c.permalink)) %>
 
 </tr>
 

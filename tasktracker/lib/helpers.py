@@ -602,3 +602,73 @@ def permalink_to_sql(permalink):
     if len(sql):
         body = "AND %s" % " AND ".join(sql)
     return (body, orderBy, sortOrder, updatedFilter)
+
+def getColumnOrder(permalink):
+    print permalink
+    permalink = permalink.split("&")
+    for part in permalink:
+        print part
+        if not part: continue
+        lhs, rhs = part.split("=")
+        print lhs, rhs
+        if lhs == "columnOrder":
+            return rhs.split(",")
+    return list()
+
+def _orderMovableColumns(columns, column_order):
+    ret = str()
+    for col in column_order:
+        if col in columns:
+            ret += columns[col]
+            del columns[col]
+    for col in columns:
+        ret += columns[col]
+    return ret
+
+def generateMovableColumnHeaders(column_order):
+    columns = dict()
+    if c.tasklist.hasFeature("deadlines"):
+        columns['deadline'] = sortableColumn("deadline")
+    columns['priority'] = sortableColumn('priority')
+    columns['owner'] = sortableColumn("owner", "assigned&nbsp;to")
+    columns['updated'] = sortableColumn('updated', 'updated')
+    return _orderMovableColumns(columns, column_order)
+    
+def generateMovableColumns(atask, is_preview, column_order):
+    columns = dict()
+    if atask.task_list.hasFeature('deadlines'):
+        columns['deadline'] = \
+            """<td class="deadline-column">
+            <div class="first_line">
+             %s
+            </div>
+            </td>""" % editableField(atask, 'deadline', uneditable = is_preview)
+
+    columns['priority'] = \
+        """
+        <td class="priority-column">
+         <div class="first_line">
+          %s
+         </div>
+        </td>
+        """ % editableField(atask, 'priority', uneditable = is_preview)
+
+    columns['owner'] = \
+        """
+        <td class="owner-column">
+         <div class="first_line">
+          %s
+         </div>
+        </td>
+        """ % editableField(atask, 'owner', uneditable = is_preview)
+
+    columns['updated'] = \
+        """
+        <td class="updated-column">
+         <div class="first_line">
+          %s
+         </div>
+        </td>
+        """ % readableDate(atask.updated).replace(" ", "&nbsp;")
+
+    return _orderMovableColumns(columns, column_order)
