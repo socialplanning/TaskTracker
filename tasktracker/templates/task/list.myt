@@ -2,7 +2,8 @@
 <hr/><br/>
 <a href="<% h.url_for(controller='tasklist', action='index') %>">
 &lt;&lt; return to list of lists</a>&nbsp;
-<a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">permalink this view</a>
+<a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
+   href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">permalink this view</a>
 </span><br/>
 
 <& task_list_title.myt &>

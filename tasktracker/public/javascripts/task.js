@@ -199,13 +199,16 @@ ColumnDropzone.prototype = (new Rico.Dropzone()).extend( {
 	    return e.clientX < ( this.getAbsoluteRect().left + this.halfWidth + (e.offsetX ? document.body.scrollLeft : 0) );
 	},
 
-	/*	__accept: function(draggableObject, e) {
-
-		},*/
-
 	accept: function(draggableObjects) {
 	    ColumnDropzone.lastColLeft = ColumnDropzone.lastColRight = null;
-	    // TODO eventually this should do more, like stuff with the permalink
+	    var order = [];
+	    $A( $('column-heading').getElementsByTagName("TH") ).each( function(col) {
+		    var name = col.id.replace("-heading", '');
+		    if( name == 'status' ) return;
+		    order[order.length] = name;
+		});
+	    order = order.join(",");
+	    setPermalink("columnOrder", order);
 	}
     } );
 

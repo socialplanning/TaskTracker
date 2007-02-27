@@ -604,13 +604,10 @@ def permalink_to_sql(permalink):
     return (body, orderBy, sortOrder, updatedFilter)
 
 def getColumnOrder(permalink):
-    print permalink
     permalink = permalink.split("&")
     for part in permalink:
-        print part
         if not part: continue
         lhs, rhs = part.split("=")
-        print lhs, rhs
         if lhs == "columnOrder":
             return rhs.split(",")
     return list()
