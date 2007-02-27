@@ -335,19 +335,17 @@ class Task(SQLObject):
         
         all_tasks = Task.select( """task.task_list_id=%s AND task.live=1""" % (c.task_listID) )
         root_tasks = [task for task in all_tasks if task.parentID == 0]
-        sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
+        sorted_tasks = sortedTasks(tasks, root_tasks, orderBy, sortOrder)
 
         next = prev = None
+        print [t.title for t in sorted_tasks]
         index = sorted_tasks.index(self)
         if index > 0:
             prev = sorted_tasks[index - 1]
         if index < len(sorted_tasks) - 1:
             next = sorted_tasks[index + 1]
 
-        if sortOrder == "DESC":
-            return (next, prev)
-        else:
-            return (prev, next)
+        return (prev, next)
 
     def actions(self):
         return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)
@@ -400,7 +398,7 @@ class Task(SQLObject):
 
         f.close()
 
-def sortedTasks(allowed_tasks, this_level, sort_by):
+def sortedTasks(allowed_tasks, this_level, sort_by, sort_order):
     def _cmp(x, y):
         try:
             return cmp(x,y)
@@ -412,13 +410,21 @@ def sortedTasks(allowed_tasks, this_level, sort_by):
                 return -1
             else:
                 return 0
+
+    reverse = False
+    if sort_order == "DESC":
+        reverse = True
     s = []
-    
+
+    # we can't just pass reverse=True to sorted because we need
+    # a totally reversed list not just a reverse-sorted list.
     tuples = sorted([(getattr(k, sort_by), k) for k in this_level], cmp=_cmp)
+    if reverse:
+        tuples.reverse()
     for k in tuples:
         if k[1] in allowed_tasks:
             s.append(k[1])
-        s.extend(sortedTasks(allowed_tasks, k[1].children, sort_by))
+        s.extend(sortedTasks(allowed_tasks, k[1].children, sort_by, sort_order))
     return s
 
 def _by_date(obj):
