@@ -569,6 +569,7 @@ def permalink_to_sql(permalink):
     sql = []
     orderBy = None
     sortOrder = None
+    updatedFilter = None
     for term in terms:
         if not term: continue
         key, val = term.split("=")
@@ -588,6 +589,8 @@ def permalink_to_sql(permalink):
             elif val.lower() == 'none':
                 sql.append("deadline is null")
             else: continue
+        elif key == "updated":
+            updatedFilter = val
         elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated
             sql.append("%s='%s'" % (key, val))
         elif key == "sortOrder":
@@ -598,4 +601,4 @@ def permalink_to_sql(permalink):
     body = ""
     if len(sql):
         body = "AND %s" % " AND ".join(sql)
-    return (body, orderBy, sortOrder)
+    return (body, orderBy, sortOrder, updatedFilter)

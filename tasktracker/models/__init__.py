@@ -279,7 +279,6 @@ class Task(SQLObject):
         self.status = newStatus
         return self.status
 
-    @memoize
     def depth(self):
         depth = 0
         p_id = int(self.parentID)
@@ -288,10 +287,8 @@ class Task(SQLObject):
             p_id = int(Task.get(p_id).parentID)
         return depth
 
-    @memoize
     def path(self, attr=None):
         if not attr: attr = "sort_index"
-        #print attr
         path = []
         task = self
         while task.parentID:
@@ -303,21 +300,41 @@ class Task(SQLObject):
 
     def adjacentTasks(self, options=None):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
-        sql = sortOrder = None
+        sql = sortOrder = updatedFilter = None
         if options: 
-            sql, orderBy, sortOrder = options
+            sql, orderBy, sortOrder, updatedFilter = options
         if sql:
             query = "%s %s" % (query, sql)
         if not orderBy:
             orderBy = "sort_index"
         conn = hub.getConnection()
         trans = conn.transaction()
-        #tasks = [t[1] for t in sorted([(task.path(), task) for task in Task.selectBy(task_listID=c.task_listID, live=True)])]
-
         tasks = Task.select(query)
         trans.commit()
+
+        def filterByUpdates(task):
+            now = datetime.date.today()
+
+            def datetime_to_date(dt):
+                return datetime.date(dt.year, dt.month, dt.day)
+
+            updated = datetime_to_date(task.updated)
+            if updatedFilter == '0':
+                return updated == now
+            elif updatedFilter == '-1':
+                now -= datetime.timedelta(days=1)
+                return updated == now
+            elif updatedFilter == '-7,0':
+                then = now - datetime.timedelta(days=7)
+                return updated > then and updated <= now
+            else:
+                return False
+
+        if updatedFilter:
+            tasks = filter(filterByUpdates, tasks)
         
-        root_tasks = [task for task in tasks if task.parentID == 0]
+        all_tasks = Task.select( """task.task_list_id=%s AND task.live=1""" % (c.task_listID) )
+        root_tasks = [task for task in all_tasks if task.parentID == 0]
         sorted_tasks = sortedTasks(tasks, root_tasks, orderBy)
 
         next = prev = None
