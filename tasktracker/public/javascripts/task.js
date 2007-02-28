@@ -1161,10 +1161,9 @@ function sortBy(column, order) {
     
     setPermalink("sortBy", column);
     setPermalink("sortOrder", order);
-
+    
     sortListBy($('tasks'), column, order == 'up' ? 1 : -1);
 }
-
 var initialized = false;
 
 function with_items (klass, func, parent) {
@@ -1191,6 +1190,13 @@ function setPermalink(newkey, newval) {
     var a_perm = $('permalink');
     if( !a_perm ) return;
     var permalink = a_perm.getAttribute('permalink');
+
+    function wrapitup() {
+	a_perm.setAttribute('permalink', permalink);
+	a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
+	Behavior.applySelectedRule("a.uses_permalink");
+    }
+
     var items = permalink.split("&");
     var i;
     for( i = 0; i < items.length; ++i ) {
@@ -1202,16 +1208,13 @@ function setPermalink(newkey, newval) {
 		permalink = permalink.replace(key + "=" + val + "&", '');
 	    else
 		permalink = permalink.replace(key + "=" + val, newkey + '=' + newval);
-	    a_perm.setAttribute('permalink', permalink);
-	    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
+	    wrapitup();
 	    return;
 	}
     }
     if( newval == 'All' ) return;
     permalink += ( newkey + "=" + newval + '&' );
-    a_perm.setAttribute('permalink', permalink);
-    a_perm.href = a_perm.getAttribute("base") + '?' + a_perm.getAttribute("permalink");
-    Behavior.applySelectedRule("a.uses_permalink");
+    wrapitup();
 }
 
 function onBodyClick(event) {
