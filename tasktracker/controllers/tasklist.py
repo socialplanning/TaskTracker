@@ -76,10 +76,8 @@ class TasklistController(BaseController):
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0
         c.depth = 0
-        c.permalink = ""
-        for param in request.GET:
-            if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
-                c.permalink = "%s%s=%s&" % (c.permalink, param, request.GET[param])
+        from tasktracker.lib import helpers as h
+        c.permalink = h._get_permalink(request.GET)
         return render_response('task/list.myt')
 
     @attrs(action='create')

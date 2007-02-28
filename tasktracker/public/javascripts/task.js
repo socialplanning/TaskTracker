@@ -748,10 +748,21 @@ function changeField(task_id, fieldname) {
     var is_flat = taskrow.getAttribute("is_flat");
     var editable_title = taskrow.getAttribute("editable_title");
     var depth = $("global-values"); depth = (depth ? depth.getAttribute('depth') : 0);
+    var columnOrder;
+    if( $('permalink') ) {
+	columnOrder = $('permalink').getAttribute("permalink");
+	if( columnOrder ) {
+	    columnOrder = columnOrder.match(/columnOrder=[\w,]+/);
+	    if( columnOrder ) 
+		columnOrder = columnOrder[0];
+	}
+    }
+    
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
 				     "&is_flat=" + is_flat + 
-				     "&editable_title=" + editable_title + "&depth=" + depth,
+				     "&editable_title=" + editable_title + "&depth=" + depth +
+				     (columnOrder ? "&columnOrder=" + columnOrder : ''),
 				     onSuccess:doneChangingField.bind([task_id, fieldname]),
 				     onFailure:failedChangingField.bind([task_id, fieldname])});
 }

@@ -296,6 +296,13 @@ def _ownerFilter(onblur = None, tasklist = None):
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', onchange=onblur)
 
+def _get_permalink(dikt):
+    permalink = ""
+    for param in dikt:
+        if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
+            permalink = "%s%s=%s&" % (permalink, param, dikt[param])
+    return permalink
+
 def _textArea(task):
     id = task.id
     orig = task.text

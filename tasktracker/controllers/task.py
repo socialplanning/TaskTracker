@@ -47,6 +47,7 @@ class EditTaskForm(formencode.Schema):
     is_preview = StringBoolean(not_empty = True)
     is_flat = StringBoolean(not_empty = True)
     editable_title = StringBoolean(not_empty = True)
+    columnOrder = String()
     depth = Int()
     private = NotEmpty()
 
@@ -106,11 +107,15 @@ class TaskController(BaseController):
         is_flat = self.form_result.get('is_flat', None)
         editable_title = self.form_result.get('editable_title', None)
         depth = self.form_result.get('depth', 0)
+        columnOrder = self.form_result.get('columnOrder', None)
         if not old == newfield:
             setattr(task, field, newfield)
 
         c.task = task
         c.depth = depth
+
+        if columnOrder:
+            c.permalink = columnOrder
 
         return render_response('task/task_item_row.myt', fragment=True, atask=c.task,
                                is_preview=is_preview, is_flat=is_flat, 
@@ -318,10 +323,7 @@ class TaskController(BaseController):
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
-        c.permalink = ""
-        for param in request.GET:
-            if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
-                c.permalink = "%s%s=%s&" % (c.permalink, param, request.GET[param])
+        c.permalink = h._get_permalink(request.GET)
         return render_response('task/show.myt')
 
     @authenticate
