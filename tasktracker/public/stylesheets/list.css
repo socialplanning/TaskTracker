@@ -31,8 +31,9 @@ table.task_list {
     background-color: #DDD;
   }
     td.deadline-column, td.owner-column, td.updated-column, td.priority-column, td.status-column, td.title-column { 
-      padding: 1em 0em 0em 0em;
+      padding: 0;
       width: 15%;
+      background-color: #DDD;
     }
     td.status-column {
       width: 1%;
@@ -48,8 +49,12 @@ table.task_list {
 	    color: gray
 	}
 
-      .first_line {  background-color: #DDD; }
-      .second-line {  background-color: #FFF; text-decoration: none; }
+  tr.second-line td { 
+    background-color: #FFF;
+    height: 1em;
+    text-decoration: none;
+    padding: 0;
+  }
 
 .low-profile-widget {
   display: block;
@@ -70,7 +75,7 @@ input#title { width: 50%; }
 
 input.auto-size { width: auto; height: auto; } 
 
-/*select:focus { height: 0.95em; font-size: 1em; }*/
+select.low-profile-widget:focus { height: 1em; font-size: 1em; }
 
 .filter-line {
   background-color: #ddd;

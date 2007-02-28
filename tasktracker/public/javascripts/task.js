@@ -265,7 +265,7 @@ function createDragDrop() {
     if (!initialized && hasReorderableTasks()) {
         initialized = true;
 
-    dndMgr.registerDropZone (new TaskItemDropzone( 'sibling_dropzone_0', 'sibling_dropzone_0', 0, 0, false, 'sibling_dropzone_indicator_0'));
+	//dndMgr.registerDropZone (new TaskItemDropzone( 'sibling_dropzone_0', 'sibling_dropzone_0', 0, 0, false, 'sibling_dropzone_indicator_0'));
 
         $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
 		enableDragDrop(node);
@@ -292,8 +292,8 @@ function enableDragDrop(node) {
     var id = node.getAttribute('task_id');
     dndMgr.registerDraggable( node.draggable = new TaskItemDraggable('draggable_' + id, 'draggable_' + id, node.id, 'draggable-name') );
     node.dropzones = [];
-    dndMgr.registerDropZone (node.dropzones[0] = new TaskItemDropzone( 'child_dropzone_' + id, 'child_dropzone_' + id, node.id, id, true, 'child_dropzone_indicator_' + id));
-    dndMgr.registerDropZone (node.dropzones[1] = new TaskItemDropzone( 'sibling_dropzone_' + id, 'sibling_dropzone_' + id, node.id, id, false, 'sibling_dropzone_indicator_' + id));
+    //dndMgr.registerDropZone (node.dropzones[0] = new TaskItemDropzone( 'child_dropzone_' + id, 'child_dropzone_' + id, node.id, id, true, 'child_dropzone_indicator_' + id));
+    //dndMgr.registerDropZone (node.dropzones[1] = new TaskItemDropzone( 'sibling_dropzone_' + id, 'sibling_dropzone_' + id, node.id, id, false, 'sibling_dropzone_indicator_' + id));
 }
 
 var myrules = {

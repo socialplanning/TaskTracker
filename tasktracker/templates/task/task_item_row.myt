@@ -13,13 +13,10 @@ editable_title = False
 %
 ">
 
-<div class="first_line">
 <% h.editableField(atask, 'status', uneditable = is_preview) %>
-</div>
 </td>
 
 <td class="title-column">
-<div class="first_line">
 <span id="draggable_<% atask.id %>" depth="<% atask.depth() - c.depth %>" class="taskitem draggable">
 % if not is_flat:
 <% h.image_tag(h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
@@ -96,8 +93,6 @@ left) </span>
 -- (private)
 %
 </span>
-</div>
-
 
 </td>
 
