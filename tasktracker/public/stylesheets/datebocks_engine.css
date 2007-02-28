@@ -27,6 +27,7 @@
 }
 
 .dateBocksInput input {
-	display: inline; 
-	width: 75px;
+	display: inline;
+	height: 1em;
+	width: 7em;
 }
