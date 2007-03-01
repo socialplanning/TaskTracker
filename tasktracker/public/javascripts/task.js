@@ -305,10 +305,10 @@ var myrules = {
 		return false;
 	    } else {
 		if (e.target && e.target.doclick) {
-		    e.target.doclick(e);
+		    return e.target.doclick(e);
 		}
 		else if (e.srcElement && e.srcElement.doclick) {
-		    e.srcElement.doclick(e);
+		    return e.srcElement.doclick(e);
 		}
 	    }
 	}
@@ -328,8 +328,7 @@ var myrules = {
     },
     'a.task_item' : function(element) {
 	element.doclick = function() {
-	    window.location.href = element.href;
-	    return false;
+	    return true;
 	}
     },
     
