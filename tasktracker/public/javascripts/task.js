@@ -314,26 +314,26 @@ var myrules = {
 	}
     },
 
-    '#add_a_task' : function(element) {
+    'a#add_a_task' : function(element) {
 	element.doclick = function() {
 	    showTaskCreate();
 	    return false;
 	}
     },
-    '.treewidget' : function(element) {
+    'img.treewidget' : function(element) {
 	element.doclick = function() {
 	    toggleCollapse(element.id.replace("handle_", ""));
 	    return false;
 	}
     },
-    '.task_item' : function(element) {
+    'a.task_item' : function(element) {
 	element.doclick = function() {
 	    window.location.href = element.href;
 	    return false;
 	}
     },
     
-    '#show_description' : function(element) {
+    'a#show_description' : function(element) {
 	element.onclick = function() {
 	    $('hideable_add_description').hide();
 	    $('hideable_title_label').show();

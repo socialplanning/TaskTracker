@@ -33,13 +33,19 @@
 function getElementsBySelector(parent, selector_string) {
     /*
       Things this does:
-       E
-       E.t
-       E#c
-       E F
+       S: [E].c
+       S: [E]#t
+       S: S S
 
       Things this does not do:
        everything else. most notably, standalone tagname and comma-separated lists of selectors and .class.otherclass
+
+      Things to do with this:
+       S: E
+       S: S, S
+       S: S.c
+       optimization -- currently always searches by tagname first. this is definitely stupid in the case of tagname=* 
+        and may be generally stupid; it seems likely that search-by-tagname will give the most results and should come last.
     */
     var selectors = selector_string.split(" ");
     var i;
