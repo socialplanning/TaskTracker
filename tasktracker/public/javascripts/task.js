@@ -356,6 +356,15 @@ var myrules = {
 	}
     },
 
+    'th.draggable-column-heading' : function(element) {
+	element.onclick = function() {
+	    if( !this.columnName )
+		this.columnName = this.id.replace("-heading", '');
+	    sortBy(this.columnName);
+	    return false;
+	}
+    },
+
     'a.uses_permalink' : function(element) {
 	var permalink = $("permalink");
 	if( permalink ) {
@@ -1137,7 +1146,6 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column, order) {
-    console.log(column, order);
     $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
 	    e.hide();
 	});

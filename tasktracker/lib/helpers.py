@@ -114,14 +114,14 @@ def taskListDropDown(id):
 
 def sortableColumn(field, fieldname = None, klass = None, colspan=1):
     span = """
-    <th id="%s-heading" class="%s draggable-column-heading" colspan="%s" onclick="sortBy('%s'); ">
+    <th id="%s-heading" class="%s draggable-column-heading" colspan="%s">
     <span class="column-heading %s-column" sortOrder=''">%s
       <span style="display:none;" class="sort-arrows" id="%s-arrows">&nbsp;
        <span id="%s-down-arrow">&#x2193;</span>
        <span id="%s-up-arrow">&#x2191;</span>
       </span>
     </span>
-    </th>""" % (field, klass or "%s-column" % field, colspan, field, field, fieldname or field, field, field, field)
+    </th>""" % (field, klass or "%s-column" % field, colspan, field, fieldname or field, field, field, field)
     return span
 
 def editableField(task, field, ifNone = None, uneditable = False):
