@@ -1137,6 +1137,7 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column, order) {
+    console.log(column, order);
     $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
 	    e.hide();
 	});

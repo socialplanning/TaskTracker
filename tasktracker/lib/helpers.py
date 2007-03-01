@@ -114,7 +114,7 @@ def taskListDropDown(id):
 
 def sortableColumn(field, fieldname = None, klass = None, colspan=1):
     span = """
-    <th id="%s-heading" class="%s draggable-column-heading" colspan="%s" onclick="sortBy('%s');">
+    <th id="%s-heading" class="%s draggable-column-heading" colspan="%s" onclick="sortBy('%s'); ">
     <span class="column-heading %s-column" sortOrder=''">%s
       <span style="display:none;" class="sort-arrows" id="%s-arrows">&nbsp;
        <span id="%s-down-arrow">&#x2193;</span>

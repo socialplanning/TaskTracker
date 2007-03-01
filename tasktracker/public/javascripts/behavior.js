@@ -30,39 +30,87 @@
 // obligated to do so. If you do not wish to do so, delete this
 // exception statement from your version.
 
-var Behavior = {
-    rules : [],
-    apply : function () {
-	$A(Behavior.rules).each (function (ruleset) {
-		//should be using prototype's each here, but it is stupid.
-		var rule;
-		for (rule in ruleset) {
-		    if (rule instanceof Function)
-			continue;
+function getElementsBySelector(parent, selector_string) {
+    /*
+      Things this does:
+       E
+       E.t
+       E#c
+       E F
 
-		    var elements = $$(rule);
-		    elements.each (function (element) {
-			    ruleset[rule] (element);
-			});
-		}
-	    });
+      Things this does not do:
+       everything else. most notably, standalone tagname and comma-separated lists of selectors and .class.otherclass
+    */
+    var selectors = selector_string.split(" ");
+    var i;
+    var search_in = [parent];
+    var found = false;
+    for( i = 0; i < selectors.length; ++i ) {
+	var selector = selectors[i];
+	var thisTry;
+
+	thisTry = selector.split("#");
+	if( thisTry.length > 1 ) {
+	    var j;
+	    var tagname = thisTry[0];
+	    var sel = thisTry[1];
+	    var els = [];
+	    for( j = 0; j < search_in.length; ++j ) {
+		els[els.length] = $A( search_in[j].getElementsByTagName(tagname || '*') ).filter( function(el) { return el.id == sel; } );
+	    }
+	    search_in = els.flatten();
+	    found = true;
+	    continue;
+	} 
+
+	thisTry = selector.split(".");
+	if( thisTry.length > 1 ) {
+	    var j;
+	    var tagname = thisTry[0];
+	    var sel = thisTry[1];
+	    var els = [];
+	    for( j = 0; j < search_in.length; ++j ) {
+		els[els.length] = $A( search_in[j].getElementsByTagName(tagname || '*') ).filter( function(el) { return hasClass(el, sel); } );
+	    }
+	    search_in = els.flatten();
+	    found = true;
+	    continue;
+	} 
+
+    }
+    return found ? search_in : [];
+}
+
+var Behavior = {
+    rules : {},
+    apply : function () {
+	var ruleset = Behavior.rules;
+	//should be using prototype's each here, but it is stupid.
+	var rule;
+	for( rule in ruleset ) {
+	    if( rule instanceof Function )
+		continue;
+	    var elements = $$(rule);
+	    var elements = getElementsBySelector(document, rule);
+	    elements.each (function (element) {
+		    ruleset[rule] (element);
+		});
+	}
     },
 
     applySelectedRule : function (selector) {
-	$A(Behavior.rules).each (function (ruleset) {
-		var rule = ruleset[selector];
-		if (!rule || !(rule instanceof Function))
-		    return;
-
-		var elements = $$(selector);
-		elements.each (function (element) {
-			rule (element);
-		    });
+	var rule = Behavior.rules[selector];
+	if( !rule || !(rule instanceof Function) )
+	    return;
+	//var elements = $$(selector);
+	var elements = getElementsBySelector(document, selector);
+	elements.each (function (element) {
+		rule (element);
 	    });
     },
-
+    
     register : function (rules) {
-	Behavior.rules.push(rules);
+	Behavior.rules = rules;
     },
 
     init : function () {
