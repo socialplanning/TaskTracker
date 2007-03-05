@@ -626,6 +626,15 @@ def _orderMovableColumns(columns, column_order):
         ret += columns[col]
     return ret
 
+def generateMovableColumnFilters(column_order):
+    columns = dict()
+    if c.tasklist.hasFeature('deadlines'):
+        columns['deadline'] = """<td class="deadline-column filter-line">%s</td>""" % columnFilter('deadline')
+    columns['priority'] = """<td class="priority-column filter-line">%s</td>""" % columnFilter('priority')
+    columns['owner'] = """<td class="owner-column filter-line">%s</td>""" % columnFilter('owner', c.tasklist)
+    columns['updated'] = """<td class="updated-column filter-line">%s</td>""" % columnFilter('updated')
+    return _orderMovableColumns(columns, column_order)
+
 def generateMovableColumnHeaders(column_order):
     columns = dict()
     if c.tasklist.hasFeature("deadlines"):

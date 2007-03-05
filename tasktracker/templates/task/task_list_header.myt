@@ -2,7 +2,9 @@
 
 <% h.sortableColumn('status', klass="title-column", colspan=2) %>
 
-<% h.generateMovableColumnHeaders(h.getColumnOrder(c.permalink)) %>
+% columnOrder = h.getColumnOrder(c.permalink)
+
+<% h.generateMovableColumnHeaders(columnOrder) %>
 
 </tr>
 
@@ -11,14 +13,8 @@
 
 <td class="title-column filter-line" colspan="2"><%  h.columnFilter('status', c.tasklist) %></td>
 
-% if c.tasklist.hasFeature('deadlines'):
-<td class="deadline-column filter-line">
-    <%  h.columnFilter('deadline') %></td>
-%
+<% h.generateMovableColumnFilters(columnOrder) %>
 
-<td class="priority-column filter-line"><%  h.columnFilter('priority') %></td>
-<td class="owner-column filter-line"><%  h.columnFilter('owner', c.tasklist) %></td>
-<td class="updated-column filter-line"><%  h.columnFilter('updated') %></td>
 </tr>
 
 <tr class="second-line">
