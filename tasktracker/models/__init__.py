@@ -335,17 +335,22 @@ class Task(SQLObject):
         
         all_tasks = Task.select( """task.task_list_id=%s AND task.live=1""" % (c.task_listID) )
         root_tasks = [task for task in all_tasks if task.parentID == 0]
+        
+        delete_permalink = False
+        if self not in tasks:
+            tasks = all_tasks
+            delete_permalink = True
+
         sorted_tasks = sortedTasks(tasks, root_tasks, orderBy, sortOrder)
 
         next = prev = None
-        print [t.title for t in sorted_tasks]
         index = sorted_tasks.index(self)
         if index > 0:
             prev = sorted_tasks[index - 1]
         if index < len(sorted_tasks) - 1:
             next = sorted_tasks[index + 1]
 
-        return (prev, next)
+        return (prev, next, delete_permalink)
 
     def actions(self):
         return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)

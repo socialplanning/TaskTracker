@@ -303,6 +303,13 @@ def _get_permalink(dikt):
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
     return permalink
 
+def _get_permalink_without_filters(dikt):
+    permalink = ""
+    for param in dikt:
+        if param in "sortBy sortOrder columnOrder".split():
+            permalink = "%s%s=%s&" % (permalink, param, dikt[param])
+    return permalink
+
 def _textArea(task):
     id = task.id
     orig = task.text

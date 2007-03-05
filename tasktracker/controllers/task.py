@@ -324,6 +324,9 @@ class TaskController(BaseController):
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
         c.permalink = h._get_permalink(request.GET)
+        c.prev, c.next, delete_permalink = c.task.adjacentTasks(h.permalink_to_sql(c.permalink))
+        if delete_permalink:
+            c.permalink = h._get_permalink_without_filters(request.GET)
         return render_response('task/show.myt')
 
     @authenticate

@@ -129,30 +129,28 @@ class="unfolded" id="subtasks">This task has
 
 <br/>
 
-% prev, next = c.task.adjacentTasks(h.permalink_to_sql(c.permalink))
-
 <table id="next-prev-tasks"><tbody>
 <tr>
 <td>
-% if prev:
+% if c.prev:
 << previous task: 
-  <a href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
-     base_href = "<% h.url_for(controller='task', action='show', id=prev.id) %>"
-     title = "<% h.quote(prev.text) %>"
-     id = "title_<% prev.id %>"
+  <a href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
+     title = "<% h.quote(c.prev.text) %>"
+     id = "title_<% c.prev.id %>"
      class = "uses_permalink big">
-   <% prev.title %></a>
+   <% c.prev.title %></a>
 % #endif
 </td>
 <td align="right">
-% if next:
+% if c.next:
 next task:
-  <a href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
-     base_href = "<% h.url_for(controller='task', action='show', id=next.id) %>"
-     title = "<% h.quote(next.text) %>"
-     id = "title_<% next.id %>"
+  <a href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
+     base_href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
+     title = "<% h.quote(c.next.text) %>"
+     id = "title_<% c.next.id %>"
      class = "uses_permalink big">
-   <% next.title %></a> >>
+   <% c.next.title %></a> >>
 % #endif
 </td>
 </tbody></table>

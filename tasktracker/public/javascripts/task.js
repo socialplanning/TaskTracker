@@ -534,6 +534,36 @@ function filterField(fieldname, task) {
     
 }
 
+function filterNodeByAllFields(node) {
+    var already_filtered = false;
+    
+    var parent = $("task_" + node.getAttribute("parentID"));
+    node.depth_adjustment = 0;
+    if( parent )
+	node.depth_adjustment = parent.depth_adjustment || 0;
+    
+    $A(["status", "deadline", "priority", "owner", "updated"]).each(function(field){
+	    var dont_filter = false;
+	    var filter = $(field + '_filter');
+	    if( !filter )
+		dont_filter = true;
+	    var filtervalue = filter.value;
+	    setPermalink(field, filtervalue);
+	    if (filtervalue == "All")
+		dont_filter = true;
+	    if( !dont_filter && !already_filtered ) {
+		if( filterField(field, node) ) {
+		    var second_line = $('second_line_' + node.getAttribute("task_id"));
+		    if( second_line ) second_line.hide();
+		    --node.depth_adjustment;
+		    already_filtered = true;
+		}
+	    }
+	    reindentTask(node.getAttribute("task_id"), node.depth_adjustment);
+	});
+    return already_filtered;
+}
+
 function filterListByAllFields() {
     /*
       Each task has an integer depth_adjustment (da) attribute defaulting at 0.
@@ -547,36 +577,14 @@ function filterListByAllFields() {
               task.da := task.da - 1
 	      reindentTask( task.depth + task.da )
      */
-    $A($('tasks').getElementsByClassName('task-item')).each(function(node) {
-	    var already_filtered = false;
-	    node.show();
-	    
-	    var parent = $("task_" + node.getAttribute("parentID"));
-	    node.depth_adjustment = 0;
-	    if( parent )
-		node.depth_adjustment = parent.depth_adjustment || 0;
-	    
-	    $A(["status", "deadline", "priority", "owner", "updated"]).each(function(field){
-		    var dont_filter = false;
-		    var filter = $(field + '_filter');
-		    if( !filter )
-			dont_filter = true;
-		    var filtervalue = filter.value;
-		    setPermalink(field, filtervalue);
-		    //$(field + '-filter-label').innerHTML = filter.options[filter.selectedIndex].innerHTML;
-		    if (filtervalue == "All")
-			dont_filter = true;
-		    if( !dont_filter && !already_filtered ) {
-			if( filterField(field, node) ) {
-			    node.hide();
-			    var second_line = $('second_line_' + node.getAttribute("task_id"));
-			    if( second_line ) second_line.hide();
-			    --node.depth_adjustment;
-			    already_filtered = true;
-			}
-		    }
-		    reindentTask(node.getAttribute("task_id"), node.depth_adjustment);
-		});
+    $A($('tasks').getElementsByClassName('task-item')).each(function(node) { 
+	    if( filterNodeByAllFields(node) ) {
+		node.hide();
+		$("second_line_" + node.getAttribute("task_id")).hide();
+	    } else {
+		node.show();
+		$("second_line_" + node.getAttribute("task_id")).show();
+	    }
 	});
 }
 
@@ -1101,8 +1109,10 @@ function setCollapse(task_id, val) {
     var button = $('handle_' + task_id);
     var tomatch = val ? "minus.png" : "plus.png";
     if( val ) {
-	node.show();
-        $('second_line_' + task_id).show();
+	if( !filterNodeByAllFields(node) ) {
+	    node.show();
+	    $('second_line_' + task_id).show();
+	}
     } else {
 	node.hide();
         $('second_line_' + task_id).hide();
@@ -1118,13 +1128,11 @@ function toggleCollapse(task_id) {
     if( button.src.match("minus.png") ) {
         button.src = button.src.replace("minus.png", "plus.png");
 	$A($('task_' + task_id).childTasks).each(function(node) {
-		//		node.show();
 		setCollapse(node.getAttribute('task_id'), 1);
 	    });
     } else if (button.src.match("plus.png")) {
         button.src = button.src.replace("plus.png", "minus.png");
 	$A($('task_' + task_id).childTasks).each(function(node) {
-		//		node.hide();
 		setCollapse(node.getAttribute('task_id'), 0);
 	    });
     }
