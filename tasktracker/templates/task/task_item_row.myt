@@ -22,7 +22,7 @@ editable_title = False
 <% h.image_tag(h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
    class_='treewidget handle',
    id='handle_%d' % atask.id,
-   style='margin-left: %dpx;' % ((atask.depth() - c.depth) * 15)) %>
+   style='margin-left: %.1fem;' % ((atask.depth() - c.depth) * 1.5)) %>
 %
   <!-- title -->
 
