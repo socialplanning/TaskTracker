@@ -226,7 +226,7 @@ TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	},
 	
 	showHover: function() {
-	    this.indicator.show();
+	    removeClass(this.indicator, 'hidden');
 	},
 
 	activate: function() {
@@ -234,7 +234,7 @@ TaskItemDropzone.prototype = (new Rico.Dropzone()).extend( {
 	},
 
 	hideHover: function() {
-	    this.indicator.hide();
+	    addClass(this.indicator, 'hidden');
 	},
 
 	canAccept: function(draggableObjects) { 

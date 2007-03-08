@@ -24,6 +24,9 @@ table.task_list {
   padding-left: 0;
   width: 100%;
 }
+  th.title-column {
+    column-span: 2;
+  }
   .title-column, .updated-column {
     white-space: nowrap;
   }
@@ -300,3 +303,19 @@ ul.command_list li {
   display: inline;
 }
 
+div#create {
+  display: none;
+}
+
+div.sibling_dropzone, div.child_dropzone {
+  display: inline;
+}
+
+div.sibling_dropzone img.hidden, div.child_dropzone img.hidden {
+  display: none;
+}
+
+div#sibling_dropzone_0 {
+  padding-left: 2em;
+  padding-right: 10em;
+}
