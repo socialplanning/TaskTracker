@@ -28,9 +28,8 @@ setup(
     #author_email="",
     #url="",
     install_requires=[
-      "Pylons==dev,>=0.9.4a", 
-      "PasteScript", 
       "Myghty",
+      "Pylons==dev,>=0.9.4a", 
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
       "httplib2", 
