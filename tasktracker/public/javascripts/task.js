@@ -738,15 +738,15 @@ function doneAddingTask(req) {
     return;
 }
 
-doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
-succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
+//doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
+//succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
     $('error').innerHTML = req.responseText;
     console.log("failed to add task");
 }
 
-failedAddingTask = safeify(failedAddingTask, 'failedAddingTask');
+//failedAddingTask = safeify(failedAddingTask, 'failedAddingTask');
 
 function changeField(task_id, fieldname) {
     if (changeEventsDisabled) {
@@ -966,7 +966,7 @@ function doneMovingTask(req) {
 
 }
 
-doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
+//doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function showTaskCreate() {
     $('create').show();

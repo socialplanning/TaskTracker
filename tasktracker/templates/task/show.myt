@@ -1,94 +1,106 @@
-<hr/><br/>
+<hr/>
+<br/>
+
 <span class="small">
-<% h.link_to("&lt;&lt; return to tasklist", h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), base_href=h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), id="return_to_tasklist", class_="uses_permalink") %>
-&nbsp;
-<% h.link_to("&lt;&lt; return to list of lists", h.url_for(controller='tasklist', action='index')) %>
-&nbsp;
-<a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">permalink this view</a>
-</span><br/>
+ <% h.link_to("&lt;&lt; return to tasklist", h.url_for(controller='tasklist', action='show', id=c.task.task_list.id),
+    base_href=h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), id="return_to_tasklist", class_="uses_permalink") %>
+ &nbsp;
+ <% h.link_to("&lt;&lt; return to list of lists", h.url_for(controller='tasklist', action='index')) %>
+ &nbsp;
+ <a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">permalink this view</a>
+</span>
+
+<br/>
 
 <& task_list_title.myt &>
 
-<span id="global-values" style="display:none" depth="<% c.depth %>"></span>
+<span id="global-values" depth="<% c.depth %>"></span>
 
 <div id="wrap-task-details">
 
-<!-- The current task -->
-<table class="task_list" width="100%">
-<& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
-</table>
+ <!-- The current task -->
+ <table class="task_list">
+  <& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
+ </table>
 
-<table id="activity-table">
- <tr>
-  <td class="small task-detail-mainbar">
+ <table id="activity-table">
+  <tr>
+   <td class="small task-detail-mainbar">
 
-<% h.editableField(c.task, 'text', 'Add a description') %>
-   <br/>
-   <span id="description_updated_<% c.task.id %>">
+    <% h.editableField(c.task, 'text', 'Add a description') %>
+    <br/>
+
+    <span id="description_updated_<% c.task.id %>">
 % if h.field_last_updated(c.task, 'text'):
       Description last updated 
    <% h.field_last_updated(c.task, 'text') %>
 %
-   </span>
-   <hr/>
+    </span>
+    <hr/>
 
-   <b>Previous activity:</b>
-  </td>
-  <td>&nbsp;</td>
- </tr>
- <tr>
-  <td class="small task-detail-mainbar">
-   <ul id="activity_<% c.task.id %>" class="activity_list">
-    <%  h.render_actions(c.task.actions(), 0) %>
-   </ul>
-  </td>
-  <td id="task-detail-sidebar-cell">
-   <div id="task-detail-sidebar" class="small">
-    Task created by <% c.task.creator %>
- <% h.prettyDate(c.task.created) %>
-   </div>
-  </td>
- </tr>
+    <b>Previous activity:</b>
+   </td>
+   <td>&nbsp;</td>
+  </tr>
+  <tr>
+   <td class="small task-detail-mainbar">
+    <ul id="activity_<% c.task.id %>" class="activity_list">
+     <% h.render_actions(c.task.actions(), 0) %>
+    </ul>
+   </td>
+   <td id="task-detail-sidebar-cell">
+    <div id="task-detail-sidebar" class="small">
+     Task created by <% c.task.creator %>
+     <% h.prettyDate(c.task.created) %>
+    </div>
+   </td>
+  </tr>
 
- <tr>
-  <td class="task-detail-mainbar">
-   <hr/>
-  </td>
- </tr>
-</table>
-
+  <tr>
+   <td class="task-detail-mainbar">
+    <hr/>
+   </td>
+  </tr>
+ </table>
 
 % if h.has_permission(controller='task', action='comment', id=c.task.id):
-<span id="comment" class="unfolded"><span class="command">add comment</span>&nbsp;</span>
-<div id="edit_comment" class="folded">
- <% h.secure_form_remote_tag(html=dict(id="add_comment_form"), url=h.url_for(action='comment', task_id=c.task.id),
+ <span id="comment" class="unfolded">
+  <span class="command">add comment</span>
+ </span>
+ <div id="edit_comment" class="folded">
+  <% h.secure_form_remote_tag(html=dict(id="add_comment_form"), url=h.url_for(action='comment', task_id=c.task.id),
      complete="if( request.responseText.length ) change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
-  <label for="text">Comment:<label><br/>
-  <textarea name="text" id="enter_comment_here" cols=80 rows=5></textarea><br/>
-  <% h.submit("comment", onclick="if( $('enter_comment_here').value.length < 1 ) { cancel_comment(); return false; }") %>
-  <% h.submit("cancel", onclick="cancel_comment(); return false;") %>
- </form>
-</div>
+   <label for="text">Comment:<label>
+   <br/>
+
+   <textarea name="text" id="enter_comment_here" cols=80 rows=5>
+   </textarea>
+   <br/>
+
+   <% h.submit("comment", onclick="if( $('enter_comment_here').value.length < 1 ) { cancel_comment(); return false; }") %>
+   <% h.submit("cancel", onclick="cancel_comment(); return false;") %>
+  </form>
+ </div>
 % 
 
 % if c.task.task_list.hasFeature("private_tasks"):
-|
 % if h.has_permission(controller='task', action='update_private', id=c.task.id):
-<span id="private">
-<& _private.myt &>
-</span>
+ <span id="private">
+ | <& _private.myt &>
+ </span>
 %
+
 % if h.has_permission(controller='task', action='update', id=c.task.id):
-<% h.secure_link_to('delete this task', class_='post-link',
-   confirm_msg='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
+ <% h.secure_link_to('delete this task', class_='post-link',
+    confirm_msg='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
 %
 %
 
 <br/><br/>
 
-This task
+
 % if c.task.parentID:
-is part of the
+This task is part of the
   <a href = "<% h.url_for(controller='task', action='show', id=c.task.parent.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.task.parent.id) %>"
      title = "<% h.quote(c.task.parent.text) %>"
@@ -96,64 +108,71 @@ is part of the
      class = "uses_permalink">
    <% c.task.parent.title %> task</a>.
 % #endif
-<span
-% if not len(c.task.liveChildren()):
-style = "display:none;"
-%
-class="unfolded" id="subtasks">This task has
-<a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;"> 
-<span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
-</a><br/>
-</span>
 
-<span class="folded" id="edit_subtasks">
- <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
-  hide sub-tasks
+ <span
+% if not len(c.task.liveChildren()):
+ style = "display:none;"
+%
+ class="unfolded" id="subtasks">This task has
+  <a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;">
+   <span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
+  </a>
+  <br/>
+
  </span>
 
- <div class="child_tasks">
- <table width="100%" id="tasks" class="all_tasks" hasReorderableTasks="True">
+ <span class="folded" id="edit_subtasks">
+  <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
+   hide sub-tasks
+  </span>
+
+  <div class="child_tasks">
+   <table id="tasks" class="all_tasks" hasReorderableTasks="True">
 % for atask in c.task.liveChildren():
-<& task_list_item.myt, atask=atask &>
+    <& task_list_item.myt, atask=atask &>
 %
- </table>
- </div>
+   </table>
+  </div>
 
- <br/>
- <hr/>
-</span>
+  <br/>
+  <hr/>
 
+ </span>
 </div>
 
 <& _hideable_show_create.myt, subtask_link = '[ + ]<a href="%s" onclick="showTaskCreate();return false;">add a sub-task</a>' % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id), parentID = '<input type="hidden" name="parentID" value ="%s"' %  c.task.id  &>
 
 <br/>
 
-<table id="next-prev-tasks"><tbody>
-<tr>
-<td>
+<table id="next-prev-tasks">
+ <tbody>
+  <tr>
+   <td>
 % if c.prev:
-<< previous task: 
-  <a href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
+    << previous task: 
+    <a href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
      title = "<% h.quote(c.prev.text) %>"
      id = "title_<% c.prev.id %>"
      class = "uses_permalink big">
-   <% c.prev.title %></a>
+      <% c.prev.title %>
+    </a>
 % #endif
-</td>
-<td align="right">
+   </td>
+   <td align="right">
 % if c.next:
-next task:
-  <a href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
+    next task:
+    <a href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
      title = "<% h.quote(c.next.text) %>"
      id = "title_<% c.next.id %>"
      class = "uses_permalink big">
-   <% c.next.title %></a> >>
+      <% c.next.title %></a> >>
 % #endif
-</td>
-</tbody></table>
+   </td>
+  </tr>
+ </tbody>
+</table>
 
 <& task_list_footer.myt, pre_footer = h.link_to('Go back to the task list', h.url_for(action='show', controller='tasklist', id=c.task.task_listID)) + ' | ' &>
 
@@ -193,10 +212,8 @@ function change_description_updated(task_id, field_name, comment_text) {
 }
 
 function count_subtasks() {
-
-with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
-
-$('subtasks').show();
-
+ with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
+ $('subtasks').show();
 }
+
 </script>

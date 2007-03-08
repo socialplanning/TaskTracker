@@ -16,6 +16,10 @@ table#next-prev-tasks {
     width: 50%;
   }
 
+table.all_tasks {
+  width: 100%;
+}
+
 table.task_list {
   padding-left: 0;
   width: 100%;
@@ -209,6 +213,8 @@ span.editable:hover {
 #movable_add_task {
   background-color: #ddd;
   padding: 1em;
+  margin: 0;
+  line-height: 1em;
 }
 
 .activity_list {
@@ -276,6 +282,10 @@ label {
    font-size: 1.5em;
 }
 
+#global-values {
+  display: none; 
+}
+
 .currently-dragged-column div {
   background-color: #ddd;
 }
@@ -289,3 +299,4 @@ ul.command_list li {
   list-style: none;
   display: inline;
 }
+
