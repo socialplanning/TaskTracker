@@ -137,10 +137,4 @@ This list does not have private tasks.
 <% h.submit('Submit', onclick='cull_old();') %>
 <% h.submit("Cancel", onclick='window.location.href="%s"; return false;' % h.url_for(controller='tasklist', action='show')) %>
 
-<script language="JavaScript">
-
-   with_items ("editable", function(node) { node.title="Click to change this."; }, document.childNodes[0]);
-   
-</script>
-
 </form>

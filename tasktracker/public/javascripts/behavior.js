@@ -88,35 +88,40 @@ function getElementsBySelector(parent, selector_string) {
 }
 
 var Behavior = {
-    rules : {},
+    rules : [],
     apply : function () {
-	var ruleset = Behavior.rules;
-	//should be using prototype's each here, but it is stupid.
-	var rule;
-	for( rule in ruleset ) {
-	    if( rule instanceof Function )
-		continue;
-	    var elements = $$(rule);
-	    var elements = getElementsBySelector(document, rule);
-	    elements.each (function (element) {
-		    ruleset[rule] (element);
-		});
+	var i;
+	for( i = 0; i < Behavior.rules.length; ++i ) {
+	    var ruleset = Behavior.rules[i];
+	    var rule;
+	    for( rule in ruleset ) {
+		if( rule instanceof Function )
+		    continue;
+		var elements = $$(rule);
+		var elements = getElementsBySelector(document, rule);
+		elements.each( function(element) {
+			ruleset[rule] (element);
+		    });
+	    }
 	}
     },
 
     applySelectedRule : function (selector) {
-	var rule = Behavior.rules[selector];
-	if( !rule || !(rule instanceof Function) )
-	    return;
-	//var elements = $$(selector);
-	var elements = getElementsBySelector(document, selector);
-	elements.each (function (element) {
-		rule (element);
-	    });
+	var i;
+	for( i = 0; i < Behavior.rules.length; ++i ) {
+	    var ruleset = Behavior.rules[i];
+	    var rule = ruleset[selector];
+	    if( !rule || !(rule instanceof Function) )
+		continue;
+	    var elements = getElementsBySelector(document, selector);
+	    elements.each( function(element) {
+		    rule (element);
+		});
+	}
     },
     
     register : function (rules) {
-	Behavior.rules = rules;
+	Behavior.rules.push( rules );
     },
 
     init : function () {

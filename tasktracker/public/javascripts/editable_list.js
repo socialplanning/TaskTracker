@@ -50,7 +50,7 @@ function addItem(list, item) {
 
     item = item.replace(/[^A-Za-z0-9 ]/g, '');
 
-    if (item.length < 1) {
+    if( item.length < 1 ) {
         return;
     }
 
@@ -59,9 +59,8 @@ function addItem(list, item) {
     var item_list = $(list);
     var items = item_list.getElementsByTagName('li');
 
-    for (var i = 0; i < items.length; ++i) {
-
-        if (getItemName(items[i]) == item) {
+    for( var i = 0; i < items.length; ++i ) {
+        if( getItemName(items[i]) == item ) {
             return;
         }
     } 
@@ -70,27 +69,23 @@ function addItem(list, item) {
     var item_name =  + list + "_" + 'item_' + items.length;
     var li = Builder.node('li', {className : "removable_list_item"}, [Builder.node('span', item + ' ')]);
     var last_item = item_list.firstChild;
-    while (last_item.nextSibling) {
+    while( last_item.nextSibling ) {
 	last_item = last_item.nextSibling;
     }
     item_list.insertBefore(li, last_item);
-    add_delete_button(li);
+
+    li.appendChild( Builder.node('span', {className : "command delete_button"}, '[ - ]') );
+    Behavior.applySelectedRule('li.removable_list_item .delete_button');
 
     updateItem(list);
-
-    //    Sortable.destroy(the_list_id);
-    //    Sortable.create(the_list_id);
 }
 
+var myrules = {
+    'li.removable_list_item .delete_button' : function(element) {
+	element.onclick = function() {
+	    deleteItem(element.parentNode);
+	}
+    }
+};
 
-
-function add_delete_button(node) {
-    var button = Builder.node('span', {className : "command"}, '[ - ]');
-    node.appendChild(button);
-
-    var del = function () { deleteItem(node); };
-    button.onclick = del;
-}
-
-with_items ("removable_list_item", add_delete_button, document.childNodes[0]);
-
+Behavior.register(myrules);

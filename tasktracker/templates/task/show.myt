@@ -212,7 +212,7 @@ function change_description_updated(task_id, field_name, comment_text) {
 }
 
 function count_subtasks() {
- with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1;; }, document.childNodes[0]); 
+ with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1; console.log(node); }, document.childNodes[0]); 
  $('subtasks').show();
 }
 
