@@ -364,6 +364,10 @@ var myrules = {
 	}
     },
 
+    '.unfolded' : function(element) {
+	element.onclick = unfold;
+    },
+
     'a.uses_permalink' : function(element) {
 	var permalink = $("permalink");
 	if( permalink ) {
@@ -1182,24 +1186,10 @@ function sortBy(column, order) {
 }
 var initialized = false;
 
-function with_items (klass, func, parent) {
-    $A(parent.childNodes).each(function (node) {
-        if (node.nodeType == 1) {
-	    with_items(klass, func, node);
-	    if (hasClass(node, klass))
-		func(node);
-	}
-    });
-}
-
 function unfold () {
 	var other = $('edit_' + this.id);
 	other.style['display'] = 'block';
 	$(this).hide();
-}
-
-function add_unfold(node) {
-	node.onclick = unfold.bind(node);
 }
 
 function setPermalink(newkey, newval) {
@@ -1290,6 +1280,5 @@ addLoadEvent(createDragDrop);
 addLoadEvent(setupEmptyList);
 addLoadEvent(setTaskParents);
 
-addLoadEvent(function () { with_items ("unfolded", add_unfold, document.childNodes[0]); });
 addLoadEvent(sortAndFilter);
 
