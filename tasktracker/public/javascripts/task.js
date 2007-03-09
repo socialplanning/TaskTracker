@@ -969,7 +969,7 @@ function doneMovingTask(req) {
 //doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function showTaskCreate() {
-    $('create').show();
+    removeClass($('create'), 'hidden');
     $('show_create').hide();
     //    $('create_anchor').scrollTo();
     $('title').focus();

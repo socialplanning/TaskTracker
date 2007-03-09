@@ -303,15 +303,11 @@ ul.command_list li {
   display: inline;
 }
 
-div#create {
-  display: none;
-}
-
 div.sibling_dropzone, div.child_dropzone {
   display: inline;
 }
 
-div.sibling_dropzone img.hidden, div.child_dropzone img.hidden {
+.hidden {
   display: none;
 }
 

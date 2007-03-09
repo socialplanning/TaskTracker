@@ -11,12 +11,10 @@ subtask_link = ''
  </div>
 
  <a name="create_anchor" id="create_anchor"></a>
- <div id="create">
+ <div id="create" class="hidden">
 
-% cancel_button = """<input type="submit" onclick="$('create').hide(); $('show_create').show(); return false;" name="cancel" value="cancel" tabindex=5/>"""
+% cancel_button = """<input type="submit" onclick="addClass($('create'), 'hidden'); $('show_create').show(); return false;" name="cancel" value="cancel" tabindex=5/>"""
   <& show_create.myt, cancel_button = cancel_button &>
-
-<!-- <p> <a href="#nevermind" onclick="$('create').hide(); $('show_create').show(); return false;">Nevermind</a> </p> -->
 
  </div>
 
