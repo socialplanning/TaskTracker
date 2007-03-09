@@ -115,7 +115,7 @@ This task is part of the
 %
  class="unfolded" id="subtasks">This task has
   <a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;">
-   <span class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
+   <span id="num_subtasks" class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
   </a>
   <br/>
 
@@ -212,7 +212,8 @@ function change_description_updated(task_id, field_name, comment_text) {
 }
 
 function count_subtasks() {
- with_items ("num_subtasks", function(node) { node.innerHTML = parseInt(node.innerHTML) + 1; console.log(node); }, document.childNodes[0]); 
+ var node = $('num_subtasks');
+ node.innerHTML = parseInt(node.innerHTML) + 1;
  $('subtasks').show();
 }
 
