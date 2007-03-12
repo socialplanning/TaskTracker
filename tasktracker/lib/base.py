@@ -169,7 +169,11 @@ class BaseController(WSGIController):
                 task_list = TaskList.get(task.task_listID)
         elif controller == 'watcher':
             watcher = Watcher.get(params['id'])
-            return watcher.username == c.username                
+            return watcher.username == c.username
+        elif controller == 'project':
+            # special case for lock/unlocking project's tt
+            if action_verb == 'lock':
+                return Role.getLevel('ProjectAdmin') >= c.level
         else:
             task_list = "I AM BROKEN"
             print "unknown controller %s" % controller
@@ -190,7 +194,7 @@ class BaseController(WSGIController):
         if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
                 local_level = Role.getLevel('TaskOwner')
-
+                
         action = Action.selectBy(action=action_name)
 
         if not action.count():
@@ -235,6 +239,11 @@ class BaseController(WSGIController):
         if not getattr(func, 'action', None):
             raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % (action, controller))
         action_verb = func.action
+
+        if project.readonly:
+            only_reads = getattr(func, 'readonly', False)
+            if not only_reads:
+                return False  # or maybe a ReadOnlyException or something?
 
         #methods can override controllers (but should do so rarely)
         controller = getattr(func, 'controller', controller)

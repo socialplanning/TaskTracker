@@ -46,6 +46,7 @@ class ProjectController(BaseController):
         c.project = Project.get(id)
 
         if c.project.initialized:
+            print "initialized."
             return redirect_to(controller='tasklist', action='index')
 
         try:
@@ -79,3 +80,15 @@ class ProjectController(BaseController):
     @attrs(action='show_uninitialized')
     def show_uninitialized(self, id):
         return render_text ('This project has not yet set up their task lists.  Talk to a project administrator.')
+
+    @attrs(action='lock', readonly=True)
+    def lock(self):
+        c.project.readonly = True
+        return redirect_to(controller='tasklist', action='index')
+
+    @attrs(action='lock', readonly=True)
+    def unlock(self):
+        c.project.readonly = False
+        return redirect_to(controller='tasklist', action='index')
+
+    

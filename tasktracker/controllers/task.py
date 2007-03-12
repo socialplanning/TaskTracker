@@ -73,7 +73,7 @@ class TaskController(BaseController):
     
     @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog)
+    @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog, readonly=False)
     @catches_errors
     def change_field(self, id, *args, **kwargs):
         field = request.params['field']
@@ -121,7 +121,7 @@ class TaskController(BaseController):
                                is_preview=is_preview, is_flat=is_flat, 
                                editable_title=editable_title)
 
-    @attrs(action='open')
+    @attrs(action='open', readonly=True)
     def auto_complete_for(self, id):
         partial = request.params[id]
         users = map (lambda u: u['username'], c.usermapper.project_members())
@@ -157,7 +157,7 @@ class TaskController(BaseController):
         task.moveBelow(new_sibling)
 
     @jsonify
-    @attrs(action='update', watchdog=TaskMoveWatchdog)
+    @attrs(action='update', watchdog=TaskMoveWatchdog, readonly=False)
     def move(self, id):        
         if request.params.has_key('new_parent'):
             new_parent_id = int(request.params['new_parent'])
@@ -171,7 +171,7 @@ class TaskController(BaseController):
         return [dict(id = t.id, depth = t.depth(), has_children = int(bool(len(t.children)))) for t in tasks]
         #return render_text('ok')
 
-    @attrs(action='create')
+    @attrs(action='create', readonly=False)
     @catches_errors
     def show_create(self, id, *args, **kwargs):
         c.task_listID = int(request.params['task_listID'])
@@ -186,12 +186,13 @@ class TaskController(BaseController):
         return render_response('task/show_create.myt')
 
     @authenticate
-    @attrs(action='create', watchdog=TaskCreateWatchdog)
+    @attrs(action='create', watchdog=TaskCreateWatchdog, readonly=False)
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
         return self._create_task(url_from=request.params.get('url_from', None), **self.form_result)
+
     @authenticate
-    @attrs(action='create', watchdog=TaskCreateWatchdog)
+    @attrs(action='create', watchdog=TaskCreateWatchdog, readonly=False)
     def create_ajax(self, id):
         try:
             params = EditTaskForm().to_python(request.params)
@@ -222,21 +223,21 @@ class TaskController(BaseController):
             self._move_below_sibling(c.task.id, siblingID)
         return render_response('task/task_list_item.myt', atask=c.task, fragment=True)
 
-    @attrs(action='claim')
+    @attrs(action='claim', readonly=False)
     @catches_errors
     def claim(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = c.username
         return Response.redirect_to(action='show',controller='task', id=id)
         
-    @attrs(action='assign')
+    @attrs(action='assign', readonly=False)
     @catches_errors
     def assign(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
-    @attrs(action='comment', watchdog=TaskCommentWatchdog)
+    @attrs(action='comment', watchdog=TaskCommentWatchdog, readonly=False)
     @catches_errors
     def comment(self, id, *args, **kwargs):
         comment = request.params["text"].strip()
@@ -246,7 +247,7 @@ class TaskController(BaseController):
         c.comment = Comment(text=comment.replace('\n', "<br>"), user=c.username, task=c.task)
         return Response(c.comment.text)
 
-    @attrs(action='update')
+    @attrs(action='update', readonly=True)
     @catches_errors
     def show_update(self, id, *args, **kwargs):
         c.oldtask = self._getTask(int(id))        
@@ -254,7 +255,7 @@ class TaskController(BaseController):
         return render_response('task/show_update.myt')
 
     @authenticate
-    @attrs(action='update', watchdog=TaskUpdateWatchdog)
+    @attrs(action='update', watchdog=TaskUpdateWatchdog, readonly=False)
     @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
 
@@ -290,7 +291,7 @@ class TaskController(BaseController):
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
     @authenticate
-    @attrs(action='private')
+    @attrs(action='private', readonly=False)
     def update_private(self, id):
         c.task = self._getTask(int(id))
         c.task.private = request.params['private'] == 'true'
@@ -302,14 +303,14 @@ class TaskController(BaseController):
         except LookupError:
             raise NoSuchIdError("No such task ID: %s" % id)
 
-    @attrs(action='private')
+    @attrs(action='private', readonly=False)
     def revertToDate(self, id):
         c.task = self._getTask(int(id))
         date = dateparse(request.params['date'])
         c.task.revertToDate(date)
         return self.show(id)
 
-    @attrs(action='show')
+    @attrs(action='show', readonly=True)
     @catches_errors
     def show(self, id, *args, **kwargs):
         version = request.params.get('version', None)
@@ -330,7 +331,7 @@ class TaskController(BaseController):
         return render_response('task/show.myt')
 
     @authenticate
-    @attrs(action='update')
+    @attrs(action='update', readonly=False)
     @catches_errors
     def destroy(self, id, *args, **kwargs):
         c.task = self._getTask(int(id))
@@ -338,7 +339,7 @@ class TaskController(BaseController):
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
     @authenticate
-    @attrs(action='create')
+    @attrs(action='create', readonly=False)
     def create_tasks(self):
         tasks = request.params['tasks']
         import re
@@ -348,7 +349,7 @@ class TaskController(BaseController):
                 self._create_task(task_listID=request.params['task_listID'], private=False, text='', title=line.strip(), parentID = int(request.params['parentID']))
         return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
 
-    @attrs(action='open')
+    @attrs(action='open', readonly=True)
     @catches_errors
     def show_create_tasks(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(int(id))

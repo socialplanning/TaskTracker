@@ -28,8 +28,7 @@ class TestTaskController(TestController):
 
         app = self.getApp('admin')
 
-        res = app.get(url_for(
-                controller='tasklist'))
+        res = app.get(url_for(controller='tasklist'))
         for l in lists:
             res.mustcontain(l.title)
         res = res.click(lists[0].title)

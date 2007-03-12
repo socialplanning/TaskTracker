@@ -111,7 +111,8 @@ class Role(SQLObject):
 class Project(SQLObject):
     title = StringCol()
     task_lists = MultipleJoin("TaskList")
-
+    readonly = BoolCol(default=False)
+    
     @classmethod
     def getProject(cls, title):
         projects = list(Project.selectBy(title=title))

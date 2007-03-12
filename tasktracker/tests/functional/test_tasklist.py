@@ -160,6 +160,34 @@ class TestTaskListController(TestController):
 
         assert not form.fields.has_key('private')
 
+    def test_readonly(self):
+
+        def try_create_tasklist(title, member_level=4, other_level=4):
+            res = app.get(url_for(controller='tasklist', action='show_create'))
+
+            form = res.forms[0]
+            
+            form['title'] = title
+            class level(object):
+                def __init__(self, level):
+                    self.value = level
+                    
+            form.fields['member_level'] = [level(member_level)]
+            form.fields['other_level'] = [level(other_level)]
+                    
+            res = form.submit()
+            return res
+
+        app = self.getApp('admin')
+        res = app.post(url_for(controller='project', action='lock'))
+        #res = app.get(url_for(controller='tasklist', action=
+        res = try_create_tasklist('test locking')
+        res = app.get(url_for(controller='tasklist'))
+        assert 'test locking' not in res
+        res = app.post(url_for(controller='project', action='unlock'))
+        res = try_create_tasklist('test locking')
+        res = app.get(url_for(controller='tasklist'))
+        assert 'test locking' in res
 
 #     def test_tasklist_watch(self):
 #         """Tests adding self as a watcher for a task list"""

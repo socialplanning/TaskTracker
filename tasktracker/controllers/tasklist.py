@@ -62,12 +62,12 @@ class TasklistController(BaseController):
         return [t for t in TaskList.selectBy(projectID = c.project.id, live = True)
                 if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
 
-    @attrs(action='open')    
+    @attrs(action='open', readonly=True)
     def index(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
         return render_response('tasklist/index.myt')
 
-    @attrs(action='show')
+    @attrs(action='show', readonly=True)
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
@@ -80,7 +80,7 @@ class TasklistController(BaseController):
         c.permalink = h._get_permalink(request.GET)
         return render_response('task/list.myt')
 
-    @attrs(action='create')
+    @attrs(action='create', readonly=True)
     def show_create(self):
         c.managers = []
         c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
@@ -150,7 +150,7 @@ class TasklistController(BaseController):
                 TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
 
     @authenticate
-    @attrs(action='create')
+    @attrs(action='create', readonly=False)
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
         assert self.form_result['member_level'] >= self.form_result['other_level']
@@ -165,7 +165,7 @@ class TasklistController(BaseController):
 
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
-    @attrs(action='show')
+    @attrs(action='show', readonly=True)
     @catches_errors
     def show_update(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(id)
@@ -184,7 +184,7 @@ class TasklistController(BaseController):
 
     @authenticate
     @validate(schema=CreateListForm(), form='show_update')  
-    @attrs(action='update')
+    @attrs(action='update', readonly=False)
     @catches_errors
     def update(self, id, *args, **kwargs):
         assert self.form_result['member_level'] >= self.form_result['other_level']
@@ -206,14 +206,14 @@ class TasklistController(BaseController):
             raise NoSuchIdError("No such tasklist ID: %s" % id)
 
     @authenticate
-    @attrs(action='create')
+    @attrs(action='create', readonly=False)
     @catches_errors
     def destroy(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
         c.tasklist.live = False
         return Response.redirect_to(action='index')
 
-    @attrs(action='show')    
+    @attrs(action='show', readonly=True)
     def atom(self, id):
         c.tasklist = self._getTaskList(int(id))
         tasks = sorted(c.tasklist.tasks, compareDates)[:15]
