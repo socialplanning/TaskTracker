@@ -46,7 +46,6 @@ class ProjectController(BaseController):
         c.project = Project.get(id)
 
         if c.project.initialized:
-            print "initialized."
             return redirect_to(controller='tasklist', action='index')
 
         try:
