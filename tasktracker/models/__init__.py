@@ -111,6 +111,7 @@ class Role(SQLObject):
 class Project(SQLObject):
     title = StringCol()
     task_lists = MultipleJoin("TaskList")
+    initialized = BoolCol(default=False)
     readonly = BoolCol(default=False)
     
     @classmethod
@@ -363,7 +364,7 @@ class Task(SQLObject):
 
         #do the reversion
         last_good_version.restore()
-
+        
         #now we need to make sure the task is consistent
         if self.live:
             if self.parentID and not self.parent.live:
