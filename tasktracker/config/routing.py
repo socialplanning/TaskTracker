@@ -26,12 +26,12 @@ from routes import Mapper
 
 def is_safe_method(environ, match_dict):
     action = match_dict['action']
-
-    if not (action.startswith("show") or action.startswith("index")):
-        return environ['REQUEST_METHOD'] == 'POST'
     
-    return True
-
+    if action.startswith("show") or action.startswith("index"):
+        return True
+    
+    return environ['REQUEST_METHOD'] == 'POST'
+    
 def make_map():
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -47,9 +47,7 @@ def make_map():
     # to the routes manual @ http://routes.groovie.org/docs/
 
     map.connect(':controller/:action/:id', conditions=dict(function=is_safe_method))
-
     map.connect('', controller='tasklist', action='index')
-
     map.connect('*url', controller='template', action='view')
 
     return map
