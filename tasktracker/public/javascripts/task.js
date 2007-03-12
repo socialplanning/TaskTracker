@@ -550,7 +550,7 @@ function filterNodeByAllFields(node) {
 	    var dont_filter = false;
 	    var filter = $(field + '_filter');
 	    if( !filter )
-		dont_filter = true;
+		return;
 	    var filtervalue = filter.value;
 	    setPermalink(field, filtervalue);
 	    if (filtervalue == "All")
