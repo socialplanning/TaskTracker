@@ -216,13 +216,10 @@ class BaseController(WSGIController):
             
         return tl_permissions[0].min_level >= local_level
 
-        
     def _authorize(self, project, action, params):
         controller = params['controller']
-
         if controller == 'error':
             return True
-
         environ = request.environ
 
         role_name = _getRole(environ)
@@ -251,7 +248,7 @@ class BaseController(WSGIController):
         #A few special cases follow, with the general permission case at the end.
 
         if callable(action_verb):  #TODO: this isn't a good solution!
-            return True
+            action_verb = action_verb(params)
 
         if action_verb == 'open':
             return True
