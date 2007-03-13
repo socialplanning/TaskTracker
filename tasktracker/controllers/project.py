@@ -26,17 +26,12 @@ import formencode
 class ProjectController(BaseController):
 
     @attrs(action='initialize', readonly=True)
-    @catches_errors
     def initialize(self, *args, **kwargs):
-        if c.project.initialized:
-            return redirect_to(controller='tasklist')
-
         c.project.initialized = True
         c.project.readonly = False
         return Response("successfully initialized project")
 
     @attrs(action='initialize', readonly=True)
-    @catches_errors
     def uninitialize(self, *args, **kwargs):
         c.project.initialized = False
         c.project.readonly = True
