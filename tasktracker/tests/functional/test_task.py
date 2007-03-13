@@ -118,64 +118,6 @@ class TestTaskController(TestController):
         top_level_task.destroySelf()
         tl.destroySelf()
 
-# actually, this role is never used.
-
-#     def test_auth_role(self):
-#         tl = self.create_tasklist('testing the auth role')
-
-#         #set security such that only task owner can change status and update
-#         found = False
-#         for perm in tl.permissions:
-#             if perm.action.action == "task_change_status" or perm.action.action == "task_update":
-#                 found = True
-#                 perm.min_level = Role.getLevel("TaskOwner")
-#         assert found
-
-#         #add a task assigned to 'auth'
-#         task1 = Task(title='Fleem', text='x', owner='auth', task_listID=tl.id)
-#         #add a task not assigned to 'auth'
-#         task2 = Task(title='Fleem', text='x', owner='admin', task_listID=tl.id)
-
-#         app = self.getApp('auth')
-
-#         res = app.get(url_for(
-#                 controller='tasklist', action='show', id=tl.id))
-
-#         res.mustcontain('testing the auth role')
-
-#         spanTags = self._getElementsByTagName(res.body, 'span')
-
-#         found = 0
-#         for span in spanTags:
-#             for field in 'status deadline priority owner'.split():
-#                 if '%s-label_%d' % (field, task1.id) in span:
-#                 #the label for task1 must be clickable
-#                     assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
-#                     found += 1
-#                 elif '%s-label_%d' % (field, task2.id) in span:
-#                 #the label for task2 must not be clickable
-#                     assert 'onclick="viewChangeableField(%d, \'%s\')"' % (task1.id, field) not in span
-#                     found += 1
-
-#         assert found == 8
-
-#         selectTags = self._getElementsByTagName(res.body, 'select')
-#         found = 0
-#         for select in selectTags:
-#             #there is no select for task2, because we can't edit it.
-#             assert 'status_%d' % task2.id not in select 
-#             assert 'priority_%d' % task2.id not in select
-
-#             #but there is one for task1
-#             if 'status_%d' % task1.id in select or 'priority_%d' % task1.id in select:
-#               found += 1
-
-#         assert found == 2
-
-#         task1.destroySelf()
-#         task2.destroySelf()
-#         tl.destroySelf()
-
     def test_comments(self):
         tl = TaskList.select()[0]
 
@@ -255,7 +197,48 @@ class TestTaskController(TestController):
         
         nonpriv.destroySelf()
         priv.destroySelf()
-    
+
+    def test_task_update_field(self):
+        tl = self.create_tasklist('testing task update', member_level=1, other_level=1)
+
+        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+        
+        app = self.getApp('admin')
+
+        res = app.post(url_for(
+                controller='task', action='assign', id=task.id, owner='newowner'))
+
+        res = app.get(url_for(
+                controller='task', action='show', id=task.id))
+        
+        res.mustcontain("newowner")
+
+        #find the old version
+        versions = list(task.versions)
+        assert len(versions) == 1
+        version = versions[0]
+
+        assert version.owner == "" 
+        assert version.dateArchived == task.created
+
+        version.destroySelf()
+        task.destroySelf()
+
+        # now make sure that a member cannot do this
+        app = self.getApp('member')
+        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+        res = app.post(url_for(controller='task', action='assign', id=task.id, owner='newowner'))
+        res = app.get(url_for(controller='task', action='show', id=task.id))
+        assert 'newowner' not in res
+        versions = list(task.versions)
+        assert len(versions) == 0
+
+        task.destroySelf()
+        tl.destroySelf()
+
+    def can_claim_tasks(self):
+        pass
+
 #    def test_task_update(self):
 #        tl = self.create_tasklist('testing task update')
 #
@@ -315,33 +298,60 @@ class TestTaskController(TestController):
 #         res = res.click("Edit your watch settings")
 #         res = res.click("Stop watching")
 #         assert Watcher.selectBy(username='admin').count() == 0
+# actually, this role is never used.
 
-    def test_task_update_field(self):
-        tl = self.create_tasklist('testing task update')
+#     def test_auth_role(self):
+#         tl = self.create_tasklist('testing the auth role')
 
-        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
-        
-        app = self.getApp('admin')
+#         #set security such that only task owner can change status and update
+#         found = False
+#         for perm in tl.permissions:
+#             if perm.action.action == "task_change_status" or perm.action.action == "task_update":
+#                 found = True
+#                 perm.min_level = Role.getLevel("TaskOwner")
+#         assert found
 
-        res = app.post(url_for(
-                controller='task', action='assign', id=task.id, owner='newowner'))
+#         #add a task assigned to 'auth'
+#         task1 = Task(title='Fleem', text='x', owner='auth', task_listID=tl.id)
+#         #add a task not assigned to 'auth'
+#         task2 = Task(title='Fleem', text='x', owner='admin', task_listID=tl.id)
 
-        res = app.get(url_for(
-                controller='task', action='show', id=task.id))
-        
-        res.mustcontain("newowner")
+#         app = self.getApp('auth')
 
-        #find the old version
-        versions = list(task.versions)
-        assert len(versions) == 1
-        version = versions[0]
+#         res = app.get(url_for(
+#                 controller='tasklist', action='show', id=tl.id))
 
-        assert version.owner == "" 
-        assert version.dateArchived == task.created
+#         res.mustcontain('testing the auth role')
 
-        version.destroySelf()
-        task.destroySelf()
-        tl.destroySelf()
+#         spanTags = self._getElementsByTagName(res.body, 'span')
 
-    def can_claim_tasks(self):
-        pass
+#         found = 0
+#         for span in spanTags:
+#             for field in 'status deadline priority owner'.split():
+#                 if '%s-label_%d' % (field, task1.id) in span:
+#                 #the label for task1 must be clickable
+#                     assert 'onclick="viewChangeableField(%d, &quot;%s&quot;)"' % (task1.id, field) in span
+#                     found += 1
+#                 elif '%s-label_%d' % (field, task2.id) in span:
+#                 #the label for task2 must not be clickable
+#                     assert 'onclick="viewChangeableField(%d, \'%s\')"' % (task1.id, field) not in span
+#                     found += 1
+
+#         assert found == 8
+
+#         selectTags = self._getElementsByTagName(res.body, 'select')
+#         found = 0
+#         for select in selectTags:
+#             #there is no select for task2, because we can't edit it.
+#             assert 'status_%d' % task2.id not in select 
+#             assert 'priority_%d' % task2.id not in select
+
+#             #but there is one for task1
+#             if 'status_%d' % task1.id in select or 'priority_%d' % task1.id in select:
+#               found += 1
+
+#         assert found == 2
+
+#         task1.destroySelf()
+#         task2.destroySelf()
+#         tl.destroySelf()

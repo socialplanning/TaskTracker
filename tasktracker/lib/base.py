@@ -119,7 +119,6 @@ class BaseController(WSGIController):
         c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
 
-
         if not self._authorize(project, action, params):
             if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
@@ -266,7 +265,7 @@ class BaseController(WSGIController):
         #A few special cases follow, with the general permission case at the end.
 
         if callable(action_verb):  #TODO: this isn't a good solution!
-            action_verb = action_verb(params)
+            return True
 
         if action_verb == 'open':
             return True
