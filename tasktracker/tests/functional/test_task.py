@@ -55,14 +55,9 @@ class TestTaskController(TestController):
         task_listID = TaskList.select()[0].id
 
         app = self.getApp('admin')
-
-        res = app.get(url_for(
-                controller='tasklist', action='show',
-                id=task_listID
-                ))
+        res = app.get(url_for(controller='tasklist', action='show', id=task_listID))
 
         form = res.forms['add_task_form']
-
         form['title'] = 'The new task title'
         form['text'] = 'The new task body'
         res = form.submit()

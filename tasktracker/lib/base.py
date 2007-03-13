@@ -59,6 +59,9 @@ class NoSuchIdError(Exception):
 class MissingArgumentError(Exception):
     pass
 
+class NotInitializedException(Exception):
+    pass
+
 def catches_errors(f):
     def new_f(*args, **kwds):
         try:

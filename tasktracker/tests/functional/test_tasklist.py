@@ -189,6 +189,32 @@ class TestTaskListController(TestController):
         res = app.get(url_for(controller='tasklist'))
         assert 'test locking' in res
 
+    def test_initialized(self):
+        app = self.getApp('admin')
+        res = app.post(url_for(controller='project', action='uninitialize'))
+        res.mustcontain("successfully uninitialized project")
+        
+        app = self.getApp('member')
+        res = app.get(url_for(controller='tasklist'))
+        res = res.follow()
+        res.mustcontain("has not installed a task tracker.")
+        from tasktracker.lib.base import NotInitializedException
+        try:
+            res = app.post(url_for(controller='project', action='initialize'))
+            raise AssertionError("error: unauthorized user's attempt to initialize project did not raise NotInitializedException")
+        except NotInitializedException:
+            pass
+
+        app = self.getApp('admin')
+        res = app.get(url_for(controller='tasklist'))
+        res = res.follow()
+        res.mustcontain("has not installed a task tracker.")
+        res = app.post(url_for(controller='project', action='initialize'))
+        res.mustcontain("successfully initialized project")
+        
+        res = app.get(url_for(controller='tasklist'))
+        res.mustcontain("A task list is a container for tasks.")
+        
 #     def test_tasklist_watch(self):
 #         """Tests adding self as a watcher for a task list"""
 #         tl = self.create_tasklist(title="list")

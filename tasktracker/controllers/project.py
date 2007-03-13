@@ -33,24 +33,29 @@ class ProjectController(BaseController):
 
         c.project.initialized = True
         c.project.readonly = False
-        return redirect_to(controller='tasklist')
+        return Response("successfully initialized project")
 
-    @attrs(action='show_uninitialized')
-    def show_not_permitted(self, id):
-        return render_text('This project\'s security settings do not allow you to perform that operation.')
-
-    @attrs(action='show_uninitialized')
-    def show_uninitialized(self, id):
-        return render_text('This project has not yet set up their task lists.  Talk to a project administrator.')
+    @attrs(action='initialize', readonly=True)
+    @catches_errors
+    def uninitialize(self, *args, **kwargs):
+        c.project.initialized = False
+        c.project.readonly = True
+        return Response("successfully uninitialized project")
 
     @attrs(action='lock', readonly=True)
     def lock(self):
         c.project.readonly = True
-        return redirect_to(controller='tasklist', action='index')
+        return Response("successfully locked project")
 
     @attrs(action='lock', readonly=True)
     def unlock(self):
         c.project.readonly = False
-        return redirect_to(controller='tasklist', action='index')
+        return Response("successfully unlocked project")
 
-    
+    @attrs(action='show_uninitialized')
+    def show_not_permitted(self, id):
+        return render_text("This project's security settings do not allow you to perform that operation.")
+
+    @attrs(action='show_uninitialized')
+    def show_uninitialized(self, id):
+        return render_text('This project has not installed a task tracker.  Talk to a project administrator.')

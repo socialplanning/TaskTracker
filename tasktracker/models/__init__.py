@@ -111,7 +111,7 @@ class Role(SQLObject):
 class Project(SQLObject):
     title = StringCol()
     task_lists = MultipleJoin("TaskList")
-    initialized = BoolCol(default=True)
+    initialized = BoolCol(default=False)
     readonly = BoolCol(default=False)
     
     @classmethod

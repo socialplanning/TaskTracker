@@ -41,14 +41,12 @@ from tasktracker.config.routing import *
 from routes import request_config, url_for
 
 from tasktracker.models import *
-
 from threading import *
 
 from pylons import c
 from pylons.util import AttribSafeContextObj
 d = AttribSafeContextObj()
 c._push_object(d)
-
 
 class TestController(TestCase):
     def __init__(self, *args):
@@ -67,6 +65,9 @@ class TestController(TestCase):
             delquery = conn.sqlrepr(Delete(table.q, where=None))
             conn.query(delquery)
     
+        app = self.getApp('admin')
+        app.post(url_for(controller='project', action='initialize'))
+
         self.task_list = self.create_tasklist('The list')
 
         Task(title="Task 1", text="This is a task",
