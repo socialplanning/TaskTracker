@@ -216,6 +216,12 @@ class BaseController(WSGIController):
         return tl_permissions[0].min_level >= local_level
 
     def _initialize_project(self, controller, action_verb, params):
+        """
+        Check for authorization relating to project initialization.
+        Return true if authorization definitively succeeds at this step
+        Return false if authorization needs to continue
+        If authorization fails at this step, raise an exception or redirect.
+        """
         if callable(action_verb):  #TODO: this isn't a good solution!
             return True
         
@@ -229,7 +235,7 @@ class BaseController(WSGIController):
             return True
 
         if c.project.initialized:
-            return True
+            return False
 
         redirect_to(controller='project', action='show_uninitialized', id = c.project.id)
         
@@ -253,6 +259,11 @@ class BaseController(WSGIController):
         if not getattr(func, 'action', None):
             raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % (action, controller))
         action_verb = func.action
+
+        # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized
+        # if function returns false, the project IS initialized, so we have to continue checking auth.
+        if self._initialize_project(controller, action_verb, params):
+            return True            
 
         if project.readonly:
             only_reads = getattr(func, 'readonly', False)

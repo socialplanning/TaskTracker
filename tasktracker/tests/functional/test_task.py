@@ -200,16 +200,11 @@ class TestTaskController(TestController):
 
     def test_task_update_field(self):
         tl = self.create_tasklist('testing task update', member_level=1, other_level=1)
-
         task = Task(title='The task', text='x', private=False, task_listID=tl.id)
         
         app = self.getApp('admin')
-
-        res = app.post(url_for(
-                controller='task', action='assign', id=task.id, owner='newowner'))
-
-        res = app.get(url_for(
-                controller='task', action='show', id=task.id))
+        res = app.post(url_for(controller='task', action='assign', id=task.id, owner='newowner'))
+        res = app.get(url_for(controller='task', action='show', id=task.id))
         
         res.mustcontain("newowner")
 
