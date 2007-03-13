@@ -216,6 +216,24 @@ class BaseController(WSGIController):
             
         return tl_permissions[0].min_level >= local_level
 
+    def _initialize_project(self, controller, action_verb, params):
+        if callable(action_verb):  #TODO: this isn't a good solution!
+            return True
+        
+        action_name = controller + '_' + action_verb
+        if action_name == 'project_initialize':
+            if c.level <= Role.getLevel('ProjectAdmin'):
+                return True #OK, let admins initialize the project.
+            else:
+                raise NotInitializedException
+        elif action_name == 'project_show_uninitialized':
+            return True
+
+        if c.project.initialized:
+            return True
+
+        redirect_to(controller='project', action='show_uninitialized', id = c.project.id)
+        
     def _authorize(self, project, action, params):
         controller = params['controller']
         if controller == 'error':
