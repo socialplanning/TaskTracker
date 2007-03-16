@@ -113,7 +113,6 @@ def _getRole(environ):
     return best
 
 class BaseController(WSGIController):
-
     def __before__(self, action, **params):
         project = Project.getProject(request.environ['topp.project_name'])
         c.project = project

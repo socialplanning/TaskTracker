@@ -38,6 +38,18 @@ from tasktracker.lib.cookieauth import CookieAuth
 import tasktracker.lib.app_globals as app_globals
 import tasktracker.lib.helpers
 
+def translate_environ_middleware(app, global_conf, app_conf):
+    kw = dict()
+    for key, val in app_conf.items():
+        if key.startswith("translate_environ"):
+            kw[key.split()[1]] = val
+    def middleware(environ, start_response):
+        for name, value in kw.items():
+            if value in environ:
+                environ[name] = value
+        return app(environ, start_response)
+    return middleware
+
 def make_app(global_conf, **app_conf):
     """Create a WSGI application and return it
     
@@ -97,6 +109,7 @@ def make_app(global_conf, **app_conf):
         app = ZWSGIFakeEnv(app, users)
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
         app = CookieAuth(app, config.app_conf.get('openplans_instance'))
+        app = translate_environ_middleware(app, global_conf, app_conf)
 
     app = CacheMiddleware(app, global_conf, cache_expiretime = 5, cache_type='memory')
 

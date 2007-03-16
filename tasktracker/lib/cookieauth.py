@@ -86,7 +86,6 @@ class CookieAuth(object):
     def authenticate (self, environ):
         try:
             #authenticate cookie
-            
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']
 
@@ -113,7 +112,6 @@ class CookieAuth(object):
         except KeyError:
             return False            
         
-
     def needs_redirection(self, status, headers):
         return status.startswith('403')
 
@@ -121,8 +119,9 @@ class CookieAuth(object):
 
         self.authenticate(environ)
 
-        project_name = 'p1'
-        environ['topp.project_name'] = project_name
+        project_name = environ.get('topp.project_name')
+        if not project_name:
+            environ['topp.project_name'] = project_name = 'p1'
         environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
         environ['topp.project_permission_level'] = get_cached(environ, 'project_info', 
                                                               key=project_name, 
