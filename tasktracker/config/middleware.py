@@ -46,7 +46,7 @@ def translate_environ_middleware(app, global_conf, app_conf):
     def middleware(environ, start_response):
         for name, value in kw.items():
             if value in environ:
-                environ[name] = value
+                environ[name] = environ[value]
         return app(environ, start_response)
     return middleware
 
