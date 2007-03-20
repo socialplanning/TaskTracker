@@ -2,10 +2,9 @@ import httplib2
 import elementtree.ElementTree as ET
 
 def get_users_for_project(project, server):
-
     h = httplib2.Http()
     resp, content = h.request("%s/projects/%s/members.xml" % (server, project), "GET")
-    if resp['status'] != 200:
+    if resp['status'] != '200':
         raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
     tree = ET.fromstring(content)
     members = []
