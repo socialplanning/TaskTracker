@@ -14,7 +14,7 @@ use = egg:Paste#http
 host = 0.0.0.0
 port = 5000
 
-[app:main]
+[app:tasktracker]
 use = egg:TaskTracker
 cache_dir = %(here)s/data
 session_key = tasktracker
@@ -31,9 +31,7 @@ session_secret = somesecret
 # %(here) may include a ':' character on Windows environments; this can
 # invalidate the URI when specifying a SQLite db via path name. Refer to the
 # SQLObject documentation for a special syntax to preserve the URI.
-sqlobject.dburi = sqlite:%(here)s/somedb.db?debug=t
 sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker
-
 database = mysql://tasktracker:tasktracker@localhost/tasktracker
 
 # WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
@@ -41,9 +39,15 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 # execute malicious code after an exception is raised.
 #set debug = false
 
+# openplans_wrapper should be one of (CookieAuth, ZWSGIFakeEnv).
+# If CookieAuth is used, you'll need to specify the location of your
+# openplans_instance to be used for authentication.
 openplans_wrapper = CookieAuth
 openplans_instance = http://localhost:8080/openplans
 
+# When using CookieAuth, you may specify any number of incoming headers (foo) to be
+# translated into environment keys (bar) by prepending "translate_environ " like so:
+# translate_environ bar = foo
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
@@ -59,12 +63,14 @@ atom_store_link =
 use = main
 sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
-
 openplans_wrapper = ZWSGIFakeEnv
-
 atom_store_link =
-
 obsolete_future_history_dir = %(here)s/afh-test
+
+[filter-app:main]
+use = egg:PasteDeploy#prefix
+prefix = /tasks
+next = tasktracker
 
 ############################################################
 ## Deliverance-enabled example
@@ -94,4 +100,4 @@ use = egg:Paste#urlmap
 [app:nycsr_files]
 use = egg:Paste#pkg_resources
 egg = Deliverance
-resource_name = deliverance/test-data/nycsr
+resource_name = deliverance/test-data/nycs
