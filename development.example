@@ -60,7 +60,7 @@ atom_store_link =
 #atom_store_link = http://localhost:8080
 
 [app:test]
-use = main
+use = tasktracker
 sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 openplans_wrapper = ZWSGIFakeEnv
