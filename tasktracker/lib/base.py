@@ -121,13 +121,19 @@ class BaseController(WSGIController):
         c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
 
+        func = getattr(self, action)
+        restrict_remote_addr = getattr(func, 'restrict_remote_addr', False)
+        if restrict_remote_addr:
+            if request.environ['REMOTE_ADDR'] != '127.0.0.1':
+                redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj
+
         if not self._authorize(project, action, params):
             if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
                 abort(403, 'Login required')
             else:
                 #they're logged in but still don't have the necessary permissions
-                redirect_to(controller='error', action='document', message='Not permitted')
+                redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj
 
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
@@ -239,7 +245,7 @@ class BaseController(WSGIController):
         if c.project.initialized:
             return False
 
-        redirect_to(controller='project', action='show_uninitialized', id = c.project.id)
+        redirect_to(controller='project', action='show_uninitialized', id = c.project.id) # @@ ugh -egj
         
     def _authorize(self, project, action, params):
         controller = params['controller']
@@ -259,7 +265,8 @@ class BaseController(WSGIController):
 
         func = getattr(self, action)
         if not getattr(func, 'action', None):
-            raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % (action, controller))
+            raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % 
+                                           (action, controller))
         action_verb = func.action
 
         # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized

@@ -25,13 +25,13 @@ import formencode
 
 class ProjectController(BaseController):
 
-    @attrs(action='initialize', readonly=True)
+    @attrs(action='initialize', readonly=True, restrict_remote_addr=True)
     def initialize(self, *args, **kwargs):
         c.project.initialized = True
         c.project.readonly = False
         return Response("successfully initialized project")
 
-    @attrs(action='initialize', readonly=True)
+    @attrs(action='initialize', readonly=True, restrict_remote_addr=True)
     def uninitialize(self, *args, **kwargs):
         c.project.initialized = False
         c.project.readonly = True
