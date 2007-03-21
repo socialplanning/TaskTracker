@@ -18,6 +18,6 @@ def get_cached(environ, cache_name, key, default_func, default_args = None, defa
             default_args = []
         if default_kwargs is None:
             default_kwargs = {}
-        value = default_func (*default_args, **default_kwargs)
+        value = default_func(*default_args, **default_kwargs)
         cache.set_value(key, value)
     return value
