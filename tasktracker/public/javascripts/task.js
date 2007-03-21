@@ -686,6 +686,7 @@ function doneAddingTask(req) {
     var parentID = parseInt($('add_task_form_parentID').getAttribute("value"));
     var siblingID = parseInt($('add_task_form_siblingID').getAttribute("value"));
     var new_fragment = evalHTML(req.responseText);
+
     var new_item = new_fragment.firstChild; 
     
     var placeholder = $('no_tasks_placeholder');
@@ -716,6 +717,8 @@ function doneAddingTask(req) {
 		break; 
 	    }
 	}
+	tt = target;
+	nf = new_fragment;
 	target.appendChild(new_fragment);
     }
     $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
@@ -742,7 +745,7 @@ function doneAddingTask(req) {
     return;
 }
 
-//doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
+doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 //succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
@@ -759,7 +762,7 @@ function changeField(task_id, fieldname) {
     var field = $(fieldname + '_' + task_id);
     field.disabled = true;
     var authenticator = $('authenticator').value;
-    var base_url = $('body').getAttribute('change_url');
+    var base_url = $('global-values').getAttribute('change_url');
     var url = base_url + task_id + '?field=' + fieldname + '&authenticator=' + authenticator;
     var value = (field.type == 'checkbox') ? field.checked : field.value;
     value = encodeURIComponent(value);
@@ -1042,7 +1045,7 @@ function doDrop(child, drop_target, dropzone) {
     id = parseInt(dropzone.task_id);
     if (dropzone.drop_reparent) {   // drop under a parent node
         var new_parent = $('task_' + id);
-	var base_url = $('body').getAttribute("move_url");
+	var base_url = $('global-values').getAttribute("move_url");
 	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
             onSuccess:doneMovingTask,

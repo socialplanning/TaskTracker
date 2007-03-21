@@ -14,6 +14,11 @@
 
 <& task_list_title.myt &>
 
+<span id="global-values"
+     depth="0"
+     move_url="<% h.url_for(controller='task', action='move', id='') %>" 
+     change_url="<% h.url_for(controller='task', action='change_field', id='') %>" >
+</span>
 <!-- list headers -->
 
 <table id="tasks" class="task_list" hasReorderableTasks="True">

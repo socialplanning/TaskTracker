@@ -27,8 +27,7 @@
 
 </head>
 
-<body id="body" move_url="<% h.url_for(controller='task', action='move', id='') %>" 
-      change_url="<% h.url_for(controller='task', action='change_field', id='') %>" >
+<body>
 
 <div id="portal-columns" style="position:relative;">
 <div style="background-color:#edf">
