@@ -118,8 +118,8 @@ class CookieAuth(object):
         return status.startswith('403')
 
     def __call__(self, environ, start_response):
-        if environ['PATH_INFO'].strip("/").startswith("_debug"):
-            return self.app(environ, start_response)
+#        if environ['PATH_INFO'].strip("/").startswith("_debug"):
+#            return self.app(environ, start_response)
 
         self.authenticate(environ)
 
