@@ -126,6 +126,4 @@ def make_app(global_conf, **app_conf):
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
 
-    app = CacheMiddleware(app, global_conf, cache_expiretime = 5, cache_type='memory')
-
     return app

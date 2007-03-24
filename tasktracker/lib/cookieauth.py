@@ -47,7 +47,7 @@ secret = ""
 def get_secret():
     global secret
     if not secret:
-        secret_file_name = os.environ.get('TOPP_SECRET_FILENAME', '')
+        secret_file_name = os.environ.get('TOPP_SECRET_FILENAME')
         assert secret_file_name
 
         f = open (secret_file_name)
@@ -70,9 +70,11 @@ class UserMapper:
         self.environ = environ
 
     def project_members(self):
-        return get_cached(self.environ, 'project_users', key=self.project, default_func=get_users_for_project, default_args=[self.project, self.server])
-
-
+        #return get_users_for_project(self.project, self.server)
+        return get_cached(self.environ, 'project_users',
+                          key=self.project,
+                          default_func=get_users_for_project,
+                          default_args=[self.project, self.server])
 
 class CookieAuth(object):
     def __init__(self, app, openplans_instance):
@@ -110,18 +112,19 @@ class CookieAuth(object):
             return True
 
         except KeyError:
-            return False            
+            return False
         
     def needs_redirection(self, status, headers):
         return status.startswith('403')
 
     def __call__(self, environ, start_response):
+        if environ['PATH_INFO'].strip("/").startswith("_debug"):
+            return self.app(environ, start_response)
 
         self.authenticate(environ)
 
-        project_name = environ.get('topp.project_name')
-        if not project_name:
-            environ['topp.project_name'] = project_name = 'p1'
+        project_name = environ['topp.project_name']
+        
         environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
         environ['topp.project_permission_level'] = get_cached(environ, 'project_info', 
                                                               key=project_name, 
@@ -137,4 +140,3 @@ class CookieAuth(object):
             return []
         else:
             return body
-
