@@ -73,8 +73,7 @@ def make_app(global_conf, **app_conf):
     # Load our Pylons configuration defaults
     config = load_environment()
     config.init_app(global_conf, app_conf, package='tasktracker')
-    #config.add_template_engine('zpt','tasktracker.templates',{})
-    #config.add_template_engine('myghty','tasktracker.templates',{}) 
+
     # Load our default Pylons WSGI app and make g available
     app = pylons.wsgiapp.PylonsApp(config, 
 	helpers=tasktracker.lib.helpers,
@@ -122,7 +121,8 @@ def make_app(global_conf, **app_conf):
         
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
         app = CookieAuth(app, config.app_conf.get('openplans_instance'))
-    
+        app = CacheMiddleware(app, global_conf, cache_type='memory')
+
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
 
