@@ -18,8 +18,10 @@
 # Boston, MA  02110-1301
 # USA
 
-def get_cached(environ, cache_name, key, default_func,
-               expiretime = 60, *default_args, **default_kwargs):
+def get_cached(environ, cache_name, key, expiretime, default_func,
+               *default_args, **default_kwargs):
+    return default_func(*default_args, **default_kwargs)
+
     beaker = environ['beaker.cache']
     cache = beaker.get_cache(cache_name)
 

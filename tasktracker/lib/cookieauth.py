@@ -50,7 +50,7 @@ def get_secret():
         secret_file_name = os.environ.get('TOPP_SECRET_FILENAME')
         assert secret_file_name
 
-        f = open (secret_file_name)
+        f = open(secret_file_name)
         secret = f.readline().strip()
         f.close()
     return secret
@@ -71,10 +71,8 @@ class UserMapper:
 
     def project_members(self):
         #return get_users_for_project(self.project, self.server)
-        return get_cached(self.environ, 'project_users',
-                          key=self.project,
-                          default_func=get_users_for_project,
-                          default_args=[self.project, self.server])
+        return get_cached(self.environ, 'project_users', self.project, 60,
+                          get_users_for_project, self.project, self.server)
 
 class CookieAuth(object):
     def __init__(self, app, openplans_instance):
@@ -118,17 +116,16 @@ class CookieAuth(object):
         return status.startswith('403')
 
     def __call__(self, environ, start_response):
-#        if environ['PATH_INFO'].strip("/").startswith("_debug"):
-#            return self.app(environ, start_response)
-
+        if environ['PATH_INFO'].strip("/").startswith("_debug"):
+            return self.app(environ, start_response)
+        import pdb; pdb.set_trace()
         self.authenticate(environ)
-
+        
         project_name = environ['topp.project_name']
         
         environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
-        environ['topp.project_permission_level'] = get_cached(environ, 'project_info', 
-                                                              key=project_name, 
-                                                              default_func=project_policy, default_args=[project_name, self.openplans_instance])
+        environ['topp.project_permission_level'] = get_cached(environ, 'project_info', project_name, 60,
+                                                              project_policy, project_name, self.openplans_instance)
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        
 
