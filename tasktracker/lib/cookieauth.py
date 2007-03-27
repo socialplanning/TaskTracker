@@ -118,7 +118,6 @@ class CookieAuth(object):
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].strip("/").startswith("_debug"):
             return self.app(environ, start_response)
-        import pdb; pdb.set_trace()
         self.authenticate(environ)
         
         project_name = environ['topp.project_name']
