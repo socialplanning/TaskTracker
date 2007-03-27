@@ -1,4 +1,3 @@
-
 # Copyright (C) 2006 The Open Planning Project
 
 # This program is free software; you can redistribute it and/or
@@ -21,14 +20,3 @@
 def get_cached(environ, cache_name, key, expiretime, default_func,
                *default_args, **default_kwargs):
     return default_func(*default_args, **default_kwargs)
-
-    beaker = environ['beaker.cache']
-    cache = beaker.get_cache(cache_name)
-
-    value = None
-    if key in cache:
-        value = cache.get_value(key, expiretime=expiretime)
-    if not value:
-        value = default_func(*default_args, **default_kwargs)
-        cache.set_value(key, value)
-    return value
