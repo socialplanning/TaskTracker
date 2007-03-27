@@ -98,7 +98,7 @@ class CookieAuth(object):
             environ['REMOTE_USER'] = username
 
             environ['topp.user_info'] = dict(username = username, 
-                                             roles = ['ProjectMember'],
+                                             roles = ['Authenticated'],
                                              email = '%s@example.com' % username)
 
             #these are needed for tests
@@ -122,7 +122,10 @@ class CookieAuth(object):
         
         project_name = environ['topp.project_name']
         
-        environ['topp.project_members'] = UserMapper(environ, project_name, self.openplans_instance)
+        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
+        if environ['REMOTE_USER'] in [member['username'] for member in umapper.project_members()]:
+            environ['topp.user_info']['roles'].append("ProjectMember")
+
         environ['topp.project_permission_level'] = get_cached(environ, 'project_info', project_name, 60,
                                                               project_policy, project_name, self.openplans_instance)
 
