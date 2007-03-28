@@ -83,7 +83,7 @@ class TasklistController(BaseController):
     @attrs(action='create', readonly=True)
     def show_create(self):
         c.managers = []
-        c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        c.administrators = c.usermapper.project_member_names("ProjectAdmin")
         if c.username not in c.administrators:
             c.administrators.append(c.username)
         return render_response('tasklist/show_create.myt')
@@ -144,7 +144,7 @@ class TasklistController(BaseController):
             if user.roleID == list_owner: 
                 user.destroySelf()
 
-        administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        administrators = c.usermapper.project_member_names("ProjectAdmin")
         for manager in p['managers'].split(","):
             if manager and not manager in administrators:
                 TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
@@ -170,7 +170,7 @@ class TasklistController(BaseController):
     def show_update(self, id, *args, **kwargs):
         c.tasklist = TaskList.get(id)
         c.managers = c.tasklist.managers()
-        c.administrators = [u['username'] for u in c.usermapper.project_members() if 'ProjectAdmin' in u['roles']]
+        c.administrators = c.usermapper.project_member_names("ProjectAdmin")
         c.update = True
         p = {}
         for feature in c.tasklist.features:

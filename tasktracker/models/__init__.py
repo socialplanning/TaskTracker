@@ -501,10 +501,7 @@ class TaskList(SQLObject):
         if roles.count() > 0:
             return True
         else:
-            for u in c.usermapper.project_members():
-                if username == u['username']:
-                    return 'ProjectAdmin' in u['roles']
-            return False
+            return 'ProjectAdmin' in c.usermapper.project_member_roles(username)
 
     def managers(self):
         return [u.username for u in self.special_users if u.role == Role.getByName('ListOwner')]

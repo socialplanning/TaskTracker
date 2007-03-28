@@ -100,7 +100,7 @@ class TaskController(BaseController):
 
         elif field == "owner":
             assert _assignment_permitted(newfield)
-            assert newfield in [u['username'] for u in c.usermapper.project_members()]
+            assert newfield in c.usermapper.project_member_names()
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)
@@ -121,11 +121,11 @@ class TaskController(BaseController):
                                is_preview=is_preview, is_flat=is_flat, 
                                editable_title=editable_title)
 
-    @attrs(action='open', readonly=True)
+    @attrs(action='open', readonly=True)  # @@ no - this should not be open. - egj
     def auto_complete_for(self, id):
         partial = request.params[id]
-        users = map (lambda u: u['username'], c.usermapper.project_members())
-        users = filter(lambda u: u.lower().startswith(partial.lower()), users)
+        # @@ let's make this readable... - egj
+        users = filter(lambda u: u.lower().startswith(partial.lower()), c.usermapper.project_member_names())
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
     def _move_under_parent(self, id, parentID):

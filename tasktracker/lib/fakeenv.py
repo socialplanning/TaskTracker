@@ -34,8 +34,10 @@ def _user_dict(name):
                 roles = 'Authenticated ProjectMember'.split(),
                 )
 
-class UserMapper:
+from tasktracker.lib import usermapper
+class UserMapper(usermapper.UserMapper):
     def project_members(self):
+        # @@ let's make this usable somehow
         names = 'admin, listowner, member, auth, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
         members = map (_user_dict, names)
         for member in members:

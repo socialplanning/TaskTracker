@@ -1,5 +1,5 @@
 
-# Copyright (C) 2006 The Open Planning Project
+# Copyright (C) 2006-2007 The Open Planning Project
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -63,17 +63,19 @@ def project_policy(*args):
     info = get_info_for_project(*args)
     return info['policy']
 
-class UserMapper:
+from tasktracker.lib import usermapper
+
+class UserMapper(usermapper.UserMapper):
     def __init__(self, environ, project, server):
+        usermapper.UserMapper.__init__(self)
         self.project = project
         self.server = server
         self.environ = environ
 
     def project_members(self):
-        #return get_users_for_project(self.project, self.server)
         return get_cached(self.environ, 'project_users', self.project, 60,
                           get_users_for_project, self.project, self.server)
-
+        
 class CookieAuth(object):
     def __init__(self, app, openplans_instance):
         self.app = app
@@ -123,7 +125,7 @@ class CookieAuth(object):
         project_name = environ['topp.project_name']
         
         environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
-        if environ['REMOTE_USER'] in [member['username'] for member in umapper.project_members()]:
+        if environ['REMOTE_USER'] in umapper.project_member_names():
             environ['topp.user_info']['roles'].append("ProjectMember")
 
         environ['topp.project_permission_level'] = get_cached(environ, 'project_info', project_name, 60,
