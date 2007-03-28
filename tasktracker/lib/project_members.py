@@ -1,6 +1,9 @@
 import httplib2
 import elementtree.ElementTree as ET
 
+from topp.utils import memorycache
+
+@memorycache.cache(120)
 def get_users_for_project(project, server):
     h = httplib2.Http()
     resp, content = h.request("%s/projects/%s/members.xml" % (server, project), "GET")
@@ -17,6 +20,7 @@ def get_users_for_project(project, server):
         members.append(m)
     return members
 
+@memorycache.cache(120)
 def get_info_for_project(project, server):
     h = httplib2.Http()
     resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")

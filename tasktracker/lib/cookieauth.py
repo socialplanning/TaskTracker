@@ -56,12 +56,7 @@ def get_secret():
     return secret
 
 
-from cache import get_cached
 from project_members import *
-
-def project_policy(*args):
-    info = get_info_for_project(*args)
-    return info['policy']
 
 from tasktracker.lib import usermapper
 
@@ -73,8 +68,7 @@ class UserMapper(usermapper.UserMapper):
         self.environ = environ
 
     def project_members(self):
-        return get_cached(self.environ, 'project_users', self.project, 60,
-                          get_users_for_project, self.project, self.server)
+        return get_users_for_project(self.project, self.server)
         
 class CookieAuth(object):
     def __init__(self, app, openplans_instance):
@@ -128,10 +122,9 @@ class CookieAuth(object):
         if environ['REMOTE_USER'] in umapper.project_member_names():
             environ['topp.user_info']['roles'].append("ProjectMember")
 
-        environ['topp.project_permission_level'] = get_cached(environ, 'project_info', project_name, 60,
-                                                              project_policy, project_name, self.openplans_instance)
+        environ['topp.project_permission_level'] = get_info_for_project(project_name, self.openplans_instance)['policy']
 
-        status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)        
+        status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 
         if status:
             status = "303 See Other"

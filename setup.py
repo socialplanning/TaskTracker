@@ -35,7 +35,8 @@ setup(
       "httplib2", 
       "elementtree", 
       "python-dateutil",
-      "uuid"],
+      "uuid",
+      "topp.utils"],
     packages=find_packages(),
     include_package_data=True,
     test_suite = 'nose.collector',
@@ -44,7 +45,7 @@ setup(
       "http://pythonpaste.org/package_index.html",
       "http://cheeseshop.python.org/pypi/Pylons/0.9.2",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
-      "http://labix.org/python-dateutil",
+      "http://labix.org/python-dateutil"
       ],
     entry_points="""
     [paste.app_factory]
