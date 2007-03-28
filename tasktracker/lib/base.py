@@ -230,6 +230,10 @@ class BaseController(WSGIController):
         Return false if authorization needs to continue
         If authorization fails at this step, raise an exception or redirect.
         """
+
+        if "initialization_not_required" in params['environ']:
+            return True
+
         if callable(action_verb):  #TODO: this isn't a good solution!
             return True
         
