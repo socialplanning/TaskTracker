@@ -45,7 +45,8 @@ setup(
       "http://pythonpaste.org/package_index.html",
       "http://cheeseshop.python.org/pypi/Pylons/0.9.2",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
-      "http://labix.org/python-dateutil"
+      "http://labix.org/python-dateutil",
+      "https://svn.openplans.org/svn/topp.utils/trunk#egg=topp.utils-dev"
       ],
     entry_points="""
     [paste.app_factory]

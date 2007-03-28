@@ -38,7 +38,7 @@ from formencode import htmlfill
 from tasktracker.lib.base import render_response
 from tasktracker.lib.secure_forms import *
 
-from tasktracker.lib.pretty_date import prettyDate
+from topp.utils.pretty_date import prettyDate
 from random import random
 
 import formencode.validators
