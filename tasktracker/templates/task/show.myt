@@ -14,7 +14,11 @@
 
 <& task_list_title.myt &>
 
-<span id="global-values" depth="<% c.depth %>"></span>
+<span id="global-values" 
+      depth="<% c.depth %>"
+      move_url="<% h.url_for(controller='task', action='move', id='') %>" 
+      change_url="<% h.url_for(controller='task', action='change_field', id='') %>" >
+</span>
 
 <div id="wrap-task-details">
 
