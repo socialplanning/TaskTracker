@@ -49,8 +49,8 @@ class ProjectController(BaseController):
 
     @attrs(action='show_uninitialized')
     def show_not_permitted(self, id):
-        return render_text("This project's security settings do not allow you to perform that operation.")
+        return render_text("This project's security settings do not allow you to perform that operation.") # @@ ugly - egj
 
     @attrs(action='show_uninitialized')
     def show_uninitialized(self, id):
-        return render_text('This project has not installed a task tracker.  Talk to a project administrator.')
+        return render_text('This project has not installed a task tracker.  Talk to a project administrator.') # @@ ugly - egj
