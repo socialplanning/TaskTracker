@@ -71,7 +71,7 @@ class TasklistController(BaseController):
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
-        assert c.tasklist.live
+        assert c.tasklist.live # @@ is this necessary? i guess. but let's at least go to a nice error page. - egj
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0

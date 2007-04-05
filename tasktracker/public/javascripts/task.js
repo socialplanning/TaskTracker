@@ -781,6 +781,7 @@ function changeField(task_id, fieldname) {
 	}
     }
     
+    console.log(url);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
 				     "&is_flat=" + is_flat + 
@@ -867,6 +868,7 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
+    console.log(req)
     if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {

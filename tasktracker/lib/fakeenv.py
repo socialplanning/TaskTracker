@@ -88,7 +88,7 @@ class ZWSGIFakeEnv(object):
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = 'theproject'
         environ['topp.project_permission_level'] = 'policy_open'
-        environ['initialization_not_required'] = True
+        #environ['initialization_not_required'] = True
 
         if not self.authenticate(environ):
             status = "401 Authorization Required"

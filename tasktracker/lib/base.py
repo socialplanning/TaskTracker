@@ -231,9 +231,6 @@ class BaseController(WSGIController):
         If authorization fails at this step, raise an exception or redirect.
         """
 
-        if "initialization_not_required" in params['environ']:
-            return True
-
         if callable(action_verb):  #TODO: this isn't a good solution!
             return True
         
@@ -275,6 +272,8 @@ class BaseController(WSGIController):
 
         # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized
         # if function returns false, the project IS initialized, so we have to continue checking auth.
+        #        if action_verb in ("initialize","show_uninitialized") or \
+            #if "initialization_not_required" not in params['environ']:
         if self._initialize_project(controller, action_verb, params):
             return True            
 

@@ -25,6 +25,7 @@ import sys, os
 from routes import Mapper
 
 def is_safe_method(environ, match_dict):
+
     action = match_dict['action']
     
     if action.startswith("show") or action.startswith("index"):
