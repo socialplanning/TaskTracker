@@ -1,4 +1,3 @@
-
 # Copyright (C) 2006-2007 The Open Planning Project
 
 # This program is free software; you can redistribute it and/or
@@ -144,12 +143,16 @@ class CookieAuth(object):
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].strip("/").startswith("_debug"):
             return self.app(environ, start_response)
-        self.authenticate(environ)
+        
+	username = ''
+        environ['topp.user_info'] = dict(username = '', roles = ['Anonymous'], email = 'null@example.com')
+	if self.authenticate(environ):
+            username = environ['REMOTE_USER']
         
         project_name = environ['topp.project_name']
         
         environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
-        if environ['REMOTE_USER'] in umapper.project_member_names():
+        if username in umapper.project_member_names():
             environ['topp.user_info']['roles'].append("ProjectMember")
 
         environ['topp.project_permission_level'] = get_info_for_project(project_name, self.openplans_instance)['policy']
