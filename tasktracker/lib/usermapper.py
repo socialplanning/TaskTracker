@@ -20,7 +20,12 @@
 
 class UserMapper(object):
     def project_member_roles(self, name):
-        return [u.get("roles") for u in self.project_members() if name == u.get("username")]
+	pmembers = self.project_members()
+	for i in pmembers:
+	    if i.get("username") == name:
+		user = i
+		return user.get("roles")
+	return []
 
     def project_member_names(self, role = None):
         if role:
