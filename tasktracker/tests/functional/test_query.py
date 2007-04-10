@@ -23,27 +23,30 @@ from tasktracker.models import *
 
 class TestTaskController(TestController):
     def test_my_tasks(self):
-        #fixtures:
         tl = self.create_tasklist('testing task query')
-
         my_task = Task(title='My task', text='x', private=False, task_listID=tl.id, owner='admin')
         her_task = Task(title='Her task', text='x', private=False, task_listID=tl.id, owner='maria')
-        
-        app = self.getApp('admin')
 
+        ### admin's task should show up here and maria's should not
+        app = self.getApp('admin')
         res = app.get(url_for(controller='query', action='show_my_tasks'))
         res.mustcontain('theproject - testing task query')
         res.mustcontain('My task')
         assert 'Her task' not in res
+
+        ### maria's task should show up here and admin's should not
+        app = self.getApp('maria')
+        res = app.get(url_for(controller='query', action='show_my_tasks'))
+        res.mustcontain('theproject - testing task query')
+        res.mustcontain('Her task')
+        assert 'My task' not in res
 
         for x in [my_task, her_task, tl]:
             x.destroySelf()
 
     def test_project_tasks(self):
         tl = self.create_tasklist('testing task query')
-
         task = Task(title='A task', text='x', private=False, task_listID=tl.id)
-        
         app = self.getApp('admin')
 
         res = app.get(url_for(controller='query', action='show_project_tasks'))
@@ -55,7 +58,7 @@ class TestTaskController(TestController):
     def test_tasklist_tasks(self):
         tl = self.create_tasklist('testing task query')
 
-        assert tl.id != self.task_list.id
+        assert tl.id != self.task_list.id # @@ ?
 
         task = Task(title='A task', text='x', private=False, task_listID=tl.id)
         task2 = Task(title='Not here', text='x', private=False, task_listID=self.task_list.id)
