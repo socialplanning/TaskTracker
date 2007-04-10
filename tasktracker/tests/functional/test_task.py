@@ -156,40 +156,49 @@ class TestTaskController(TestController):
 
         #admins can see everything
         app = self.getApp('admin')
-
-        res = app.get(url_for(
-                controller='tasklist', action='show', id=tl.id))
-
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
         res.mustcontain('The non-private one')
         res.mustcontain('The private one')
+
+        #including next/prev navigation to the private task
+        res = app.get(url_for(controller='task', action='show', id=nonpriv.id))
+        res.mustcontain("The private one")
+        res = res.click("The private one")
+        res.mustcontain("The private one")
 
         #but mere members can't see private tasks
         app = self.getApp('member')
-
-        res = app.get(url_for(
-                controller='tasklist', action='show', id=tl.id))
-
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
         res.mustcontain('The non-private one')
         assert 'The private one' not in res.body
 
-        #they also can't guess urls
-        res = app.get(url_for(
-                controller='task', action='show', id=priv.id))
+        #not even in next/prev navigation on task/show
+        res = app.get(url_for(controller='task', action='show', id=nonpriv.id))
+        assert 'The private one' not in res.body
 
+        #they also can't guess urls
+        res = app.get(url_for(controller='task', action='show', id=priv.id))
         location = res.header_dict['location']
         assert location.startswith('/error')
 
-        # but task owners can see their private tasks
+        #but task owners can see their private tasks
         app = self.getApp('member')
         priv.owner = "member"
-
-        res = app.get(url_for(
-                controller='tasklist', action='show', id=tl.id))
-
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
         res.mustcontain('The non-private one')
         res.mustcontain('The private one')
-
         
+        #and can access them too
+        res = res.click("The private one")
+        res.mustcontain("The private one")
+        
+        #even through next/prev navigation on task/show
+        res = app.get(url_for(controller='task', action='show', id=nonpriv.id))
+        res.mustcontain("The private one")
+        res = res.click("The private one")
+        res.mustcontain("The private one")
+        
+        #cleanup time!
         nonpriv.destroySelf()
         priv.destroySelf()
 
