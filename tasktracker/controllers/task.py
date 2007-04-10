@@ -323,6 +323,9 @@ class TaskController(BaseController):
             c.task = Task.versions.versionClass.get(version)
         else:
             c.task = self._getTask(int(id))
+        if not c.task.live:
+            return render_text("This task has been deleted.")
+
         c.parentID = int(id)
         c.tasklist = c.task.task_list
         c.task_listID = c.tasklist.id        
