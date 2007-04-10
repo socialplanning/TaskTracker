@@ -223,13 +223,15 @@ class TaskController(BaseController):
             self._move_below_sibling(c.task.id, siblingID)
         return render_response('task/task_list_item.myt', atask=c.task, fragment=True)
 
+    # @@ This is no longer used.
     @attrs(action='claim', readonly=False)
     @catches_errors
     def claim(self, id, *args, **kwargs):
         c.task = self._getTask(id)
         c.task.owner = c.username
         return Response.redirect_to(action='show',controller='task', id=id)
-        
+
+    # @@ This is no longer used.
     @attrs(action='assign', readonly=False)
     @catches_errors
     def assign(self, id, *args, **kwargs):
@@ -254,6 +256,7 @@ class TaskController(BaseController):
         c.owner = c.oldtask.owner
         return render_response('task/show_update.myt')
 
+    # @@ is this ever used?
     @authenticate
     @attrs(action='update', watchdog=TaskUpdateWatchdog, readonly=False)
     @validate(schema=EditTaskForm(), form='show_update')
@@ -290,6 +293,7 @@ class TaskController(BaseController):
 
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
+    # @@ is this ever used?
     @authenticate
     @attrs(action='private', readonly=False)
     def update_private(self, id):
