@@ -131,10 +131,12 @@ class TasklistController(BaseController):
         make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))
 
         #only managers can assign and update list and deal with private tasks
+        #and delete tasklists
         make_permission('task_assign', tasklist, Role.getLevel('ListOwner'))
         make_permission('task_private', tasklist, Role.getLevel('ListOwner'))
         make_permission('tasklist_update', tasklist, Role.getLevel('ListOwner'))
-
+        make_permission('tasklist_delete', tasklist, Role.getLevel('ListOwner'))
+        
         #anyone can comment
         make_permission('task_comment', tasklist, auth_level)
 
@@ -206,7 +208,7 @@ class TasklistController(BaseController):
             raise NoSuchIdError("No such tasklist ID: %s" % id)
 
     @authenticate
-    @attrs(action='create', readonly=False)
+    @attrs(action='delete', readonly=False)
     @catches_errors
     def destroy(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
