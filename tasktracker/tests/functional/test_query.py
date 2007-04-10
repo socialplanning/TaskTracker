@@ -39,6 +39,7 @@ class TestTaskController(TestController):
         res = app.get(url_for(controller='query', action='show_my_tasks'))
         res.mustcontain('theproject - testing task query')
         res.mustcontain('Her task')
+        print res
         assert 'My task' not in res
 
         for x in [my_task, her_task, tl]:

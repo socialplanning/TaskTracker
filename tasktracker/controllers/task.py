@@ -202,8 +202,7 @@ class TaskController(BaseController):
     
 
     def _create_task(self, url_from = None, **p):
-        if not (c.level <= Role.getLevel('ProjectAdmin') or
-                TaskList.get(p['task_listID']).isOwnedBy(c.username)):
+        if c.level > Role.getLevel('ProjectMember'):
             p['private'] = False
         p['creator'] = c.username
         if not p.has_key('task_listID'):
@@ -261,7 +260,6 @@ class TaskController(BaseController):
     @attrs(action='update', watchdog=TaskUpdateWatchdog, readonly=False)
     @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
-
         c.task = self._getTask(int(id))
         p = self.form_result
         new_parent_id = int(p['parentID'])
@@ -275,7 +273,7 @@ class TaskController(BaseController):
         if not p['owner']:
             del p['owner']
 
-        if c.task.tasklist.isListOwner(c.username):
+        if c.task.owner == c.username or c.task.tasklist.isListOwner(c.username):
             if not 'private' in p.keys():
                 p['private'] = False
         else:
@@ -346,6 +344,7 @@ class TaskController(BaseController):
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
+    # @@ here and below - never used
     @authenticate
     @attrs(action='create', readonly=False)
     def create_tasks(self):
