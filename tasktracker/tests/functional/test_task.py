@@ -103,11 +103,9 @@ class TestTaskController(TestController):
         ### but all other tasks should remain
         res.mustcontain("another task")
         
-        ### including the deleted task's subtasks -- maybe!
-        #res.mustcontain("second level")
-        #  or
-        #app.get(url_for(controller='task', action='show', id=sub_task.id)).mustcontain("This task has been deleted.")
-        #   But which one? Right now we are doing neither!
+        ### but the deleted task's subtasks should not remain!
+        assert "second level" not in res.body
+        app.get(url_for(controller='task', action='show', id=sub_task.id)).mustcontain("This task has been deleted.")
 
         ### the deleted task shouldn't be available anymore either
         res = app.get(url_for(controller='task', action='show', id=top_level_task.id))
