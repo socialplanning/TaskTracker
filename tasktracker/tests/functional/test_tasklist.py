@@ -62,15 +62,17 @@ class TestTaskListController(TestController):
         ### admins are given an option to delete the tasklist
         res.mustcontain("delete this list")
 
-        ### but non-list-managers are given no such option -- FAILS
+        ### but non-list-managers are given no such option
         app = self.getApp("member")
         res = app.get(url_for(controller='tasklist', action='show'))
         res.mustcontain("testing tasklist deletion")
-        #assert "delete this list" not in res.body 
+        assert "delete this list" not in res.body
         
-        ### they can't even do it directly -- FAILS
+        ### they can't even do it directly
         res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
         res = res.follow()
+        res.mustcontain("Not permitted")
+        res = app.get(url_for(controller='tasklist'))        
         res.mustcontain("testing tasklist deletion")
 
         ### but, really, admins can
@@ -79,7 +81,7 @@ class TestTaskListController(TestController):
         res.mustcontain("delete this list")
         res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
 
-        ### it will redirect to the list of tasklists page
+        ### it will redirect to the list of tasklists page, and the tasklist will be gone
         res = res.follow()
         assert "testing tasklist deletion" not in res.body
 
