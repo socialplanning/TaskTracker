@@ -80,6 +80,42 @@ class TestTaskController(TestController):
         res.mustcontain("The new task title")
         res.mustcontain("The new task body")
 
+    def test_delete_task(self):
+        tl = self.create_tasklist('testing deletion')
+        top_level_task = Task(title='top level', task_listID = tl.id, text = '')
+        sub_task = Task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
+        second_task = Task(title='another task', task_listID = tl.id, text = '')
+        app = self.getApp('admin')
+
+        ### we should be able to delete a task by clicking a link
+        res = app.get(url_for(controller='task', action='show', id=top_level_task.id))
+        res.mustcontain("delete this task")
+        # we actually can't just click the link, because there's some magical hidden javascript
+        res = app.post(url_for(controller='task', action='destroy', id=top_level_task.id,
+                               authenticator=self._get_authenticator(res)))
+
+        ### this should redirect us to the tasklist page
+        res = res.follow()
+
+        ### the task should be gone
+        assert "top level" not in res.body
+        
+        ### but all other tasks should remain
+        res.mustcontain("another task")
+        
+        ### including the deleted task's subtasks -- maybe!
+        #res.mustcontain("second level")
+        #  or
+        #app.get(url_for(controller='task', action='show', id=sub_task.id)).mustcontain("This task has been deleted.")
+        #   But which one? Right now we are doing neither!
+
+        ### the deleted task shouldn't be available anymore either
+        res = app.get(url_for(controller='task', action='show', id=top_level_task.id))
+        res.mustcontain("This task has been deleted.")
+
+        for ob in (tl, top_level_task, sub_task, second_task):
+            ob.destroySelf()
+
     def test_subtask(self):
         """ Test that subtasks show up on the page for the task they come from. """
         tl = self.create_tasklist('testing subtasks')
@@ -248,7 +284,7 @@ class TestTaskController(TestController):
 
         ### his change should not be reflected in the task detail page
         res = app.get(url_for(controller='task', action='show', id=task.id))
-        assert 'newowner' not in res
+        assert 'newowner' not in res.body
 
         ### and no new version should be created
         versions = list(task.versions)
