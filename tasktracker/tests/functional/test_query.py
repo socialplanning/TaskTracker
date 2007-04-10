@@ -24,14 +24,14 @@ from tasktracker.models import *
 class TestTaskController(TestController):
     def test_my_tasks(self):
         tl = self.create_tasklist('testing task query')
-        my_task = Task(title='My task', text='x', private=False, task_listID=tl.id, owner='admin')
+        my_task = Task(title='Admin task', text='x', private=False, task_listID=tl.id, owner='admin')
         her_task = Task(title='Her task', text='x', private=False, task_listID=tl.id, owner='maria')
 
         ### admin's task should show up here and maria's should not
         app = self.getApp('admin')
         res = app.get(url_for(controller='query', action='show_my_tasks'))
         res.mustcontain('theproject - testing task query')
-        res.mustcontain('My task')
+        res.mustcontain('Admin task')
         assert 'Her task' not in res
 
         ### maria's task should show up here and admin's should not
@@ -39,8 +39,7 @@ class TestTaskController(TestController):
         res = app.get(url_for(controller='query', action='show_my_tasks'))
         res.mustcontain('theproject - testing task query')
         res.mustcontain('Her task')
-        print res
-        assert 'My task' not in res
+        assert 'Admin task' not in res
 
         for x in [my_task, her_task, tl]:
             x.destroySelf()
