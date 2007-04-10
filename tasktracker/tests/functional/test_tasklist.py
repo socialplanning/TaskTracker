@@ -23,141 +23,179 @@ from tasktracker.models import *
 
 class TestTaskListController(TestController):
         
-    def test_show_create(self):
-
+    def test_create_list(self):
         app = self.getApp('admin')
-
         res = app.get(url_for(controller='tasklist', action='show_create'))
 
+        ### fill in some values and create a tasklist
         form = res.forms[0]
-
         form['title'] = 'The new tl title'
         form['text'] = 'The new tl body'
         res = form.submit()
 
+        ### the response should redirect us to a tasklist/show
         location = res.header_dict['location']
         assert location.startswith('/tasklist/show/')
 
+        ### the response redirect should contain a proper integer id for the new tasklist
         id = int(location[location.rindex('/') + 1:])
-
         assert id
-        res = res.follow()
 
+        ### the new tasklist view should contain the tasklist title
+        res = res.follow()
         res.mustcontain('The new tl title')
 
+        ### and the tasklist itself should have been created with the correct id and values
         tl = TaskList.get(id)
         assert tl.text == 'The new tl body'
         
         tl.destroySelf()
 
+    def test_delete_list(self):
+        tl = self.create_tasklist('testing tasklist deletion')
+        app = self.getApp("admin")
+
+        ### we can get the tasklist
+        res = app.get(url_for(controller='tasklist', action='show'))
+        res.mustcontain("testing tasklist deletion")
+
+        ### admins are given an option to delete the tasklist
+        res.mustcontain("delete this list")
+
+        ### but non-list-managers are given no such option -- FAILS
+        app = self.getApp("member")
+        res = app.get(url_for(controller='tasklist', action='show'))
+        res.mustcontain("testing tasklist deletion")
+        #assert "delete this list" not in res.body 
+        
+        ### they can't even do it directly -- FAILS
+        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
+        res = res.follow()
+        res.mustcontain("testing tasklist deletion")
+
+        ### but, really, admins can
+        app = self.getApp("admin")
+        res = app.get(url_for(controller='tasklist', action='show'))
+        res.mustcontain("delete this list")
+        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
+
+        ### it will redirect to the list of tasklists page
+        res = res.follow()
+        assert "testing tasklist deletion" not in res.body
+
+        tl.destroySelf()
+
     def test_update_screen_preserves_features(self):
-
         app = self.getApp('admin')
-
         res = app.get(url_for(controller='tasklist', action='show_create'))
 
+        ### create a new tasklist with deadlines installed
         form = res.forms[0]
-
         form['title'] = 'The new tl title'
         form['feature_deadlines'] = 1
         res = form.submit()
+
+        ### view the tasklist update-prefs screen
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
-
         res = app.get(url_for(controller='tasklist', action='show_update', id = the_id))
+
+        ### it should display the proper preferences based on the creation
         assert res.form['feature_deadlines'].checked
-        assert not res.form.fields.has_key('feature_custom_status') #can't edit statuses
+        assert not res.form.fields.has_key('feature_custom_status')
         assert not res.form['feature_private_tasks'].checked
         
-        #clean up: destroy new list
         TaskList.get(the_id).destroySelf
 
     def test_custom_status(self):
-
         app = self.getApp('admin')
-
         res = app.get(url_for(controller='tasklist', action='show_create'))
 
+        ### create a new tasklist with custom statuses
         form = res.forms[0]
-
         form['title'] = 'The new tl title'
         form['feature_custom_status'] = 1
-
         form['statuses'] = 'morx,fleem'
         res = form.submit()
+
+        ### the tasklist should have stored the proper custom statuses
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
-
         tl = TaskList.get(the_id)
         assert [s.name for s in tl.statuses] == ['morx', 'fleem', 'done']
         
-        #clean up: destroy new list
         tl.destroySelf()
 
     def test_list_manager(self):
         app = self.getApp('admin')
-
         res = app.get(url_for(controller='tasklist', action='show_create'))
 
+        ### create a new tasklist with an additional manager
         form = res.forms[0]
         form['title'] = 'The new tl title'
         form['managers'] = 'admin,member'
-
         res = form.submit()
+
+        ### the tasklist preferences page should show the additional manager
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
         res = res.follow()
         res = res.click("view list preferences")
         res.mustcontain('<span>member</span>')
-
-        app = self.getApp('member')
-
+        
+        ### delete the additional manager from the list
         res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
-        res.mustcontain('Managers:')
         form = res.forms[0]
         form['managers'] = 'admin'
         res = form.submit()
         res = res.follow()
 
+        ### the former additional manager should no longer have manager privileges
+        app = self.getApp('member')
         res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
         assert res.header_dict['location'].startswith('/error/')
 
+        tl = TaskList.get(the_id)
+        tl.destroySelf()
+
+    ## @@ what is this testing??
     def test_list_update_permission(self):
         tl = self.create_tasklist('fleem')
-
-        #create a task
         task = Task(title='morx', task_listID=tl.id)
 
         app = self.getApp('anon')
-
         res = app.get(url_for(controller='task', action='show', id=task.id))
-        #look for priority
         res.mustcontain('<option value="Medium">Medium</option>')
+
+        task.destroySelf()
+        tl.destroySelf()
 
     def test_privacy(self):
         app = self.getApp('admin')
 
+        ### create a new tasklist with private tasks installed
         res = app.get(url_for(controller='tasklist', action='show_create'))
-
         form = res.forms[0]
         form['title'] = 'The new tl title'
         form['feature_private_tasks'] = 1
-
         res = form.submit()
+
+        ### there should now be an option to make tasks private
         res = res.follow()
         form = res.forms[0]
-
         assert form.fields.has_key('private')
+        res.mustcontain("make this task private")
 
+        ### uninstall private tasks
         res = app.get(url_for(controller='tasklist', action='show_create'))
         form = res.forms[0]
         form['title'] = 'The new tl title'
         form['feature_private_tasks'] = 0
-
         res = form.submit()
+
+        ### the privacy option should now be gone
         res = res.follow()
         form = res.forms[0]
-
         assert not form.fields.has_key('private')
 
     def test_readonly(self):
@@ -178,12 +216,16 @@ class TestTaskListController(TestController):
             res = form.submit()
             return res
 
+        ### set a readonly lock on the project 
         app = self.getApp('admin')
         res = app.post(url_for(controller='project', action='lock'))
-        #res = app.get(url_for(controller='tasklist', action=
+
+        ### creating a new tasklist should no longer be possible
         res = try_create_tasklist('test locking')
         res = app.get(url_for(controller='tasklist'))
         assert 'test locking' not in res
+
+        ### unlock the project and create a new tasklist successfully
         res = app.post(url_for(controller='project', action='unlock'))
         res = try_create_tasklist('test locking')
         res = app.get(url_for(controller='tasklist'))
@@ -191,13 +233,18 @@ class TestTaskListController(TestController):
 
     def test_initialized(self):
         app = self.getApp('admin')
+
+        ### uninitialize the project
         res = app.post(url_for(controller='project', action='uninitialize'))
         res.mustcontain("successfully uninitialized project")
         
+        ### no mere member should be able to do anything
         app = self.getApp('member')
         res = app.get(url_for(controller='tasklist'))
         res = res.follow()
         res.mustcontain("has not installed a task tracker.")
+
+        ### not even initialize the project
         from tasktracker.lib.base import NotInitializedException
         try:
             res = app.post(url_for(controller='project', action='initialize'))
@@ -205,16 +252,38 @@ class TestTaskListController(TestController):
         except NotInitializedException:
             pass
 
+        ### an admin can't do anything either
         app = self.getApp('admin')
         res = app.get(url_for(controller='tasklist'))
         res = res.follow()
         res.mustcontain("has not installed a task tracker.")
+
+        ### but an admin can initialize the project
         res = app.post(url_for(controller='project', action='initialize'))
         res.mustcontain("successfully initialized project")
         
+        ### and then can do things as normal
         res = app.get(url_for(controller='tasklist'))
         res.mustcontain("A task list is a container for tasks.")
+
+    def test_task_create(self):
+        """Tests creating a new task"""
+        tl = self.create_tasklist('testing task creation')        
+        app = self.getApp('admin')
+
+        ### create a new task
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
+        form = res.forms[0]
+        form['title'] = "The new task"
+        form['text'] = "The description text"
+        res = form.submit()
+
+        ### the response will contain information about the task
+        res.mustcontain("The new task")
+        res.mustcontain("The description text")
         
+        tl.destroySelf()
+
 #     def test_tasklist_watch(self):
 #         """Tests adding self as a watcher for a task list"""
 #         tl = self.create_tasklist(title="list")
@@ -233,17 +302,3 @@ class TestTaskListController(TestController):
 #         res.mustcontain("edit watch settings")
 #         tl.destroySelf()
 
-    def test_task_create(self):
-        """Tests creating a new task"""
-        tl = self.create_tasklist('testing task creation')
-        
-        app = self.getApp('admin')
-        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
-
-        form = res.forms[0]
-        form['title'] = "The new task"
-        form['text'] = "The description text"
-        res = form.submit()
-        res.mustcontain("The new task")
-        res.mustcontain("The description text")
-        
