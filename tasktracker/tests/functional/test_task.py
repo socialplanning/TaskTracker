@@ -200,22 +200,43 @@ class TestTaskController(TestController):
         location = res.header_dict['location']
         assert location.startswith('/error')
 
-        ### but task owners can see their private tasks
+        ### project members can create private tasks
         app = self.getApp('member')
-        priv.owner = "member"
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
+        form = res.forms['add_task_form']
+        form['title'] = 'The new task title'
+        form['text'] = 'The new task body'
+        form['private'] = '1'
+        res = form.submit()
+
+        ### the resulting task should say that it's private
+        res.mustcontain("private")
+
+        ### the task owner can see his private tasks
         res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
         res.mustcontain('The non-private one')
-        res.mustcontain('The private one')
-        
-        ### and can access them too
-        res = res.click("The private one")
-        res.mustcontain("The private one")
+        res.mustcontain("The new task title")
+
+        ### though not other people's private tasks!
+        assert "The private one" not in res.body
+
+        app = self.getApp('Mowbray')
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
+        assert "The private one" not in res.body
+        assert "The new task title" not in res.body
+        res.mustcontain("The non-private one")
+
+        ### and the task owner can access them too
+        app = self.getApp('member')
+        res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
+        res = res.click("The new task title")
+        res.mustcontain("The new task title")
         
         ### even through next/prev navigation on task/show
         res = app.get(url_for(controller='task', action='show', id=nonpriv.id))
-        res.mustcontain("The private one")
-        res = res.click("The private one")
-        res.mustcontain("The private one")
+        res.mustcontain("The new task title")
+        res = res.click("The new task title")
+        res.mustcontain("The new task title")
         
         nonpriv.destroySelf()
         priv.destroySelf()
