@@ -24,15 +24,6 @@ import re
 
 class TestTaskController(TestController):
 
-    def _get_authenticator(self, res):
-        authenticator = None
-        for form in res.forms.values():
-            if form.get('authenticator', None):
-                authenticator = form['authenticator'].value
-                break
-        assert authenticator
-        return authenticator
-
     # @@ what the hell is this testing? -- egj
     def test_index(self):
         lists = list(TaskList.select())

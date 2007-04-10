@@ -59,6 +59,15 @@ class TestController(TestCase):
         self.setup_fixtures()
         TestCase.__init__(self, *args)
 
+    def _get_authenticator(self, res):
+        authenticator = None
+        for form in res.forms.values():
+            if form.get('authenticator', None):
+                authenticator = form['authenticator'].value
+                break
+        assert authenticator
+        return authenticator
+
     def setup_fixtures(self):
         conn = hub.getConnection()
         for table in [Watcher, TaskListPermission, OutgoingEmail, Task.versions.versionClass, TaskList.versions.versionClass, Task, TaskList]:
