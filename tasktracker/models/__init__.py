@@ -300,7 +300,8 @@ class Task(SQLObject):
         path.reverse()
         return path
 
-    def adjacentTasks(self, options=None):
+    # @@ it's looking more and more like this doesn't remotely belong in the model. - egj
+    def adjacentTasks(self, options=None, user=None, level=100):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
         sql = sortOrder = updatedFilter = None
         if options: 
@@ -332,6 +333,15 @@ class Task(SQLObject):
             else:
                 return False
 
+        def filterByPrivacy(task):
+            if not task.private: #public tasks are fine
+                return True
+            elif level < Role.getLevel("ListOwner"): #ListOwner-or-better users can see all private tasks
+                return True
+            else: #otherwise only task owner can see it
+                return task.owner == user
+
+        tasks = filter(filterByPrivacy, tasks)
         if updatedFilter:
             tasks = filter(filterByUpdates, tasks)
         
@@ -410,7 +420,7 @@ def sortedTasks(allowed_tasks, this_level, sort_by, sort_order):
         try:
             return cmp(x,y)
         except TypeError:
-            # this isn't even remotely general, but in our current db setup the only way to get here is comparing a datetime with None.
+            # @@ this isn't even remotely general, but in our current db setup the only way to get here is comparing a datetime with None.
             if x[0] is None:
                 return 1
             elif y[0] is None:
