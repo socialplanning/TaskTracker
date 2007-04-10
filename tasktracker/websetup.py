@@ -1,5 +1,5 @@
 
-# Copyright (C) 2006 The Open Planning Project
+# Copyright (C) 2006-2007 The Open Planning Project
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
