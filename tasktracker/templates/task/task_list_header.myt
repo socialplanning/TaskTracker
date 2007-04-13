@@ -15,7 +15,7 @@
 <tr class="second-line">
  <td colspan="6" id="breaking-row">
   <div id = "sibling_dropzone_0" class="sibling_dropzone">
-   <img class="hidden" src="/images/as_sibling.png" id = "sibling_dropzone_indicator_0" />
+   <% h.image_tag("as_sibling.png", class_="hidden", id="sibling_dropzone_indicator_0") %>
    &nbsp;
   </div>
   <div id = "child_dropzone_0" class="child_dropzone" />

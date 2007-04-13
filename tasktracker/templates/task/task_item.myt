@@ -20,16 +20,15 @@ editable_title = False
 % taskdepth = (atask.depth() - c.depth) * 1.5 + 2
 
 <div style="padding-left: <% taskdepth %>em;" id = "sibling_dropzone_<% atask.id %>" class="sibling_dropzone">
- <img class="hidden" src="/images/as_sibling.png" id = "sibling_dropzone_indicator_<% atask.id %>" />
+ <% h.image_tag('as_sibling.png', class_="hidden", id="sibling_dropzone_indicator_%d" % atask.id) %>
  &nbsp;
 </div>
 
 <div style="padding-right: <% taskdepth %>em;" id = "child_dropzone_<% atask.id %>" class="child_dropzone">
  &nbsp;
- <img class="hidden" src="/images/as_child.png" id = "child_dropzone_indicator_<% atask.id %>" />
+ <% h.image_tag('as_child.png', class_="hidden", id="child_dropzone_indicator_%d" % atask.id) %>
  &nbsp;
 </div>
 
 </td>
 </tr>
-

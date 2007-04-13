@@ -45,7 +45,7 @@
 
 <!-- the garbage bin -->
 <!-- is currently hidden
-<span tal:replace="structure python: h.image_tag('/images/trash.png', id='trash')" />
+<span tal:replace="structure python: h.image_tag('trash.png', id='trash')" />
 -->
 
 <!-- the create setup -->
