@@ -12,25 +12,14 @@ error_email_from = paste@localhost
 [server:main]
 use = egg:Paste#http
 host = 0.0.0.0
-port = 5000
+port = 5050
 
 [app:tasktracker]
-# WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
-# Debug mode will enable the interactive debugging tool, allowing ANYONE to
-# execute malicious code after an exception is raised.
-#set debug = false
-
 use = egg:TaskTracker
 cache_dir = %(here)s/data
+cache_expiretime = 60
 session_key = tasktracker
 session_secret = somesecret
-
-# Specify the database for SQLObject to use via pylons.database.PackageHub.
-# %(here) may include a ':' character on Windows environments; this can
-# invalidate the URI when specifying a SQLite db via path name. Refer to the
-# SQLObject documentation for a special syntax to preserve the URI.
-sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker
-database = mysql://tasktracker:tasktracker@localhost/tasktracker
 
 # If you'd like to fine-tune the individual locations of the cache data dirs
 # for Myghty, the Cache data, or the Session saves, un-comment the desired
@@ -39,43 +28,56 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 #cache_data_dir = %(here)s/data/cache
 #session_data_dir = %(here)s/data/sessions
 
-# openplans_wrapper should be one of (CookieAuth, ZWSGIFakeEnv).
-# If CookieAuth is used, you'll need to specify the location of your
-# openplans_instance to be used for authentication.
+# Specify the database for SQLObject to use via pylons.database.PackageHub.
+# %(here) may include a ':' character on Windows environments; this can
+# invalidate the URI when specifying a SQLite db via path name. Refer to the
+# SQLObject documentation for a special syntax to preserve the URI.
+sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker
+
+database = mysql://tasktracker:tasktracker@localhost/tasktracker
+
+# WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
+# Debug mode will enable the interactive debugging tool, allowing ANYONE to
+# execute malicious code after an exception is raised.
+set debug = false
+
 openplans_wrapper = CookieAuth
+#openplans_wrapper = ZWSGIFakeEnv
 openplans_instance = http://localhost:8080/openplans
 
-# You may specify any number of incoming headers (foo) to be translated
-# into environment keys (bar) by prepending "translate_environ " like so:
-# translate_environ bar = foo
-# You may also fill environment keys with particular values like so:
-# fill_environ key = val
-# These keys will be filled before any keys are translated by translate_environ.
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 obsolete_future_history_dir = %(here)s/afh
 
-# no atom store
 atom_store_link = 
+
+#filter-with = prefix
+#
+#[filter:prefix]
+#use = egg:PasteDeploy#prefix
+#prefix = /tasks
 
 [app:test]
 use = tasktracker
 sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
+
 openplans_wrapper = ZWSGIFakeEnv
+
 atom_store_link =
 obsolete_future_history_dir = %(here)s/afh-test
+
 fill_environ REMOTE_ADDR = 127.0.0.1
+
+############################################################
+## Deliverance-enabled example
+############################################################
 
 [filter-app:main]
 use = egg:PasteDeploy#prefix
 prefix = /tasks
 next = tasktracker
-
-############################################################
-## Deliverance-enabled example
-############################################################
 
 [filter-app:deliverance]
 #use = egg:Paste#error_catcher
@@ -101,4 +103,4 @@ use = egg:Paste#urlmap
 [app:nycsr_files]
 use = egg:Paste#pkg_resources
 egg = Deliverance
-resource_name = deliverance/test-data/nycs
+resource_name = deliverance/test-data/nycsr
