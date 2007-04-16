@@ -370,11 +370,20 @@ class TestTaskController(TestController):
         res.mustcontain("VVV")
         
         ### if a task has a child, the child will be the next task
+        child = Task(title="child", task_listID=tl.id, owner='admin', parentID=tasks[0].id)
+        res = app.get(url_for(controller='task', action='show', id=tasks[0].id, owner="admin", sortBy="title"))
+        res.mustcontain("ZZZ")
+        res.mustcontain("YYY")
+        res.mustcontain("child</a> >>") # "child" will be in the response elsewhere too, so be more specific
 
         ### if a task has a parent, the parent will be the previous task
+        res = app.get(url_for(controller='task', action='show', id=child.id, owner="admin", sortBy="title"))
+        res.mustcontain("child")
+        res.mustcontain('<< previous task: <a href = "/task/show/%d" base_href = "/task/show/%d" title = "" id = "title_%d" class = "uses_permalink big"> ZZZ' % (tasks[0].id, tasks[0].id, tasks[0].id))
 
         for task in tasks:
             task.destroySelf()
+        child.destroySelf()
         tl.destroySelf()
 
     def can_claim_tasks(self):
