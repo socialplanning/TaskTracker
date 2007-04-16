@@ -303,6 +303,80 @@ class TestTaskController(TestController):
         task.destroySelf()
         tl.destroySelf()
 
+    def test_next_prev_task(self):
+        tl = self.create_tasklist('testing next/prev tasks')
+        name = "ZZZ XXX YYY VVV WWW UUU".split()
+        tasks = [Task(title=name[i], task_listID=tl.id, owner='admin') for i in range(6)]
+        tasks[3].owner = "Mowbray"
+        tasks[4].priority = "High"
+
+        app = self.getApp('admin')
+        
+        ### with a flat list and no sorting or filtering, prev and next tasks should be sorted by id
+        res = app.get(url_for(controller='task', action='show', id=tasks[0].id))
+
+        ### the display for the first task should show the title of the current task and the next one
+        res.mustcontain("ZZZ")
+        res.mustcontain("XXX")
+    
+        ### but not the others
+        for bad in name[2:]:
+            assert bad not in res.body
+
+        ### the display for a task in the middle should show its own name, the one before, and the one after
+        res = app.get(url_for(controller='task', action='show', id=tasks[3].id))
+        res.mustcontain("WWW")
+        res.mustcontain("YYY")
+        res.mustcontain("VVV")
+
+        ### but not the others
+        for bad in name[:2]:
+            assert bad not in res.body
+        for bad in name[5:]:
+            assert bad not in res.body
+
+        ### the display for the last task should show the title of the previous task and the current one
+        res = app.get(url_for(controller='task', action='show', id=tasks[5].id))
+        res.mustcontain("WWW")
+        res.mustcontain("UUU")
+
+        ### but not the others
+        for bad in name[:4]:
+            assert bad not in res.body
+
+        ### with a flat list with sorting and filtering, prev and next tasks should be sorted accordingly
+        res = app.get(url_for(controller='task', action='show', id=tasks[0].id, owner="admin", sortBy="title"))
+        res.mustcontain("ZZZ")
+        res.mustcontain("YYY")
+        assert "XXX" not in res.body
+        for bad in name[3:]:
+            assert bad not in res.body
+
+        ### let's check that filter
+        res = app.get(url_for(controller='task', action='show', id=tasks[4].id, owner="admin", sortBy="title"))
+        res.mustcontain("WWW")
+        res.mustcontain("XXX")
+        
+        ### task VVV should be filtered out, so UUU should be there instead
+        res.mustcontain("UUU")
+        assert "VVV" not in res.body
+        assert "ZZZ" not in res.body
+        assert "YYY" not in res.body
+
+        ### if we go to a url which the current task would be filtered from, the filters return to default
+        res = app.get(url_for(controller='task', action='show', id=tasks[3].id, owner="admin", sortBy="title", priority="None"))
+        res.mustcontain("WWW")
+        res.mustcontain("UUU")
+        res.mustcontain("VVV")
+        
+        ### if a task has a child, the child will be the next task
+
+        ### if a task has a parent, the parent will be the previous task
+
+        for task in tasks:
+            task.destroySelf()
+        tl.destroySelf()
+
     def can_claim_tasks(self):
         pass
 
