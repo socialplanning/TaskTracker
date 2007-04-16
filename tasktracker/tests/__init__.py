@@ -70,7 +70,8 @@ class TestController(TestCase):
 
     def setup_fixtures(self):
         conn = hub.getConnection()
-        for table in [Watcher, TaskListPermission, OutgoingEmail, Task.versions.versionClass, TaskList.versions.versionClass, Task, TaskList]:
+        for table in [Watcher, TaskListPermission, OutgoingEmail,
+                      Task.versions.versionClass, TaskList.versions.versionClass, Task, TaskList]:
             delquery = conn.sqlrepr(Delete(table.q, where=None))
             conn.query(delquery)
     

@@ -599,7 +599,7 @@ def permalink_to_sql(permalink):
             else: continue
         elif key == "updated":
             updatedFilter = val
-        elif key in "priority owner status".split(): # for now we ignore the hard stuff: updated
+        elif key in "priority owner status".split():
             sql.append("%s='%s'" % (key, val))
         elif key == "sortOrder":
             if val == "up": sortOrder = "ASC"
