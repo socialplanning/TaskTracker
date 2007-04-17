@@ -153,7 +153,7 @@ This task is part of the
   <tr>
    <td>
 % if c.prev:
-    << previous task: 
+    &lt;&lt; previous task: 
     <a href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
      title = "<% h.quote(c.prev.text) %>"
@@ -171,7 +171,7 @@ This task is part of the
      title = "<% h.quote(c.next.text) %>"
      id = "title_<% c.next.id %>"
      class = "uses_permalink big">
-      <% c.next.title %></a> >>
+      <% c.next.title %></a> &gt;&gt;
 % #endif
    </td>
   </tr>
