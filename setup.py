@@ -46,7 +46,7 @@ setup(
       "http://cheeseshop.python.org/pypi/Pylons/0.9.2",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
       "http://labix.org/python-dateutil",
-      "https://svn.openplans.org/svn/topp.utils/trunk#egg=topp.utils-dev"
+      "http://www.openplans.org/projects/opencore/dependencies"
       ],
     entry_points="""
     [paste.app_factory]
