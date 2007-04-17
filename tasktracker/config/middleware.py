@@ -120,6 +120,9 @@ def make_app(global_conf, **app_conf):
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
         app = CookieAuth(app, config.app_conf.get('openplans_instance'))
 
+    else:
+        raise Exception("openplans_wrapper not set or not recognized")
+
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
 
