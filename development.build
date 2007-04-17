@@ -1,0 +1,106 @@
+#
+# TaskTracker - Pylons development environment configuration
+#
+# The %(here)s variable will be replaced with the parent directory of this file
+#
+[DEFAULT]
+debug = true
+email_to = you@yourdomain.com
+smtp_server = localhost
+error_email_from = paste@localhost
+
+[server:main]
+use = egg:Paste#http
+host = 0.0.0.0
+port = 5050
+
+[app:tasktracker]
+use = egg:TaskTracker
+cache_dir = %(here)s/data
+cache_expiretime = 60
+session_key = tasktracker
+session_secret = somesecret
+
+# If you'd like to fine-tune the individual locations of the cache data dirs
+# for Myghty, the Cache data, or the Session saves, un-comment the desired
+# settings here:
+#myghty_data_dir = %(here)s/data/templates
+#cache_data_dir = %(here)s/data/cache
+#session_data_dir = %(here)s/data/sessions
+
+# Specify the database for SQLObject to use via pylons.database.PackageHub.
+# %(here) may include a ':' character on Windows environments; this can
+# invalidate the URI when specifying a SQLite db via path name. Refer to the
+# SQLObject documentation for a special syntax to preserve the URI.
+sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker
+
+database = mysql://tasktracker:tasktracker@localhost/tasktracker
+
+# WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
+# Debug mode will enable the interactive debugging tool, allowing ANYONE to
+# execute malicious code after an exception is raised.
+set debug = false
+
+openplans_wrapper = CookieAuth
+#openplans_wrapper = ZWSGIFakeEnv
+openplans_instance = http://localhost:8080/openplans
+
+translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
+
+#note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
+obsolete_future_history_dir = %(here)s/afh
+
+atom_store_link = 
+
+#filter-with = prefix
+#
+#[filter:prefix]
+#use = egg:PasteDeploy#prefix
+#prefix = /tasks
+
+[app:test]
+use = tasktracker
+sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
+database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
+
+openplans_wrapper = ZWSGIFakeEnv
+
+atom_store_link =
+obsolete_future_history_dir = %(here)s/afh-test
+
+fill_environ REMOTE_ADDR = 127.0.0.1
+
+############################################################
+## Deliverance-enabled example
+############################################################
+
+[filter-app:main]
+use = egg:PasteDeploy#prefix
+prefix = /tasks
+next = tasktracker
+
+[filter-app:deliverance]
+#use = egg:Paste#error_catcher
+use = egg:Paste#evalerror
+next = deliverance_wrapper
+
+[filter-app:deliverance_wrapper] 
+# this version of the configuration uses Deliverance to style the
+# app like NYCSR.org
+
+use = egg:Deliverance
+rule_uri = theme/nycsr.xml
+#theme_uri = theme/nycsr_speed.html
+theme_uri = http://www.nycsr.org
+
+next = deliverance_parts
+
+[composite:deliverance_parts]
+use = egg:Paste#urlmap
+/theme = nycsr_files
+/ = main
+
+[app:nycsr_files]
+use = egg:Paste#pkg_resources
+egg = Deliverance
+resource_name = deliverance/test-data/nycsr
