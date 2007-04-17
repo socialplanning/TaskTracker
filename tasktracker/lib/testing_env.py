@@ -45,7 +45,7 @@ class UserMapper(usermapper.UserMapper):
                 member['roles'].append('ProjectAdmin')
         return members
 
-class ZWSGIFakeEnv(object):
+class TestingEnv(object):
     def __init__(self, app, users):
         self.app = app
         self.users = users
