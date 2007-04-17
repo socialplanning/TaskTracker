@@ -50,8 +50,6 @@ translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 obsolete_future_history_dir = %(here)s/afh
 
-atom_store_link = 
-
 #filter-with = prefix
 #
 #[filter:prefix]
@@ -65,7 +63,6 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 
 openplans_wrapper = ZWSGIFakeEnv
 
-atom_store_link =
 obsolete_future_history_dir = %(here)s/afh-test
 
 fill_environ REMOTE_ADDR = 127.0.0.1
