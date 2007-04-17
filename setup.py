@@ -36,7 +36,7 @@ setup(
       "elementtree", 
       "python-dateutil",
       "uuid",
-      "topp.utils"],
+      "topp.utils>0.1"],
     packages=find_packages(),
     include_package_data=True,
     test_suite = 'nose.collector',
