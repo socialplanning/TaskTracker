@@ -126,7 +126,7 @@ class CookieAuth(object):
                                              roles = ['Authenticated'],
                                              email = '%s@example.com' % username)
 
-            #these are needed for tests
+            #these are needed for tests @@ uh, no they're not
             if username == 'admin':
                 environ['topp.user_info']['roles'] = ['ProjectAdmin']
             if username == 'auth':
@@ -150,12 +150,18 @@ class CookieAuth(object):
             username = environ['REMOTE_USER']
         
         project_name = environ['topp.project_name']
-        
-        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
-        if username in umapper.project_member_names():
-            environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
 
-        environ['topp.project_permission_level'] = get_info_for_project(project_name, self.openplans_instance)['policy']
+        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
+
+        if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':
+            environ['topp.user_info']['roles'].append("ProjectAdmin")
+            environ['topp.project_permission_level'] = 'closed'
+        else:
+            if username in umapper.project_member_names():
+                environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
+
+            environ['topp.project_permission_level'] = get_info_for_project(
+                project_name, self.openplans_instance)['policy']
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 
