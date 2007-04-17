@@ -54,20 +54,6 @@ class Globals(object):
         self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
 
         self.events = {}
-        if app_conf.get('atom_store_link', None):
-            from tasktracker.lib.store_notes import AtomStoreLink
-            from tasktracker.config.notify import setup_notify
-            require('atomixlib', 'httplib2')
-            url = app_conf['atom_store_link']
-            if url == 'self':
-                #start an atom server
-                from atomstore.atomstore import start_store
-                self.store = start_store()
-                url = "http://localhost:8080"
-                import time
-                time.sleep(1)
-            self.atom_store_link = AtomStoreLink(url)
-            setup_notify(self.events)
 
     def __del__(self):
         """
