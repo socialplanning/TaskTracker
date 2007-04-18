@@ -215,13 +215,6 @@ class TasklistController(BaseController):
         c.tasklist.live = False
         return Response.redirect_to(action='index')
 
-    @attrs(action='show', readonly=True)
-    def atom(self, id):
-        c.tasklist = self._getTaskList(int(id))
-        tasks = sorted(c.tasklist.tasks, compareDates)[:15]
-
-        return Response(render('tasklist/atom.myt', fragment=True), mimetype='application/atom+xml')
-
 #note the reverse order
 def compareDates(a, b):
     delta = b.updated - a.updated

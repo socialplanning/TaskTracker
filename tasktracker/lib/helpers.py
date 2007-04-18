@@ -569,9 +569,6 @@ def taskListUpdated(taskList):
 
     return updated
 
-def atomTime(when):
-    return when.strftime("%Y-%m-%dT%H:%M:%SZ") #note the time zone Z.
-
 def permalink_to_sql(permalink):
     terms = permalink.split("&")
     sql = []
