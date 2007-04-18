@@ -343,22 +343,3 @@ class TaskController(BaseController):
         c.task = self._getTask(int(id))
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
-
-    # @@ here and below - never used
-    @authenticate
-    @attrs(action='create', readonly=False)
-    def create_tasks(self):
-        tasks = request.params['tasks']
-        import re
-        okay = re.compile("\w")
-        for line in tasks.split("\n"):
-            if okay.search(line):
-                self._create_task(task_listID=request.params['task_listID'], private=False, text='', title=line.strip(), parentID = int(request.params['parentID']))
-        return Response.redirect_to(action='show',controller='tasklist', id=request.params['task_listID'])
-
-    @attrs(action='open', readonly=True)
-    @catches_errors
-    def show_create_tasks(self, id, *args, **kwargs):
-        c.tasklist = TaskList.get(int(id))
-        c.task_listID = id
-        return render_response('task/show_create_tasks.myt')
