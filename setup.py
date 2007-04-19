@@ -29,7 +29,7 @@ setup(
     #url="",
     install_requires=[
       "Myghty",
-      "Pylons==dev,>=0.9.4a", 
+      "Pylons==0.9.4.1", 
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
       "httplib2", 
