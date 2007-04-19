@@ -173,7 +173,7 @@ class BaseController(WSGIController):
                 task_list = TaskList.get(params['task_listID'])
             else:
                 task = Task.get(int(params['id'])) 
-                task_list = TaskList.get(task.task_listID)
+                task_list = task.task_list
         elif controller == 'watcher':
             watcher = Watcher.get(params['id'])
             return watcher.username == c.username
