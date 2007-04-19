@@ -617,6 +617,9 @@ class TaskList(SQLObject):
 
         super(TaskList, self).destroySelf()
 
+TaskVersion = Task.versions.versionClass
+TaskVersion.getChangedFields = memoize(TaskVersion.getChangedFields)
+
 soClasses = [
 Action,
 Comment,
