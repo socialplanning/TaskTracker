@@ -18,7 +18,6 @@
 # USA
 
 from tasktracker.models import *
-from paste.deploy import CONFIG, appconfig
 from pylons import c
 
 from paste.wsgilib import intercept_output
@@ -31,8 +30,6 @@ import sha
 
 from urllib import quote, unquote
 from Cookie import BaseCookie
-
-conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 def _user_dict(name):
     return dict(username = name,
@@ -100,13 +97,9 @@ class UserMapper(usermapper.UserMapper):
         return get_users_for_project(self.project, self.server)
         
 class CookieAuth(object):
-    def __init__(self, app, openplans_instance):
+    def __init__(self, app, app_conf):
         self.app = app
-        self.conf = appconfig('config:development.ini', relative_to=conf_dir)
-        CONFIG.push_process_config({'app_conf': self.conf.local_conf,
-                                    'global_conf': self.conf.global_conf})
-
-        self.openplans_instance = openplans_instance
+        self.openplans_instance = app_conf['openplans_instance']
 
     def authenticate (self, environ):
         try:

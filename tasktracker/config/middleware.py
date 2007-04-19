@@ -118,7 +118,7 @@ def make_app(global_conf, **app_conf):
         app = TestingEnv(app, users)
         
     elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
-        app = CookieAuth(app, config.app_conf.get('openplans_instance'))
+        app = CookieAuth(app, app_conf)
 
     else:
         raise Exception("openplans_wrapper not set or not recognized")
