@@ -29,7 +29,8 @@ setup(
     #url="",
     install_requires=[
       "Myghty",
-      "Pylons==0.9.4.1", 
+      "Pylons==0.9.4.1",
+      "Routes==1.9.2",
       "SQLObject==dev,>=0.9dev", 
       "decorator", 
       "httplib2", 
@@ -43,7 +44,8 @@ setup(
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
     dependency_links = [
       "http://pythonpaste.org/package_index.html",
-      "http://cheeseshop.python.org/pypi/Pylons/0.9.2",
+      "http://cheeseshop.python.org/pypi/Pylons/0.9.4",
+      "http://cheeseshop.python.org/pypi/Routes/1.9.2",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
       "http://labix.org/python-dateutil",
       "http://www.openplans.org/projects/opencore/dependencies"
