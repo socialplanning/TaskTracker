@@ -533,6 +533,7 @@ class TaskList(SQLObject):
 
         return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if h.has_permission('task', 'show', id=c.id)]
 
+    @memoize
     def uncompletedTasks(self):
         import tasktracker.lib.helpers as h
 
