@@ -201,19 +201,20 @@ class BaseController(WSGIController):
         if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
             if task.isOwnedBy(params['username']):
                 local_level = Role.getLevel('TaskOwner')
-                
-        action = Action.selectBy(action=action_name)
-
-        if not action.count():
-            print "unknown action %s" % action_name
-            return False
-
-        action = action[0]
         
-        tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
-                                                     actionID=action.id)
+        tl_permissions = TaskListPermission.select(
+            AND(TaskListPermission.q.task_listID == task_list.id,
+                TaskListPermission.q.actionID == Action.q.id,
+                Action.q.action == action_name))
 
         if not tl_permissions.count():
+            #could have failed due to bad action
+            action = Action.selectBy(action=action_name)
+
+            if not action.count():
+                print "unknown action %s" % action_name
+                return False
+
             #shouldn't get here, because tasklists should always have
             #some permission row for each action.  If we do, reset
             #the permissions to the strictest level.
