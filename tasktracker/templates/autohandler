@@ -4,6 +4,10 @@
 <% c.title %>
 % 
 <link rel="Shortcut Icon" href="/favicon.ico">
+
+% if c.compress_resources:
+<% h.javascript_include_tag('compressed.js') %>
+% else:
 <% h.javascript_include_tag('prototype.js') %>
 <% h.javascript_include_tag('behavior.js') %>
 <% h.javascript_include_tag('rico.js') %>
@@ -20,10 +24,16 @@
 <% h.javascript_include_tag('calendar-setup.js') %>
 <% h.javascript_include_tag('calendar-en.js') %>
 <% h.javascript_include_tag('datebocks_window.js') %>
-<% h.stylesheet_link_tag('plone-base.css') %>
+% #end if
+
+% if c.compress_resources:
+<% h.stylesheet_link_tag('combined.css') %>
+% else:
+<!-- <% h.stylesheet_link_tag('plone-base.css') %> -->
 <% h.stylesheet_link_tag('list.css') %>
 <% h.stylesheet_link_tag('datebocks_engine.css') %>
 <% h.stylesheet_link_tag('calendar-blue.css') %>
+% #end if
 
 </head>
 

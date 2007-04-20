@@ -30,6 +30,8 @@ from pylons.helpers import abort, redirect_to, etag_cache
 from tasktracker.models import *
 from tasktracker.controllers import *
 from tasktracker.lib.watchers import *
+from paste.deploy.converters import asbool
+from paste.deploy.config import CONFIG
 #import tasktracker.lib.helpers as h
 
 from threading import local
@@ -117,6 +119,7 @@ class BaseController(WSGIController):
         project = Project.getProject(request.environ['topp.project_name'])
         c.project = project
         c.id = params.get('id')
+        c.compress_resources = asbool(CONFIG['app_conf'].get('compress_resources'))
         
         c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
