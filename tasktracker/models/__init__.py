@@ -310,28 +310,15 @@ class Task(SQLObject):
             query = "%s %s" % (query, sql)
         if not orderBy:
             orderBy = "sort_index"
+
+        if level >= Role.getLevel("ListOwner"):
+            #filtering needed
+            query += " AND (task.private = 0 OR task.owner = %s)" % user
+
         conn = hub.getConnection()
         trans = conn.transaction()
         tasks = Task.select(query)
         trans.commit()
-
-        def filterByUpdates(task):
-            now = datetime.date.today()
-
-            def datetime_to_date(dt):
-                return datetime.date(dt.year, dt.month, dt.day)
-
-            updated = datetime_to_date(task.updated)
-            if updatedFilter == '0':
-                return updated == now
-            elif updatedFilter == '-1':
-                now -= datetime.timedelta(days=1)
-                return updated == now
-            elif updatedFilter == '-7,0':
-                then = now - datetime.timedelta(days=7)
-                return updated > then and updated <= now
-            else:
-                return False
 
         def filterByPrivacy(task):
             if not task.private: #public tasks are fine
@@ -341,18 +328,20 @@ class Task(SQLObject):
             else: #otherwise only task owner can see it
                 return task.owner == user
 
-        tasks = filter(filterByPrivacy, tasks)
-        if updatedFilter:
-            tasks = filter(filterByUpdates, tasks)
-        
-        all_tasks = Task.select( """task.task_list_id=%s AND task.live=1""" % (c.task_listID) )
-        root_tasks = [task for task in all_tasks if task.parentID == 0]
-        
+
+        tasks = list(tasks)
+        root_tasks = None
+
         delete_permalink = False
         if self not in tasks:
+            all_tasks = Task.select( """task.task_list_id=%s AND task.live=1""" % (c.task_listID) )
             tasks = all_tasks
+            root_tasks = [task for task in all_tasks if task.parentID == 0]
             delete_permalink = True
 
+        if not root_tasks:
+            root_tasks = Task.select( """task.task_list_id=%s AND task.live=1 AND task.parent_id = 0""" % (c.task_listID) )
+            
         sorted_tasks = sortedTasks(tasks, root_tasks, orderBy, sortOrder)
 
         next = prev = None

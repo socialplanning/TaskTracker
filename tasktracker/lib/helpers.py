@@ -456,7 +456,6 @@ def shorter(text):
 def render_actions(actions, cutoff=5):
     if cutoff == 0:
         cutoff = len(actions)
-
     rendered_actions = []
 
     count = 0
@@ -473,9 +472,8 @@ def render_actions(actions, cutoff=5):
 
     if not rendered_actions:
         return ''
-    head = "\n".join (map (lambda action : "<li>%s<hr></li>\n" % action, rendered_actions[:-1]))
-    tail = "<li>%s</li>" % rendered_actions[-1]
-    return "%s\n%s" % (head, tail)
+    head = "\n".join ("<li>%s<hr></li>\n" % action for action in rendered_actions[:-1])
+    return "%s\n<li>%s</li>" % (head, rendered_actions[-1])
 
 def render_action(action):
     if isinstance(action, Comment):
@@ -501,7 +499,7 @@ def render_action(action):
             fields.append('Privacy')
         user = action.updatedBy
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
-    return '%s' % (comment)
+    return comment
 
 
 def field_last_updated(task, field):
@@ -594,8 +592,18 @@ def permalink_to_sql(permalink):
             elif val.lower() == 'none':
                 sql.append("deadline is null")
             else: continue
-        elif key == "updated":
-            updatedFilter = val
+        if key == "updated":
+            import datetime
+            now = datetime.date.today()
+            if val == '0':
+                sql.append("updated = '%s'" % now)
+            elif val == '-1':
+                then = now - datetime.timedelta(days=1)
+                sql.append("updated >= '%s' AND updated < '%s'" % (now, then))
+            elif val == '-0.7':
+                then = now - datetime.timedelta(days=7)
+                sql.append("updated >= '%s' AND updated < '%s'" % (now, then))
+            else: continue
         elif key in "priority owner status".split():
             sql.append("%s='%s'" % (key, val))
         elif key == "sortOrder":
@@ -603,6 +611,7 @@ def permalink_to_sql(permalink):
             elif val == "down": sortOrder = "DESC"
         elif key == "sortBy":
             orderBy = val
+
     body = ""
     if len(sql):
         body = "AND %s" % " AND ".join(sql)
