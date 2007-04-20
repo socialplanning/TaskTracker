@@ -21,10 +21,6 @@
 from tasktracker.models import *
 from pylons import c
 
-from paste.wsgilib import intercept_output
-
-import os
-
 def _user_dict(name):
     return dict(username = name,
                 email = "%s@topp.example.com" % name, 
