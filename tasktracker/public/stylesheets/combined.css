@@ -1,0 +1,602 @@
+/* From tasktracker/public/stylesheets/list.css: */
+
+body {
+   margin-left: 5%;
+   margin-right: 5%;
+   margin-top: 5%;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table#next-prev-tasks {
+  background-color: #ddd;
+  width: 100%;
+}
+  table#next-prev-tasks td {
+    width: 50%;
+  }
+
+table.all_tasks {
+  width: 100%;
+}
+
+table.task_list {
+  padding-left: 0;
+  width: 100%;
+}
+  th.title-column {
+    column-span: 2;
+  }
+  .title-column, .updated-column {
+    white-space: nowrap;
+  }
+  tr.task-filter-controls td, td#breaking-row {
+    height: 1.75em;
+    text-align: left;
+  }
+  tr.column-heading {
+    background-color: #DDD;
+  }
+    td.deadline-column, td.owner-column, td.updated-column, td.priority-column, td.status-column, td.title-column { 
+      padding: 0;
+      width: 15%;
+      background-color: #DDD;
+    }
+    td.status-column {
+      width: 1%;
+    }
+    td.custom-status {
+      width: 8%;
+    }
+    td.title-column {
+      width: 30%;
+    }
+	.completed-task {
+	    text-decoration: line-through;
+	    color: gray
+	}
+
+  tr.second-line td { 
+    background-color: #FFF;
+    height: 1em;
+    text-decoration: none;
+    padding: 0;
+  }
+
+.low-profile-widget {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: 1em;
+  background-color: #DDD; 
+}
+
+input.low-profile-widget {
+  font-style: italic;
+}
+
+input#title { width: 50%; }
+
+input.auto-size { width: auto; height: auto; } 
+
+select.low-profile-widget:focus { height: 1em; font-size: 1em; }
+
+.filter-line {
+  background-color: #ddd;
+  width: auto;
+  text-align: center;
+}
+
+.grayed-out {
+   color: gray;
+}
+
+.preview {
+  color: #aaa;
+}
+
+a.preview-link {
+  color: #aaa;
+}
+
+.handle {
+	padding: 0 4px 0 4px;
+}
+
+.customDraggable {
+  color: #666;
+  background-color: #bbb;
+  filter:alpha(opacity=40);
+  opacity: .4;
+}
+
+.drop {
+   border-bottom: 2px solid black;
+   padding-bottom: 2px;	
+}
+
+/*from scriptaculous*/
+span.autocomplete {
+    background-color:white;
+    margin:0;
+    padding:0;
+}
+span.autocomplete ul {
+    list-style-type:none;
+    margin:0;
+    padding:0;
+    border: 1px solid black;
+}
+span.autocomplete ul li.selected {
+    background-color: #ffb;
+}
+span.autocomplete ul li {
+    list-style-type:none;
+    background-color: white;
+    display:block;
+    margin:0;
+    padding:0;
+    height:1.25em;
+    cursor:pointer;
+}
+/*end scriptaculous*/
+
+.error-message {
+     border: 1px black dashed;
+     color: #f00;
+     font-weight: bold;
+}
+
+a.sortarrow:visited, a.sortarrow:link {
+    text-decoration: none;
+     color: #00f;
+}
+
+.row-heading {
+    font-weight: bold;
+}
+
+.task-filter-controls {
+  clear: both; 
+}
+
+.create_section {
+   padding: 0;
+}
+
+.task_cell {
+  text-align: left;
+}
+
+.overdue-task {
+   color: maroon;
+}
+
+.uncompleted-task, .command {
+  cursor:pointer;
+  text-decoration: underline;
+  color: #256e81;
+}
+
+span.editable:hover {
+  background-color: #edf;
+}
+
+.help {
+  cursor: pointer;
+}
+
+.help_text {
+  background-color: #ddd;
+  border: 1px solid black;
+  position: absolute;
+}
+
+.undecorated_list {
+  list-style-type: none;
+  list-style-image: none; 
+  padding-left: 0;
+}
+
+.selected-permission {
+  font-weight: bold; 
+}
+
+.disabled-permission {
+  color: #888;
+}
+
+.folded {
+  display: none;
+}
+
+#movable_add_task {
+  background-color: #ddd;
+  padding: 1em;
+  margin: 0;
+  line-height: 1em;
+}
+
+.activity_list {
+  list-style: none;
+  padding: 0; margin: 0;
+  padding-left: 25px;
+}
+  .activity_list li {
+    padding: 0; margin: 0;
+  }
+#activity-table {
+   border-spacing: 0;
+   align: left;
+   text-align: left;
+   width: 100%;
+   background-color: #fff;
+}
+
+#activity-insert {
+   background-color: #ddd;
+   padding: 3px;
+   text-align: center;
+}
+
+#wrap-task-details {
+  padding-top: 5px;
+}
+
+.child_tasks {
+  padding-left: 25px;
+  padding-top: 5px;
+}
+
+#task-detail-sidebar-cell {
+  padding-left: 50;
+  padding-right: 50;
+}
+
+td.task-detail-mainbar {
+  width: 75%;
+  vertical-align: top;
+}
+
+td.task-detail-mainbar ul li {
+  overflow: hidden;
+}
+
+#task-detail-sidebar {
+  background-color: #ddd;
+  padding-left: 10;
+  padding-right: 3px;
+  padding-top: 100;
+  padding-bottom: 100;
+}
+
+label {
+  font-weight: normal;
+}
+
+.small {
+   font-size: 0.9em;
+}
+
+.big {
+   font-size: 1.5em;
+}
+
+#global-values {
+  display: none; 
+}
+
+.currently-dragged-column div {
+  background-color: #ddd;
+}
+
+ul.command_list {
+  display: inline;
+}
+
+ul.command_list li {
+  border-left: 1px solid #000;
+  list-style: none;
+  display: inline;
+}
+
+div.sibling_dropzone, div.child_dropzone {
+  display: inline;
+}
+
+.hidden {
+  display: none;
+}
+
+div#sibling_dropzone_0 {
+  padding-left: 2em;
+  padding-right: 10em;
+}
+
+
+
+/* From tasktracker/public/stylesheets/datebocks_engine.css: */
+
+#dateBocksMessage {
+  clear: both;
+}
+
+#dateBocksMessage div {
+  font-size: 0.75em;
+}
+
+#dateBocksMessage div.error {
+  color: red;
+}
+
+.dateBocks span {
+	list-style: none;
+	padding: 0 0px 0 0;
+	margin: 0px 0 0px 0;
+}
+
+.dateBocks ul li {
+	display: inline;
+}
+
+.dateBocks ul a {
+	padding: 0px;
+	display: block;
+	float: left;
+}
+
+.dateBocksInput input {
+	display: inline;
+	height: 1em;
+	width: 7em;
+}
+
+
+
+/* From tasktracker/public/stylesheets/calendar-blue.css: */
+
+/* The main calendar widget.  DIV containing a table. */
+
+.calendar {
+  z-index: 1000;
+}
+
+div.calendar { position: relative; }
+
+.calendar, .calendar table {
+  border: 1px solid #556;
+  font-size: 11px;
+  color: #000;
+  cursor: default;
+  background: #eef;
+  font-family: tahoma,verdana,sans-serif;
+}
+
+/* Header part -- contains navigation buttons and day names. */
+
+.calendar .button { /* "<<", "<", ">", ">>" buttons have this class */
+  text-align: center;    /* They are the navigation buttons */
+  padding: 2px;          /* Make the buttons seem like they're pressing */
+}
+
+.calendar .nav {
+  background: #778 url(/engine_files/datebocks_engine/images/menuarrow.gif) no-repeat 100% 100%;
+}
+
+.calendar thead .title { /* This holds the current "month, year" */
+  font-weight: bold;      /* Pressing it will take you to the current date */
+  text-align: center;
+  background: #fff;
+  color: #000;
+  padding: 2px;
+}
+
+.calendar thead .headrow { /* Row <TR> containing navigation buttons */
+  background: #778;
+  color: #fff;
+}
+
+.calendar thead .daynames { /* Row <TR> containing the day names */
+  background: #bdf;
+}
+
+.calendar thead .name { /* Cells <TD> containing the day names */
+  border-bottom: 1px solid #556;
+  padding: 2px;
+  text-align: center;
+  color: #000;
+}
+
+.calendar thead .weekend { /* How a weekend day name shows in header */
+  color: #a66;
+}
+
+.calendar thead .hilite { /* How do the buttons in header appear when hover */
+  background-color: #aaf;
+  color: #000;
+  border: 1px solid #04f;
+  padding: 1px;
+}
+
+.calendar thead .active { /* Active (pressed) buttons in header */
+  background-color: #77c;
+  padding: 2px 0px 0px 2px;
+}
+
+/* The body part -- contains all the days in month. */
+
+.calendar tbody .day { /* Cells <TD> containing month days dates */
+  width: 2em;
+  color: #456;
+  text-align: right;
+  padding: 2px 4px 2px 2px;
+}
+.calendar tbody .day.othermonth {
+  font-size: 80%;
+  color: #bbb;
+}
+.calendar tbody .day.othermonth.oweekend {
+  color: #fbb;
+}
+
+.calendar table .wn {
+  padding: 2px 3px 2px 2px;
+  border-right: 1px solid #000;
+  background: #bdf;
+}
+
+.calendar tbody .rowhilite td {
+  background: #def;
+}
+
+.calendar tbody .rowhilite td.wn {
+  background: #eef;
+}
+
+.calendar tbody td.hilite { /* Hovered cells <TD> */
+  background: #def;
+  padding: 1px 3px 1px 1px;
+  border: 1px solid #bbb;
+}
+
+.calendar tbody td.active { /* Active (pressed) cells <TD> */
+  background: #cde;
+  padding: 2px 2px 0px 2px;
+}
+
+.calendar tbody td.selected { /* Cell showing today date */
+  font-weight: bold;
+  border: 1px solid #000;
+  padding: 1px 3px 1px 1px;
+  background: #fff;
+  color: #000;
+}
+
+.calendar tbody td.weekend { /* Cells showing weekend days */
+  color: #a66;
+}
+
+.calendar tbody td.today { /* Cell showing selected date */
+  font-weight: bold;
+  color: #00f;
+}
+
+.calendar tbody .disabled { color: #999; }
+
+.calendar tbody .emptycell { /* Empty cells (the best is to hide them) */
+  visibility: hidden;
+}
+
+.calendar tbody .emptyrow { /* Empty row (some months need less than 6 rows) */
+  display: none;
+}
+
+/* The footer part -- status bar and "Close" button */
+
+.calendar tfoot .footrow { /* The <TR> in footer (only one right now) */
+  text-align: center;
+  background: #556;
+  color: #fff;
+}
+
+.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+  background: #fff;
+  color: #445;
+  border-top: 1px solid #556;
+  padding: 1px;
+}
+
+.calendar tfoot .hilite { /* Hover style for buttons in footer */
+  background: #aaf;
+  border: 1px solid #04f;
+  color: #000;
+  padding: 1px;
+}
+
+.calendar tfoot .active { /* Active (pressed) style for buttons in footer */
+  background: #77c;
+  padding: 2px 0px 0px 2px;
+}
+
+/* Combo boxes (menus that display months/years for direct selection) */
+
+.calendar .combo {
+  position: absolute;
+  display: none;
+  top: 0px;
+  left: 0px;
+  width: 4em;
+  cursor: default;
+  border: 1px solid #655;
+  background: #def;
+  color: #000;
+  font-size: 90%;
+  z-index: 100;
+}
+
+.calendar .combo .label,
+.calendar .combo .label-IEfix {
+  text-align: center;
+  padding: 1px;
+}
+
+.calendar .combo .label-IEfix {
+  width: 4em;
+}
+
+.calendar .combo .hilite {
+  background: #acf;
+}
+
+.calendar .combo .active {
+  border-top: 1px solid #46a;
+  border-bottom: 1px solid #46a;
+  background: #eef;
+  font-weight: bold;
+}
+
+.calendar td.time {
+  border-top: 1px solid #000;
+  padding: 1px 0px;
+  text-align: center;
+  background-color: #f4f0e8;
+}
+
+.calendar td.time .hour,
+.calendar td.time .minute,
+.calendar td.time .ampm {
+  padding: 0px 3px 0px 4px;
+  border: 1px solid #889;
+  font-weight: bold;
+  background-color: #fff;
+}
+
+.calendar td.time .ampm {
+  text-align: center;
+}
+
+.calendar td.time .colon {
+  padding: 0px 2px 0px 3px;
+  font-weight: bold;
+}
+
+.calendar td.time span.hilite {
+  border-color: #000;
+  background-color: #667;
+  color: #fff;
+}
+
+.calendar td.time span.active {
+  border-color: #f00;
+  background-color: #000;
+  color: #0f0;
+}
+
+
+
+
