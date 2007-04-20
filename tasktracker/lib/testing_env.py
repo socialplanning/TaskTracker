@@ -19,14 +19,11 @@
 # USA
 
 from tasktracker.models import *
-from paste.deploy import CONFIG, appconfig
 from pylons import c
 
 from paste.wsgilib import intercept_output
 
 import os
-conf_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-
 
 def _user_dict(name):
     return dict(username = name,
@@ -49,10 +46,7 @@ class TestingEnv(object):
     def __init__(self, app, users):
         self.app = app
         self.users = users
-        self.conf = appconfig('config:development.ini', relative_to=conf_dir)
-        CONFIG.push_process_config({'app_conf': self.conf.local_conf,
-                                    'global_conf': self.conf.global_conf})
-
+        
     def authenticate(self, environ):
         try:
             basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
