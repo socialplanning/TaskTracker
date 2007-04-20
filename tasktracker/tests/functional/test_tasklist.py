@@ -26,7 +26,7 @@ class TestTaskListController(TestController):
     def test_create_list(self):
         app = self.getApp('admin')
         res = app.get(url_for(controller='tasklist', action='show_create'))
-
+        
         ### fill in some values and create a tasklist
         form = res.forms[0]
         form['title'] = 'The new tl title'
@@ -48,9 +48,29 @@ class TestTaskListController(TestController):
         ### and the tasklist itself should have been created with the correct id and values
         tl = TaskList.get(id)
         assert tl.text == 'The new tl body'
-        
+
         tl.destroySelf()
 
+    def test_different_projects(self):
+        ### @@ this test needs to tell us about itself
+
+        app = self.getApp('admin')
+
+        res = app.get(url_for(controller='tasklist', action='show_create'))
+        
+        ### fill in some values and create a tasklist
+        form = res.forms[0]
+        form['title'] = 'The new tl title'
+        form['text'] = 'The new tl body'
+        res = form.submit()
+
+        res = app.get(url_for(controller='tasklist'))
+        res.mustcontain("The new tl title")
+
+        res = app.post(url_for(controller='project', action='initialize'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+        res = app.get(url_for(controller='tasklist'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+        assert "The new tl title" not in res.body
+        
     def test_delete_list(self):
         tl = self.create_tasklist('testing tasklist deletion')
         app = self.getApp("admin")
@@ -286,21 +306,4 @@ class TestTaskListController(TestController):
         
         tl.destroySelf()
 
-#     def test_tasklist_watch(self):
-#         """Tests adding self as a watcher for a task list"""
-#         tl = self.create_tasklist(title="list")
-
-#         app = self.getApp('admin')
-
-#         res = app.get(url_for(
-#                 controller='tasklist', action='show', id=tl.id))
-        
-#         res = res.click("watch this list")
-#         res.mustcontain("Just the highlights")
-#         res = res.forms[0].submit()
-
-#         assert res.header_dict['location'].startswith('/tasklist/show/%s' % tl.id)
-#         res = res.follow()
-#         res.mustcontain("edit watch settings")
-#         tl.destroySelf()
 
