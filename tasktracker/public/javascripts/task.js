@@ -1075,32 +1075,33 @@ function sortListBy(ul, column, forward, parentID) {
 	    return i.getAttribute("parentID") == parentID;
 	} );
 
-    items = items.sort(function (x, y) {
-	    var a = x.getAttribute(column);
-	    var b = y.getAttribute(column);
-	    if (!a && b)
-		return 1 * forward;
-	    else if (!b && a)
-		return -1 * forward;
-	    else if (a > b) 
-		return 1 * forward;
-	    else if (b > a) 
-		return -1  * forward;
-	    else if (x.getAttribute('sort_index') > y.getAttribute('sort_index')) 
-		return 1  * forward;
-	    else if (x.getAttribute('sort_index') < y.getAttribute('sort_index'))
-		return -1  * forward;
-	    else
-		return 0;
-	});
+    for (i = 0; i < items.length; i++) {
+	var item = items[i];
+	var attrib = item.getAttribute(column);
+	var sort_index = item.getAttribute('sort_index');
+	if (attrib) {
+	    key = attrib;
+	} else  {
+	    if (forward == 1) {
+		key = undefined; //sorts last
+	    } else {
+		key = 0; // numbers sort before strings
+	    }
+	}
+	items[i] = [key, sort_index, item];
+    }
+
+    items = items.sort();
 
     ul = ul.getElementsByTagName("TBODY")[0];
-    items.each(function (x) {
-	    removeRow(ul, x);
-	    $A(x.childTasks).each(function(i) {
-		    removeRow(ul, i);
-		});
-	});
+    for (i = 0; i < items.length; i++) {
+	var item = items[i][2];
+	items[i] = item;
+	removeRow(ul, item);
+	$A(item.childTasks).each(function(i) {
+		removeRow(ul, i);
+	    });
+    }
     items.each (function (x) {
 	    ul.appendChild(x);
 	    ul.appendChild(x.second_line);
