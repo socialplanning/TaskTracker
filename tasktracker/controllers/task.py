@@ -22,7 +22,6 @@ from tasktracker.lib.base import *
 from tasktracker.models import *
 
 from tasktracker.lib import helpers as h
-from tasktracker.lib.taskparser import *
 import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
