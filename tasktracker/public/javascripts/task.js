@@ -1096,7 +1096,8 @@ function sortListBy(ul, column, forward, parentID) {
 	items[i] = [key, sort_index, item];
     }
 
-    items = items.sort();
+    items = items.sort();  // is there really no way to do a reverse sort?
+    if( forward < 0 ) items = items.reverse();
 
     ul = ul.getElementsByTagName("TBODY")[0];
     for (i = 0; i < items.length; i++) {
