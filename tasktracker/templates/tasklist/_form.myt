@@ -24,7 +24,7 @@
 <label for="custom_status">Allow custom status</label><br/>
 
 <div id="edit_statuses" style="display:none; margin-left: 3em;">
-<% h.editable_list('statuses', [], ['done']) %>
+   <% h.editable_list('statuses', [], ['done']) %>
    <input type="hidden" value="" id="statuses" name="statuses">
    <input id="add_status" name="add_status" size="20" type="text" value="" />
    <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
