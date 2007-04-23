@@ -303,6 +303,9 @@ def _ownerFilter(onblur = None, tasklist = None):
 def _get_permalink(dikt):
     permalink = ""
     for param in dikt:
+        #prevent sql injection
+        assert ' ' not in dikt[param]
+
         if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
     return permalink
@@ -311,6 +314,9 @@ def _get_permalink_without_filters(dikt):
     permalink = ""
     for param in dikt:
         if param in "sortBy sortOrder columnOrder".split():
+            #prevent sql injection
+            assert ' ' not in dikt[param]
+
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
     return permalink
 
