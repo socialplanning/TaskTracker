@@ -41,5 +41,4 @@
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/><br/>
 
 <% h.submit('Submit', onclick='cull_old();') %>
-<input type="submit" name="Cancel" value="Cancel" onclick="window.location.href='/tasklist/index'; return false;" />
-
+<% h.submit('Cancel', onclick='window.location.href="%s"; return false;' % h.url_for(controller='tasklist')) %>
