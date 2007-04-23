@@ -27,7 +27,7 @@ import formencode
 class CreateListForm(formencode.Schema): 
     pre_validators = [formencode.variabledecode.NestedVariables()]
     allow_extra_fields = True
-    title = SafeHTML()
+    title = SafeHTML(not_empty = True)
     member_level = formencode.validators.Int()
     other_level = formencode.validators.Int()
     initial_assign = formencode.validators.Int()
