@@ -20,7 +20,7 @@
 
 # Make sure we can import from *this* tasktracker package
 import sys, os
-sys.path.insert(0, os.path.dirname(__file__))
+#sys.path.insert(0, os.path.dirname(__file__))  # @@ what is this supposed to do? -egj
 from setuptools import setup, find_packages
 
 setup(
