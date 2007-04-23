@@ -81,7 +81,8 @@
  <% h.link_to('view list preferences', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %> 
 % if h.has_permission('tasklist', 'destroy', id=c.tasklist.id):
  &nbsp;
- <% h.secure_link_to('delete this list', h.url_for(action='destroy', controller='tasklist', id=c.tasklist.id)) %>
+ <% h.secure_link_to('delete this list', h.url_for(action='destroy', controller='tasklist', id=c.tasklist.id),
+    class_='post-link', confirm_msg='Are you sure you want to delete this tasklist?') %>
 % #endif
 
 </span>

@@ -97,7 +97,7 @@
 
 % if h.has_permission(controller='task', action='update', id=c.task.id):
  <% h.secure_link_to('delete this task', class_='post-link',
-    confirm_msg='Are you sure you want to delete this task', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
+    confirm_msg='Are you sure you want to delete this task?', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>
 %
 
 <br/><br/>
