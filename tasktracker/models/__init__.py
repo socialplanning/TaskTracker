@@ -313,7 +313,7 @@ class Task(SQLObject):
 
         if level >= Role.getLevel("ListOwner"):
             #filtering needed
-            query += " AND (task.private = 0 OR task.owner = %s)" % user
+            query += " AND (task.private = 0 OR task.owner = '%s')" % user
 
         conn = hub.getConnection()
         trans = conn.transaction()
