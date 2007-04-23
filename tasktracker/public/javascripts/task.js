@@ -527,11 +527,11 @@ function filterField(fieldname, task) {
 	return filterUpdated(task);
     }
 			
-    filtervalue = $(fieldname + '_filter').value;
+    var filtervalue = $(fieldname + '_filter').value.replace(' ', '%20');
     if( filtervalue == 'All' ) {
 	return false;
     }
-
+    console.log(task.getAttribute(fieldname));
     if( task.getAttribute(fieldname) != filtervalue ) {
 	return true;
     }
@@ -721,7 +721,7 @@ function doneAddingTask(req) {
 	nf = new_fragment;
 	target.appendChild(new_fragment);
     }
-    $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
+    //$('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     new_item.childTasks = []; 
     enableDragDrop(new_item);
@@ -855,7 +855,7 @@ function updateTaskItem(task_id) {
 	    if (task.getAttribute('status') != 'done')
 		++uncompletedTasks;
 	});
-    $('num_uncompleted').innerHTML = uncompletedTasks;
+    //$('num_uncompleted').innerHTML = uncompletedTasks;
 }
 
 function revertField(task_id, fieldname) {
