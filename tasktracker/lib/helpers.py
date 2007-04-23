@@ -572,7 +572,6 @@ def permalink_to_sql(permalink):
     sql = []
     orderBy = None
     sortOrder = None
-    updatedFilter = None
     for term in terms:
         if not term: continue
         key, val = term.split("=")
@@ -615,7 +614,7 @@ def permalink_to_sql(permalink):
     body = ""
     if len(sql):
         body = "AND %s" % " AND ".join(sql)
-    return (body, orderBy, sortOrder, updatedFilter)
+    return (body, orderBy, sortOrder)
 
 def getColumnOrder(permalink):
     permalink = permalink.split("&")

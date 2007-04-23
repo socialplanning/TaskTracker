@@ -303,9 +303,9 @@ class Task(SQLObject):
     # @@ it's looking more and more like this doesn't remotely belong in the model. - egj
     def adjacentTasks(self, options=None, user=None, level=100):
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
-        sql = sortOrder = updatedFilter = None
+        sql = sortOrder = None
         if options: 
-            sql, orderBy, sortOrder, updatedFilter = options
+            sql, orderBy, sortOrder = options
         if sql:
             query = "%s %s" % (query, sql)
         if not orderBy:
