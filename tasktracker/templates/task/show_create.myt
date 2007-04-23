@@ -39,6 +39,6 @@ Add description</a><br/><br/>
 </div>
 
 <p>
-<input type="submit" name="create" value="go" tabindex=4 />
+<input type="submit" name="create" value="add" tabindex=4 />
 <% cancel_button %>
 </form>
