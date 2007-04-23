@@ -40,7 +40,6 @@ sub-task
 root-task
 %
 ">
-
 <% h.editableField(atask, 'title', uneditable = is_preview) %>
 </span>
 % else:
@@ -56,7 +55,6 @@ root-task
 % else:
     uncompleted-task
 %
-
 % if atask.parentID:
 sub-task
 % else:

@@ -1075,11 +1075,16 @@ function sortListBy(ul, column, forward, parentID) {
 	    return i.getAttribute("parentID") == parentID;
 	} );
 
-    for (i = 0; i < items.length; i++) {
+    var hack_for_priority = (column == 'priority');
+    var priority_hack_dict = {'High':1, 'Medium':2, 'Low':3, 'None':4};
+    for( i = 0; i < items.length; i++ ) {
 	var item = items[i];
 	var attrib = item.getAttribute(column);
 	var sort_index = item.getAttribute('sort_index');
-	if (attrib) {
+	if( hack_for_priority ) {
+	    key = priority_hack_dict[attrib];
+	}
+	else if( attrib ) {
 	    key = attrib;
 	} else  {
 	    if (forward == 1) {
