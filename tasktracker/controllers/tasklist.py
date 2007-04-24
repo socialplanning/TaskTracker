@@ -164,7 +164,6 @@ class TasklistController(BaseController):
         
         set_features(p)
         self._setup_roles(p, c.tasklist)
-
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
     @attrs(action='show', readonly=True)
@@ -198,7 +197,6 @@ class TasklistController(BaseController):
 
         set_features(p)
         self._setup_roles(p, c.tasklist)
-        
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
     def _getTaskList(self, id):

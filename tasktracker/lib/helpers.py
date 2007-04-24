@@ -246,15 +246,6 @@ def _ownerInput(task):
                   method="post", originalvalue=orig,
                   id="owner_%d" % id, class_="low-profile-widget", **_selectjs('owner', id))
 
-    #input = text_field('owner', autocomplete="off", originalvalue=orig, size=15, style='',
-    #                   id="owner_%d" % id, value=task.owner, class_="low-profile-widget", **_selectjs("owner", id))
-    #span = """<span class="autocomplete" id="owner_auto_complete_%d"></span>""" % id
-    #script = """<script type="text/javascript">
-    #         new Ajax.Autocompleter('owner_%d',
-    #         'owner_auto_complete_%d', '../../../task/auto_complete_for/owner',
-    #         {afterUpdateElement:function() { changeField (%s, 'owner');}});</script>""" % (id, id, id)
-    #return "%s\n%s\n%s" % (input, span, script)
-
 def columnFilter(field, tasklist = None):
     out = []
     onblur = """filterListByAllFields();"""
