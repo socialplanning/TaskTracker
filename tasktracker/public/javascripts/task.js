@@ -431,9 +431,9 @@ function setupEmptyList() {
 	showTaskCreate();
 }
 
+var debug = [];
 function filterDeadline(task) {
     var filtervalue = $('deadline_filter').value;
-
     if (filtervalue == 'All') {
 	return false;
     }
@@ -460,15 +460,31 @@ function filterDeadline(task) {
     byThisDate.setDate(byThisDate.getDate() + max + 1);
 
     var deadline = task.getAttribute('deadline');
+
+    
+    var x = new Object();
+    x.mDate = minDate;
+    x.byDate = byThisDate;
+    x.dline = deadline;
+    x.task = task;
+    debug[debug.length] = x;
     if (deadline != 'None') {
 	var db = new DateBocks();
 	var nodeDate = db.parseDateString(deadline);
+	console.log("must be before " + byThisDate);
+	console.log("must be after " + minDate);
+	console.log("the task's deadline is " + nodeDate);
 	if (!(nodeDate < byThisDate)) {
+	    console.log("true A");
 	    return true;
 	}
-	if (min <= max && !(nodeDate > minDate)) {
+	if (min < max && !(nodeDate > minDate)) {
+	    console.log("min: " + min);
+	    console.log("max: " + max);
+	    console.log("true B");
 	    return true;
 	}
+	console.log("false!");
 	return false;
     } else {
 	return true;
@@ -1046,16 +1062,16 @@ function doDrop(child, drop_target, dropzone) {
     var task_id = child.id.replace("draggable_", "");
     var old_parent_id = $('task_' + task_id).getAttribute("parentID");
     id = parseInt(dropzone.task_id);
+    var base_url = $('global-values').getAttribute("move_url");
     if (dropzone.drop_reparent) {   // drop under a parent node
         var new_parent = $('task_' + id);
-	var base_url = $('global-values').getAttribute("move_url");
 	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
             onSuccess:doneMovingTask,
             onFailure:debugThing});
     } else {   // drop after a sibling node
         var new_sibling = $('task_' + id);
-        new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+        new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
             onSuccess:doneMovingTask,
             onFailure:debugThing});
