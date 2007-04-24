@@ -16,7 +16,7 @@
 Managers:<br/>
 
 <ul>
-% for manager in c.managers + c.administrators:
+% for manager in c.administrators + c.managers:
      <li> <% manager %> </li>
 %
 </ul>

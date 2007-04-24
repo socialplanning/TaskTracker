@@ -28,7 +28,7 @@
 <label for="managers"><b>Managers:</b></label><br/>
 <div id="managers_div" class="unfolded editable">
 <ul>
-% for manager in c.managers + c.administrators:
+% for manager in c.administrators + c.managers:
      <li> <% manager %> </li>
 %
 </ul>

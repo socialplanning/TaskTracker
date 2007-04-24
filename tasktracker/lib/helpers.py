@@ -96,15 +96,15 @@ def help(text):
 
 def editable_list(field, updateable_items=[], fixed_items=[]):
     out = ['<ul id="list_%s" class="task_list" field="%s">' % (field, field)]
+    for item in fixed_items:
+        out.append('<li class="unremovable_list_item">')
+        out.append("<span>%s</span>" % item)
+        out.append("</li>")
+
     for item in updateable_items:
         out.append('<li class="removable_list_item">')
         out.append("<span>%s</span>" % item)
         out.append("<span class='command delete_button'>[ - ]</span>")
-        out.append("</li>")
-        
-    for item in fixed_items:
-        out.append('<li class="unremovable_list_item">')
-        out.append("<span>%s</span>" % item)
         out.append("</li>")
         
     out.append("</ul>")
