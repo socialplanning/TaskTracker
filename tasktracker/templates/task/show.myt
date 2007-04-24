@@ -34,12 +34,6 @@
     <% h.editableField(c.task, 'text', 'Add a description') %>
     <br/>
 
-    <span id="description_updated_<% c.task.id %>">
-% if h.field_last_updated(c.task, 'text'):
-      Description last updated 
-   <% h.field_last_updated(c.task, 'text') %>
-%
-    </span>
     <hr/>
 
     <b>Previous activity:</b>
@@ -192,12 +186,8 @@ function cancel_comment() {
 }
 
 function change_description_updated(task_id, field_name, comment_text) {
-    var desc = $('description_updated_' + task_id);
-    if( desc ) {
-      if( field_name == 'text' ) {
-        desc.innerHTML = "Description last updated Today by you";
-	field_name = 'description';
-      }
+    if( field_name == 'text' ) {
+      field_name = 'description';
     }
     var act = $('activity_' + task_id);
     if( act ) {

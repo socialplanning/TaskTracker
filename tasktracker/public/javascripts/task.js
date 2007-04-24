@@ -917,6 +917,7 @@ function succeededChangingField(req) {
     }
 
     var fieldname = this[1];
+
     if ($('post_edit_task')) {
 	func = eval($('post_edit_task').getAttribute('func'));
 	func(task_id, fieldname);
