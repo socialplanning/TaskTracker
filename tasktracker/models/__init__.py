@@ -149,7 +149,8 @@ class TaskListPermission(SQLObject):
 
 
 def _task_sort_index():
-    index = max([t.sort_index for t in Task.selectBy(live=True)] + [0])
+    #index = max([t.sort_index for t in Task.selectBy(live=True)] + [0])
+    index = Task.selectBy(live=True).max('sort_index')
     if index is None:
         return 0
     else:
