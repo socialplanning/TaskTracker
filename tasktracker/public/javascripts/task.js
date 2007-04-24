@@ -431,64 +431,59 @@ function setupEmptyList() {
 	showTaskCreate();
 }
 
-var debug = [];
 function filterDeadline(task) {
     var filtervalue = $('deadline_filter').value;
     if (filtervalue == 'All') {
 	return false;
     }
+    var deadline = task.getAttribute('deadline');
+
     if (filtervalue == 'None') {
-	if( task.getAttribute('deadline') != 'None' ) {
+	if( deadline != 'None' ) {
 	    return true;
 	} else return false;
     }
     
+    if( deadline == 'None' ) {
+	return true;
+    }
+
     var dates = filtervalue.split(",");
+
+    if( dates.length == 1 ) {
+	var equalDate = new Date();
+	equalDate.setHours(0,0,0,0);
+	equalDate.setDate(equalDate.getDate() + parseInt(dates[0]));
+	var db = new DateBocks();
+	deadline = db.parseDateString(deadline);
+	deadline.setHours(0,0,0,0);
+	return !equalDate.equalsTo(deadline);
+    } 
+
     var min; 
     var max;
 
-    if (dates.length == 1) {
-	min = -1 * parseInt(dates[0]);
-	max = parseInt(dates[0]);
-    } else {
-	min = parseInt(dates[0]);
-	max = parseInt(dates[1]);
-    }
+    min = parseInt(dates[0]);
+    max = parseInt(dates[1]);
+
     var minDate = new Date();
+    minDate.setHours(0,0,0,0);
     var byThisDate = new Date();
+    byThisDate.setHours(0,0,0,0);
     minDate.setDate(minDate.getDate() - min);
     byThisDate.setDate(byThisDate.getDate() + max + 1);
 
-    var deadline = task.getAttribute('deadline');
-
-    
-    var x = new Object();
-    x.mDate = minDate;
-    x.byDate = byThisDate;
-    x.dline = deadline;
-    x.task = task;
-    debug[debug.length] = x;
-    if (deadline != 'None') {
-	var db = new DateBocks();
-	var nodeDate = db.parseDateString(deadline);
-	console.log("must be before " + byThisDate);
-	console.log("must be after " + minDate);
-	console.log("the task's deadline is " + nodeDate);
-	if (!(nodeDate < byThisDate)) {
-	    console.log("true A");
-	    return true;
-	}
-	if (min < max && !(nodeDate > minDate)) {
-	    console.log("min: " + min);
-	    console.log("max: " + max);
-	    console.log("true B");
-	    return true;
-	}
-	console.log("false!");
-	return false;
-    } else {
+    var db = new DateBocks();
+    var nodeDate = db.parseDateString(deadline);
+	
+    if( nodeDate > byThisDate ) {
 	return true;
     }
+    if( min < max && (nodeDate <= minDate) ) {
+	return true;
+    }
+    return false;
+
 }
 
 function filterUpdated(task) {
