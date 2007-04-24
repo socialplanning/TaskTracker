@@ -329,11 +329,14 @@ class TaskController(BaseController):
         c.depth = c.task.depth()
         c.url_from = url_for(controller='task', action='show', id=id)
         c.permalink = h._get_permalink(request.GET)
-        c.prev, c.next, delete_permalink = c.task.adjacentTasks(options=h.permalink_to_sql(c.permalink),
+        c.prev, c.next = c.task.adjacentTasks(options=h.permalink_to_sql(c.permalink),
                                                                 user=c.username, level=c.level)
-        if delete_permalink:
+        #if the task shown would not be shown under the current
+        #filters, alter the permalink to remove the filters.
+        if not h.is_task_allowed(c.task, c.permalink):
             c.permalink = h._get_permalink_without_filters(request.GET)
-        return render_response('task/show.myt')
+        s = render_response('task/show.myt')
+        return s
 
     @authenticate
     @attrs(action='update', readonly=False)

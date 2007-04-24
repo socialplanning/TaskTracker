@@ -60,10 +60,10 @@ def setup_config(command, filename, section, vars):
                                 'global_conf': conf.global_conf})
     
     #you'll need these when you need to zap tables
-    for table in soClasses[::-1]:
-        table.dropTable(ifExists=True)
-    for table in soClasses:
-        table.createTable(ifNotExists=True)
+    #for table in soClasses[::-1]:
+    #    table.dropTable(ifExists=True)
+    #for table in soClasses:
+    #    table.createTable(ifNotExists=True)
 
     def makeUser(usename, password="topp"):
         """Makes a user."""

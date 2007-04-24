@@ -96,10 +96,10 @@ class TestController(TestCase):
     def setup_database(self):
         nonFixedClasses = [Task, TaskList, TaskListPermission, Project, TaskListRole, Comment, Status, User]
 
-        for table in nonFixedClasses[::-1]:
-            table.dropTable(ifExists=True)
-        for table in nonFixedClasses:
-            table.createTable(ifNotExists=True)
+        #for table in nonFixedClasses[::-1]:
+        #    table.dropTable(ifExists=True)
+        #for table in nonFixedClasses:
+        #    table.createTable(ifNotExists=True)
         
         for username in ['admin', 'member', 'auth', 'anon']:
             User(username=username, password='nopassword'.encode("base64"))

@@ -44,6 +44,7 @@ from random import random
 import formencode.validators
 
 from urllib import quote
+import datetime
 
 class SafeHTML(formencode.validators.String):
     def to_python(self, value, state):
@@ -72,7 +73,6 @@ def previewText(text, length=25):
 def isOverdue(deadline):
     if not deadline:
         return False
-    import datetime
     if type(deadline) == type(datetime.date(2006,1,1)):
         date = deadline
     else:
@@ -582,7 +582,6 @@ def permalink_to_sql(permalink):
         if not term: continue
         key, val = term.split("=")
         if key == "deadline":
-            import datetime
             now = datetime.date.today()
             if val == '-1':
                 sql.append("deadline < '%s'" % now)
@@ -598,7 +597,6 @@ def permalink_to_sql(permalink):
                 sql.append("deadline is null")
             else: continue
         if key == "updated":
-            import datetime
             now = datetime.date.today()
             if val == '0':
                 sql.append("updated = '%s'" % now)
@@ -697,3 +695,48 @@ def generateMovableColumns(atask, is_preview, column_order):
         """ % readableDate(atask.updated).replace(" ", "&nbsp;")
 
     return _orderMovableColumns(columns, column_order)
+
+def is_task_allowed(task, permalink):
+    terms = permalink.split("&")
+    for term in terms:
+        if not term: continue
+        key, val = term.split("=")
+        if key == "deadline":
+            now = datetime.date.today()
+            if val == '-1':
+                if task.deadline >= now:
+                    return False
+            elif val == '0':
+                if task.deadline != now:
+                    return False
+            elif val == '1':
+                now += datetime.timedelta(days=1)
+                if task.deadline != now:
+                    return False
+            elif val == '0,7':
+                then = now + datetime.timedelta(days=7)
+                if task.deadline < now or task.deadline > then:
+                    return False
+            elif val.lower() == 'none':
+                if task.deadline is not None:
+                    return False
+            else: continue
+        if key == "updated":
+            now = datetime.date.today()
+            if val == '0':
+                if task.updated != now:
+                    return False
+            elif val == '-1':
+                then = now - datetime.timedelta(days=1)
+                if task.updated <= now or task.update > then:
+                    return False
+            elif val == '-0.7':
+                then = now - datetime.timedelta(days=7)
+                if task.updated <= now or task.update > then:
+                    return False
+            else: continue
+        elif key in "priority owner status".split():
+            if getattr(task, key) != val:
+                return False
+        
+    return True

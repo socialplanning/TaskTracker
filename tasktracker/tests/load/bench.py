@@ -1,5 +1,27 @@
 #!/usr/bin/python
 
+# Copyright (C) 2006-2007 The Open Planning Project
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the 
+# Free Software Foundation, Inc., 
+# 51 Franklin Street, Fifth Floor, 
+# Boston, MA  02110-1301
+# USA
+
+#IMPORTANT NOTE: you need to add the following line to your autobench config file:
+#httperf_add-header="Authorization: Basic YWRtaW46YWRtaW4"
+
 from os import system
 import random 
 import httplib2
@@ -43,7 +65,7 @@ authenticator = ''
 def benchmark(path, id):
     print "benchmarking %s" % path
     filename = "bench.%s.%s" % (id, path.replace("/","_"))
-    system("autobench --single_host --host1 localhost --uri1 %s --port1 5000 --low_rate 3 --high_rate 10 --rate_step 1 --num_call 1 --num_conn 100 --timeout 20 --output_fmt csv --file %s.csv" % (path, filename))
+    system("autobench --single_host --host1 localhost --uri1 %s --port1 5000 --low_rate 3 --high_rate 10 --rate_step 2 --num_call 1 --num_conn 10 --timeout 30 --output_fmt csv --file %s.csv" % (path, filename))
     print "done benchmark"
 
 def init_site():
@@ -89,19 +111,63 @@ def create_tasklist():
     id = result.group(1)
     return id
 
-def create_task():
+def create_task(task_list_id):
     global cookie, authenticator, http
     task_name = "".join(random_letter() for i in range (20))
-    
-    http.request('http://localhost:5000/task/create', method="POST", body=
-              """text=the%%20body&title=TASK_%s&authenticator=%s""" % (task_name, authenticator))
-
+    vars = dict(
+            text = 'task body',
+            title = "TASK_" + task_name,
+            task_listID = task_list_id,
+            parendID = 0,
+            siblingID = 0,
+            )
+    headers, body = post_request('http://localhost:5000/task/create', vars)
 
 init_site()
 print "with nothing, project page"
 benchmark("/", "nothing")
 
-print "ten empty tasklists, project page"
 create_tasklist()
 tasklists = [create_tasklist() for i in range(10)]
+print "ten empty tasklists, project page"
 benchmark("/","empty_tasklists")
+
+
+print "ten empty tasklists, a tasklist page"
+benchmark("/tasklist/show/1","empty_tasklists")
+
+for tasklist in tasklists:
+    for i in range(10):
+        create_task(tasklist)
+print "ten tasklists of ten tasks, project page"
+benchmark("/","ten_tasks")
+
+print "ten tasklists of ten tasks, a tasklist page"
+benchmark("/tasklist/show/1","ten_tasks")
+
+print "ten tasklists of ten tasks, a task page"
+benchmark("/task/show/1","ten_tasks")
+
+for tasklist in tasklists:
+    for i in range(90):
+        create_task(tasklist)
+print "ten tasklists of one hundred tasks, a tasklist page"
+benchmark("/tasklist/show/1","hundred_tasks")
+
+print "ten tasklists of one hundred tasks, a task page"
+benchmark("/task/show/1","hundred_tasks")
+
+import time
+start = time.time()
+print "creating ten kilotasks"
+for tasklist in tasklists:
+    for i in range(810):
+        if i % 10 == 0:
+            print i
+        create_task(tasklist)
+print "Creation took %s seconds" % (time.time() - start)
+print "ten tasklists of one thousand tasks, a tasklist page"
+benchmark("/tasklist/show/1","ten_tasks")
+
+print "ten tasklists of one thousand tasks, a task page"
+benchmark("/task/show/1","tenk_tasks")

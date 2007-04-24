@@ -77,7 +77,7 @@ class Status(SQLObject):
     class sqlmeta:
         defaultOrder = 'id'
 
-    name = StringCol()
+    name = StringCol(length=255)
     task_list = ForeignKey("TaskList")
 
     @classmethod
@@ -88,7 +88,7 @@ class Role(SQLObject):
     class sqlmeta:
         defaultOrder = '-level'
 
-    name = StringCol()
+    name = StringCol(length=255)
     description = StringCol()
     level = IntCol()
 
@@ -109,7 +109,7 @@ class Role(SQLObject):
         return Role.selectBy(name=name)[0]
 
 class Project(SQLObject):
-    title = StringCol()
+    title = StringCol(length=255)
     task_lists = MultipleJoin("TaskList")
     initialized = BoolCol(default=False)
     readonly = BoolCol(default=False)
@@ -162,19 +162,19 @@ class Task(SQLObject):
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
-    creator = StringCol(default="")
+    creator = StringCol(length=255, default="")
     deadline = DateTimeCol(default=None)
     live = BoolCol(default=True)    
-    owner = StringCol(default="")
+    owner = StringCol(length=255, default="")
     parent = ForeignKey("Task")
-    priority = StringCol(default="None")
+    priority = StringCol(length=255, default="None")
     private = BoolCol(default=False)
     sort_index = IntCol()
-    status = StringCol()
+    status = StringCol(length=255)
     task_list = ForeignKey("TaskList")
-    text = StringCol(default="")
+    text = StringCol(length=255, default="")
     title = StringCol()
-    versions = Versioning(extraCols=dict(updatedBy = StringCol(default=lambda : c.username)))
+    versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
 
     def get_updated(self):
@@ -300,8 +300,88 @@ class Task(SQLObject):
         path.reverse()
         return path
 
-    # @@ it's looking more and more like this doesn't remotely belong in the model. - egj
     def adjacentTasks(self, options=None, user=None, level=100):
+        query = AND(Task.q.task_listID == c.task_listID, Task.q.live==1)
+
+        sortOrder = None
+        if options: 
+            sql, orderBy, sortOrder = options
+        if not sortOrder:
+            sortOrder = "ASC"
+
+        if not orderBy:
+            orderBy = "sort_index"
+
+        if level >= Role.getLevel("ListOwner"):
+            #filtering needed
+            query = AND(query, OR(Task.q.private == 0, Task.q.owner == user))
+        
+        attr = getattr(c.task, orderBy)
+        next_predicate = (getattr(Task.q, orderBy) > attr, "ASC")
+        prev_predicate = (getattr(Task.q, orderBy) < attr, "DESC")
+        if sortOrder == "DESC":
+            next_predicate, prev_predicate = prev_predicate, next_predicate
+        
+        tasks = []
+        for predicate, sortOrder in [prev_predicate, next_predicate]:
+            is_prev = bool(id(predicate) == id(prev_predicate[0]))
+
+            adj_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, predicate, Task.q.parentID == c.task.parentID), 'mysql'), orderBy, sortOrder, sortOrder)
+            if "SQLOp" in adj_task_query:
+                import pdb;pdb.set_trace()
+
+            adj = list(Task.select(adj_task_query).orderBy(None).limit(1))
+            if adj:
+                adj = adj[0]
+            else:
+                if c.task.parentID and is_prev: #parent can only be prev, not next
+                    adj = c.task.parent
+                else:
+                    adj_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, predicate, Task.q.parentID == 0), 'mysql'), orderBy, sortOrder, sortOrder)
+                    #adj_task_query = "%s AND task.parent_id = 0 AND %s order by %s %s, sort_index %s" % (query, predicate, orderBy, sortOrder, sortOrder)
+                    adj = list(Task.select(adj_task_query).orderBy(None).limit(1))
+                    if adj:
+                        adj = adj[0]
+                    else:
+                        adj = None
+
+            if not adj and is_prev:
+                tasks.append(None)
+                continue
+
+            def search_children(child, recursive=True):
+                if not child:
+                    return child
+                while 1:
+                    child_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, Task.q.parentID == child.id), 'mysql'), orderBy, sortOrder, sortOrder)
+                    new_child = list(Task.select(child_task_query).orderBy(None).limit(1))
+                    if not new_child:
+                        break
+                    child = new_child[0]
+                    if not recursive:
+                        break
+                return child
+
+            if is_prev:
+                if adj.id == self.parentID:
+                    child = adj
+                else:
+                    child = search_children(adj)
+                    
+            else:
+                #check if next is child of this task
+                child = search_children(c.task, recursive=False)
+                if child == c.task:
+                    #next is (maybe child of) some sib of this task
+                    child = search_children(adj)
+            tasks.append(child)
+
+        return tasks
+
+
+    # @@ it's looking more and more like this doesn't remotely belong in the model. - egj
+    def adjacentTasksFiltered(self, options=None, user=None, level=100):
+        """Unused.  It's too expensive. See adjacentTasks, above for current implementation."""
         query = """task.task_list_id=%s AND task.live=1""" % (c.task_listID)
         sql = sortOrder = None
         if options: 
@@ -319,15 +399,6 @@ class Task(SQLObject):
         trans = conn.transaction()
         tasks = Task.select(query)
         trans.commit()
-
-        def filterByPrivacy(task):
-            if not task.private: #public tasks are fine
-                return True
-            elif level < Role.getLevel("ListOwner"): #ListOwner-or-better users can see all private tasks
-                return True
-            else: #otherwise only task owner can see it
-                return task.owner == user
-
 
         tasks = list(tasks)
         root_tasks = None
@@ -444,8 +515,8 @@ class Comment(SQLObject):
         defaultOrder = 'date'
 
     date = DateTimeCol(default=datetime.datetime.now)
-    user = StringCol()
-    text = StringCol()
+    user = StringCol(length=255)
+    text = StringCol(length=255)
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
@@ -456,11 +527,11 @@ def _task_list_sort_index():
         return index + 1
 
 class User(SQLObject):
-    username = StringCol()
-    password = StringCol()
+    username = StringCol(length=255)
+    password = StringCol(length=255)
 
 class TaskListFeature(SQLObject):
-    name = StringCol()
+    name = StringCol(length=255)
     task_list = ForeignKey("TaskList")
     value = StringCol()
 
@@ -476,8 +547,8 @@ class TaskList(SQLObject):
     sort_index = IntCol(default=_task_list_sort_index)
     tasks = MultipleJoin("Task")
     text = StringCol()
-    title = StringCol()
-    versions = Versioning(extraCols=dict(updatedBy = StringCol(default=lambda : c.username)))
+    title = StringCol(length=255)
+    versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")

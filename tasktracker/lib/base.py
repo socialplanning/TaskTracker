@@ -73,10 +73,10 @@ def catches_errors(f):
             return f(*args, **edited_kwds)
         except NoSuchIdError, exception:
             c.error = "No such task: %s" % exception.args
-            return render_response('zpt', 'error')
+            return render_response('error')
         except MissingArgumentError, exception:
             c.error = "A required argument was not provided: %s" % exception.args
-            return render_response('zpt', 'error')
+            return render_response('error')
         
     new_f.func_name = f.func_name
     return new_f

@@ -352,16 +352,18 @@ class TestTaskController(TestController):
         for bad in name[3:]:
             assert bad not in res.body
 
-        ### let's check that filter
-        res = app.get(url_for(controller='task', action='show', id=tasks[4].id, owner="admin", sortBy="title"))
-        res.mustcontain("WWW")
-        res.mustcontain("XXX")
+        #since filtering is disabled for next/prev, we want to cancel this test
+
+#         ### let's check that filter
+#         res = app.get(url_for(controller='task', action='show', id=tasks[4].id, owner="admin", sortBy="title"))
+#         res.mustcontain("WWW")
+#         res.mustcontain("XXX")
         
-        ### task VVV should be filtered out, so UUU should be there instead
-        res.mustcontain("UUU")
-        assert "VVV" not in res.body
-        assert "ZZZ" not in res.body
-        assert "YYY" not in res.body
+#         ### task VVV should be filtered out, so UUU should be there instead
+#         res.mustcontain("UUU")
+#         assert "VVV" not in res.body
+#         assert "ZZZ" not in res.body
+#         assert "YYY" not in res.body
 
         ### if we go to a url which the current task would be filtered from, the filters return to default
         res = app.get(url_for(controller='task', action='show', id=tasks[3].id, owner="admin", sortBy="title", priority="None"))
@@ -371,13 +373,13 @@ class TestTaskController(TestController):
         
         ### if a task has a child, the child will be the next task
         child = Task(title="child", task_listID=tl.id, owner='admin', parentID=tasks[0].id)
-        res = app.get(url_for(controller='task', action='show', id=tasks[0].id, owner="admin", sortBy="title"))
+        res = app.get(url_for(controller='task', action='show', id=tasks[0].id, sortBy="title"))
         res.mustcontain("ZZZ")
         res.mustcontain("YYY")
         res.mustcontain("child</a> &gt;&gt;") # "child" will be in the response elsewhere too, so be more specific
 
         ### if a task has a parent, the parent will be the previous task
-        res = app.get(url_for(controller='task', action='show', id=child.id, owner="admin", sortBy="title"))
+        res = app.get(url_for(controller='task', action='show', id=child.id, sortBy="title"))
         res.mustcontain("child")
         res.mustcontain('&lt;&lt; previous task: <a href = "/task/show/%d" base_href = "/task/show/%d" title = "" id = "title_%d" class = "uses_permalink big"> ZZZ' % (tasks[0].id, tasks[0].id, tasks[0].id))
 
