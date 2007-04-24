@@ -326,21 +326,21 @@ class Task(SQLObject):
         tasks = []
         for predicate, sortOrder in [prev_predicate, next_predicate]:
             is_prev = bool(id(predicate) == id(prev_predicate[0]))
+            minus = ""
+            if sortOrder == "DESC":
+                minus = "-"
+            order = [minus + orderBy, minus + "sort_index"]
 
-            adj_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, predicate, Task.q.parentID == c.task.parentID), 'mysql'), orderBy, sortOrder, sortOrder)
-            if "SQLOp" in adj_task_query:
-                import pdb;pdb.set_trace()
-
-            adj = list(Task.select(adj_task_query).orderBy(None).limit(1))
+            #find sibling tasks 
+            adj = list(Task.select(AND(query, predicate, Task.q.parentID == c.task.parentID)).orderBy(order).limit(1))
             if adj:
                 adj = adj[0]
             else:
+                #check parent task for prev, or parent sibs for prev/next
                 if c.task.parentID and is_prev: #parent can only be prev, not next
-                    adj = c.task.parent
+                        adj = c.task.parent
                 else:
-                    adj_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, predicate, Task.q.parentID == 0), 'mysql'), orderBy, sortOrder, sortOrder)
-                    #adj_task_query = "%s AND task.parent_id = 0 AND %s order by %s %s, sort_index %s" % (query, predicate, orderBy, sortOrder, sortOrder)
-                    adj = list(Task.select(adj_task_query).orderBy(None).limit(1))
+                    adj = list(Task.select(AND(query, predicate, Task.q.parentID == c.task.parentID)).orderBy(order).limit(1))
                     if adj:
                         adj = adj[0]
                     else:
