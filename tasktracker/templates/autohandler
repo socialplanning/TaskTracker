@@ -44,7 +44,7 @@ Logged in as: <% c.username %>
 </div>
 <div id="portal-columns" style="position:relative;">
  <div id="op-tasktracker">
-  % m.call_next()
+% m.call_next()
  </div>
 </div>
 
