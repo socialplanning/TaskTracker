@@ -120,7 +120,8 @@ class BaseController(WSGIController):
         c.project = project
         c.id = params.get('id')
         c.compress_resources = asbool(CONFIG['app_conf'].get('compress_resources'))
-        
+        c.permission_cache = {}
+
         c.username = request.environ.get('REMOTE_USER', '')
         params['username'] = c.username
 
@@ -154,13 +155,18 @@ class BaseController(WSGIController):
             if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
                 self.watchdog.dog.after(params)
 
-
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
         if callable(action_verb):
             action_verb = action_verb(params)
 
         action_name = controller + '_' + action_verb
+
+        key = (action_name, params['id'])
+        cached = c.permission_cache.get(key, None)
+        if cached:
+            return cached[0]
+
         #special case for creating task lists
         if action_name == 'tasklist_create':
             if c.project_permission_level in ['policy_open', 'policy_medium']:
@@ -177,9 +183,6 @@ class BaseController(WSGIController):
             else:
                 task = Task.get(int(params['id'])) 
                 task_list = task.task_list
-        elif controller == 'watcher':
-            watcher = Watcher.get(params['id'])
-            return watcher.username == c.username
         elif controller == 'project':
             # special case for lock/unlocking project's tt
             if action_verb == 'lock':
@@ -199,6 +202,7 @@ class BaseController(WSGIController):
         if controller == 'task':
             if task.private:
                 if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(params['username']):
+                    c.permission_cache[key] = [False]
                     return False
 
         if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
@@ -224,8 +228,9 @@ class BaseController(WSGIController):
             task_list.rescuePermissions()
             tl_permissions = TaskListPermission.selectBy(task_listID=task_list.id,
                                                          actionID=action.id)
-            
-        return tl_permissions[0].min_level >= local_level
+        result = tl_permissions[0].min_level >= local_level
+        c.permission_cache[key] = [result]
+        return result
 
     def _initialize_project(self, controller, action_verb, params):
         """
