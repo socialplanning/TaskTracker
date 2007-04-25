@@ -6831,46 +6831,57 @@ function setupEmptyList() {
 
 function filterDeadline(task) {
     var filtervalue = $('deadline_filter').value;
-
     if (filtervalue == 'All') {
 	return false;
     }
+    var deadline = task.getAttribute('deadline');
+
     if (filtervalue == 'None') {
-	if( task.getAttribute('deadline') != 'None' ) {
+	if( deadline != 'None' ) {
 	    return true;
 	} else return false;
     }
     
+    if( deadline == 'None' ) {
+	return true;
+    }
+
     var dates = filtervalue.split(",");
+
+    if( dates.length == 1 ) {
+	var equalDate = new Date();
+	equalDate.setHours(0,0,0,0);
+	equalDate.setDate(equalDate.getDate() + parseInt(dates[0]));
+	var db = new DateBocks();
+	deadline = db.parseDateString(deadline);
+	deadline.setHours(0,0,0,0);
+	return !equalDate.equalsTo(deadline);
+    } 
+
     var min; 
     var max;
 
-    if (dates.length == 1) {
-	min = -1 * parseInt(dates[0]);
-	max = parseInt(dates[0]);
-    } else {
-	min = parseInt(dates[0]);
-	max = parseInt(dates[1]);
-    }
+    min = parseInt(dates[0]);
+    max = parseInt(dates[1]);
+
     var minDate = new Date();
+    minDate.setHours(0,0,0,0);
     var byThisDate = new Date();
+    byThisDate.setHours(0,0,0,0);
     minDate.setDate(minDate.getDate() - min);
     byThisDate.setDate(byThisDate.getDate() + max + 1);
 
-    var deadline = task.getAttribute('deadline');
-    if (deadline != 'None') {
-	var db = new DateBocks();
-	var nodeDate = db.parseDateString(deadline);
-	if (!(nodeDate < byThisDate)) {
-	    return true;
-	}
-	if (min <= max && !(nodeDate > minDate)) {
-	    return true;
-	}
-	return false;
-    } else {
+    var db = new DateBocks();
+    var nodeDate = db.parseDateString(deadline);
+	
+    if( nodeDate > byThisDate ) {
 	return true;
     }
+    if( min < max && (nodeDate <= minDate) ) {
+	return true;
+    }
+    return false;
+
 }
 
 function filterUpdated(task) {
@@ -6925,11 +6936,11 @@ function filterField(fieldname, task) {
 	return filterUpdated(task);
     }
 			
-    filtervalue = $(fieldname + '_filter').value;
+    var filtervalue = $(fieldname + '_filter').value.replace(' ', '%20');
     if( filtervalue == 'All' ) {
 	return false;
     }
-
+    console.log(task.getAttribute(fieldname));
     if( task.getAttribute(fieldname) != filtervalue ) {
 	return true;
     }
@@ -7119,7 +7130,7 @@ function doneAddingTask(req) {
 	nf = new_fragment;
 	target.appendChild(new_fragment);
     }
-    $('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
+    //$('num_uncompleted').innerHTML = parseInt($('num_uncompleted').innerHTML) + 1;
 
     new_item.childTasks = []; 
     enableDragDrop(new_item);
@@ -7154,7 +7165,7 @@ function failedAddingTask(req) {
 //failedAddingTask = safeify(failedAddingTask, 'failedAddingTask');
 
 function changeField(task_id, fieldname) {
-    if (changeEventsDisabled) {
+    if( changeEventsDisabled ) {
 	return;
     }
     var field = $(fieldname + '_' + task_id);
@@ -7179,7 +7190,6 @@ function changeField(task_id, fieldname) {
 	}
     }
     
-    console.log(url);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
 				     "&is_flat=" + is_flat + 
@@ -7253,7 +7263,7 @@ function updateTaskItem(task_id) {
 	    if (task.getAttribute('status') != 'done')
 		++uncompletedTasks;
 	});
-    $('num_uncompleted').innerHTML = uncompletedTasks;
+    //$('num_uncompleted').innerHTML = uncompletedTasks;
 }
 
 function revertField(task_id, fieldname) {
@@ -7266,7 +7276,6 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
-    console.log(req)
     if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {
@@ -7286,6 +7295,10 @@ function updateParentTask(parent) {
 
 function succeededChangingField(req) {
     var task_id = this[0];
+    var fieldname = this[1];
+    var field = $(fieldname + '_' + task_id);
+    field.disabled = false;
+
     var newNode = evalHTML(req.responseText);
     var oldVersion = $('task_' + task_id);
     var parent = $('task_' + oldVersion.getAttribute("parentID"));
@@ -7314,7 +7327,8 @@ function succeededChangingField(req) {
 	parent.childTasks.removeItem(oldVersion);
     }
 
-    var fieldname = this[1];
+
+
     if ($('post_edit_task')) {
 	func = eval($('post_edit_task').getAttribute('func'));
 	func(task_id, fieldname);
@@ -7443,16 +7457,16 @@ function doDrop(child, drop_target, dropzone) {
     var task_id = child.id.replace("draggable_", "");
     var old_parent_id = $('task_' + task_id).getAttribute("parentID");
     id = parseInt(dropzone.task_id);
+    var base_url = $('global-values').getAttribute("move_url");
     if (dropzone.drop_reparent) {   // drop under a parent node
         var new_parent = $('task_' + id);
-	var base_url = $('global-values').getAttribute("move_url");
 	new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_parent=' + id,
             onSuccess:doneMovingTask,
             onFailure:debugThing});
     } else {   // drop after a sibling node
         var new_sibling = $('task_' + id);
-        new Ajax.Request('/task/move/' + task_id, {asynchronous:true, evalScripts:true, method:'post',
+        new Ajax.Request(base_url + task_id, {asynchronous:true, evalScripts:true, method:'post',
             parameters:'new_sibling=' + id,
             onSuccess:doneMovingTask,
             onFailure:debugThing});
@@ -7473,32 +7487,39 @@ function sortListBy(ul, column, forward, parentID) {
 	    return i.getAttribute("parentID") == parentID;
 	} );
 
-    items = items.sort(function (x, y) {
-	    var a = x.getAttribute(column);
-	    var b = y.getAttribute(column);
-	    if (!a && b)
-		return 1 * forward;
-	    else if (!b && a)
-		return -1 * forward;
-	    else if (a > b) 
-		return 1 * forward;
-	    else if (b > a) 
-		return -1  * forward;
-	    else if (x.getAttribute('sort_index') > y.getAttribute('sort_index')) 
-		return 1  * forward;
-	    else if (x.getAttribute('sort_index') < y.getAttribute('sort_index'))
-		return -1  * forward;
-	    else
-		return 0;
-	});
+    var hack_for_priority = (column == 'priority');
+    var priority_hack_dict = {'High':1, 'Medium':2, 'Low':3, 'None':4};
+    for( i = 0; i < items.length; i++ ) {
+	var item = items[i];
+	var attrib = item.getAttribute(column);
+	var sort_index = item.getAttribute('sort_index');
+	if( hack_for_priority ) {
+	    key = priority_hack_dict[attrib];
+	}
+	else if( attrib ) {
+	    key = attrib;
+	} else  {
+	    if (forward == 1) {
+		key = undefined; //sorts last
+	    } else {
+		key = 0; // numbers sort before strings
+	    }
+	}
+	items[i] = [key, sort_index, item];
+    }
+
+    items = items.sort();  // is there really no way to do a reverse sort?
+    if( forward < 0 ) items = items.reverse();
 
     ul = ul.getElementsByTagName("TBODY")[0];
-    items.each(function (x) {
-	    removeRow(ul, x);
-	    $A(x.childTasks).each(function(i) {
-		    removeRow(ul, i);
-		});
-	});
+    for (i = 0; i < items.length; i++) {
+	var item = items[i][2];
+	items[i] = item;
+	removeRow(ul, item);
+	$A(item.childTasks).each(function(i) {
+		removeRow(ul, i);
+	    });
+    }
     items.each (function (x) {
 	    ul.appendChild(x);
 	    ul.appendChild(x.second_line);
@@ -8830,7 +8851,6 @@ function getItemName(item_li) {
 }
 
 function addItem(list, item) {
-
     item = item.replace(/[^A-Za-z0-9 ]/g, '');
 
     if( item.length < 1 ) {
@@ -8847,10 +8867,11 @@ function addItem(list, item) {
             return;
         }
     } 
+
     //add the html element
 
     var item_name =  + list + "_" + 'item_' + items.length;
-    var li = Builder.node('li', {className : "removable_list_item"}, [Builder.node('span', item + ' ')]);
+    var li = Builder.node('li', {className : "removable_list_item"}, [Builder.node('span', item)]);
     var last_item = item_list.firstChild;
     while( last_item.nextSibling ) {
 	last_item = last_item.nextSibling;
