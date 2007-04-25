@@ -458,10 +458,13 @@ def render_actions(actions, cutoff=5):
     count = 0
     for action in actions:
         if not isinstance(action, Comment) and 'Created' in action.getChangedFields():
-            continue
-        result = render_action(action)
-        if not result:
-            continue
+            user = action.updatedBy
+            if user == c.username: user = "you"
+            result = "Created %s by %s" % (prettyDate(action.dateArchived), user)
+        else:
+            result = render_action(action)
+            if not result:
+                continue
         count += 1
         rendered_actions.append(result)
         if count >= cutoff:
