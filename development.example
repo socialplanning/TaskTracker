@@ -45,6 +45,11 @@ openplans_wrapper = CookieAuth
 #openplans_wrapper = ZWSGIFakeEnv
 openplans_instance = http://localhost:8080/openplans
 
+# If uncommented, the Javascript and CSS files will each respectively
+# be served as a single file (instead of having to load a file for each
+# library):
+#compress_resources = true
+
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
