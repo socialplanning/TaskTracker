@@ -28,10 +28,38 @@
   <& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
  </table>
 
+ <% h.editableField(c.task, 'text', 'Add a description') %>
+
+ <div
+% if not len(c.task.liveChildren()):
+ style = "display:none;"
+%
+ class="unfolded" id="subtasks">This task has
+  <a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;">
+   <span id="num_subtasks" class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
+  </a>
+ 
+ </div>
+
+ <div class="folded" id="edit_subtasks">
+  <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
+   hide sub-tasks
+  </span>
+
+  <div class="child_tasks">
+   <table id="tasks" class="all_tasks" hasReorderableTasks="True">
+% for atask in c.task.liveChildren():
+    <& task_list_item.myt, atask=atask &>
+%
+   </table>
+  </div>
+
+ </div>
+ <& _hideable_show_create.myt, subtask_link = '[ + ]<a href="%s" onclick="showTaskCreate();return false;">add a sub-task</a>' % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id), parentID = '<input type="hidden" name="parentID" value ="%s"' %  c.task.id  &>
+
  <table id="activity-table">
   <tr>
    <td class="small task-detail-mainbar">
-    <% h.editableField(c.task, 'text', 'Add a description') %>
     <br/>
     <hr/>
     <b>Previous activity:</b>
@@ -99,38 +127,7 @@ This task is part of the
    <% c.task.parent.title %> task</a>.
 % #endif
 
- <span
-% if not len(c.task.liveChildren()):
- style = "display:none;"
-%
- class="unfolded" id="subtasks">This task has
-  <a href="#nevermind" class="command" onclick="$('subtasks').hide(); $('edit_subtasks').show(); return false;">
-   <span id="num_subtasks" class="num_subtasks"> <% len(c.task.liveDescendents()) %> </span> sub-tasks.
-  </a>
-  <br/>
-
- </span>
-
- <span class="folded" id="edit_subtasks">
-  <span class="command" onclick="$('edit_subtasks').hide(); $('subtasks').show();">
-   hide sub-tasks
-  </span>
-
-  <div class="child_tasks">
-   <table id="tasks" class="all_tasks" hasReorderableTasks="True">
-% for atask in c.task.liveChildren():
-    <& task_list_item.myt, atask=atask &>
-%
-   </table>
-  </div>
-
-  <br/>
-  <hr/>
-
- </span>
 </div>
-
-<& _hideable_show_create.myt, subtask_link = '[ + ]<a href="%s" onclick="showTaskCreate();return false;">add a sub-task</a>' % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id, parentID=c.task.id), parentID = '<input type="hidden" name="parentID" value ="%s"' %  c.task.id  &>
 
 <br/>
 
