@@ -162,7 +162,7 @@ class BaseController(WSGIController):
 
         action_name = controller + '_' + action_verb
 
-        key = (action_name, params['id'])
+        key = (action_name, params.get('id', None))
         cached = c.permission_cache.get(key, None)
         if cached:
             return cached[0]
