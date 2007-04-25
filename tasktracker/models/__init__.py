@@ -124,7 +124,7 @@ class Project(SQLObject):
 
 class TaskListRole(SQLObject):
     _cacheValue = False
-    username = StringCol(length=100)
+    username = StringCol(length=255)
     task_list = ForeignKey('TaskList')
     role = ForeignKey("Role")
 
