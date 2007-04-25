@@ -315,3 +315,7 @@ div#sibling_dropzone_0 {
   padding-left: 2em;
   padding-right: 10em;
 }
+
+textarea { 
+  display: block;
+}
