@@ -523,7 +523,7 @@ class Comment(SQLObject):
 
     date = DateTimeCol(default=datetime.datetime.now)
     user = StringCol(length=255)
-    text = StringCol(length=255)
+    text = StringCol()
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
