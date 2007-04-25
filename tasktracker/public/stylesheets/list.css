@@ -9,7 +9,7 @@ table {
 }
 
 table#next-prev-tasks {
-  background-color: #ddd;
+  background-color: #eee;
   width: 100%;
 }
   table#next-prev-tasks td {
@@ -35,12 +35,12 @@ table.task_list {
     text-align: left;
   }
   tr.column-heading {
-    background-color: #DDD;
+    background-color: #EEE;
   }
     td.deadline-column, td.owner-column, td.updated-column, td.priority-column, td.status-column, td.title-column { 
       padding: 0;
       width: 15%;
-      background-color: #DDD;
+      background-color: #EEE;
     }
     td.status-column {
       width: 1%;
@@ -71,7 +71,7 @@ table.task_list {
   padding: 0;
   margin: 0;
   font: 1em;
-  background-color: #DDD; 
+  background-color: #EEE; 
 }
 
 input.low-profile-widget {
@@ -85,7 +85,7 @@ input.auto-size { width: auto; height: auto; }
 select.low-profile-widget:focus { height: 1em; font-size: 1em; }
 
 .filter-line {
-  background-color: #ddd;
+  background-color: #eee;
   width: auto;
   text-align: center;
 }
@@ -190,7 +190,7 @@ span.editable:hover {
 }
 
 .help_text {
-  background-color: #ddd;
+  background-color: #eee;
   border: 1px solid black;
   position: absolute;
 }
@@ -214,7 +214,7 @@ span.editable:hover {
 }
 
 #movable_add_task {
-  background-color: #ddd;
+  background-color: #eee;
   padding: 1em;
   margin: 0;
   line-height: 1em;
@@ -237,7 +237,7 @@ span.editable:hover {
 }
 
 #activity-insert {
-   background-color: #ddd;
+   background-color: #eee;
    padding: 3px;
    text-align: center;
 }
@@ -266,7 +266,7 @@ td.task-detail-mainbar ul li {
 }
 
 #task-detail-sidebar {
-  background-color: #ddd;
+  background-color: #eee;
   padding-left: 10;
   padding-right: 3px;
   padding-top: 100;
@@ -290,7 +290,7 @@ label {
 }
 
 .currently-dragged-column div {
-  background-color: #ddd;
+  background-color: #eee;
 }
 
 ul.command_list {
@@ -318,4 +318,13 @@ div#sibling_dropzone_0 {
 
 textarea { 
   display: block;
+}
+
+#oc-tasktracker {
+  margin: 0 2em 0.5em;
+}
+
+#oc-tasktracker.tt-context-tasklist-index ul {
+  list-style-type: none;
+  list-style-image: none;
 }

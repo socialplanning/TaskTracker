@@ -17,7 +17,7 @@ Add task:
 <input type="hidden" id="add_task_form_siblingID" name="siblingID" value="0" />
 
 <div id="hideable_title_label" style="display:none;">title</div>
-<% h.text_field_r('oldtask', 'title', size=80, tabindex=1) %>
+<% h.text_field_r('oldtask', 'title', size=50, tabindex=1, maxlength=50) %>
 
 % if c.tasklist.hasFeature('private_tasks'):
 <div style="display:inline;">

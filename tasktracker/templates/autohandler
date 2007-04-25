@@ -43,7 +43,7 @@ Logged in as: <% c.username %>
 <span style="position:absolute;right:2ex;">Project: <% c.project.title %></span>
 </div>
 <div id="portal-columns" style="position:relative;">
- <div id="op-tasktracker" class=<% c.contextual_wrapper_class or 'tt-context-none'%> >
+ <div id="oc-tasktracker" class=<% c.contextual_wrapper_class or 'tt-context-none'%> >
 % m.call_next()
  </div>
 </div>
