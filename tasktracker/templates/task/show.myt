@@ -1,5 +1,5 @@
-
 <span class="small">
+
  <% h.link_to("my tasklists", h.url_for(controller='tasklist', action='index')) %>
  &nbsp;&gt;&gt;
  <% h.link_to(c.task.task_list.title, h.url_for(controller='tasklist', action='show', id=c.task.task_list.id),
@@ -8,6 +8,7 @@
  <a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">
   <% c.task.title %>
  </a>
+
 </span>
 
 <br/>

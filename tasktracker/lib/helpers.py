@@ -459,7 +459,6 @@ def render_actions(actions, cutoff=5):
     for action in actions:
         if not isinstance(action, Comment) and 'Created' in action.getChangedFields():
             user = action.updatedBy
-            if user == c.username: user = "you"
             result = "Created %s by %s" % (prettyDate(action.dateArchived), user)
         else:
             result = render_action(action)
@@ -479,8 +478,6 @@ def render_action(action):
     if isinstance(action, Comment):
         comment = action.text
         user = action.user
-        if user == c.username:
-            user = "you"
         comment += "<br/>Comment from %s by %s" % (prettyDate(action.date), user)
     else:
         fields = action.getChangedFields()
