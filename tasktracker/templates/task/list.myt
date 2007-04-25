@@ -3,10 +3,14 @@
  <br/>
 
  <a href="<% h.url_for(controller='tasklist', action='index') %>">
-    &lt;&lt; return to list of lists</a>&nbsp;
+    my tasklists
+ </a>
+ &nbsp;&gt;&gt;
 
  <a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
-    href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">permalink this view</a>
+                   href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
+   <% c.tasklist.title %>
+ </a>
 
 </span>
 
