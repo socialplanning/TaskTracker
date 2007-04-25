@@ -148,6 +148,12 @@ class TaskListPermission(SQLObject):
         super(TaskListPermission, self)._create(id, **kwargs)
 
 
+    def actionName(self):
+        id = self.actionID
+        if not id in c.action_names:
+            c.action_names[id] = self.action.action
+        return c.action_names[id]
+
 def _task_sort_index():
     #index = max([t.sort_index for t in Task.selectBy(live=True)] + [0])
     index = Task.selectBy(live=True).max('sort_index')
