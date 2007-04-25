@@ -30,27 +30,18 @@
  <table id="activity-table">
   <tr>
    <td class="small task-detail-mainbar">
-
     <% h.editableField(c.task, 'text', 'Add a description') %>
     <br/>
-
     <hr/>
-
     <b>Previous activity:</b>
    </td>
-   <td>&nbsp;</td>
+
   </tr>
   <tr>
    <td class="small task-detail-mainbar">
     <ul id="activity_<% c.task.id %>" class="activity_list">
      <% h.render_actions(c.task.actions(), 0) %>
     </ul>
-   </td>
-   <td id="task-detail-sidebar-cell">
-    <div id="task-detail-sidebar" class="small">
-     Task created by <% c.task.creator %>
-     <% h.prettyDate(c.task.created) %>
-    </div>
    </td>
   </tr>
 
