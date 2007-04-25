@@ -767,7 +767,7 @@ function failedAddingTask(req) {
 //failedAddingTask = safeify(failedAddingTask, 'failedAddingTask');
 
 function changeField(task_id, fieldname) {
-    if (changeEventsDisabled) {
+    if( changeEventsDisabled ) {
 	return;
     }
     var field = $(fieldname + '_' + task_id);
@@ -792,7 +792,6 @@ function changeField(task_id, fieldname) {
 	}
     }
     
-    console.log(url);
     var req = new Ajax.Request(url, {asynchronous:true, evalScripts:true, method:'post',
 				     parameters:fieldname + '=' + value + "&is_preview=" + is_preview +
 				     "&is_flat=" + is_flat + 
@@ -879,7 +878,6 @@ function revertField(task_id, fieldname) {
 }
 
 function doneChangingField(req) {
-    console.log(req)
     if (req.status == 200) {
 	succeededChangingField.bind(this)(req);
     } else {
@@ -899,6 +897,10 @@ function updateParentTask(parent) {
 
 function succeededChangingField(req) {
     var task_id = this[0];
+    var fieldname = this[1];
+    var field = $(fieldname + '_' + task_id);
+    field.disabled = false;
+
     var newNode = evalHTML(req.responseText);
     var oldVersion = $('task_' + task_id);
     var parent = $('task_' + oldVersion.getAttribute("parentID"));
@@ -927,7 +929,7 @@ function succeededChangingField(req) {
 	parent.childTasks.removeItem(oldVersion);
     }
 
-    var fieldname = this[1];
+
 
     if ($('post_edit_task')) {
 	func = eval($('post_edit_task').getAttribute('func'));
