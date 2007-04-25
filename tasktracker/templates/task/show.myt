@@ -1,5 +1,3 @@
-<hr/>
-<br/>
 
 <span class="small">
  <% h.link_to("my tasklists", h.url_for(controller='tasklist', action='index')) %>

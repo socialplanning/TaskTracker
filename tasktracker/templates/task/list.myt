@@ -1,6 +1,4 @@
 <span class="small">
- <hr/>
- <br/>
 
  <a href="<% h.url_for(controller='tasklist', action='index') %>">
     my tasklists
