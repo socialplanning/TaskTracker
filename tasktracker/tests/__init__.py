@@ -114,7 +114,7 @@ class TestController(TestCase):
         app = self.getApp('admin')
         res = app.get(url_for(
                 controller='tasklist', action='show_create'))
-
+        
         form = res.forms[0]
         
         form['title'] = title

@@ -182,6 +182,7 @@ class TaskController(BaseController):
             c.parentID = request.params['parentID']
         else:
             c.parentID = 0
+        c.contextual_wrapper_class = 'tt-context-task-create'
         return render_response('task/show_create.myt')
 
     @authenticate
@@ -252,6 +253,7 @@ class TaskController(BaseController):
     def show_update(self, id, *args, **kwargs):
         c.oldtask = self._getTask(int(id))        
         c.owner = c.oldtask.owner
+        c.contextual_wrapper_class = 'tt-context-task-update'
         return render_response('task/show_update.myt')
 
     # @@ is this ever used?
@@ -335,8 +337,9 @@ class TaskController(BaseController):
         #filters, alter the permalink to remove the filters.
         if not h.is_task_allowed(c.task, c.permalink):
             c.permalink = h._get_permalink_without_filters(request.GET)
-        s = render_response('task/show.myt')
-        return s
+        
+        c.contextual_wrapper_class = 'tt-context-task-show'
+        return render_response('task/show.myt')
 
     @authenticate
     @attrs(action='update', readonly=False)

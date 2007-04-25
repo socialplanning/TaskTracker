@@ -65,6 +65,7 @@ class TasklistController(BaseController):
     @attrs(action='open', readonly=True)
     def index(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
+        c.contextual_wrapper_class = 'tt-context-tasklist-index'
         return render_response('tasklist/index.myt')
 
     @attrs(action='show', readonly=True)
@@ -78,6 +79,7 @@ class TasklistController(BaseController):
         c.depth = 0
         from tasktracker.lib import helpers as h
         c.permalink = h._get_permalink(request.GET)
+        c.contextual_wrapper_class = 'tt-context-tasklist-show'
         return render_response('task/list.myt')
 
     @attrs(action='create', readonly=True)
@@ -86,6 +88,7 @@ class TasklistController(BaseController):
         c.administrators = c.usermapper.project_member_names("ProjectAdmin")
         if c.username not in c.administrators:
             c.administrators.append(c.username)
+        c.contextual_wrapper_class = 'tt-context-tasklist-create'
         return render_response('tasklist/show_create.myt')
 
     def _apply_role(self, members, tasklist, role):
@@ -181,8 +184,10 @@ class TasklistController(BaseController):
             setattr(c, 'feature_' + feature.name, 1)
 
         if has_permission('tasklist', 'update'):
+            c.contextual_wrapper_class = 'tt-context-tasklist-update'
             return filled_render('tasklist/show_update.myt', c.tasklist, p)
         else:
+            c.contextual_wrapper_class = 'tt-context-tasklist-preferences'
             return filled_render('tasklist/show_preferences.myt', c.tasklist, p)
 
     @authenticate
