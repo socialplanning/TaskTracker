@@ -179,8 +179,8 @@ class Task(SQLObject):
     sort_index = IntCol()
     status = StringCol(length=255)
     task_list = ForeignKey("TaskList")
-    text = StringCol(length=255, default="")
-    title = StringCol()
+    text = StringCol(default="")
+    title = StringCol(length=255)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
 
