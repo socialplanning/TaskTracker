@@ -1402,7 +1402,6 @@ Rico.Draggable.prototype = {
       color.isBright() ? color.darken(0.033) : color.brighten(0.033);
 
       this.saveBackground = RicoUtil.getElementsComputedStyle(htmlElement, "backgroundColor", "background-color");
-      htmlElement.style.backgroundColor = color.asHex();
       this.showingSelected = true;
    },
 
@@ -1413,7 +1412,6 @@ Rico.Draggable.prototype = {
 
       var htmlElement = this.getMouseDownHTMLElement();
 
-      htmlElement.style.backgroundColor = this.saveBackground;
       this.showingSelected = false;
    },
 
@@ -1491,13 +1489,6 @@ Rico.Dropzone.prototype = {
       this.saveBackgroundColor = htmlElement.style.backgroundColor;
 
       var fallbackColor = "#ffea84";
-      var currentColor = Rico.Color.createColorFromBackground(htmlElement);
-      if ( currentColor == null )
-         htmlElement.style.backgroundColor = fallbackColor;
-      else {
-         currentColor.isBright() ? currentColor.darken(0.2) : currentColor.brighten(0.2);
-         htmlElement.style.backgroundColor = currentColor.asHex();
-      }
    },
 
    deactivate: function() {
@@ -1505,7 +1496,6 @@ Rico.Dropzone.prototype = {
       if (htmlElement == null || !this.showingActive)
          return;
 
-      htmlElement.style.backgroundColor = this.saveBackgroundColor;
       this.showingActive = false;
       this.saveBackgroundColor = null;
    },
