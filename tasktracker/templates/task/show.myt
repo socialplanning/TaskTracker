@@ -87,8 +87,7 @@
  <div id="edit_comment" class="folded">
   <% h.secure_form_remote_tag(html=dict(id="add_comment_form"), url=h.url_for(action='comment', task_id=c.task.id),
      complete="if( request.responseText.length ) change_description_updated(%s, 'comment', request.responseText); $('enter_comment_here').value = ''; $('edit_comment').hide(); $('comment').show();" % c.task.id) %>
-   <label for="text">Comment:</label>
-   <br/>
+   <h2><label for="text">Comment</label></h2>
 
    <textarea name="text" id="enter_comment_here" cols=80 rows=5>
    </textarea>
