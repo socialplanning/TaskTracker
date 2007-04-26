@@ -25,6 +25,7 @@
 
  <!-- The current task -->
  <table class="task_list">
+  <& task_list_header.myt, want_filters=False &>
   <& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
  </table>
 

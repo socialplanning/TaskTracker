@@ -1,9 +1,14 @@
+<%args>
+want_filters=True
+</%args>
+
 <tr id="column-heading" class="column-heading">
  <% h.sortableColumn('status', klass="title-column", colspan=2) %>
 % columnOrder = h.getColumnOrder(c.permalink)
  <% h.generateMovableColumnHeaders(columnOrder) %>
 </tr>
 
+% if want_filters:
 <tr class="task-filter-controls">
  <td class="title-column filter-line" colspan="2">
   <%  h.columnFilter('status', c.tasklist) %>
@@ -24,3 +29,4 @@
   &nbsp;
  </td>
 </tr>
+%
