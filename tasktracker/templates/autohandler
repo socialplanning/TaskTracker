@@ -1,5 +1,10 @@
 <html>
 <head>
+
+<title>
+<% "%s's tasks &mdash; OpenPlans" % c.project.title %> 
+</title>
+
 % if c.title:
 <% c.title %>
 % 
