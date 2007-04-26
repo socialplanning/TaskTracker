@@ -40,5 +40,5 @@
 <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
 <input type="radio" name="initial_assign" value="1"/> Unassigned <br/><br/>
 
-<% h.submit('Submit', onclick='cull_old();') %>
+<% h.submit('Save changes', onclick='cull_old();') %>
 <% h.submit('Cancel', onclick='window.location.href="%s"; return false;' % h.url_for(controller='tasklist')) %>
