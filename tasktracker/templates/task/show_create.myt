@@ -4,9 +4,8 @@ cancel_button = ''
 <% h.secure_form_remote_tag(url=h.url_for(controller='task', action='create_ajax'),
       			     success='return doneAddingTask(request);', failure='failedAddingTask(request)', html=dict(id='add_task_form')) %>
 
-Add task:
+<h2>Add task</h2>
 
-<br/>
 <div id="error" style="color:#f00;">
 
 </div>

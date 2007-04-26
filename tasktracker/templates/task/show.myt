@@ -24,12 +24,14 @@
 <div id="wrap-task-details">
 
  <!-- The current task -->
- <table class="task_list">
+ <table class="task_list" id="task-show-active-task">
   <& task_list_header.myt, want_filters=False &>
   <& task_item_row.myt, atask = c.task, is_preview = False, is_flat = True, editable_title = True &>
  </table>
 
- <% h.editableField(c.task, 'text', 'Add a description') %>
+ <div id="task-show-task-description">
+  <% h.editableField(c.task, 'text', 'Add a description') %>
+ </div>
 
  <div
 % if not len(c.task.liveChildren()):
@@ -61,9 +63,7 @@
  <table id="activity-table">
   <tr>
    <td class="small task-detail-mainbar">
-    <br/>
-    <hr/>
-    <b>Previous activity:</b>
+    <h2>Previous activity</h2>
    </td>
 
   </tr>

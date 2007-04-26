@@ -17,6 +17,7 @@ editable_title = False
 </td>
 
 <td class="title-column">
+
 <span id="draggable_<% atask.id %>" depth="<% atask.depth() - c.depth %>" class="taskitem draggable">
 % if not is_flat:
 <% h.image_tag(h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
