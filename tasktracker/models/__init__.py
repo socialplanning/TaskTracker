@@ -181,16 +181,14 @@ class Task(SQLObject):
     task_list = ForeignKey("TaskList")
     text = StringCol(default="")
     title = StringCol(length=255)
+    updated = DateTimeCol(default=datetime.datetime.now)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     watchers = MultipleJoin("Watcher")
 
-    def get_updated(self):
-        if self.versions.count():
-            return self.versions[-1].dateArchived
-        else:
-            return self.created
+    def set(self, **kwargs):
+        kwargs['updated'] = datetime.datetime.now()
+        super(Task, self).set(**kwargs)
 
-    updated = property(get_updated)
 
     def getWatcher(self, username):
         return Watcher.selectBy(username=username, taskID=self.id)[0]
