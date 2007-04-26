@@ -59,7 +59,7 @@ def previewText(text, length=25):
     if length == "":
         length = 25
     if not text or not length: return ""
-    words = text.split()
+    words = text[0:length + 1].split()
     text = []
     total = 0
     while total < length and len(words):
