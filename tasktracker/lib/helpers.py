@@ -383,9 +383,6 @@ def check_box_r(object_name, field_name, **kwargs):
 
 
 def has_permission(controller, action, **params):
-#    if action is None:
-#        module = imp.load_module('tasktracker/lib/base', *imp.find_module('tasktracker/lib/base'))
-#        controller = getattr(module, 'BaseController')
 
     controller_name = controller
 
@@ -546,6 +543,9 @@ def plural(word, count):
         count = len(count)
     except:
         pass
+
+    if count == 1:
+        return word
 
     plural = special_plurals.get(word, None)
     if plural:
