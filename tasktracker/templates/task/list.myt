@@ -9,6 +9,8 @@
                    href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
    <% c.tasklist.title %>
  </a>
+ &nbsp;
+ <% h.link_to('(preferences)', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %>
 
 </span>
 
