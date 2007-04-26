@@ -1,19 +1,11 @@
 <span class="small">
-
  <a href="<% h.url_for(controller='tasklist', action='index') %>">
-    all lists
- </a>
- &nbsp;&raquo;
-
+    all lists</a
+ >&nbsp;&raquo;
  <a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
                    href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
-   <% c.tasklist.title %>
- </a>
- &nbsp;
- <% h.link_to('(preferences)', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %>
-
-</span>
-
+   <% c.tasklist.title %></a
+ >&nbsp;<% h.link_to('(preferences)', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %></span>
 <br/>
 
 <& task_list_title.myt &>
