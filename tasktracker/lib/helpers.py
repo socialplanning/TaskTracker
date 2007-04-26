@@ -194,19 +194,10 @@ def editableField(task, field, ifNone = None, uneditable = False):
     return " ".join(out)
 
 def _selectjs(field, id):
-
-    def _onchange(field, id):
-        return 'changeField(%d, "%s");'  % (id, field)
-
-    return dict(onchange=_onchange(field, id))
+    return dict(onchange='changeField(%d, "%s");'  % (id, field))
 
 def _checkboxClickjs(field, id): 
-
-    def _onchange(field, id):
-        return 'changeField(%d, "%s");'  % (id, field)
-
-    return dict(onclick=_onchange(field, id))
-
+    return dict(onclick='changeField(%d, "%s");'  % (id, field))
 
 def _prioritySelect(task):
     priority = task.priority
