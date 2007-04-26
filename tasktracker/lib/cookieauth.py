@@ -21,6 +21,7 @@ from tasktracker.models import *
 from pylons import c
 
 from paste.wsgilib import intercept_output
+from paste.request import construct_url
 
 import os
 import base64
@@ -106,6 +107,7 @@ class CookieAuth(object):
     def __init__(self, app, app_conf):
         self.app = app
         self.openplans_instance = app_conf['openplans_instance']
+        self.login_uri = app_conf['login_uri']
         if not os.environ.get('TOPP_SECRET_FILENAME'):
             raise Exception("Environment variable TOPP_SECRET_FILENAME has not been set.")
         
@@ -167,8 +169,8 @@ class CookieAuth(object):
 
         if status:
             status = "303 See Other"
-            url = 'http://%s%s' % (environ['HTTP_HOST'], environ['PATH_INFO'])
-            headers = [('Location', '%s/login_form?came_from=%s' % (self.openplans_instance, quote(url)))]
+            url = construct_url(environ)
+            headers = [('Location', '%s?came_from=%s' % (self.login_uri, quote(url)))]
             start_response(status, headers)
             return []
         else:

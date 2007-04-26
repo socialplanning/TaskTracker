@@ -44,6 +44,7 @@ set debug = false
 openplans_wrapper = CookieAuth
 #openplans_wrapper = ZWSGIFakeEnv
 openplans_instance = http://localhost:8080/openplans
+login_uri = http://stage.openplans.org/login_form
 
 # If uncommented, the Javascript and CSS files will each respectively
 # be served as a single file (instead of having to load a file for each
