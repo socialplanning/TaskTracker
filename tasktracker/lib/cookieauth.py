@@ -106,7 +106,9 @@ class CookieAuth(object):
     def __init__(self, app, app_conf):
         self.app = app
         self.openplans_instance = app_conf['openplans_instance']
-
+        if not os.environ.get('TOPP_SECRET_FILENAME'):
+            raise Exception("Environment variable TOPP_SECRET_FILENAME has not been set.")
+        
     def authenticate (self, environ):
         try:
             #authenticate cookie
