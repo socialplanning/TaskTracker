@@ -13,7 +13,7 @@ editable_title = False
 <td colspan="7">
 % if atask.text:
  <div style = "clear:both; margin-left: <% (atask.depth() - c.depth) * 1.5 + 3 %>em; max-width:80em">
-   <% h.previewText(atask.text, 400) %>
+   <% h.previewText(atask.text, 200) %>
 </div>
 %
 
