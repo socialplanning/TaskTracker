@@ -254,9 +254,7 @@ class Task(SQLObject):
                 task.sort_index += 1
 
     def liveChildren(self):
-        import tasktracker.lib.helpers as h
-
-        return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
+        return [c for c in self.uncompletedChildren() if c.status != 'done']
 
     def liveDescendents(self):
         descendents = []
@@ -266,6 +264,7 @@ class Task(SQLObject):
             descendents += child.liveDescendents()
         return descendents
 
+    @memoize
     def uncompletedChildren(self):
         import tasktracker.lib.helpers as h
 
