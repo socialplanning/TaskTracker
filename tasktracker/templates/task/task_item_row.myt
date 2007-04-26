@@ -83,11 +83,6 @@ task
 </span>
 left) </span>
 
-% if atask.comments:
-<span class="small"> <% len(atask.comments) %>
-<% h.plural("comment", atask.comments) %>
-</span>
-%
 % if atask.private:
 -- (private)
 %
