@@ -1,10 +1,10 @@
 <span class="small">
 
- <% h.link_to("my tasklists", h.url_for(controller='tasklist', action='index')) %>
- &nbsp;&gt;&gt;
+ <% h.link_to("all lists", h.url_for(controller='tasklist', action='index')) %>
+ &nbsp;&raquo;
  <% h.link_to(c.task.task_list.title, h.url_for(controller='tasklist', action='show', id=c.task.task_list.id),
     base_href=h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), id="return_to_tasklist", class_="uses_permalink") %>
- &nbsp;&gt;&gt;
+ &nbsp;&raquo;
  <a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">
   <% c.task.title %>
  </a>
@@ -12,8 +12,6 @@
 </span>
 
 <br/>
-
-<& task_list_title.myt, want_description=False &>
 
 <span id="global-values" 
       depth="<% c.depth %>"
