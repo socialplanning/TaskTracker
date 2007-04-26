@@ -14,7 +14,7 @@
 % if c.tasklist.text:
 <% c.tasklist.text %>
 % else:
-[no description]
+<a class="command">[+] add a description</a>
 %
 </span>
 </div>

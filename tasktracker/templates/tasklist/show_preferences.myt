@@ -1,13 +1,10 @@
 <!-- Please also see show_update for the editable version -->
 
-
 <h1> <% c.tasklist.title %></h1>
 
 <span>
 % if c.tasklist.text:
 <% c.tasklist.text %>
-% else:
-[no description]
 %
 </span>
 

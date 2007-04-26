@@ -13,7 +13,7 @@
 
 <br/>
 
-<& task_list_title.myt &>
+<& task_list_title.myt, want_description=False &>
 
 <span id="global-values" 
       depth="<% c.depth %>"
