@@ -584,6 +584,7 @@ class TaskList(SQLObject):
     def managers(self):
         return [u.username for u in self.special_users if u.role == Role.getByName('ListOwner')]
 
+    @memoize
     def hasFeature(self, feature_name):
         for feature in self.features:
             if feature.name == feature_name:
