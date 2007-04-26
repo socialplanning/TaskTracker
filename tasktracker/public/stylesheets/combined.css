@@ -1,327 +1,5 @@
 /* From tasktracker/public/stylesheets/list.css: */
 
-body {
-   margin-left: 5%;
-   margin-right: 5%;
-   margin-top: 5%;
-}
-
-table {
-  border-collapse: collapse;
-}
-
-table#next-prev-tasks {
-  background-color: #eee;
-  width: 100%;
-}
-  table#next-prev-tasks td {
-    width: 50%;
-  }
-
-table.all_tasks {
-  width: 100%;
-}
-
-table.task_list {
-  padding-left: 0;
-  width: 100%;
-}
-  th.title-column {
-    column-span: 2;
-  }
-  .title-column, .updated-column {
-    white-space: nowrap;
-  }
-  tr.task-filter-controls td, td#breaking-row {
-    height: 1.75em;
-    text-align: left;
-  }
-  tr.column-heading {
-    background-color: #EEE;
-  }
-    td.deadline-column, td.owner-column, td.updated-column, td.priority-column, td.status-column, td.title-column { 
-      padding: 0;
-      width: 15%;
-      background-color: #EEE;
-    }
-    td.status-column {
-      width: 1%;
-    }
-    td.custom-status {
-      width: 8%;
-    }
-    td.title-column {
-      width: 30%;
-    }
-	.completed-task {
-	    text-decoration: line-through;
-	    color: gray
-	}
-
-  tr.second-line td { 
-    background-color: #FFF;
-    height: 1em;
-    text-decoration: none;
-    padding: 0;
-  }
-
-.low-profile-widget {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font: 1em;
-  background-color: #EEE; 
-}
-
-input.low-profile-widget {
-  font-style: italic;
-}
-
-input#title { width: 50%; }
-
-input.auto-size { width: auto; height: auto; } 
-
-select.low-profile-widget:focus { height: 1em; font-size: 1em; }
-
-.filter-line {
-  background-color: #eee;
-  width: auto;
-  text-align: center;
-}
-
-.grayed-out {
-   color: gray;
-}
-
-.preview {
-  color: #aaa;
-}
-
-a.preview-link {
-  color: #aaa;
-}
-
-.handle {
-	padding: 0 4px 0 4px;
-}
-
-.customDraggable {
-  color: #666;
-  background-color: #bbb;
-  filter:alpha(opacity=40);
-  opacity: .4;
-}
-
-.drop {
-   border-bottom: 2px solid black;
-   padding-bottom: 2px;	
-}
-
-/*from scriptaculous*/
-span.autocomplete {
-    background-color:white;
-    margin:0;
-    padding:0;
-}
-span.autocomplete ul {
-    list-style-type:none;
-    margin:0;
-    padding:0;
-    border: 1px solid black;
-}
-span.autocomplete ul li.selected {
-    background-color: #ffb;
-}
-span.autocomplete ul li {
-    list-style-type:none;
-    background-color: white;
-    display:block;
-    margin:0;
-    padding:0;
-    height:1.25em;
-    cursor:pointer;
-}
-/*end scriptaculous*/
-
-.error-message {
-     border: 1px black dashed;
-     color: #f00;
-     font-weight: bold;
-}
-
-a.sortarrow:visited, a.sortarrow:link {
-    text-decoration: none;
-     color: #00f;
-}
-
-.row-heading {
-    font-weight: bold;
-}
-
-.task-filter-controls {
-  clear: both; 
-}
-
-.create_section {
-   padding: 0;
-}
-
-.task_cell {
-  text-align: left;
-}
-
-.overdue-task {
-   color: maroon;
-}
-
-.uncompleted-task, .command {
-  cursor:pointer;
-  text-decoration: underline;
-  color: #256e81;
-}
-
-span.editable:hover {
-  background-color: #edf;
-}
-
-.help {
-  cursor: pointer;
-}
-
-.help_text {
-  background-color: #eee;
-  border: 1px solid black;
-  position: absolute;
-}
-
-.undecorated_list {
-  list-style-type: none;
-  list-style-image: none; 
-  padding-left: 0;
-}
-
-.selected-permission {
-  font-weight: bold; 
-}
-
-.disabled-permission {
-  color: #888;
-}
-
-.folded {
-  display: none;
-}
-
-#movable_add_task {
-  background-color: #eee;
-  padding: 1em;
-  margin: 0;
-  line-height: 1em;
-}
-
-.activity_list {
-  list-style: none;
-  padding: 0; margin: 0;
-  padding-left: 25px;
-}
-  .activity_list li {
-    padding: 0; margin: 0;
-  }
-#activity-table {
-   border-spacing: 0;
-   align: left;
-   text-align: left;
-   width: 100%;
-   background-color: #fff;
-}
-
-#activity-insert {
-   background-color: #eee;
-   padding: 3px;
-   text-align: center;
-}
-
-#wrap-task-details {
-  padding-top: 5px;
-}
-
-.child_tasks {
-  padding-left: 25px;
-  padding-top: 5px;
-}
-
-#task-detail-sidebar-cell {
-  padding-left: 50;
-  padding-right: 50;
-}
-
-td.task-detail-mainbar {
-  width: 75%;
-  vertical-align: top;
-}
-
-td.task-detail-mainbar ul li {
-  overflow: hidden;
-}
-
-#task-detail-sidebar {
-  background-color: #eee;
-  padding-left: 10;
-  padding-right: 3px;
-  padding-top: 100;
-  padding-bottom: 100;
-}
-
-label {
-  font-weight: normal;
-}
-
-.small {
-   font-size: 0.9em;
-}
-
-.big {
-   font-size: 1.5em;
-}
-
-#global-values {
-  display: none; 
-}
-
-.currently-dragged-column div {
-  background-color: #eee;
-}
-
-ul.command_list {
-  display: inline;
-}
-
-ul.command_list li {
-  border-left: 1px solid #000;
-  list-style: none;
-  display: inline;
-}
-
-div.sibling_dropzone, div.child_dropzone {
-  display: inline;
-}
-
-.hidden {
-  display: none;
-}
-
-div#sibling_dropzone_0 {
-  padding-left: 2em;
-  padding-right: 10em;
-}
-
-textarea { 
-  display: block;
-}
-
 #oc-tasktracker {
   margin: 0 2em 0.5em;
 }
@@ -330,6 +8,494 @@ textarea {
   list-style-type: none;
   list-style-image: none;
 }
+
+#oc-tasktracker br {
+	display: none;
+}
+
+#oc-tasktracker h1 {
+	margin-top: 0.5em;
+	margin-bottom: 0;
+	display: block !important;
+}
+
+#task-list-description {
+	margin-bottom: 1em;
+	font-size: 0.833em;
+}
+
+.low-profile-widget {
+	display: block;
+	width: 100%;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	font: 1em;
+	background-color: #eee; 
+}
+
+	input.low-profile-widget {
+		font-style: italic;
+	}
+	
+	select.low-profile-widget:focus {
+		height: 1em;
+		font-size: 1em;
+	}
+
+input#title { /* ??? */
+	width: 50%;
+}
+
+input.auto-size {
+	width: auto;
+	height: auto;
+}
+
+.error-message { /* ??? */
+     border: 1px black dashed;
+     color: #f00;
+     font-weight: bold;
+}
+
+a.sortarrow:visited,
+a.sortarrow:link { /* ??? Delete this? */
+	text-decoration: none;
+	color: #00f;
+}
+
+.row-heading { /* ??? */
+    font-weight: bold;
+}
+
+.create_section { 
+	padding: 0;
+}
+
+.task_cell {
+  text-align: left;
+}
+
+.help {
+	cursor: help;
+}
+
+.help_text {
+	 background-color: #eee;
+	 border: 1px solid black;
+	 position: absolute;
+}
+
+.undecorated_list {
+	 list-style-type: none;
+	 list-style-image: none; 
+	 padding-left: 0;
+}
+
+.unselected-permission {
+	color: #ccc;
+}
+
+.selected-permission {
+	color: #333;
+}
+
+.disabled-permission {
+	color: #333;
+}
+
+	.disabled-permission input{
+		visibility: hidden;
+	}
+
+.folded {
+	display: none;
+}
+
+/* TASK DETAIL PAGE
+-------------------*/
+	
+#wrap-task-details {
+	padding-top: 5px;
+}
+
+	table.task_list#task-show-active-task {
+	}
+	
+		table.task_list#task-show-active-task #column-heading {
+			font-size: 0.833em;
+		}
+		
+		table.task_list#task-show-active-task .title-column span.editable {
+			font-weight: bold;
+			font-size: 1.5em;
+		}
+
+	#task-show-task-description {
+		margin: 1em 0;
+	}
+	
+	#activity-table {
+		border-spacing: 0;
+		text-align: left;
+		width: 100%;
+	}	
+
+		td.task-detail-mainbar {
+		}
+		
+			td.task-detail-mainbar textarea {
+				display: block;
+			}
+		
+			.activity_list {
+				list-style: none;
+				padding: 0; margin: 0;
+				padding-left: 2em;
+			}
+
+				.activity_list li,
+				td.task-detail-mainbar ul li {
+					overflow: hidden;
+					padding: 0.25em; 
+					margin: 0;
+				}
+				
+				.activity_list hr {
+						padding: 0;
+						margin: 0;
+						visibility: hidden;
+				}
+			
+			#activity-insert {
+				background-color: #eee;
+				padding: 3px;
+				text-align: center;
+			}
+
+	.child_tasks {
+		padding-left: 25px;
+		padding-top: 5px;
+	}
+	
+	#subtasks,
+	#edit_subtasks,
+	#create_section {
+		margin: 1em 0;
+	}
+	
+		#show_create a {
+			padding-left: 1em;
+		}
+			
+	.tt-context-task-show .post-link {
+		margin: 1em 0;
+		display: block;
+	}
+	
+/* TASK LIST Stuff
+-------------------*/
+
+table {
+	border-collapse: collapse;
+}
+
+	table#next-prev-tasks {
+		background-color: #eee;
+		width: 100%;
+		margin-top: 1em;
+		font-size: 0.833em;
+		padding: 0.25em;
+	}
+	
+		table#next-prev-tasks td {
+			width: 50%;
+		}
+		
+	table.all_tasks {
+		width: 100%;
+	}
+
+	table.task_list {
+		width: 100%;
+	}
+
+		tr.column-heading {
+			background-color: #ddd;
+		}
+		
+			tr.column-heading th {
+				text-transform: capitalize;
+				padding-right: 1.5em;
+				white-space: nowrap;
+			}
+		
+			th.title-column {
+				column-span: 2;
+			}
+			
+		tr.task-filter-controls {
+			background-color: #eee;
+			font-size: 0.833em;
+		}
+		
+			.filter-line select {
+				width: 6em;
+				font-size: 100%;
+			}
+			
+			tr.task-filter-controls td.title-column:after {
+				content: " Sort by..."
+			}
+
+		td.deadline-column, 
+		td.owner-column, 
+		td.updated-column, 
+		td.priority-column, 
+		td.status-column,
+		td.title-column,
+		td.custom-status { 
+			border-bottom: 1px dotted #eee;
+			white-space: nowrap;
+		}
+
+		td.status-column {
+			width: 1em;
+		}
+		
+			td.status-column input {
+				margin: 0.125em;
+				margin-left: 0.5em;
+			}
+
+		td.title-column {
+			width: auto;
+		}
+		
+			.taskitem {
+			}
+			
+				.taskitem .small {
+					font-size: 0.833em
+				}
+				
+		td.deadline-column, 
+		td.owner-column, 
+		td.updated-column, 
+		td.priority-column,
+		td.custom-status {
+			width: 10em;			
+		}
+		
+		tr.taskrow,
+		tr.second-line {
+
+		}
+		
+			tr.taskrow td {
+			}
+		
+			tr.second-line td {
+				text-decoration: none;
+				padding-top: 0.125em;
+				padding-left: 1em;
+				font-size: 0.833em;
+			}
+			
+		.completed-task {
+			color: gray;
+			background-color: #f9f9f9;
+		}
+		
+			.completed-task td.deadline-column, 
+			.completed-task td.owner-column, 
+			.completed-task td.updated-column, 
+			.completed-task td.priority-column, 
+			.completed-task td.custom-status {
+				text-decoration: line-through;
+			}
+			
+				.completed-task td.status-column {
+				}
+		
+					.completed-task td.title-column a,
+					span.completed-task {
+						text-decoration: line-through;
+					}
+		
+			.second-line .completed-task {
+				display: none;
+			}
+			
+		.uncompleted-task,
+		.command {
+			cursor: pointer;
+			text-decoration: underline;
+			color: #256e81;
+		}
+
+/* EDITABLE Stuff
+-------------------*/
+
+.editable,
+.task_list .editable {
+	border-bottom: 1px dotted #256e81;
+	padding: 0.25em;
+	cursor: pointer;
+}
+
+	.editable:hover {
+		background: #ffc;
+		border: none;
+	}
+
+
+	.tt-context-task-show #task-show-task-description .editable {
+		display: block;
+		padding: 0.5em;
+		border: 1px dotted #f00;
+	}
+
+		.tt-context-task-show #task-show-task-description .editable:hover {
+			border: 1px solid #eee;
+			background: #ffc;
+		}
+	
+
+/* BOXY WIDGET THINGS
+-------------------*/
+
+#add_task_form, /* "Add task" box on tt-context-task-show and tt-context-tasklist-show */
+#add_comment_form  /* "Add comment" box on tt-context-task-show */
+{
+	background-color: #eee;
+	padding: 1em;
+	border: 1px solid #ddd;
+}
+
+	#add_task_form  #hideable_title_label {
+		display: block;
+		margin-top: 1em;
+	}
+
+	#add_task_form #show_description,
+	#add_task_form #hide_description {
+		text-transform: lowercase;
+		margin-bottom: 1em;
+		display: block;
+	}
+
+/* DRAG & DROP Stuff
+-------------------*/
+
+.customDraggable { /* When something is being dragged, this is what it looks like as it is being "grasped" */
+	color: #333;
+	/* background-color: #ccc; */
+	padding: 1em;
+	filter:alpha(opacity=40);
+	opacity: .4;
+}
+
+.currently-dragged-column div { /* When something is being dragged, this is what the original looks like... This is disablled because of faulty JS that causes the style to persist incorrectly */
+	/* background-color: #eee; */
+}
+
+.handle { /* This is where draggable items can be grasped */
+	cursor: move;
+	}
+
+.drop { /* ??? */
+	border-bottom: 2px solid black;
+	padding-bottom: 2px;
+	cursor: pointer;	
+}
+	
+	
+/* ???
+-------------------*/
+
+label {
+	font-weight: normal;
+}
+
+.small {
+}
+
+.big {
+	
+}
+
+.hidden,
+#global-values  {
+	display: none;
+}
+
+.grayed-out {
+	color: gray;
+}
+
+.preview {
+	color: #aaa;
+}
+
+a.preview-link {
+	color: #aaa;
+}
+
+.overdue-task {
+   color: maroon;
+}
+
+a {
+}
+
+ul.command_list {
+	display: inline;
+}
+
+	ul.command_list li {
+		border-left: 1px solid #000;
+		list-style: none;
+		display: inline;
+	}
+
+div.sibling_dropzone, div.child_dropzone {
+	display: inline;
+	height: 1em;
+}
+
+	div#sibling_dropzone_0 {
+		padding-left: 2em;
+		padding-right: 10em;
+	}
+
+/* from SCRIPTACULOUS
+-------------------*/
+
+	span.autocomplete {
+	    background-color:white;
+	    margin:0;
+	    padding:0;
+	}
+	span.autocomplete ul {
+	    list-style-type:none;
+	    margin:0;
+	    padding:0;
+	    border: 1px solid black;
+	}
+	span.autocomplete ul li.selected {
+	    background-color: #ffb;
+	}
+	span.autocomplete ul li {
+	    list-style-type:none;
+	    background-color: white;
+	    display:block;
+	    margin:0;
+	    padding:0;
+	    height:1.25em;
+	    cursor:pointer;
+	}
 
 
 
