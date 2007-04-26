@@ -572,6 +572,7 @@ class TaskList(SQLObject):
 
     updated = property(get_updated)
 
+    @memoize
     def isListOwner(self, username):
         list_owner_role = Role.getByName('ListOwner')
         roles = TaskListRole.selectBy(role=list_owner_role, task_list=self, username=username)
