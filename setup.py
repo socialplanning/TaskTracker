@@ -34,7 +34,7 @@ setup(
       "Myghty",
       "Pylons==0.9.4.1",
       "Routes==1.6.2.1",
-      "SQLObject===0.9", 
+      "SQLObject==0.9", 
       "decorator", 
       "httplib2", 
       "elementtree", 
