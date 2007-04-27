@@ -51,7 +51,8 @@ class EditTaskForm(formencode.Schema):
     private = NotEmpty()
 
 def _assignment_permitted(new_owner):
-    return (h.has_permission(controller='task', action='assign') or new_owner == c.username and h.has_permission(controller='task', action='claim'))
+    return ( h.has_permission(controller='task', action='assign') ) or \
+        ( new_owner == c.username and h.has_permission(controller='task', action='claim') )
 
 _actions = dict(status='change_status', owner='claim', priority='update', deadline='update', text='update', title='update')
 def _field_permission(param):    
@@ -100,7 +101,7 @@ class TaskController(BaseController):
 
         elif field == "owner":
             assert _assignment_permitted(newfield)
-            assert newfield in c.usermapper.project_member_names()
+            assert newfield in c.usermapper.project_member_names()  ## @@ Why is this necessary????? - egj
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)
