@@ -266,7 +266,7 @@ def _priorityFilter(onblur = None, tasklist = None):
 
 def _statusFilter(onblur = None, tasklist = None):
     statuses = [status.name for status in tasklist.statuses]
-    status_dict = {'All':'All'}
+    status_dict = {'All':'All','All Uncompleted':'All Uncompleted'}
     for status in statuses:
         status_dict[status] = status
     return select('status_filter', options_for_select(status_dict.items(), 'All'),

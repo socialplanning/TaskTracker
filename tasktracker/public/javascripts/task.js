@@ -539,14 +539,15 @@ function filterField(fieldname, task) {
     }
 			
     var filtervalue = $(fieldname + '_filter').value.replace(' ', '%20');
+
     if( filtervalue == 'All' ) {
 	return false;
     }
-    console.log(task.getAttribute(fieldname));
-    if( task.getAttribute(fieldname) != filtervalue ) {
-	return true;
+    if( fieldname == "status" && filtervalue == "All%20Uncompleted" ) {
+	return( task.getAttribute(fieldname) == "done" );
     }
     
+    return( task.getAttribute(fieldname) != filtervalue );    
 }
 
 function filterNodeByAllFields(node) {

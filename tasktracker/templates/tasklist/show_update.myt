@@ -129,8 +129,8 @@ The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
   <% h.editable_list('statuses', [], [s.name for s in c.tasklist.statuses]) %>
   <input type="hidden" value="" id="statuses" name="statuses">
   <input id="add_status" name="add_status" size="20" type="text" value="" />
-  <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
-  <input type="submit" name="submit" value="Cancel" onclick="$('edit_custom_statuses').hide(); "/>
+  <input type="submit" name="submit" value="Add"
+         onclick="addItem('list_statuses', $('add_status').value); $('add_status').value=''; $('add_status').focus(); return false;"/>
  </div>
 % else:
 Tasks do not have custom statuses. 
