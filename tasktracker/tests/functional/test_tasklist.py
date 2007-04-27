@@ -144,9 +144,34 @@ class TestTaskListController(TestController):
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
         tl = TaskList.get(the_id)
-        assert [s.name for s in tl.statuses] == ['morx', 'fleem', 'done']
+        assert set([s.name for s in tl.statuses]) == set(['morx', 'fleem', 'done'])
+
+        ### and they should all be somewhere on the tasklist view page
+        res = app.get(url_for(controller="tasklist", action="show", id=the_id))
+        res.mustcontain("morx")
+        res.mustcontain("fleem")
+        res.mustcontain("done")
+
+        ### when we view the update preferences page the statuses should be there
+        res = app.get(url_for(controller="tasklist", action="show_update"))
+        res.mustcontain("morx")
+        res.mustcontain("fleem")
+        res.mustcontain("done")
+
+        ### we can add new statuses to the list of custom statuses
+        form = res.forms[0]
+        form['statuses'] = 'geoffrey'
+        res = form.submit()
         
-        tl.destroySelf()
+        ### they should all be in the tasklist and on the view page
+        assert set([s.name for s in tl.statuses]) == set(['morx', 'fleem', 'done', 'geoffrey'])
+        res = app.get(url_for(controller="tasklist", action="show", id=the_id))
+        res.mustcontain("morx")
+        res.mustcontain("fleem")
+        res.mustcontain("done")
+        res.mustcontain("geoffrey")
+
+        tl.destroySelf()        
 
     def test_list_manager(self):
         app = self.getApp('admin')

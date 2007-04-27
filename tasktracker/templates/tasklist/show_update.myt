@@ -118,8 +118,20 @@ This list does not have private tasks.
   <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
  </div>
 
+
 % if c.feature_custom_status:
-This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
+ <div id="custom_statuses" class="unfolded editable">
+  <input type="hidden" value="1" id="custom_status" name="feature_custom_status" />
+This list has custom task statuses.
+The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
+ </div>
+ <div id="edit_custom_statuses" class="folded">
+  <% h.editable_list('statuses', [], [s.name for s in c.tasklist.statuses]) %>
+  <input type="hidden" value="" id="statuses" name="statuses">
+  <input id="add_status" name="add_status" size="20" type="text" value="" />
+  <input type="submit" name="submit" value="Add" onclick="addItem('list_statuses', $('add_status').value);$('add_status').value=''; return false;"/>
+  <input type="submit" name="submit" value="Cancel" onclick="$('edit_custom_statuses').hide(); "/>
+ </div>
 % else:
 Tasks do not have custom statuses. 
 %

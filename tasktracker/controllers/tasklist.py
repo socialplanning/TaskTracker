@@ -167,7 +167,7 @@ class TasklistController(BaseController):
         p = dict(self.form_result)
         p['username'] = c.username
         p['projectID'] = c.project.id
-        if "feature_custom_status" not in p:
+        if "feature_custom_status" not in p and "statuses" in p:
             del p['statuses']
         c.tasklist = TaskList(**p)
         
@@ -203,7 +203,9 @@ class TasklistController(BaseController):
         c.tasklist = self._getTaskList(int(id))
 
         p = dict(self.form_result)
-
+        
+        if "feature_custom_status" not in p and "statuses" in p:
+            del p['statuses']
         c.tasklist.set(**p)
 
         set_features(p)

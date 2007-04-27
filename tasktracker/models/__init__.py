@@ -620,6 +620,13 @@ class TaskList(SQLObject):
         params = self._clean_params(kwargs)
         super(TaskList, self).set(**params)
 
+        if kwargs.get('statuses'):
+            statuses = kwargs['statuses'].split(",")
+            existing_statuses = [s.name for s in Status.selectBy(task_listID=self.id)]
+            for status in statuses:
+                if status not in existing_statuses:
+                    Status(name=status, task_list=self.id, done=(status=="done"))
+
         trans.commit()
 
     def _clean_params(self, kwargs):
