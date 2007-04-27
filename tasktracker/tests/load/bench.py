@@ -157,17 +157,17 @@ benchmark("/tasklist/show/1","hundred_tasks")
 print "ten tasklists of one hundred tasks, a task page"
 benchmark("/task/show/1","hundred_tasks")
 
-import time
-start = time.time()
-print "creating ten kilotasks"
-for tasklist in tasklists:
-    for i in range(810):
-        if i % 10 == 0:
-            print i
-        create_task(tasklist)
-print "Creation took %s seconds" % (time.time() - start)
-print "ten tasklists of one thousand tasks, a tasklist page"
-benchmark("/tasklist/show/1","ten_tasks")
+print "creating a hundred tasklists"
+tasklists += [create_tasklist() for i in range(90)]
 
-print "ten tasklists of one thousand tasks, a task page"
+print "creating ten kilotasks"
+for tasklist in tasklists[10:]:
+    print "Creating tasks"
+    for i in range(100):
+        create_task(tasklist)
+
+print "one hundred tasklists of one hundred tasks, a tasklist page"
+benchmark("/tasklist/show/1","tenk_tasks")
+
+print "one hundred tasklists of one hundred tasks, a task page"
 benchmark("/task/show/1","tenk_tasks")

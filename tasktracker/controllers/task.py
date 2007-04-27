@@ -89,11 +89,12 @@ class TaskController(BaseController):
             if not task.task_list.hasFeature('custom_status'):
                 assert newfield in ('true', 'false')
                 if newfield == 'true':
-                    newfield = 'done'
+                    newfield = task.task_list.getDoneStatus()
                 else:
-                    newfield = 'not done'
+                    newfield = task.task_list.getNotDoneStatus()
             else:
-                assert newfield in [s.name for s in task.task_list.statuses]
+                newfield = task.task_list.getStatusByName(newfield)
+                assert newfield
 
         #special case for owner
 

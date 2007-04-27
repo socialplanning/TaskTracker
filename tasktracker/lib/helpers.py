@@ -169,7 +169,7 @@ def editableField(task, field, ifNone = None, uneditable = False):
 
     if field == 'status' and not task.task_list.hasFeature('custom_status'):
         checked = False
-        if task.status == 'done':
+        if task.status.done:
             checked = True
         
         return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
@@ -221,12 +221,12 @@ def _statusSelect(task):
     
     index = 0
     for status in statuses:
-        if status.name == task.status:
+        if status == task.status:
             break
         index += 1
 
-    return select('status', options_for_select(status_names, task.status), 
-                  method='post', originalvalue=task.status,
+    return select('status', options_for_select(status_names, task.status.name), 
+                  method='post', originalvalue=task.status.name,
                   id='status_%d' % task.id, class_="low-profile-widget", **_selectjs('status', task.id))
 
 def _ownerInput(task):
@@ -500,9 +500,9 @@ def field_last_updated(task, field):
 
 def task_item_tr(task, is_preview, is_flat, editable_title):
     id = task.id
-    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" ' % (task.parentID, id, id)]
+    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(task.status.name))]
 
-    for prop in ['sort_index', 'owner', 'deadline', 'priority', 'status', 'updated']:
+    for prop in ['sort_index', 'owner', 'deadline', 'priority', 'updated']:
         tr.append('%s = "%s" ' % (prop, quote(str(getattr(task, prop)))))
 
     tr.append('is_preview = "%s" ' % is_preview)
@@ -515,7 +515,7 @@ def task_item_tr(task, is_preview, is_flat, editable_title):
         tr.append('deletable')
     else:
         tr.append('nondeletable')
-    if task.status == 'done':
+    if task.status.done:
         tr.append(' completed-task')
     tr.append ('">')
     return "".join(tr)

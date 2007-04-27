@@ -29,7 +29,7 @@ editable_title = False
 
 % if editable_title:
   <span class = "task_item
-% if atask.status == 'done':
+% if atask.status.done:
   completed-task
 % elif h.isOverdue(atask.deadline):
     overdue-task
@@ -48,7 +48,7 @@ root-task
      base_href = "<% h.url_for(controller='task', action='show', id=atask.id) %>"
      id = "title_<% atask.id %>"
      class = "task_item truncated uses_permalink 
-% if atask.status == 'done':
+% if atask.status.done:
     completed-task
 % elif h.isOverdue(atask.deadline):
     overdue-task
