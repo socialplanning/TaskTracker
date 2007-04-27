@@ -36,43 +36,6 @@ import datetime
 
 import os
 
-class OutgoingEmail(SQLObject):
-    envelope_from_address = StringCol()
-    envelope_to_address = StringCol()
-    message = StringCol()
-    created = DateTimeCol(default=datetime.datetime.now)
-
-class Notification(SQLObject):
-    class sqlmeta:
-        defaultOrder = 'created'
-
-    username = StringCol()
-    task = ForeignKey("Task")
-    task_list = ForeignKey("TaskList")
-    created = DateTimeCol(default=datetime.datetime.now)
-    notified = BoolCol(default=False)
-    importance = IntCol()
-    triggering_watcher = ForeignKey("Watcher")
-    handled = BoolCol(default=False)
-    
-    def targetType(self):
-        if self.taskID:
-            return "task"
-        else:
-            return "task_list"
-
-class Watcher(SQLObject):
-    username = StringCol()
-    task = ForeignKey("Task")
-    task_list = ForeignKey("TaskList")
-    interest_level = IntCol()
-
-    def target(self):
-        if self.taskID:
-            return self.task
-        else:
-            return self.task_list
-
 class Status(SQLObject):
     class sqlmeta:
         defaultOrder = 'id'
@@ -184,17 +147,10 @@ class Task(SQLObject):
     title = StringCol(length=255)
     updated = DateTimeCol(default=datetime.datetime.now)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
-    watchers = MultipleJoin("Watcher")
 
     def set(self, **kwargs):
         kwargs['updated'] = datetime.datetime.now()
         super(Task, self).set(**kwargs)
-
-    def getWatcher(self, username):
-        return Watcher.selectBy(username=username, taskID=self.id)[0]
-
-    def isWatchedBy(self, username):
-        return Watcher.selectBy(username=username, task=self.id).count() > 0
 
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
@@ -559,7 +515,6 @@ class TaskList(SQLObject):
     text = StringCol()
     title = StringCol(length=255)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
-    watchers = MultipleJoin("Watcher")
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")
     statuses = MultipleJoin("Status")
@@ -601,12 +556,6 @@ class TaskList(SQLObject):
             if feature.name == feature_name:
                 return True
         return False
-
-    def getWatcher(self, username):
-        return Watcher.selectBy(username=username, task_listID=self.id)[0]
-
-    def isWatchedBy(self, username):
-        return Watcher.selectBy(username=username, task_list=self.id).count() > 0
 
     def topLevelTasks(self):
         import tasktracker.lib.helpers as h
@@ -703,8 +652,6 @@ TaskVersion.getChangedFields = memoize(TaskVersion.getChangedFields)
 soClasses = [
 Action,
 Comment,
-Notification,
-OutgoingEmail,
 Project,
 Role,
 Status,
@@ -714,5 +661,4 @@ TaskListFeature,
 TaskListPermission,
 TaskListRole,
 User,
-Watcher,
 ]
