@@ -100,7 +100,6 @@ a.sortarrow:link { /* ??? Delete this? */
 }
 
 .disabled-permission {
-	color: #333;
 }
 
 	.disabled-permission input{
@@ -352,7 +351,7 @@ table {
 	.tt-context-task-show #task-show-task-description .editable {
 		display: block;
 		padding: 0.5em;
-		border: 1px dotted #f00;
+		border: 1px dotted #256e81;
 	}
 
 		.tt-context-task-show #task-show-task-description .editable:hover {
