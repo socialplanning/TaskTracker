@@ -162,7 +162,7 @@ class TestTaskListController(TestController):
         loc = res.header_dict['location']
         the_id = loc.split("/")[-1]
         res = res.follow()
-        res = res.click("view list preferences")
+        res = res.click("view list preferences", index=0)
         res.mustcontain('<span>member</span>')
         
         ### delete the additional manager from the list
