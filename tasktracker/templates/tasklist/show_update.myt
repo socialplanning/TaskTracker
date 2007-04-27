@@ -42,9 +42,10 @@
 <br/>
 
 <!-- Permissions -->
-<span onclick="show_permissions();" class="editable" id="permissions_section">
+<div onclick="show_permissions();" class="editable" id="permissions_section">
 <& _permissions.myt &>
-</span>
+</div>
+
 <script>
 function show_permissions() {
   lists.each(function(list_name) {
