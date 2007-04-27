@@ -167,12 +167,14 @@ def editableField(task, field, ifNone = None, uneditable = False):
         if contents == 'None':
             contents = '--'
 
-    if field == 'status' and not task.task_list.hasFeature('custom_status'):
-        checked = False
-        if task.status.done:
-            checked = True
+    if field == 'status':
+        contents = task.status.name
+        if not task.task_list.hasFeature('custom_status'):
+            checked = False
+            if task.status.done:
+                checked = True
         
-        return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
+            return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
 
     if editable:
         span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
@@ -228,6 +230,7 @@ def _statusSelect(task):
     return select('status', options_for_select(status_names, task.status.name), 
                   method='post', originalvalue=task.status.name,
                   id='status_%d' % task.id, class_="low-profile-widget", **_selectjs('status', task.id))
+
 
 def _ownerInput(task):
     orig = task.owner    
