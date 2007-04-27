@@ -5,7 +5,7 @@
  <a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
                    href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
    <% c.tasklist.title %></a
- >&nbsp;<% h.link_to('(preferences)', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %></span>
+ ></span>
 <br/>
 
 <& task_list_title.myt &>
@@ -15,6 +15,22 @@
      move_url="<% h.url_for(controller='task', action='move', id='') %>" 
      change_url="<% h.url_for(controller='task', action='change_field', id='') %>" >
 </span>
+
+<span class="small">
+% if h.has_permission('task', 'create', task_listID=c.tasklist.id):
+ <a href="#nevermind" onclick="restoreAddTask(); return false;">add a task</a>
+%
+ &nbsp;
+
+ <% h.link_to('view list preferences', h.url_for(action='show_update', controller='tasklist', id=c.tasklist.id)) %> 
+% if h.has_permission('tasklist', 'destroy', id=c.tasklist.id):
+ &nbsp;
+ <% h.secure_link_to('delete this list', h.url_for(action='destroy', controller='tasklist', id=c.tasklist.id),
+    class_='post-link', confirm_msg='Are you sure you want to delete this tasklist?') %>
+% #endif
+
+</span>
+
 <!-- list headers -->
 
 <table id="tasks" class="task_list" hasReorderableTasks="True">
