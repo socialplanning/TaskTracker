@@ -110,6 +110,10 @@ a.sortarrow:link { /* ??? Delete this? */
 	display: none;
 }
 
+.handle { /* This is the expand/collapse button */
+	cursor: pointer;
+}
+
 /* TASK DETAIL PAGE
 -------------------*/
 	
@@ -243,7 +247,7 @@ table {
 			}
 			
 			tr.task-filter-controls td.title-column:after {
-				content: " Sort by..."
+				content: " Filter by..."
 			}
 
 		td.deadline-column, 
@@ -398,16 +402,19 @@ table {
 	/* background-color: #eee; */
 }
 
-.handle { /* This is where draggable items can be grasped */
-	cursor: move;
-	}
-
 .drop { /* ??? */
 	border-bottom: 2px solid black;
 	padding-bottom: 2px;
 	cursor: pointer;	
 }
-	
+
+.tt-context-tasklist-show .draggable-column-heading {
+  cursor: move;
+}
+
+.tt-context-tasklist-show .draggable-column-heading.title-column {
+  cursor: default;
+}	
 	
 /* ???
 -------------------*/
