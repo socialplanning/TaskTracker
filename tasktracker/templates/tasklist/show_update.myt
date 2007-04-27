@@ -22,28 +22,27 @@
 <% h.text_area('text', rows=10, cols=80) %><br/>
 </div>
 
-<br/>
 
-
-<h2><label for="managers">Managers</label></h2><br/>
-<div id="managers_div" class="unfolded editable">
-<ul>
+<div id="managers-section">
+ <h2>
+  <label for="managers">Managers</label>
+ </h2>
+ <div id="managers_div" class="unfolded editable">
+  <ul>
 % for manager in c.administrators + c.managers:
-     <li> <% manager %> </li>
+   <li> <% manager %> </li>
 %
-</ul>
+  </ul>
+ </div>
+ <div id="edit_managers_div" class="folded">
+  <& _managers.myt &>
+ </div>
 </div>
-<div id="edit_managers_div" class="folded">
 
-<& _managers.myt &>
-</div>
-
-<br/>
-<br/>
 
 <!-- Permissions -->
 <div onclick="show_permissions();" class="editable" id="permissions_section">
-<& _permissions.myt &>
+ <& _permissions.myt &>
 </div>
 
 <script>
@@ -78,60 +77,53 @@ lists.each(function(list_name) {
 
 <!-- Features -->
 
-<h2>Extra Features</h2>
+<div id="features-section">
+ <h2>Extra Features</h2>
 
-<div id="deadlines" class="editable unfolded">
+ <div id="deadlines" class="editable unfolded">
 % if c.feature_deadlines:
     Tasks have deadlines
 % else:
     Tasks do not have deadlines
 %
-  <br/>
-</div>
-<div id="edit_deadlines" class="folded">
+ </div>
+ <div id="edit_deadlines" class="folded">
   <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
-</div>
-
+ </div>
 
 % if c.feature_custom_status:
 This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
 % else:
 Tasks do not have custom statuses. 
 %
-<br/>
 
-<div id="edit_private" class="folded">
-<input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
-</div>
+ <div id="edit_private" class="folded">
+  <input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
+ </div>
 
-<div id="private" class="editable unfolded">
+ <div id="private" class="editable unfolded">
 % if c.feature_private_tasks:
 This list has private tasks.
-<script>
-$('feature_private_tasks').onclick=function() {return confirm('All private tasks will be made public.  Proceed?')};
-</script>
+  <script>$('feature_private_tasks').onclick=function() {return confirm('All private tasks will be made public.  Proceed?')};</script>
 % else:
 This list does not have private tasks.
 %
-<br/>
-</div>
+ </div>
 
-<br/>
-
-<div id="initial_assign" class="unfolded editable">
+ <div id="initial_assign" class="unfolded editable">
     By default, tasks are initially
 % if c.tasklist.initial_assign:
       unassigned 
 % else:
       assigned to the person who created them
 %
-</div>
-<div id="edit_initial_assign" class="folded">
+ </div>
+ <div id="edit_initial_assign" class="folded">
   By default, tasks are initially assigned to:<br/>
   <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
   <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
+ </div>
 </div>
-<br/>
 
 <% h.submit('Submit', onclick='cull_old();') %>
 <% h.submit("Cancel", onclick='window.location.href="%s"; return false;' % h.url_for(controller='tasklist', action='show')) %>
