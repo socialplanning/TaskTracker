@@ -91,12 +91,6 @@ lists.each(function(list_name) {
   <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
  </div>
 
-% if c.feature_custom_status:
-This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
-% else:
-Tasks do not have custom statuses. 
-%
-
  <div id="edit_private" class="folded">
   <input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
  </div>
@@ -123,6 +117,13 @@ This list does not have private tasks.
   <input type="radio" name="initial_assign" value="0" checked="checked"/> The person who created them<br/>
   <input type="radio" name="initial_assign" value="1"/> Unassigned <br/>
  </div>
+
+% if c.feature_custom_status:
+This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
+% else:
+Tasks do not have custom statuses. 
+%
+
 </div>
 
 <% h.submit('Submit', onclick='cull_old();') %>
