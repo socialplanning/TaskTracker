@@ -9,7 +9,12 @@ editable_title = False
 
 </tr>
 
+% if atask.status.done:
+<tr id="second_line_<% atask.id %>" class="second-line completed-task">
+% else:
 <tr id="second_line_<% atask.id %>" class="second-line">
+%
+
 <td colspan="7">
 % if atask.text:
  <div style = "clear:both; margin-left: <% (atask.depth() - c.depth) * 1.5 + 3 %>em; max-width:80em">
