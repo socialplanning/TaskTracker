@@ -22,7 +22,6 @@ from sqlobject import *
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.versioning import Versioning
 from sqlobject.sqlbuilder import *
-from sqlobject.events import *
 from pylons.database import PackageHub
 from pylons import c, g
 from tasktracker.lib.memoize import memoize
@@ -131,6 +130,7 @@ class Task(SQLObject):
     class sqlmeta:
         defaultOrder = 'sort_index'
 
+    num_children = IntCol(default=0)
     children = MultipleJoin("Task", joinColumn='parent_id', orderBy='sort_index')
     comments = MultipleJoin("Comment")
     created = DateTimeCol(default=datetime.datetime.now)
@@ -181,12 +181,38 @@ class Task(SQLObject):
             kwargs['owner'] = c.username
 
         super(Task, self)._create(id, **kwargs)
+        if self.parentID:
+            self.parent.num_children += 1
+
+    def updateParentID(self, value):
+        if not self.live:
+            return
+        if self.parentID:
+            self.parent.num_children -= 1
+        if value:
+            Task.get(value).num_children += 1
+
+    def _set_parentID(self, value):
+        if getattr(self, 'id', None):
+            self.updateParentID(value)
+        self._SO_set_parentID(value)
 
     def _set_live(self, value):
         if getattr(self, 'id', None):
             for task in self.children:
                 task.live = value
+            if self.parentID:
+                if value:
+                    self.parent.num_children += 1
+                else:
+                    self.parent.num_children -= 1
         self._SO_set_live(value)
+
+    def _get_children(self):
+        if self.num_children:
+            return self._SO_get_children()
+        else:
+            return []
 
     def moveToTop(self):
         #top-level case
@@ -648,6 +674,7 @@ class TaskList(SQLObject):
 
 TaskVersion = Task.versions.versionClass
 TaskVersion.getChangedFields = memoize(TaskVersion.getChangedFields)
+
 
 soClasses = [
 Action,
