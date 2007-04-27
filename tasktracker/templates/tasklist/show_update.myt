@@ -25,7 +25,7 @@
 <br/>
 
 
-<label for="managers"><b>Managers:</b></label><br/>
+<h2><label for="managers">Managers</label></h2><br/>
 <div id="managers_div" class="unfolded editable">
 <ul>
 % for manager in c.administrators + c.managers:
@@ -78,9 +78,7 @@ lists.each(function(list_name) {
 
 <!-- Features -->
 
-<br/>
-<b>Extra Features:</b><br/>
-
+<h2>Extra Features</h2>
 
 <div id="deadlines" class="editable unfolded">
 % if c.feature_deadlines:

@@ -1,12 +1,12 @@
 
 <table><tbody><tr valign="top" padding="50px;">
 <td>
-<b><% c.project.title %>'s team members can:</b>
+<h2><% c.project.title %>'s team members can</h2>
 <ul id="member_permissions"></ul>
 </td>
 <td width="20;">&nbsp;</td>
 <td>
-<b>Anyone else can:</b>
+<h2>Anyone else can</h2>
 <ul id="other_permissions"></ul>
 </td>
 </tr></tbody></table>
