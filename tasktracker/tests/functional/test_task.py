@@ -39,16 +39,16 @@ class TestTaskController(TestController):
         task = lists[0].tasks[0]
         authenticator = self._get_authenticator(res)
 
-        assert task.status == 'not done'
+        assert not task.status.done
         res2 = app.post('/task/change_field/%s' % task.id,
                         params={'field':'status', 'status':'true', 'authenticator':authenticator})
-        assert task.status == "done"
+        assert task.status.done
         try:
             res2 = app.post('/task/change_field/%s' % task.id,
                             params={'field':'status', 'status':'__no_such_status__', 'authenticator':authenticator})
         except AssertionError:
             pass
-        assert task.status == "done"
+        assert task.status.done
      
     def test_create_task(self):
         task_listID = TaskList.select()[0].id

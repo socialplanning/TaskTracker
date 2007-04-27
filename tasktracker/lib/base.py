@@ -163,8 +163,6 @@ class BaseController(WSGIController):
 
         action_name = controller + '_' + action_verb
 
-        #print controller, action_name, params
-        #assert controller == 'project' or params.get('id')
         id = params.get('id')
         if not id:
             id = params.get('task_listID')
@@ -173,11 +171,6 @@ class BaseController(WSGIController):
             permissions = c.permission_cache.get(key)
             if permissions:
                 return action_name in permissions
-
-        #key = (action_name, params.get('id'))
-        #cached = c.permission_cache.get(key)
-        #if cached:
-        #    return cached[0]
 
         #special case for creating task lists
         if action_name == 'tasklist_create':
@@ -221,19 +214,12 @@ class BaseController(WSGIController):
             if task.isOwnedBy(params['username']):
                 local_level = Role.getLevel('TaskOwner')
         
-#         tl_permissions = TaskListPermission.select(
-#             AND(TaskListPermission.q.task_listID == task_list.id,
-#                 TaskListPermission.q.actionID == Action.q.id,
-#                 Action.q.action == action_name))
-
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == task_list.id, TaskListPermission.q.min_level >= local_level))
 
-        permissions = set([p.actionName() for p in tl_permissions])
+        permissions = set((p.actionName() for p in tl_permissions))
 
         c.permission_cache[key] = permissions
 
-        #result = tl_permissions[0].min_level >= local_level
-        #c.permission_cache[key] = [result]
         return action_name in permissions
 
     def _initialize_project(self, controller, action_verb, params):

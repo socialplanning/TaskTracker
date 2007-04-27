@@ -79,6 +79,7 @@ class Status(SQLObject):
 
     name = StringCol(length=255)
     task_list = ForeignKey("TaskList")
+    done = BoolCol(default=False)
 
     @classmethod
     def lookup(cls, name, task_list_id):
@@ -177,7 +178,7 @@ class Task(SQLObject):
     priority = StringCol(length=255, default="None")
     private = BoolCol(default=False)
     sort_index = IntCol()
-    status = StringCol(length=255)
+    status = ForeignKey("Status")
     task_list = ForeignKey("TaskList")
     text = StringCol(default="")
     title = StringCol(length=255)
@@ -188,7 +189,6 @@ class Task(SQLObject):
     def set(self, **kwargs):
         kwargs['updated'] = datetime.datetime.now()
         super(Task, self).set(**kwargs)
-
 
     def getWatcher(self, username):
         return Watcher.selectBy(username=username, taskID=self.id)[0]
@@ -205,15 +205,22 @@ class Task(SQLObject):
         if kwargs.get('private'):
             assert 'private_tasks' in [f.name for f in task_list.features]
 
-        if not kwargs.get('status', None):
-            kwargs['status'] = task_list.statuses[0].name
-        assert kwargs['status']
+        if 'statusID' in kwargs:
+            try:
+                kwargs['statusID'] = int(kwargs['statusID'])
+            except ValueError:
+                kwargs['statusID'] = task_list.getStatusByName(kwargs['status']).id
+        else:
+            kwargs['statusID'] = task_list.statuses[0].id
+
+        if 'status' in kwargs:
+            del kwargs['status']
 
         kwargs['sort_index'] = _task_sort_index()
         kwargs.setdefault('parentID', 0)
         kwargs['live'] = True
 
-        if task_list.initial_assign == 0 and not kwargs.get('owner', None):
+        if task_list.initial_assign == 0 and not kwargs.get('owner'):
             kwargs['owner'] = c.username
 
         super(Task, self)._create(id, **kwargs)
@@ -255,7 +262,6 @@ class Task(SQLObject):
 
     def liveChildren(self):
         import tasktracker.lib.helpers as h
-
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
     def liveDescendents(self):
@@ -268,8 +274,8 @@ class Task(SQLObject):
 
     @memoize
     def uncompletedChildren(self):
-        return [c for c in self.liveChildren() if c.status != 'done']
-        
+        return [c for c in self.liveChildren() if not c.status.done]
+
     def uncompletedDescendents(self):
         descendents = []
         children = self.uncompletedChildren()
@@ -561,12 +567,20 @@ class TaskList(SQLObject):
     other_level =  IntCol(default=1)
     member_level =  IntCol(default=1)
 
+    def getDoneStatus(self):
+        return Status.selectBy(done=True, task_listID=self.id)[0]
+
+    def getNotDoneStatus(self):
+        return Status.selectBy(done=False, task_listID=self.id)[0]
+
+    def getStatusByName(self, name):
+        return Status.selectBy(task_listID = self.id, name=name)[0]
+
     def get_updated(self):
         if self.versions.count():
             return self.versions[-1].dateArchived
         else:
             return self.created
-
     updated = property(get_updated)
 
     @memoize
@@ -603,12 +617,12 @@ class TaskList(SQLObject):
     def uncompletedTasks(self):
         import tasktracker.lib.helpers as h
 
-        return [c for c in Task.select(AND(Task.q.status != 'done', Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False, Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
         import tasktracker.lib.helpers as h
         
-        return [c for c in Task.select(AND(Task.q.status == 'done', Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False, Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
 
     def visibleTasks(self):
         import tasktracker.lib.helpers as h
@@ -667,7 +681,7 @@ class TaskList(SQLObject):
         else:
             statuses = ['not done', 'done']
         for status in statuses:
-            Status(name=status, task_list = self.id)
+            Status(name=status, task_list = self.id, done = (status == "done"))
 
         trans.commit()
 
