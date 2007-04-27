@@ -168,13 +168,13 @@ def editableField(task, field, ifNone = None, uneditable = False):
             contents = '--'
 
     if field == 'status':
-        contents = task.status.name
+        contents = task.statusName()
         if not task.task_list.hasFeature('custom_status'):
             checked = False
             if task.status.done:
                 checked = True
         
-            return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", **_checkboxClickjs('status', task.id))
+            return check_box('status', disabled=not editable, checked=checked, id='status_%d' % task.id, class_="low-profile-widget auto-size", onclick='changeField(%d, "status");' % (task.id))
 
     if editable:
         span = """<span id="%s-form_%d" style="display:none">""" % (field, task.id)
@@ -198,8 +198,6 @@ def editableField(task, field, ifNone = None, uneditable = False):
 def _selectjs(field, id):
     return dict(onchange='changeField(%d, "%s");'  % (id, field))
 
-def _checkboxClickjs(field, id): 
-    return dict(onclick='changeField(%d, "%s");'  % (id, field))
 
 def _prioritySelect(task):
     priority = task.priority
@@ -227,8 +225,8 @@ def _statusSelect(task):
             break
         index += 1
 
-    return select('status', options_for_select(status_names, task.status.name), 
-                  method='post', originalvalue=task.status.name,
+    return select('status', options_for_select(status_names, task.statusName()), 
+                  method='post', originalvalue=task.statusName(),
                   id='status_%d' % task.id, class_="low-profile-widget", **_selectjs('status', task.id))
 
 
@@ -506,7 +504,7 @@ def field_last_updated(task, field):
 
 def task_item_tr(task, is_preview, is_flat, editable_title):
     id = task.id
-    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(task.status.name))]
+    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(task.statusName()))]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'updated']:
         tr.append('%s = "%s" ' % (prop, quote(str(getattr(task, prop)))))

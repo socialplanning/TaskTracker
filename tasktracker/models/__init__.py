@@ -149,6 +149,10 @@ class Task(SQLObject):
     updated = DateTimeCol(default=datetime.datetime.now)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
 
+    @memoize
+    def statusName(self):
+        return self.status.name
+
     def set(self, **kwargs):
         kwargs['updated'] = datetime.datetime.now()
         super(Task, self).set(**kwargs)
@@ -578,10 +582,7 @@ class TaskList(SQLObject):
 
     @memoize
     def hasFeature(self, feature_name):
-        for feature in self.features:
-            if feature.name == feature_name:
-                return True
-        return False
+        return TaskListFeature.selectBy(task_listID=self.id, name=feature_name).count() > 0
 
     def topLevelTasks(self):
         import tasktracker.lib.helpers as h
