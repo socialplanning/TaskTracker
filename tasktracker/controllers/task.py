@@ -179,6 +179,7 @@ class TaskController(BaseController):
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")
 
+        ### @@@@@@@ NEED TO DO SHIT HERE - #336 ######
         c.tasklist = TaskList.get(c.task_listID)
         if 'parentID' in request.params:
             c.parentID = request.params['parentID']
@@ -246,7 +247,7 @@ class TaskController(BaseController):
         comment = request.params["text"].strip()
         if not len(comment):
             return Response('')
-        c.task = Task.get(int(id))
+        c.task = self._getTask(id)
         c.comment = Comment(text=comment.replace('\n', "<br>"), user=c.username, task=c.task)
         return Response(c.comment.text)
 
@@ -304,7 +305,10 @@ class TaskController(BaseController):
 
     def _getTask(self, id):
         try:
-            return Task.get(int(id))
+            task = Task.get(int(id))
+            assert task.task_list.project == c.project
+            assert task.live
+            return task
         except LookupError:
             raise NoSuchIdError("No such task ID: %s" % id)
 
@@ -324,8 +328,8 @@ class TaskController(BaseController):
             c.task = Task.versions.versionClass.get(version)
         else:
             c.task = self._getTask(int(id))
-        if not c.task.live:
-            return render_text("This task has been deleted.")
+#        if not c.task.live:
+#            return render_text("This task has been deleted.")
 
         c.parentID = int(id)
         c.tasklist = c.task.task_list

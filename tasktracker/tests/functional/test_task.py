@@ -96,11 +96,20 @@ class TestTaskController(TestController):
         
         ### but the deleted task's subtasks should not remain!
         assert "second level" not in res.body
-        app.get(url_for(controller='task', action='show', id=sub_task.id)).mustcontain("This task has been deleted.")
+        try:
+            res = app.get(url_for(controller='task', action='show', id=sub_task.id))
+            raise Exception("Request for deleted task should have failed!")
+        except AssertionError: pass
+        #assert res.status != 200
+        #.mustcontain("This task has been deleted.")
 
         ### the deleted task shouldn't be available anymore either
-        res = app.get(url_for(controller='task', action='show', id=top_level_task.id))
-        res.mustcontain("This task has been deleted.")
+        try: 
+            res = app.get(url_for(controller='task', action='show', id=top_level_task.id))
+            raise Exception("Request for deleted task should have failed!")
+        except AssertionError: pass
+        #assert res.status != 200
+        #res.mustcontain("This task has been deleted.")
 
         for ob in (tl, top_level_task, sub_task, second_task):
             ob.destroySelf()

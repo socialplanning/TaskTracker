@@ -72,9 +72,9 @@ class TasklistController(BaseController):
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = self._getTaskList(int(id))
-        if not c.tasklist.live:
-            return render_text("Sorry, this tasklist has been deleted.")
-        assert c.tasklist.live # @@ is this necessary? i guess. but let's at least go to a nice error page. - egj
+#        if not c.tasklist.live:
+#            return render_text("Sorry, this tasklist has been deleted.")
+        
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0
@@ -178,7 +178,7 @@ class TasklistController(BaseController):
     @attrs(action='show', readonly=True)
     @catches_errors
     def show_update(self, id, *args, **kwargs):
-        c.tasklist = TaskList.get(id)
+        c.tasklist = self._getTaskList(id)
         c.managers = c.tasklist.managers()
         c.administrators = c.usermapper.project_member_names("ProjectAdmin")
         c.update = True
@@ -214,7 +214,10 @@ class TasklistController(BaseController):
 
     def _getTaskList(self, id):
         try:
-            return TaskList.get(int(id))
+            tl = TaskList.get(int(id))
+            assert tl.project == c.project
+            assert tl.live
+            return tl
         except LookupError:
             raise NoSuchIdError("No such tasklist ID: %s" % id)
 

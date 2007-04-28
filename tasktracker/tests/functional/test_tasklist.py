@@ -64,13 +64,26 @@ class TestTaskListController(TestController):
         form['text'] = 'The new tl body'
         res = form.submit()
 
+        loc = res.header_dict['location']
+        the_id = loc.split("/")[-1]
+
         res = app.get(url_for(controller='tasklist'))
         res.mustcontain("The new tl title")
+        res = app.get(url_for(controller='tasklist', action='show', id=the_id))
+        res.mustcontain("The new tl title")
 
-        res = app.post(url_for(controller='project', action='initialize'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+        res = app.post(url_for(controller='project', action='initialize'),
+                       extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+
         res = app.get(url_for(controller='tasklist'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
         assert "The new tl title" not in res.body
         
+        try:
+            res = app.get(url_for(controller='tasklist', action='show', id=the_id),
+                          extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+            raise Exception("The tasklist is in the wrong project; this request should have failed!")
+        except AssertionError: pass
+
     def test_delete_list(self):
         tl = self.create_tasklist('testing tasklist deletion')
         app = self.getApp("admin")
