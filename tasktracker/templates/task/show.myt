@@ -5,7 +5,7 @@
  <% h.link_to(c.task.task_list.title, h.url_for(controller='tasklist', action='show', id=c.task.task_list.id),
     base_href=h.url_for(controller='tasklist', action='show', id=c.task.task_list.id), id="return_to_tasklist", class_="uses_permalink") %>
  &raquo;
- <a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='tasklist', action='show') %>">
+ <a id="permalink" permalink="<% c.permalink %>" base="" href="<% h.url_for(controller='task', action='show') %>">
   <% c.task.title %>
  </a>
 
