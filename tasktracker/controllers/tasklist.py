@@ -215,8 +215,11 @@ class TasklistController(BaseController):
     def _getTaskList(self, id):
         try:
             tl = TaskList.get(int(id))
-            assert tl.project == c.project
-            assert tl.live
+            assert tl.project == c.project, (
+                "requested list %r doesn't match current project %r"
+                % (tl, c.project))
+            assert tl.live, (
+                "Task %r not live" % tl)
             return tl
         except LookupError:
             raise NoSuchIdError("No such tasklist ID: %s" % id)

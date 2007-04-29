@@ -306,8 +306,11 @@ class TaskController(BaseController):
     def _getTask(self, id):
         try:
             task = Task.get(int(id))
-            assert task.task_list.project == c.project
-            assert task.live
+            assert task.task_list.project == c.project, (
+                "Task %r does not belong to project %r"
+                % (task, c.project))
+            assert task.live, (
+                "Task %r is not live" % task)
             return task
         except LookupError:
             raise NoSuchIdError("No such task ID: %s" % id)
