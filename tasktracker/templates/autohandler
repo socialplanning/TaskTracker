@@ -47,8 +47,11 @@
 Logged in as: <% c.username %>
 <span style="position:absolute;right:2ex;">Project: <% c.project.title %></span>
 </div>
+
+% context_class = "hide-delete-links %s" % (c.contextual_wrapper_class or 'tt-context-none')
+
 <div id="portal-columns" style="position:relative;">
- <div id="oc-tasktracker" class=<% c.contextual_wrapper_class or 'tt-context-none'%> >
+ <div id="oc-tasktracker" class="<% context_class %>">
 % m.call_next()
  </div>
 </div>

@@ -100,6 +100,13 @@ function hasClass(element, classname) {
     return new RegExp('\\b' + classname + '\\b').test(element.className);
 }
 
+function toggleClass(element, classname) {
+    if( hasClass(element, classname) )
+	removeClass(element, classname);
+    else
+	addClass(element, classname);
+}
+
 function len_of(thing) {
     return (thing && thing.length ? thing.length : 0);
 }

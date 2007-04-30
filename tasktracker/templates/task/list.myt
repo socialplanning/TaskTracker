@@ -63,7 +63,7 @@
 <!-- the create setup -->
 
 <div id="add_task_anchor">
- <div class="draggable" id="movable_add_task" parentID="0" siblingID="0" >
+ <div id="movable_add_task" parentID="0" siblingID="0" >
   <div class="handle">
 
 % subtask_link = """<div>[ + ]<a id="add_a_task" href = %s onclick="return false;">add a task</a> </div>""" % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)
@@ -73,7 +73,23 @@
  </div>
 </div>
 
-<hr/>
+<div id="delete_task_anchor">
+ <a href="#delete" id="toggle-delete-tasks-link"
+    onclick='toggleClass($("oc-tasktracker"), "hide-delete-links");
+             toggleClass($("oc-tasktracker"), "show-delete-links");
+    	     toggleDeleteTasks();
+             return false;'>
+  delete tasks
+ </a>
+ <script type="text/javascript">
+  function toggleDeleteTasks() {
+    var anchor = $('toggle-delete-tasks-link');
+    var x = anchor.innerHTML.strip();
+    x = x.match("delete") ? x.replace("delete", "stop deleting") : x.replace("stop deleting", "delete");
+    anchor.innerHTML = x;
+  }
+ </script>
+</div>
 
 <span class="small">
 % if h.has_permission('task', 'create', task_listID=c.tasklist.id):

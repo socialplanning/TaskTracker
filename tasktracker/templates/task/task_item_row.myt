@@ -91,4 +91,10 @@ left) </span>
 
 <% h.generateMovableColumns(atask, is_preview, h.getColumnOrder(c.permalink)) %>
 
+<td class="delete-task-column">
+<% h.secure_link_to('delete', class_='post-link',
+   confirm_msg='Are you sure you want to delete this task?',
+   url=h.url_for(controller='task', action='destroy', id=atask.id)) %>
+</td>
+
 </tr>

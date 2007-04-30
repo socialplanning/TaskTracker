@@ -6,6 +6,7 @@ want_filters=True
  <% h.sortableColumn('status', klass="title-column", colspan=2) %>
 % columnOrder = h.getColumnOrder(c.permalink)
  <% h.generateMovableColumnHeaders(columnOrder) %>
+ <td class="delete-task-column filter-line">&nbsp;</td>
 </tr>
 
 % if want_filters:
@@ -15,6 +16,9 @@ want_filters=True
  </td>
 
  <% h.generateMovableColumnFilters(columnOrder) %>
+
+ <td class="delete-task-column filter-line">&nbsp;</td>
+
 </tr>
 
 <tr class="second-line">
