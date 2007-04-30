@@ -151,7 +151,8 @@ def editableField(task, field, ifNone = None, uneditable = False):
                 claimsteal = 'Steal'
                 pre = task.owner + " " 
             return pre + """<input type="hidden" name="owner_%d" id="owner_%d" value="%s">
-                          <a onclick="changeField(%d, &quot;owner&quot;); return false;">%s this!</a>""" % (task.id, task.id, c.username, task.id, claimsteal)
+                            <input type="hidden" name="authenticator" id="authenticator" value="%s">
+                          <a onclick="changeField(%d, &quot;owner&quot;); return false;">%s this!</a>""" % (task.id, task.id, c.username, session_key(), task.id, claimsteal)
 
 
     out = []
