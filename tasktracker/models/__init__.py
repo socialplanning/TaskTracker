@@ -302,6 +302,8 @@ class Task(SQLObject):
         sortOrder = None
         if options: 
             sql, orderBy, sortOrder = options
+            if orderBy == 'status':
+                orderBy = 'statusID'
         if not sortOrder:
             sortOrder = "ASC"
 
@@ -331,15 +333,22 @@ class Task(SQLObject):
             if adj:
                 adj = adj[0]
             else:
-                #check parent task for prev, or parent sibs for prev/next
+                #check parent task for prev, or ancestor sibs for prev/next
                 if c.task.parentID and is_prev: #parent can only be prev, not next
                         adj = c.task.parent
                 else:
-                    adj = list(Task.select(AND(query, predicate, Task.q.parentID == c.task.parentID)).orderBy(order).limit(1))
-                    if adj:
-                        adj = adj[0]
-                    else:
-                        adj = None
+                    #ascend ancestor tree
+                    cur_taskID = c.task.parentID
+                    while 1:
+                        adj = list(Task.select(AND(query, predicate, Task.q.parentID == cur_taskID)).orderBy(order).limit(1))
+                        if adj:
+                            adj = adj[0]
+                            break
+                        else:
+                            adj = None
+                            if cur_taskID == 0:
+                                break
+                            cur_taskID = Task.get(cur_taskID).parentID
 
             if not adj and is_prev:
                 tasks.append(None)
