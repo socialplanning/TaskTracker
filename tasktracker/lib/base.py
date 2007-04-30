@@ -300,12 +300,11 @@ class BaseController(WSGIController):
 
         c.user_info = environ.get('topp.user_info', None)
         c.project_permission_level = environ.get('topp.project_permission_level', None)
+        c.usermapper = environ['topp.project_members']
 
         if c.project_permission_level == 'closed_policy':
-            if not c.username:
+            if not c.username in c.usermapper.project_member_names():
                 return False
-
-        c.usermapper = environ['topp.project_members']
 
         func = getattr(self, action)
         if not getattr(func, 'action', None):

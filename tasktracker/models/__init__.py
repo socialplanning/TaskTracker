@@ -149,6 +149,25 @@ class Task(SQLObject):
     updated = DateTimeCol(default=datetime.datetime.now)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
 
+#fixme: make this work
+#     @classmethod
+#     def get(cls, id):
+#         print "HERE"
+#         try:
+#             task = super(Task, cls).get(int(id))
+#             assert task.task_list.project == c.project, (
+#                 "requested list %r doesn't match current project %r"
+#                 % (tl, c.project))
+#             assert task.live, (
+#                 "Tasklist %r not live" % tl)
+#             return task
+#         except Exception, e:
+#             print e
+#         #except (LookupError, AssertionError):
+#         #    if request.environ.get("HTTP_REFERER"):
+#         #        raise
+#         #    raise httpexceptions.HTTPNotFound("Task %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
+
     @memoize
     def statusName(self):
         return self.status.name
