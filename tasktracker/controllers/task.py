@@ -101,7 +101,6 @@ class TaskController(BaseController):
 
         elif field == "owner":
             assert _assignment_permitted(newfield)
-            assert newfield in c.usermapper.project_member_names()  ## @@ Why is this necessary????? - egj
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)

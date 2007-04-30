@@ -50,6 +50,33 @@ class TestTaskController(TestController):
             pass
         assert task.status.done
      
+
+    def test_anyone_claim(self):
+        app = self.getApp('admin')
+
+        res = app.get(url_for(controller='tasklist', action='show_create'))
+                    
+        form = res.forms[0]
+            
+        form['title'] = 'anyone_claim'
+        class level(object):
+            def __init__(self, level):
+                self.value = level
+                    
+        form.fields['member_level'] = [level(3)]
+        form.fields['other_level'] = [level(2)]
+                    
+        res = form.submit()
+        location = res.header_dict['location']
+        the_id = location.split("/")[-1]  
+        Task(title='a task to claim', task_listID = the_id, text = '')
+
+        #now as auth
+        app = self.getApp('auth')
+        res = app.get(url_for(controller='tasklist', action='show', id=the_id))
+        res.mustcontain('Claim this')
+
+
     def test_create_task(self):
         task_listID = TaskList.select()[0].id
         app = self.getApp('admin')
