@@ -197,6 +197,7 @@ class BaseController(WSGIController):
 
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
+
         if callable(action_verb):
             action_verb = action_verb(params)
 
@@ -287,13 +288,17 @@ class BaseController(WSGIController):
         redirect_to(controller='project', action='show_uninitialized', id = c.project.id) # @@ ugh -egj
         
     def _authorize(self, project, action, params):
+
         controller = params['controller']
+
         if controller == 'error':
             return True
         environ = request.environ
 
         role_name = _getRole(environ)
+
         role = Role.selectBy(name=role_name)
+
         if not role.count():
             raise Exception("No such role %s" % role_name)
         c.level = role[0].level
@@ -301,7 +306,6 @@ class BaseController(WSGIController):
         c.user_info = environ.get('topp.user_info', None)
         c.project_permission_level = environ.get('topp.project_permission_level', None)
         c.usermapper = environ['topp.project_members']
-
         if c.project_permission_level == 'closed_policy':
             if not c.username in c.usermapper.project_member_names():
                 return False
@@ -326,7 +330,7 @@ class BaseController(WSGIController):
 
         #methods can override controllers (but should do so rarely)
         controller = getattr(func, 'controller', controller)
-        
+
         #A few special cases follow, with the general permission case at the end.
 
         if callable(action_verb):  #TODO: this isn't a good solution!
@@ -346,6 +350,7 @@ class BaseController(WSGIController):
 
         params = dict(params)
         params.update(request.params)
+
         return self._has_permission(controller, action_verb, params)
 
 

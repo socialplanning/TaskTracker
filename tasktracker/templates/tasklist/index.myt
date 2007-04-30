@@ -44,7 +44,7 @@
 <p>Create, manage, and share to-do lists.</p>
 
 % if h.has_permission('tasklist', 'show_create'): 
-<div id="create-a-new-list">
+<div id="add_list">
 <% h.link_to ('Create a new list', h.url_for(action='show_create')) %>
 </div>
 %
