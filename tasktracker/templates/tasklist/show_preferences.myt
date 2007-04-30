@@ -78,7 +78,6 @@ This list does not have private tasks.
 
  <div id="initial_assign">
 By default, tasks are initially
-    By default, tasks are initially
 % if c.tasklist.initial_assign:
       unassigned 
 % else:
