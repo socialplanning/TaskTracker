@@ -22,6 +22,8 @@ from tasktracker.lib.base import *
 from tasktracker.models import *
 from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML
 
+from paste import httpexceptions
+
 import formencode  
 
 class CreateListForm(formencode.Schema): 
@@ -224,7 +226,7 @@ class TasklistController(BaseController):
         except (LookupError, AssertionError):
             if request.environ.get("HTTP_REFERER"):
                 raise
-            raise paste.httpexceptions.HTTPNotFound("Tasklist %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
+            raise httpexceptions.HTTPNotFound("Tasklist %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
 
     @authenticate
     @attrs(action='delete', readonly=False)

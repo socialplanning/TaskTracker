@@ -21,6 +21,8 @@
 from tasktracker.lib.base import *
 from tasktracker.models import *
 
+from paste import httpexceptions
+
 from tasktracker.lib import helpers as h
 import formencode
 from formencode.validators import *
@@ -316,7 +318,7 @@ class TaskController(BaseController):
         except (LookupError, AssertionError):
             if request.environ.get("HTTP_REFERER"):
                 raise
-            raise paste.httpexceptions.HTTPNotFound("Task %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
+            raise httpexceptions.HTTPNotFound("Task %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
 
     @attrs(action='private', readonly=False)
     def revertToDate(self, id):
