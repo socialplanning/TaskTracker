@@ -196,7 +196,7 @@
 	cursor: pointer;
 }
 
-	#oc-tasktracker .editable:hover
+	#oc-tasktracker .editable:hover,
 	#oc-tasktracker .editable.hover {
 		background: #ffc;
 		border: none;
