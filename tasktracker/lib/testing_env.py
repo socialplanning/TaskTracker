@@ -63,7 +63,7 @@ class TestingEnv(object):
                 environ['topp.user_info']['roles'] = ['Authenticated']
             if username == 'anon':
                 environ['topp.user_info']['roles'] = ['Anonymous']
-
+                environ['REMOTE_USER'] = ''
             return True
 
         except KeyError:
