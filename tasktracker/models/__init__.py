@@ -315,11 +315,12 @@ class Task(SQLObject):
             query = AND(query, OR(Task.q.private == 0, Task.q.owner == user))
         
         attr = getattr(c.task, orderBy)
-        next_predicate = (getattr(Task.q, orderBy) > attr, "ASC")
-        prev_predicate = (getattr(Task.q, orderBy) < attr, "DESC")
+        next_predicate_fn = lambda attr: (getattr(Task.q, orderBy) > attr, "ASC")
+        prev_predicate_fn = lambda attr: (getattr(Task.q, orderBy) < attr, "DESC")
         if sortOrder == "DESC":
-            next_predicate, prev_predicate = prev_predicate, next_predicate
+            next_predicate_fn, prev_predicate_fn = prev_predicate_fn, next_predicate_fn
         
+        prev_predicate, next_predicate = prev_predicate_fn(attr), next_predicate_fn(attr)
         tasks = []
         for predicate, sortOrder in [prev_predicate, next_predicate]:
             is_prev = bool(id(predicate) == id(prev_predicate[0]))
@@ -334,21 +335,26 @@ class Task(SQLObject):
                 adj = adj[0]
             else:
                 #check parent task for prev, or ancestor sibs for prev/next
-                if c.task.parentID and is_prev: #parent can only be prev, not next
-                        adj = c.task.parent
-                else:
-                    #ascend ancestor tree
-                    cur_taskID = c.task.parentID
-                    while 1:
-                        adj = list(Task.select(AND(query, predicate, Task.q.parentID == cur_taskID)).orderBy(order).limit(1))
-                        if adj:
-                            adj = adj[0]
-                            break
-                        else:
-                            adj = None
-                            if cur_taskID == 0:
+                if c.task.parentID:
+                    if is_prev: #parent can only be prev, not next
+                            adj = c.task.parent
+                    else:
+                        #ascend ancestor tree
+                        prev_task = c.task.parent
+                        cur_taskID = prev_task.parentID
+                        predicate_fn = [prev_predicate_fn, next_predicate_fn][int(not is_prev)]
+                        while 1:
+                            local_predicate, local_order = predicate_fn(getattr(prev_task, orderBy))
+                            adj = list(Task.select(AND(query, local_predicate, Task.q.parentID == cur_taskID)).orderBy(order).limit(1))
+                            if adj:
+                                adj = adj[0]
                                 break
-                            cur_taskID = Task.get(cur_taskID).parentID
+                            else:
+                                adj = None
+                                if cur_taskID == 0:
+                                    break
+                                prev_task = Task.get(cur_taskID)
+                                cur_taskID = prev_task.parentID
 
             if not adj and is_prev:
                 tasks.append(None)
@@ -377,8 +383,8 @@ class Task(SQLObject):
                 #check if next is child of this task
                 child = search_children(c.task, recursive=False)
                 if child == c.task:
-                    #next is (maybe child of) some sib of this task
-                    child = search_children(adj)
+                    #found no children -- whatever we computed earlier must be right
+                    child = adj
             tasks.append(child)
 
         return tasks
