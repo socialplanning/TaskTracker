@@ -100,6 +100,7 @@ class TaskController(BaseController):
 
         elif field == "owner":
             assert _assignment_permitted(newfield)
+            if newfield == "--": newfield = None
 
         # find out if the old taskrow wants us to render its replacement a particular way
         is_preview = self.form_result.get('is_preview', None)

@@ -232,10 +232,12 @@ def _statusSelect(task):
 
 
 def _ownerInput(task):
-    orig = task.owner    
+    orig = task.owner or '--'
     id = task.id
     owner_names = sorted(c.usermapper.project_member_names(), key=str.lower)
-    return select("owner", options_for_select(owner_names, orig),
+    names = ['--']
+    names.extend(owner_names)
+    return select("owner", options_for_select(names, orig),
                   method="post", originalvalue=orig,
                   id="owner_%d" % id, class_="low-profile-widget", **_selectjs('owner', id))
 
