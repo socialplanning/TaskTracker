@@ -78,11 +78,8 @@ class TestTaskListController(TestController):
         res = app.get(url_for(controller='tasklist'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
         assert "The new tl title" not in res.body
         
-        try:
-            res = app.get(url_for(controller='tasklist', action='show', id=the_id),
-                          extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
-            raise Exception("The tasklist is in the wrong project; this request should have failed!")
-        except AssertionError: pass
+        res = app.get(url_for(controller='tasklist', action='show', id=the_id),
+                      extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"}, status=404)
 
     def test_delete_list(self):
         tl = self.create_tasklist('testing tasklist deletion')
