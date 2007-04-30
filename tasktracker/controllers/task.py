@@ -179,8 +179,8 @@ class TaskController(BaseController):
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")
 
-        ### @@@@@@@ NEED TO DO SHIT HERE - #336 ######
         c.tasklist = TaskList.get(c.task_listID)
+        assert c.tasklist.project == c.project
         if 'parentID' in request.params:
             c.parentID = request.params['parentID']
         else:
@@ -216,6 +216,8 @@ class TaskController(BaseController):
             p['parentID'] = 0
         siblingID = p['siblingID']
         del p['siblingID']
+
+        assert TaskList.get(p['task_listID']).project == c.project
         c.task = Task(**p)
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
