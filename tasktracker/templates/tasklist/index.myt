@@ -1,44 +1,3 @@
-<h1 class="documentFirstHeading">All task lists for <% c.project.title %></h1>
-<p>Create, manage, and share to-do lists.</p>
-
-% if h.has_permission('tasklist', 'show_create'): 
-<p>
-<% h.link_to ('Create a new list', h.url_for(action='show_create')) %>
-</p>
-%
-
-<div id="active-tasklists">
-% undone_tasklists = [list for list in c.tasklists if len(list.uncompletedTasks())]
-% if len(undone_tasklists):
-<h2>Active Task Lists</h2>
-<ul>
-% for list in undone_tasklists:
- <li>
-  <a href="<%h.url_for(action='show', id=list.id)%>">
-   <% list.title %>
-  </a> - <span class="small"><% len(list.uncompletedTasks()) %> uncompleted tasks</span>
- </li>
-%
-</ul>
-%
-</div>
-
-<div id="completed-tasklists">
-% done_tasklists = [list for list in c.tasklists if not len(list.uncompletedTasks())]
-% if len(done_tasklists):
-<h2>Completed Task Lists</h2>
-<ul>
-% for list in done_tasklists:
- <li>
-  <a href="<%h.url_for(action='show', id=list.id)%>">
-   <% list.title %>
-  </a>
- </li>
-%
-</ul>
-%
-</div>
-
 <div class="sbar">
 
 <div id="tt-about">
@@ -79,4 +38,45 @@
 
 </div><!-- end glossary -->
 
+</div>
+
+<h1 class="documentFirstHeading">All task lists for <% c.project.title %></h1>
+<p>Create, manage, and share to-do lists.</p>
+
+% if h.has_permission('tasklist', 'show_create'): 
+<p>
+<% h.link_to ('Create a new list', h.url_for(action='show_create')) %>
+</p>
+%
+
+<div id="active-tasklists">
+% undone_tasklists = [list for list in c.tasklists if len(list.uncompletedTasks())]
+% if len(undone_tasklists):
+<h2>Active Task Lists</h2>
+<ul>
+% for list in undone_tasklists:
+ <li>
+  <a href="<%h.url_for(action='show', id=list.id)%>">
+   <% list.title %>
+  </a> - <span class="small"><% len(list.uncompletedTasks()) %> uncompleted tasks</span>
+ </li>
+%
+</ul>
+%
+</div>
+
+<div id="completed-tasklists">
+% done_tasklists = [list for list in c.tasklists if not len(list.uncompletedTasks())]
+% if len(done_tasklists):
+<h2>Completed Task Lists</h2>
+<ul>
+% for list in done_tasklists:
+ <li>
+  <a href="<%h.url_for(action='show', id=list.id)%>">
+   <% list.title %>
+  </a>
+ </li>
+%
+</ul>
+%
 </div>
