@@ -129,12 +129,6 @@ class CookieAuth(object):
                                              roles = ['Authenticated'],
                                              email = '%s@example.com' % username)
 
-            #these are needed for tests @@ uh, no they're not
-            if username == 'admin':
-                environ['topp.user_info']['roles'] = ['ProjectAdmin']
-            if username == 'auth':
-                environ['topp.user_info']['roles'] = ['Authenticated']
-
             return True
 
         except KeyError:
