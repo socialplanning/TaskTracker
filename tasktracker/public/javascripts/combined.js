@@ -4441,6 +4441,13 @@ function hasClass(element, classname) {
     return new RegExp('\\b' + classname + '\\b').test(element.className);
 }
 
+function toggleClass(element, classname) {
+    if( hasClass(element, classname) )
+	removeClass(element, classname);
+    else
+	addClass(element, classname);
+}
+
 function len_of(thing) {
     return (thing && thing.length ? thing.length : 0);
 }
@@ -4825,13 +4832,6 @@ var myrules = {
 	    }
 	}
     },
-
-    'a#add_a_task' : function(element) {
-	element.doclick = function() {
-	    showTaskCreate();
-	    return false;
-	}
-    },
     'img.treewidget' : function(element) {
 	element.doclick = function() {
 	    toggleCollapse(element.id.replace("handle_", ""));
@@ -5051,14 +5051,15 @@ function filterField(fieldname, task) {
     }
 			
     var filtervalue = $(fieldname + '_filter').value.replace(' ', '%20');
+
     if( filtervalue == 'All' ) {
 	return false;
     }
-    console.log(task.getAttribute(fieldname));
-    if( task.getAttribute(fieldname) != filtervalue ) {
-	return true;
+    if( fieldname == "status" && filtervalue == "All%20Uncompleted" ) {
+	return( task.getAttribute(fieldname) == "done" );
     }
     
+    return( task.getAttribute(fieldname) != filtervalue );    
 }
 
 function filterNodeByAllFields(node) {

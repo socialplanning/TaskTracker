@@ -2,15 +2,25 @@
 
 #oc-tasktracker {
   margin: 0 2em 0.5em;
-}
-
-#oc-tasktracker.tt-context-tasklist-index ul {
-  list-style-type: none;
-  list-style-image: none;
+  font-size: 1em;
 }
 
 #oc-tasktracker br {
 	display: none;
+}
+
+	#oc-tasktracker.tt-context-tasklist-create br,
+	#oc-tasktracker.tt-context-tasklist-preferences br {
+		display: block;
+		margin-top: 0.25em;
+	}
+
+#oc-tasktracker input {
+	text-transform: lowercase;
+}
+
+#oc-tasktracker textarea {
+	display: block;
 }
 
 #oc-tasktracker h1 {
@@ -19,12 +29,11 @@
 	display: block !important;
 }
 
-#task-list-description {
+#oc-tasktracker  #task-list-description {
 	margin-bottom: 1em;
-	font-size: 0.833em;
 }
 
-.low-profile-widget {
+#oc-tasktracker  .low-profile-widget {
 	display: block;
 	width: 100%;
 	background: none;
@@ -35,443 +44,617 @@
 	background-color: #eee; 
 }
 
-	input.low-profile-widget {
+	#oc-tasktracker  input.low-profile-widget {
 		font-style: italic;
 	}
 	
-	select.low-profile-widget:focus {
+	#oc-tasktracker  select.low-profile-widget:focus {
 		height: 1em;
 		font-size: 1em;
 	}
 
-input#title { /* ??? */
+#oc-tasktracker  input#title { /* ??? */
 	width: 50%;
 }
 
-input.auto-size {
+#oc-tasktracker  input.auto-size {
 	width: auto;
 	height: auto;
 }
 
-.error-message { /* ??? */
+#oc-tasktracker  .error-message { /* ??? */
      border: 1px black dashed;
      color: #f00;
      font-weight: bold;
 }
 
-a.sortarrow:visited,
-a.sortarrow:link { /* ??? Delete this? */
+#oc-tasktracker a.sortarrow:visited,
+#oc-tasktracker  a.sortarrow:link { /* ??? Delete this? */
 	text-decoration: none;
 	color: #00f;
 }
 
-.row-heading { /* ??? */
+#oc-tasktracker  .row-heading { /* ??? */
     font-weight: bold;
 }
 
-.create_section { 
+#oc-tasktracker  .create_section { 
 	padding: 0;
 }
 
-.task_cell {
+#oc-tasktracker  .task_cell {
   text-align: left;
 }
 
-.help {
+#oc-tasktracker  .help {
 	cursor: help;
 }
 
-.help_text {
+#oc-tasktracker  .help_text {
 	 background-color: #eee;
 	 border: 1px solid black;
 	 position: absolute;
 }
 
-.undecorated_list {
+#oc-tasktracker  .undecorated_list {
 	 list-style-type: none;
 	 list-style-image: none; 
 	 padding-left: 0;
 }
 
-.unselected-permission {
-	color: #ccc;
-}
-
-.selected-permission {
-	color: #333;
-}
-
-.disabled-permission {
-}
-
-	.disabled-permission input{
-		visibility: hidden;
-	}
-
-.folded {
+#oc-tasktracker .folded {
 	display: none;
-}
-
-.handle { /* This is the expand/collapse button */
-	cursor: pointer;
 }
 
 /* TASK DETAIL PAGE
 -------------------*/
 	
-#wrap-task-details {
+#oc-tasktracker #wrap-task-details {
 	padding-top: 5px;
 }
 
-	table.task_list#task-show-active-task {
+	#oc-tasktracker table.task_list#task-show-active-task {
 	}
 	
-		table.task_list#task-show-active-task #column-heading {
-			font-size: 0.833em;
+		#oc-tasktracker table.task_list#task-show-active-task #column-heading {
+			font-size: 0.95em;
 		}
 		
-		table.task_list#task-show-active-task .title-column span.editable {
+		#oc-tasktracker table.task_list#task-show-active-task .title-column span.editable {
 			font-weight: bold;
 			font-size: 1.5em;
 		}
 
-	#task-show-task-description {
+	#oc-tasktracker #task-show-task-description {
 		margin: 1em 0;
 	}
 	
-	#activity-table {
+	#oc-tasktracker #activity-table {
 		border-spacing: 0;
 		text-align: left;
 		width: 100%;
 	}	
 
-		td.task-detail-mainbar {
+		#oc-tasktracker td.task-detail-mainbar {
 		}
 		
-			td.task-detail-mainbar textarea {
+			#oc-tasktracker td.task-detail-mainbar textarea {
 				display: block;
 			}
 		
-			.activity_list {
+			#oc-tasktracker .activity_list {
 				list-style: none;
 				padding: 0; margin: 0;
 				padding-left: 2em;
 			}
 
-				.activity_list li,
-				td.task-detail-mainbar ul li {
+				#oc-tasktracker .activity_list li,
+				#oc-tasktracker td.task-detail-mainbar ul li {
 					overflow: hidden;
 					padding: 0.25em; 
 					margin: 0;
 				}
 				
-				.activity_list hr {
+				#oc-tasktracker .activity_list hr {
 						padding: 0;
 						margin: 0;
-						visibility: hidden;
+						background-color: transparent;
+						border-bottom: 1px dotted #eee;
 				}
 			
-			#activity-insert {
+			#oc-tasktracker #activity-insert {
 				background-color: #eee;
 				padding: 3px;
 				text-align: center;
 			}
 
-	.child_tasks {
+	#oc-tasktracker .child_tasks {
 		padding-left: 25px;
 		padding-top: 5px;
 	}
 	
-	#subtasks,
-	#edit_subtasks,
-	#create_section {
+	#oc-tasktracker #subtasks,
+	#oc-tasktracker #edit_subtasks,
+	#oc-tasktracker #create_section {
 		margin: 1em 0;
 	}
 	
-		#show_create a {
+		#oc-tasktracker #show_create a {
 			padding-left: 1em;
 		}
 			
-	.tt-context-task-show .post-link {
+	#oc-tasktracker.tt-context-task-show .post-link {
 		margin: 1em 0;
 		display: block;
 	}
-	
-/* TASK LIST Stuff
--------------------*/
-
-table {
-	border-collapse: collapse;
-}
-
-	table#next-prev-tasks {
-		background-color: #eee;
-		width: 100%;
-		margin-top: 1em;
-		font-size: 0.833em;
-		padding: 0.25em;
-	}
-	
-		table#next-prev-tasks td {
-			width: 50%;
-		}
-		
-	table.all_tasks {
-		width: 100%;
-	}
-
-	table.task_list {
-		width: 100%;
-	}
-
-		tr.column-heading {
-			background-color: #ddd;
-		}
-		
-			tr.column-heading th {
-				text-transform: capitalize;
-				padding-right: 1.5em;
-				white-space: nowrap;
-			}
-		
-			th.title-column {
-				column-span: 2;
-			}
-			
-		tr.task-filter-controls {
-			background-color: #eee;
-			font-size: 0.833em;
-		}
-		
-			.filter-line select {
-				width: 6em;
-				font-size: 100%;
-			}
-			
-			tr.task-filter-controls td.title-column:after {
-				content: " Filter by..."
-			}
-
-		td.deadline-column, 
-		td.owner-column, 
-		td.updated-column, 
-		td.priority-column, 
-		td.status-column,
-		td.title-column,
-		td.custom-status { 
-			border-bottom: 1px dotted #eee;
-			white-space: nowrap;
-		}
-
-		td.status-column {
-			width: 1em;
-		}
-		
-			td.status-column input {
-				margin: 0.125em;
-				margin-left: 0.5em;
-			}
-
-		td.title-column {
-			width: auto;
-		}
-		
-			.taskitem {
-			}
-			
-				.taskitem .small {
-					font-size: 0.833em
-				}
-				
-		td.deadline-column, 
-		td.owner-column, 
-		td.updated-column, 
-		td.priority-column,
-		td.custom-status {
-			width: 10em;			
-		}
-		
-		tr.taskrow,
-		tr.second-line {
-
-		}
-		
-			tr.taskrow td {
-			}
-		
-			tr.second-line td {
-				text-decoration: none;
-				padding-top: 0.125em;
-				padding-left: 1em;
-				font-size: 0.833em;
-			}
-			
-		.completed-task {
-			color: gray;
-			background-color: #f9f9f9;
-		}
-		
-			.completed-task td.deadline-column, 
-			.completed-task td.owner-column, 
-			.completed-task td.updated-column, 
-			.completed-task td.priority-column, 
-			.completed-task td.custom-status {
-				text-decoration: line-through;
-			}
-			
-				.completed-task td.status-column {
-				}
-		
-					.completed-task td.title-column a,
-					span.completed-task {
-						text-decoration: line-through;
-					}
-		
-			.second-line .completed-task {
-				display: none;
-			}
-			
-		.uncompleted-task,
-		.command {
-			cursor: pointer;
-			text-decoration: underline;
-			color: #256e81;
-		}
 
 /* EDITABLE Stuff
 -------------------*/
 
-.editable,
-.task_list .editable {
+#oc-tasktracker .editable,
+#oc-tasktracker .task_list .editable {
 	border-bottom: 1px dotted #256e81;
 	padding: 0.25em;
 	cursor: pointer;
 }
 
-	.editable:hover {
+	#oc-tasktracker .editable:hover
+	#oc-tasktracker .editable.hover {
 		background: #ffc;
 		border: none;
 	}
 
 
-	.tt-context-task-show #task-show-task-description .editable {
+	#oc-tasktracker.tt-context-task-show #task-show-task-description .editable {
 		display: block;
 		padding: 0.5em;
 		border: 1px dotted #256e81;
 	}
 
-		.tt-context-task-show #task-show-task-description .editable:hover {
+		#oc-tasktracker.tt-context-task-show #task-show-task-description .editable:hover,
+		#oc-tasktracker #permissions_section.editable:hover,
+		#oc-tasktracker.tt-context-task-show #task-show-task-description .editable.hover,
+		#oc-tasktracker #permissions_section.editable.hover {
 			border: 1px solid #eee;
 			background: #ffc;
 		}
+
+	#oc-tasktracker.tt-context-tasklist-update .editable {
+		border: none;
+	}
 	
+		#oc-tasktracker.tt-context-tasklist-update #text.editable {
+			display: block;
+			padding: 0.5em;
+			margin: 1em 0;
+			border: 1px dotted #256e81;
+		}
+	
+			#oc-tasktracker.tt-context-tasklist-update #text.editable:hover,
+			#oc-tasktracker.tt-context-tasklist-update #text.editable.hover {
+				border: 1px solid #eee;
+				background: #ffc;
+			}
+		
 
 /* BOXY WIDGET THINGS
 -------------------*/
 
-#add_task_form, /* "Add task" box on tt-context-task-show and tt-context-tasklist-show */
-#add_comment_form  /* "Add comment" box on tt-context-task-show */
-{
+#oc-tasktracker #add_comment_form,  /* "Add comment" box on tt-context-task-show */
+#oc-tasktracker #managers-section,
+#oc-tasktracker #permissions_section,
+#oc-tasktracker  #features-section,
+/* #oc-tasktracker.tt-context-tasklist-preferences table, */
+#oc-tasktracker  #create_section, /* "Add task" box on tt-context-task-show and tt-context-tasklist-show */
+/* #oc-tasktracker #add_task_form, */ 
+#oc-tasktracker #comment {
+	display: block;
 	background-color: #eee;
 	padding: 1em;
+	margin: 0.5em 0;
 	border: 1px solid #ddd;
 }
 
-	#add_task_form  #hideable_title_label {
+
+	#oc-tasktracker #add_task_form  #hideable_title_label {
 		display: block;
 		margin-top: 1em;
 	}
 
-	#add_task_form #show_description,
-	#add_task_form #hide_description {
+	#oc-tasktracker #add_task_form #show_description,
+	#oc-tasktracker #add_task_form #hide_description {
 		text-transform: lowercase;
 		margin-bottom: 1em;
 		display: block;
 	}
+	
+	#oc-tasktracker #comment:before,
+	#oc-tasktracker.tt-context-tasklist-index #add_list:before {
+		content: "[ + ] ";
+	}
+
+/* TASKLIST INDEX
+------------------- */
+
+#oc-tasktracker.tt-context-tasklist-index .sbar {
+	width: 47%;
+	float: right;
+	clear: left;
+}
+
+	#oc-tasktracker.tt-context-tasklist-index .sbar #tt-about,	
+	#oc-tasktracker.tt-context-tasklist-index .sbar #tt-glossary {
+		margin: 0 0 1em;
+		padding: 1em;
+		background-color: #eee;
+		border: 1px solid #ddd;
+	}
+	
+	#oc-tasktracker.tt-context-tasklist-index .sbar ul {
+		list-style-image: inherit;
+		list-style-type: square;
+		margin-left: 1em;
+		color: #333;
+	}
+	
+#oc-tasktracker.tt-context-tasklist-index h1 {
+	font-size: 2em;
+}
+
+#oc-tasktracker.tt-context-tasklist-index ul {
+  list-style-type: none;
+  list-style-image: none;
+}
+
+#oc-tasktracker.tt-context-tasklist-index #add_list,
+#oc-tasktracker.tt-context-tasklist-index #active-tasklists,
+#oc-tasktracker.tt-context-tasklist-index #completed-tasklists {
+	display: block;
+	width: 47%;
+	border: 1px solid #ddd;
+	padding: 1em;
+	margin: 1em 0;
+}
+
+	#oc-tasktracker.tt-context-tasklist-index #add_list {
+		background: #eee;
+	}
+	
+	#oc-tasktracker.tt-context-tasklist-index #active-tasklists {
+		background: #ffc;
+	}
+	
+	#oc-tasktracker.tt-context-tasklist-index #completed-tasklists ul,
+	#oc-tasktracker.tt-context-tasklist-index #completed-tasklists ul a {
+		color: gray;
+	}
+
+/* TASKLIST PREFS and CREATE NEW TASKLIST
+------------------- */
+
+#oc-tasktracker.tt-context-tasklist-update h1 {
+	font-size: 2em;
+}
+
+#oc-task-tracker.tt-context-tasklist-preferences #text {
+	margin: 1em 0;
+	display: block
+}
+
+#oc-tasktracker #edit_text, #edit_text textarea {
+	width: 100%;
+	font-family: inherit;
+	line-height: 1.5em;
+}
+
+#oc-tasktracker #managers_div ul,
+#oc-tasktracker  #edit_managers_div ul,
+#oc-tasktracker.tt-context-tasklist-create #managers-section ul,
+#oc-tasktracker #managers-section ul,
+#oc-tasktracker  #permissions_section ul {
+	list-style-type: none;
+	list-style-image: none;
+}
+
+#oc-tasktracker #edit_initial_assign {
+	margin: 1em 0;
+}
+
+	#oc-tasktracker #edit_initial_assign br {
+		display: block;
+	}
+
+#oc-tasktracker #permissions_section {
+/* See BOXY WIDGET THINGS */
+}
+
+	#oc-tasktracker  .unselected-permission {
+		color: #999;
+	}
+	
+	#oc-tasktracker  .selected-permission {
+		color: #000;
+	}
+	
+	#oc-tasktracker  .disabled-permission {
+	}
+	
+		#oc-tasktracker .disabled-permission input{
+			visibility: hidden;
+		}
+
+#oc-tasktracker #member_permissions ul li,
+#oc-tasktracker #other_permissions ul li {
+	font-weight: normal;
+	margin: 0;
+}
+
+#oc-tasktracker.tt-context-tasklist-preferences #managers-section,
+#oc-tasktracker.tt-context-tasklist-preferences #permissions_section,
+#oc-tasktracker.tt-context-tasklist-preferences #features-section {
+	background: none;
+}
+
+	#oc-tasktracker.tt-context-tasklist-preferences #features-section div {
+		margin-bottom: 1em;
+	}
+
+
+/* TASK LIST Stuff
+-------------------*/
+
+#oc-tasktracker table {
+	border-collapse: collapse;
+}
+
+	#oc-tasktracker table#next-prev-tasks {
+		background-color: #eee;
+		width: 100%;
+		margin-top: 1em;
+		font-size: 0.95em;
+		padding: 0.25em;
+	}
+	
+		#oc-tasktracker table#next-prev-tasks td {
+			width: 50%;
+		}
+		
+	#oc-tasktracker table.all_tasks {
+		width: 100%;
+	}
+
+	#oc-tasktracker table.task_list {
+		width: 100%;
+		margin-top: 1em;
+	}
+
+		#oc-tasktracker tr.column-heading {
+			background-color: #ddd;
+		}
+		
+			#oc-tasktracker tr.column-heading th {
+				text-transform: capitalize;
+				padding-right: 1.5em;
+				white-space: nowrap;
+			}
+		
+			#oc-tasktracker th.title-column {
+				column-span: 2;
+			}
+			
+		#oc-tasktracker tr.task-filter-controls {
+			background-color: #eee;
+			font-size: 0.95em;
+		}
+		
+			#oc-tasktracker .filter-line select {
+				width: 6em;
+				font-size: 100%;
+			}
+			
+			#oc-tasktracker tr.task-filter-controls td.title-column:after {
+				content: " Filter by..."
+			}
+
+		#oc-tasktracker td.deadline-column, 
+		#oc-tasktracker td.owner-column, 
+		#oc-tasktracker td.updated-column, 
+		#oc-tasktracker td.priority-column, 
+		#oc-tasktracker td.status-column,
+		#oc-tasktracker td.title-column,
+		#oc-tasktracker td.custom-status,
+		#oc-tasktracker .delete-task-column { 
+			border-bottom: 1px dotted #eee;
+			white-space: nowrap;
+		}
+		
+			#oc-tasktracker td.title-column {
+				white-space: normal;
+			}
+
+		#oc-tasktracker td.status-column {
+			width: 1em;
+		}
+		
+			#oc-tasktracker td.status-column input {
+				margin: 0.125em;
+				margin-left: 0.5em;
+			}
+
+		#oc-tasktracker td.title-column {
+			width: auto;
+		}
+		
+			#oc-tasktracker .taskitem {
+			}
+			
+				#oc-tasktracker .taskitem .small {
+					font-size: 0.95em
+				}
+				
+		#oc-tasktracker td.deadline-column, 
+		#oc-tasktracker td.owner-column, 
+		#oc-tasktracker td.updated-column, 
+		#oc-tasktracker td.priority-column,
+		#oc-tasktracker td.custom-status {
+			width: 10em;			
+		}
+		
+		#oc-tasktracker.hide-delete-links .delete-task-column { 
+			display: none;
+		}
+		
+		#oc-tasktracker.show-delete-links .delete-task-column { 
+			width: 6em;
+		}
+		
+		#oc-tasktracker tr.taskrow,
+		#oc-tasktracker tr.second-line {
+
+		}
+		
+			#oc-tasktracker tr.taskrow td {
+			}
+		
+			#oc-tasktracker tr.second-line td {
+				text-decoration: none;
+				padding-top: 0.125em;
+				padding-left: 1em;
+				font-size: 0.95em;
+			}
+			
+		#oc-tasktracker .completed-task {
+			color: gray;
+			background-color: #f9f9f9;
+		}
+		
+			#oc-tasktracker .completed-task td.deadline-column, 
+			#oc-tasktracker .completed-task td.owner-column, 
+			#oc-tasktracker .completed-task td.updated-column, 
+			#oc-tasktracker .completed-task td.priority-column, 
+			#oc-tasktracker .completed-task td.custom-status,
+			#oc-tasktracker .completed-task .delete-task-column {
+				text-decoration: line-through;
+			}
+			
+				#oc-tasktracker .completed-task td.status-column {
+				}
+		
+					#oc-tasktracker .completed-task td.title-column a,
+					#oc-tasktracker span.completed-task {
+						text-decoration: line-through;
+					}
+					
+					#oc-tasktracker .completed-task td.delete-task-column,
+					#oc-tasktracker .completed-task td.delete-task-column a {
+						text-decoration: underline;
+					}
+
+		
+			#oc-tasktracker .second-line .completed-task {
+				display: none;
+			}
+			
+		#oc-tasktracker .uncompleted-task,
+		#oc-tasktracker .command {
+			cursor: pointer;
+			text-decoration: underline;
+			color: #256e81;
+		}
+		
+		#oc-tasktracker #delete_task_anchor {
+			display: inline;
+			padding-right: 1em;
+		}
 
 /* DRAG & DROP Stuff
 -------------------*/
 
-.customDraggable { /* When something is being dragged, this is what it looks like as it is being "grasped" */
+#oc-tasktracker .customDraggable { /* When something is being dragged, this is what it looks like as it is being "grasped" */
 	color: #333;
-	/* background-color: #ccc; */
+	background-color: #ccc;
 	padding: 1em;
 	filter:alpha(opacity=40);
 	opacity: .4;
 }
 
-.currently-dragged-column div { /* When something is being dragged, this is what the original looks like... This is disablled because of faulty JS that causes the style to persist incorrectly */
-	/* background-color: #eee; */
+#oc-tasktracker .currently-dragged-column div { /* When something is being dragged, this is what the original looks like... This is disablled because of faulty JS that causes the style to persist incorrectly */
+	background-color: #ccc;
 }
 
-.drop { /* ??? */
+#oc-tasktracker .handle { /* This is where the collapsible triangle flippy thing does its thing */
+	cursor: pointer;
+	}
+
+#oc-tasktracker .drop { /* ??? */
 	border-bottom: 2px solid black;
 	padding-bottom: 2px;
 	cursor: pointer;	
 }
 
-.tt-context-tasklist-show .draggable-column-heading {
-  cursor: move;
+#oc-tasktracker.tt-context-tasklist-show .draggable-column-heading {
+	cursor: move;
 }
 
-.tt-context-tasklist-show .draggable-column-heading.title-column {
-  cursor: default;
-}	
+	#oc-tasktracker.tt-context-tasklist-show .title-column.draggable-column-heading {
+		cursor: default;
+	}
+	
 	
 /* ???
 -------------------*/
 
-label {
+#oc-tasktracker label {
 	font-weight: normal;
 }
 
-.small {
+#oc-tasktracker .small {
 }
 
-.big {
+#oc-tasktracker .big {
 	
 }
 
-.hidden,
-#global-values  {
+#oc-tasktracker .hidden,
+#oc-tasktracker #global-values  {
 	display: none;
 }
 
-.grayed-out {
+#oc-tasktracker .grayed-out {
 	color: gray;
 }
 
-.preview {
+#oc-tasktracker .preview {
 	color: #aaa;
 }
 
-a.preview-link {
+#oc-tasktracker a.preview-link {
 	color: #aaa;
 }
 
-.overdue-task {
+#oc-tasktracker .overdue-task {
    color: maroon;
 }
 
-a {
+#oc-tasktracker a {
 }
 
-ul.command_list {
+#oc-tasktracker ul.command_list {
 	display: inline;
 }
 
-	ul.command_list li {
+	#oc-tasktracker ul.command_list li {
 		border-left: 1px solid #000;
 		list-style: none;
 		display: inline;
 	}
 
-div.sibling_dropzone, div.child_dropzone {
+#oc-tasktracker div.sibling_dropzone, div.child_dropzone {
 	display: inline;
 	height: 1em;
 }
 
-	div#sibling_dropzone_0 {
+	#oc-tasktracker div#sibling_dropzone_0 {
 		padding-left: 2em;
 		padding-right: 10em;
 	}
@@ -479,21 +662,21 @@ div.sibling_dropzone, div.child_dropzone {
 /* from SCRIPTACULOUS
 -------------------*/
 
-	span.autocomplete {
+	#oc-tasktracker span.autocomplete {
 	    background-color:white;
 	    margin:0;
 	    padding:0;
 	}
-	span.autocomplete ul {
+	#oc-tasktracker span.autocomplete ul {
 	    list-style-type:none;
 	    margin:0;
 	    padding:0;
 	    border: 1px solid black;
 	}
-	span.autocomplete ul li.selected {
+	#oc-tasktracker span.autocomplete ul li.selected {
 	    background-color: #ffb;
 	}
-	span.autocomplete ul li {
+	#oc-tasktracker span.autocomplete ul li {
 	    list-style-type:none;
 	    background-color: white;
 	    display:block;
