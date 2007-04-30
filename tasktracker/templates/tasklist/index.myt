@@ -7,6 +7,7 @@
 </p>
 %
 
+<div id="active-tasklists">
 % undone_tasklists = [list for list in c.tasklists if len(list.uncompletedTasks())]
 % if len(undone_tasklists):
 <h2>Active Task Lists</h2>
@@ -20,7 +21,9 @@
 %
 </ul>
 %
+</div>
 
+<div id="completed-tasklists">
 % done_tasklists = [list for list in c.tasklists if not len(list.uncompletedTasks())]
 % if len(done_tasklists):
 <h2>Completed Task Lists</h2>
@@ -34,6 +37,7 @@
 %
 </ul>
 %
+</div>
 
 <div class="sbar">
 
