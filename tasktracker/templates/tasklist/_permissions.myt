@@ -52,7 +52,7 @@ function show_selected(list_name, index) {
     //also show what's selected
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(list_name + '_level_' + i);
-	if (i <= index && i > 0) {
+	if( i <= index && (i == index || i > 0) ) {
 	    removeClass(radio.parentNode, 'unselected-permission')
 	    addClass(radio.parentNode, 'selected-permission');
 	} else {
