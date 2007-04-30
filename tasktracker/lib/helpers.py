@@ -143,7 +143,7 @@ def editableField(task, field, ifNone = None, uneditable = False):
         if not task.task_list.isListOwner(c.username):
             #can you claim it?
             if not editable or task.owner == c.username:
-                return task.owner
+                return task.owner or ''
 
             pre = ''
             claimsteal = 'Claim'
@@ -505,7 +505,10 @@ def task_item_tr(task, is_preview, is_flat, editable_title):
     tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(task.statusName()))]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'updated']:
-        tr.append('%s = "%s" ' % (prop, quote(str(getattr(task, prop)))))
+        value = getattr(task, prop)
+        if not value:
+            value = '' #handle null owner
+        tr.append('%s = "%s" ' % (prop, quote(str(value))))
 
     tr.append('is_preview = "%s" ' % is_preview)
     tr.append('is_flat = "%s" ' % is_flat)

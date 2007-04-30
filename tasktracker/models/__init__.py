@@ -137,7 +137,7 @@ class Task(SQLObject):
     creator = StringCol(length=255, default="")
     deadline = DateTimeCol(default=None)
     live = BoolCol(default=True)    
-    owner = StringCol(length=255, default="")
+    owner = StringCol(length=255, default=None)
     parent = ForeignKey("Task")
     priority = StringCol(length=255, default="None")
     private = BoolCol(default=False)
