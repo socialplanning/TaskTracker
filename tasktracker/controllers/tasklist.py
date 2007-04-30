@@ -118,7 +118,7 @@ class TasklistController(BaseController):
             action = actions[i]
             if not action: continue
             if i <= p['other_level']:
-                if action == 'task_claim' and action == 'task_comment':
+                if action == 'task_claim' or action == 'task_comment':
                     level = auth_level
                 else:
                     level = other_level
