@@ -219,10 +219,12 @@ class TasklistController(BaseController):
                 "requested list %r doesn't match current project %r"
                 % (tl, c.project))
             assert tl.live, (
-                "Task %r not live" % tl)
+                "Tasklist %r not live" % tl)
             return tl
-        except LookupError:
-            raise NoSuchIdError("No such tasklist ID: %s" % id)
+        except (LookupError, AssertionError):
+            if request.environ.get("HTTP_REFERER"):
+                raise
+            raise paste.httpexceptions.HTTPNotFound("Tasklist %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
 
     @authenticate
     @attrs(action='delete', readonly=False)

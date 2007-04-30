@@ -313,8 +313,10 @@ class TaskController(BaseController):
             assert task.live, (
                 "Task %r is not live" % task)
             return task
-        except LookupError:
-            raise NoSuchIdError("No such task ID: %s" % id)
+        except (LookupError, AssertionError):
+            if request.environ.get("HTTP_REFERER"):
+                raise
+            raise paste.httpexceptions.HTTPNotFound("Task %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
 
     @attrs(action='private', readonly=False)
     def revertToDate(self, id):
