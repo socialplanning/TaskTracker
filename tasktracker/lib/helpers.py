@@ -476,6 +476,8 @@ def render_action(action):
                 fields.remove(field)
         if not fields:
             return ''
+        if "Num_Children" in fields:
+            fields.remove("Num_Children")
         if 'Statusid' in fields:
             fields.remove('Statusid')
             fields.append('Status')
