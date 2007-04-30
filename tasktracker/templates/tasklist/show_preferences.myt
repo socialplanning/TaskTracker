@@ -1,26 +1,34 @@
 <!-- Please also see show_update for the editable version -->
 
+<div id="title">
 <h1> <% c.tasklist.title %></h1>
+</div>
 
+<div id="text">
 <span>
 % if c.tasklist.text:
 <% c.tasklist.text %>
 %
 </span>
+</div>
 
-<br/>
+<div id="managers-section">
+ <h2>Managers</h2>
 
-Managers:<br/>
-
-<ul>
+ <div id="managers_div">
+  <ul>
 % for manager in c.administrators + c.managers:
-     <li> <% manager %> </li>
+   <li> <% manager %> </li>
 %
-</ul>
-
+  </ul>
+ </div>
+</div>
 
 <!-- Permissions -->
+<div id="permissions_section">
 <& _permissions.myt &>
+</div>
+
 <script>
 lists.each(function(list_name) {
 for (var i = 0; i < 5; i ++) {
@@ -49,31 +57,26 @@ lists.each(function(list_name) {
 
 <!-- Features -->
 
-<br/>
-Extra Features:<br/>
+<div id="features-section">
+ <h2>Extra Features</h2>
+
+ <div id="deadlines">
 % if c.feature_deadlines:
     Tasks have deadlines
 % else:
     Tasks do not have deadlines
 %
-<br/>
+ </div>
 
-% if c.feature_custom_status:
-This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
-% else:
-Tasks do not have custom statuses. 
-%
-<br/>
-
+ <div id="private">
 % if c.feature_private_tasks:
 This list has private tasks.
 % else:
 This list does not have private tasks.
 %
-<br/>
+ </div>
 
-
-<br/>
+ <div id="initial_assign">
 By default, tasks are initially
     By default, tasks are initially
 % if c.tasklist.initial_assign:
@@ -81,3 +84,12 @@ By default, tasks are initially
 % else:
       assigned to the person who created them
 %
+ </div>
+
+ <div id="custom_statuses">
+% if c.feature_custom_status:
+This list has custom task statuses.  The statuses are: <% ', '.join([s.name for s in c.tasklist.statuses]) %>
+% else:
+Tasks do not have custom statuses. 
+%
+ </div>
