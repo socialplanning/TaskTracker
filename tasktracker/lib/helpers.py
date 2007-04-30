@@ -274,9 +274,7 @@ def _ownerFilter(onblur = None, tasklist = None):
     owners = [task.owner for task in tasklist.tasks]
     owner_dict = dict()
     for owner in owners:
-        if not owner:
-            pass 
-        else:
+        if owner:
             owner_dict[owner] = owner
     options = owner_dict.items()
     options.extend([("No owner", ""), ("All","All")])
