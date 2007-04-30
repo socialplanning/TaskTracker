@@ -183,7 +183,7 @@ class BaseController(WSGIController):
             task_list = TaskList.get(params['id'])
         elif controller == 'task':
             if action_name == 'task_create':
-                controller = 'task_list'
+                controller = 'tasklist'
                 task_list = TaskList.get(params['task_listID'])
             else:
                 task = Task.get(int(params['id'])) 
