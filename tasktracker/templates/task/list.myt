@@ -66,7 +66,7 @@
  <div id="movable_add_task" parentID="0" siblingID="0" >
   <div class="handle">
 
-% subtask_link = """<div>[ + ]<a id="add_a_task" href = %s onclick="return false;">add a task</a> </div>""" % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)
+% subtask_link = """<div>[ + ]<a id="add_a_task" href = %s onclick="showTaskCreate(); return false;">add a task</a> </div>""" % h.url_for(action='show_create', controller='task', task_listID=c.tasklist.id)
    <& _hideable_show_create.myt, subtask_link=subtask_link &>
 
   </div>

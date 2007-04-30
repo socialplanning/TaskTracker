@@ -313,13 +313,6 @@ var myrules = {
 	    }
 	}
     },
-
-    'a#add_a_task' : function(element) {
-	element.doclick = function() {
-	    showTaskCreate();
-	    return false;
-	}
-    },
     'img.treewidget' : function(element) {
 	element.doclick = function() {
 	    toggleCollapse(element.id.replace("handle_", ""));
