@@ -22,8 +22,6 @@ from tasktracker.lib.base import *
 from tasktracker.models import *
 from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML
 
-from paste import httpexceptions
-
 import formencode  
 
 class CreateListForm(formencode.Schema): 
@@ -73,9 +71,7 @@ class TasklistController(BaseController):
     @attrs(action='show', readonly=True)
     @catches_errors
     def show(self, id, *args, **kwargs):
-        c.tasklist = self._getTaskList(int(id))
-#        if not c.tasklist.live:
-#            return render_text("Sorry, this tasklist has been deleted.")
+        c.tasklist = safe_get(TaskList, id, check_live=True)
         
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
@@ -181,7 +177,7 @@ class TasklistController(BaseController):
     @attrs(action='show', readonly=True)
     @catches_errors
     def show_update(self, id, *args, **kwargs):
-        c.tasklist = self._getTaskList(id)
+        c.tasklist = safe_get(TaskList, id, check_live=True)
         c.managers = c.tasklist.managers()
         c.administrators = c.usermapper.project_member_names("ProjectAdmin")
         c.update = True
@@ -203,7 +199,7 @@ class TasklistController(BaseController):
     @catches_errors
     def update(self, id, *args, **kwargs):
         assert self.form_result['member_level'] >= self.form_result['other_level']
-        c.tasklist = self._getTaskList(int(id))
+        c.tasklist = safe_get(TaskList, id, check_live=True)
 
         p = dict(self.form_result)
         
@@ -215,25 +211,11 @@ class TasklistController(BaseController):
         self._setup_roles(p, c.tasklist)
         return Response.redirect_to(action='show',id=c.tasklist.id)
 
-    def _getTaskList(self, id):
-        try:
-            tl = TaskList.get(int(id))
-            assert tl.project == c.project, (
-                "requested list %r doesn't match current project %r"
-                % (tl, c.project))
-            assert tl.live, (
-                "Tasklist %r not live" % tl)
-            return tl
-        except (LookupError, AssertionError):
-            if request.environ.get("HTTP_REFERER"):
-                raise
-            raise httpexceptions.HTTPNotFound("Tasklist %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
-
     @authenticate
     @attrs(action='delete', readonly=False)
     @catches_errors
     def destroy(self, id, *args, **kwargs):
-        c.tasklist = self._getTaskList(int(id))
+        c.tasklist = safe_get(TaskList, id, check_live=True)
         c.tasklist.live = False
         return Response.redirect_to(action='index')
 

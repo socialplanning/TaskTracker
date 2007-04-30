@@ -20,9 +20,6 @@
 
 from tasktracker.lib.base import *
 from tasktracker.models import *
-
-from paste import httpexceptions
-
 from tasktracker.lib import helpers as h
 import formencode
 from formencode.validators import *
@@ -79,7 +76,7 @@ class TaskController(BaseController):
     @catches_errors
     def change_field(self, id, *args, **kwargs):
         field = request.params['field']
-        task = self._getTask(int(id))
+        task = safe_get(Task, id, check_live=True)
         newfield = self.form_result[field]
 
         #special case for deadline -- converts a datetime to a date.
@@ -131,7 +128,7 @@ class TaskController(BaseController):
         return render_text('<ul class="autocomplete">%s</ul>' % ''.join(['<li>%s</li>' % u for u in users]))
 
     def _move_under_parent(self, id, parentID):
-        task = self._getTask(int(id))
+        task = safe_get(Task, id, check_live=True)
         assert parentID == 0 or Task.get(parentID).task_listID == task.task_listID
         assert parentID != task.id
         task.parentID = parentID
@@ -142,7 +139,7 @@ class TaskController(BaseController):
         task.moveToTop()
 
     def _move_below_sibling(self, id, siblingID):
-        task = self._getTask(int(id))
+        task = safe_get(Task, id, check_live=True)
 
         if siblingID == 0:
             task.parentID = 0
@@ -168,7 +165,7 @@ class TaskController(BaseController):
             new_sibling_id = int(request.params['new_sibling'])
             self._move_below_sibling(id, new_sibling_id)
         
-        task = self._getTask(int(id))
+        task = safe_get(Task, id, check_live=True)
         tasks = get_tasks_in_display_order(task.task_list)
         return [dict(id = t.id, depth = t.depth(), has_children = int(bool(len(t.children)))) for t in tasks]
         #return render_text('ok')
@@ -180,7 +177,7 @@ class TaskController(BaseController):
         if not c.task_listID:
             raise ValueError("Can only create a task within a task list.")
 
-        c.tasklist = TaskList.get(c.task_listID)
+        c.tasklist = safe_get(TaskList, c.task_listID)
         assert c.tasklist.project == c.project
         if 'parentID' in request.params:
             c.parentID = request.params['parentID']
@@ -232,7 +229,7 @@ class TaskController(BaseController):
     @attrs(action='claim', readonly=False)
     @catches_errors
     def claim(self, id, *args, **kwargs):
-        c.task = self._getTask(id)
+        c.task = safe_get(Task, id, check_live=True)
         c.task.owner = c.username
         return Response.redirect_to(action='show',controller='task', id=id)
 
@@ -240,7 +237,7 @@ class TaskController(BaseController):
     @attrs(action='assign', readonly=False)
     @catches_errors
     def assign(self, id, *args, **kwargs):
-        c.task = self._getTask(id)
+        c.task = safe_get(Task, id, check_live=True)
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
@@ -250,14 +247,14 @@ class TaskController(BaseController):
         comment = request.params["text"].strip()
         if not len(comment):
             return Response('')
-        c.task = self._getTask(id)
+        c.task = safe_get(Task, id, check_live=True)
         c.comment = Comment(text=comment.replace('\n', "<br>"), user=c.username, task=c.task)
         return Response(c.comment.text)
 
     @attrs(action='update', readonly=True)
     @catches_errors
     def show_update(self, id, *args, **kwargs):
-        c.oldtask = self._getTask(int(id))        
+        c.oldtask = safe_get(Task, id, check_live=True)
         c.owner = c.oldtask.owner
         c.contextual_wrapper_class = 'tt-context-task-update'
         return render_response('task/show_update.myt')
@@ -267,7 +264,7 @@ class TaskController(BaseController):
     @attrs(action='update', watchdog=TaskUpdateWatchdog, readonly=False)
     @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
-        c.task = self._getTask(int(id))
+        c.task = safe_get(Task, id, check_live=True)
         p = self.form_result
         new_parent_id = int(p['parentID'])
         assert new_parent_id == 0 or Task.get(new_parent_id).task_listID == c.task.task_listID
@@ -302,27 +299,13 @@ class TaskController(BaseController):
     @authenticate
     @attrs(action='private', readonly=False)
     def update_private(self, id):
-        c.task = self._getTask(int(id))
+        c.task = safe_get(Task, id, check_live=True)
         c.task.private = request.params['private'] == 'true'
         return render_response('task/_private.myt', fragment=True)
 
-    def _getTask(self, id):
-        try:
-            task = Task.get(int(id))
-            assert task.task_list.project == c.project, (
-                "Task %r does not belong to project %r"
-                % (task, c.project))
-            assert task.live, (
-                "Task %r is not live" % task)
-            return task
-        except (LookupError, AssertionError):
-            if request.environ.get("HTTP_REFERER"):
-                raise
-            raise httpexceptions.HTTPNotFound("Task %d could not be found. It may not exist, it may have been deleted, or you might not have permission to view it." % id)
-
     @attrs(action='private', readonly=False)
     def revertToDate(self, id):
-        c.task = self._getTask(int(id))
+        c.task = safe_get(Task, id, check_live=True)
         date = dateparse(request.params['date'])
         c.task.revertToDate(date)
         return self.show(id)
@@ -335,9 +318,7 @@ class TaskController(BaseController):
             c.version = version
             c.task = Task.versions.versionClass.get(version)
         else:
-            c.task = self._getTask(int(id))
-#        if not c.task.live:
-#            return render_text("This task has been deleted.")
+            c.task = safe_get(Task, int(id), check_live=True)
 
         c.parentID = int(id)
         c.tasklist = c.task.task_list
@@ -359,6 +340,6 @@ class TaskController(BaseController):
     @attrs(action='update', readonly=False)
     @catches_errors
     def destroy(self, id, *args, **kwargs):
-        c.task = self._getTask(int(id))
+        c.task = safe_get(Task, id, check_live=True)
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)

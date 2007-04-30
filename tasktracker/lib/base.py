@@ -32,6 +32,8 @@ from tasktracker.controllers import *
 from tasktracker.lib.watchers import *
 from paste.deploy.converters import asbool
 from paste.deploy.config import CONFIG
+import sqlobject
+from paste import httpexceptions
 #import tasktracker.lib.helpers as h
 
 from threading import local
@@ -82,6 +84,43 @@ def catches_errors(f):
     return new_f
 
 from tasktracker.lib.secure_forms import authenticate
+
+def safe_get(so_class, id, check_live=False):
+    """
+    Gets the object by the given ID.  If not found, raises HTTPNotFound *if*
+    there is no HTTP Referer (if there is, lets the exception raise)
+    
+    Also, if the resulting instance has a .project attribute, and c.project is
+    defined, then check that they match
+    """
+    not_live = False
+    not_project = False
+    try:
+        id = int(id)
+    except ValueError:
+        raise httpexceptions.HTTPBadRequest(
+            "The id %r is not a valid number" % id)
+    try:
+        obj = so_class.get(id)
+        if (hasattr(obj, 'project')
+            and hasattr(c, 'project')):
+            not_project = True
+            assert obj.project == c.project, (
+                "Tried to fetch object %r which is from project %r, but we are "
+                "in project %r" % (obj, obj.project, c.project))
+        if check_live:
+            not_live = True
+            assert obj.live, (
+                "The object %r is not live" % obj)
+        return obj
+    except (sqlobject.SQLObjectNotFound, AssertionError):
+        if request.environ.get('HTTP_REFERER'):
+            raise
+        if not_live:
+            msg = "This resource by the ID %s has been deleted" % id
+        else:
+            msg = "The %s by the ID %s does not exist" % (so_class.__name__, id)
+        raise httpexceptions.HTTPNotFound(msg)
 
 def attrs(**kwds):
     def decorate(f):
@@ -180,13 +219,13 @@ class BaseController(WSGIController):
                 return c.level <= Role.getLevel('ProjectAdmin')
 
         if controller == 'tasklist':
-            task_list = TaskList.get(params['id'])
+            task_list = safe_get(TaskList, params['id'])
         elif controller == 'task':
             if action_name == 'task_create':
                 controller = 'tasklist'
-                task_list = TaskList.get(params['task_listID'])
+                task_list = safe_get(TaskList, params['task_listID'])
             else:
-                task = Task.get(int(params['id'])) 
+                task = safe_get(Task, params['id'])
                 task_list = task.task_list
         elif controller == 'project':
             # special case for lock/unlocking project's tt
