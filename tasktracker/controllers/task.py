@@ -32,10 +32,10 @@ class EditTaskForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     ignore_key_missing = True
-    title = h.SafeHTML(not_empty = True, min=1, max=50)
+    title = h.SafeHTML(not_empty=True, strip=True, min=1, max=50)
     deadline = formencode.compound.All(DateValidator(),
                                        DateConverter())
-    status = h.SafeHTML(not_empty = True)
+    status = h.SafeHTML(not_empty=True)
     priority = formencode.validators.OneOf("High Medium Low None".split())
     owner = formencode.compound.Any(NotEmpty(), Empty())
     parentID = formencode.validators.Int(not_empty = True)

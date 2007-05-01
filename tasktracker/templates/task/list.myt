@@ -6,7 +6,6 @@
                    href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
    <% c.tasklist.title %></a
  ></span>
-<br/>
 
 <& task_list_title.myt &>
 

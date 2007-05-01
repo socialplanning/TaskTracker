@@ -24,6 +24,8 @@ from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML
 
 import formencode  
 
+from paste import httpexceptions
+
 class CreateListForm(formencode.Schema): 
     pre_validators = [formencode.variabledecode.NestedVariables()]
     allow_extra_fields = True
@@ -162,10 +164,14 @@ class TasklistController(BaseController):
     @validate(schema=CreateListForm(), form='show_create')  
     def create(self):
         assert self.form_result['member_level'] >= self.form_result['other_level']
-
+        
         p = dict(self.form_result)
         p['username'] = c.username
         p['projectID'] = c.project.id
+        dup_tls = TaskList.selectBy(projectID = c.project.id, title = p['title'])
+        if dup_tls.count():
+            raise httpexceptions.HTTPInternalServerError("A tasklist with this title already exists.")
+
         if "feature_custom_status" not in p and "statuses" in p:
             del p['statuses']
         c.tasklist = TaskList(**p)
