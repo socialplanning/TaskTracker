@@ -20,6 +20,7 @@
 
 from tasktracker.tests import *
 from tasktracker.models import *
+import re
 
 class TestTaskListController(TestController):
         
@@ -213,18 +214,6 @@ class TestTaskListController(TestController):
         tl = TaskList.get(the_id)
         tl.destroySelf()
 
-    ## @@ what is this testing??
-    def test_list_update_permission(self):
-        tl = self.create_tasklist('fleem')
-        task = Task(title='morx', task_listID=tl.id)
-
-        app = self.getApp('anon')
-        res = app.get(url_for(controller='task', action='show', id=task.id))
-        res.mustcontain('<option value="Medium">Medium</option>')
-
-        task.destroySelf()
-        tl.destroySelf()
-
     def test_privacy(self):
         app = self.getApp('admin')
 
@@ -353,7 +342,14 @@ class TestTaskListController(TestController):
             other_level = security_levels.index(other_level)
             fields = fields[3:]
             for user in users:
-                _, view, claim, create, edit = [x == 'Y' for x in fields[:5]]
+                def status_for_action(action):
+                    status = 200
+                    if not action:
+                        status = 403
+                        if user == 'anon':
+                            status = 401
+                    return status
+                _, view, claim, create, edit = [status_for_action(x == 'Y') for x in fields[:5]]
                 fields = fields[5:]
 
                 app = self.getApp(user, project_permission_level = project_level)
@@ -361,19 +357,62 @@ class TestTaskListController(TestController):
                 #create a task programmatically
                 task = Task(title='morx', task_listID=tl.id)
 
-                status = 200
-                if not view:
-                    status = 403
-                    if user == 'anon':
-                        status = 401
-                
                 #test viewing
                 try:
-                    res = app.get(url_for(controller='task', action='show', id=task.id), status=status)
+                    res = app.get(url_for(controller='task', action='show', id=task.id), status=view)
                 except:
-                    print app.get(url_for(controller='task', action='show', id=task.id))
                     print "line: %d, user: %s, action: view, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
                     raise
+
+                res = app.get(url_for(controller='task', action='show_authenticate', id=task.id))
+
+                key_re = re.compile('key = (\w+)')
+                result = key_re.search(res.body)
+                authenticator = result.groups(1)[0]
+
+                #test claim: status
+                try:
+                    res = app.post('/task/change_field/%s' % task.id,
+                                    params={'field':'status', 'status':'true', 'authenticator':authenticator}, status=claim)
+                except:
+                    print "line: %d, user: %s, action: claim (status), member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                #test claim: claim
+                try:
+                    user_actual = user
+                    if user == 'anon':
+                        user_actual = ''
+                    res = app.post('/task/change_field/%s' % task.id,
+                                    params={'field':'owner', 'owner' : user_actual, 'authenticator':authenticator}, status=claim)
+                except:
+                    print "line: %d, user: %s, action: claim (claim), member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                #test create
+                try:
+
+                    res = app.get(url_for(controller='task', action='show_create', task_listID=tl.id), status=create)
+                    if res.status == 200:
+                        form = res.forms['add_task_form']
+                        form['title'] = 'The new task title'
+                        form['text'] = 'The new task body'
+
+                        res = form.submit(status=create)
+                except:
+                    print "line: %d, user: %s, action: create, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                #test edit
+                try:
+                    res = app.post('/task/change_field/%s' % task.id,
+                                   params=dict(deadline='07-03-1980', field='deadline', authenticator=authenticator), status=edit)
+
+                except:
+                    print "line: %d, user: %s, action: edit, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+
 
                 tl.destroySelf()
                 task.destroySelf()

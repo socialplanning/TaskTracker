@@ -120,7 +120,7 @@ class TasklistController(BaseController):
             action = actions[i]
             if not action: continue
             if i <= p.get('other_level', 0):
-                if action == 'task_claim' or action == 'task_comment':
+                if action != 'task_show':
                     level = auth_level
                 else:
                     level = other_level
@@ -134,8 +134,8 @@ class TasklistController(BaseController):
             if action == 'task_show':
                 make_permission('tasklist_show', tasklist, level)
 
-            #change_status is just another kind of update
-            if action == 'task_update':
+            #change_status goes with claim
+            if action == 'task_claim':
                 if level == manager_level:
                     make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))
                 else:

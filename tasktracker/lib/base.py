@@ -195,6 +195,13 @@ class BaseController(WSGIController):
             if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
                 self.watchdog.dog.after(params)
 
+
+    @classmethod
+    def _has_permissionx(cls, controller, action_verb, params):
+        v = cls._has_permissionx(controller, action_verb, params)
+        #print v
+        return v
+
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
 
@@ -204,21 +211,31 @@ class BaseController(WSGIController):
         action_name = controller + '_' + action_verb
 
         id = params.get('id')
+        #print action_name, id
         if not id:
             id = params.get('task_listID')
         key = (controller, id)
-        if action_name != 'tasklist_create':
-            permissions = c.permission_cache.get(key)
-            if permissions:
-                return action_name in permissions
-
-        #special case for creating task lists
         if action_name == 'tasklist_create':
             #FIXME: this does not match Zope's settings 
             if c.project_permission_level in ['open_policy', 'medium_policy']:
                 return c.level <= Role.getLevel('ProjectMember')
             else:
                 return c.level <= Role.getLevel('ProjectAdmin')
+        else:
+            permissions = c.permission_cache.get(key)
+            if permissions:
+                return action_name in permissions
+
+        #Fixme: this needs to be done through the regular permission system and updated
+        #when Zope sends events
+        #Zope security
+        if c.project_permission_level == 'medium_policy':
+            if c.level > Role.getLevel('ProjectMember'):
+                if not (action_name == 'task_show' or action_name == 'tasklist_show'):
+                    return False
+        if c.project_permission_level == 'closed_policy':
+            if c.level > Role.getLevel('ProjectMember'):
+                return False
 
         if controller == 'tasklist':
             task_list = safe_get(TaskList, params['id'])
@@ -251,9 +268,10 @@ class BaseController(WSGIController):
                     c.permission_cache[key] = set()
                     return False
 
-        if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
-            if task.isOwnedBy(params['username']):
-                local_level = Role.getLevel('TaskOwner')
+        #FIXME?  We no longer give task owners any special rights
+        #if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
+        #    if task.isOwnedBy(params['username']):
+        #        local_level = Role.getLevel('TaskOwner')
         
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == task_list.id, TaskListPermission.q.min_level >= local_level))
 
@@ -272,7 +290,7 @@ class BaseController(WSGIController):
         """
 
         if callable(action_verb):  #TODO: this isn't a good solution!
-            return True
+            return False
         
         action_name = controller + '_' + action_verb
         if action_name == 'project_initialize':
@@ -289,7 +307,6 @@ class BaseController(WSGIController):
         redirect_to(controller='project', action='show_uninitialized', id = c.project.id) # @@ ugh -egj
         
     def _authorize(self, project, action, params):
-
         controller = params['controller']
 
         if controller == 'error':
@@ -307,16 +324,16 @@ class BaseController(WSGIController):
         c.user_info = environ.get('topp.user_info', None)
         c.project_permission_level = environ.get('topp.project_permission_level', None)
         c.usermapper = environ['topp.project_members']
-        if c.project_permission_level == 'closed_policy':
-            if not c.username in c.usermapper.project_member_names():
-                return False
 
         func = getattr(self, action)
         if not getattr(func, 'action', None):
             raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % 
                                            (action, controller))
         action_verb = func.action
+        #print "HERE",  controller, action_verb, request.params.get('field'), c.username
 
+        if controller=='task' and callable(action_verb) and request.params.get('field') == 'status' and c.username == 'member':
+            pass#import pdb;pdb.set_trace()
         # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized
         # if function returns false, the project IS initialized, so we have to continue checking auth.
         #        if action_verb in ("initialize","show_uninitialized") or \
@@ -334,8 +351,8 @@ class BaseController(WSGIController):
 
         #A few special cases follow, with the general permission case at the end.
 
-        if callable(action_verb):  #TODO: this isn't a good solution!
-            return True
+        #if callable(action_verb):  #TODO: this isn't a good solution!
+        #    return True
 
         if action_verb == 'open':
             return True
@@ -346,8 +363,9 @@ class BaseController(WSGIController):
             else:
                 return True
 
-        if action == 'auto_complete_for':
-            return True
+        if c.project_permission_level == 'closed_policy':
+            if not c.username in c.usermapper.project_member_names():
+                return False
 
         params = dict(params)
         params.update(request.params)

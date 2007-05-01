@@ -270,13 +270,13 @@ class TestTaskController(TestController):
         res = app.get(url_for(controller='task', action='show', id=task.id))
         res.mustcontain("Mowbray")
 
-        ### there should be a newly-creted version now
+        ### there should be a newly-created version now
         versions = list(task.versions)
         assert len(versions) == 1
         version = versions[0]
 
         ### and that version should reflect the original task information before the update
-        assert version.owner == "" 
+        assert version.owner == None
         assert version.dateArchived == task.created
 
         ### changing the status, deadline, and priority should do the same thing
@@ -309,12 +309,8 @@ class TestTaskController(TestController):
 
         ### when he tries to change a field, the controller should throw us an AssertionError
         res = app.get(url_for(controller='task', action='show', id=task.id))
-        try:
-            res = app.post('/task/change_field/%s' % task.id,
-                           params=dict(owner='member', field='owner', authenticator=self._get_authenticator(res)))
-            raise Exception("This should have failed.")
-        except AssertionError:
-            pass
+        res = app.post('/task/change_field/%s' % task.id,
+                       params=dict(owner='member', field='owner', authenticator=self._get_authenticator(res)), status=403)
 
         ### his change should not be reflected in the task detail page
         res = app.get(url_for(controller='task', action='show', id=task.id))

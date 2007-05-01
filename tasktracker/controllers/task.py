@@ -75,6 +75,7 @@ class TaskController(BaseController):
     @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog, readonly=False)
     @catches_errors
     def change_field(self, id, *args, **kwargs):
+
         field = request.params['field']
         task = safe_get(Task, id, check_live=True)
         newfield = self.form_result[field]
@@ -99,7 +100,8 @@ class TaskController(BaseController):
         #special case for owner
 
         elif field == "owner":
-            assert _assignment_permitted(newfield)
+            if not _assignment_permitted(newfield):
+                raise httpexceptions.HTTPForbidden
             if newfield == "--": newfield = None
 
         # find out if the old taskrow wants us to render its replacement a particular way
@@ -344,3 +346,8 @@ class TaskController(BaseController):
         c.task = safe_get(Task, id, check_live=True)
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
+
+    @attrs(action='open', readonly=False)
+    @catches_errors
+    def show_authenticate(self, id, *args, **kwargs):
+        return render_response('task/authenticate.myt')
