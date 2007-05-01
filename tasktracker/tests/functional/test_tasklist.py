@@ -99,9 +99,8 @@ class TestTaskListController(TestController):
         assert "delete this list" not in res.body
         
         ### they can't even do it directly
-        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
-        res = res.follow()
-        res.mustcontain("Not permitted")
+        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)), status=403)
+
         res = app.get(url_for(controller='tasklist'))        
         res.mustcontain("testing tasklist deletion")
 
@@ -209,8 +208,7 @@ class TestTaskListController(TestController):
 
         ### the former additional manager should no longer have manager privileges
         app = self.getApp('member')
-        res = app.get(url_for(controller='tasklist', action='show_update', id=the_id))
-        assert res.header_dict['location'].startswith('/error/')
+        res = app.get(url_for(controller='tasklist', action='show_update', id=the_id), status=403)
 
         tl = TaskList.get(the_id)
         tl.destroySelf()

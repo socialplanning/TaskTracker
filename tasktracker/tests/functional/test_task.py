@@ -211,9 +211,7 @@ class TestTaskController(TestController):
         assert 'The private one' not in res.body
 
         ### they also can't guess urls
-        res = app.get(url_for(controller='task', action='show', id=priv.id))
-        location = res.header_dict['location']
-        assert location.startswith('/error')
+        res = app.get(url_for(controller='task', action='show', id=priv.id), status=403)
 
         ### project members can create private tasks
         app = self.getApp('member')
