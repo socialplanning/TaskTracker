@@ -177,7 +177,7 @@ class BaseController(WSGIController):
                 abort(403, 'Login required')
             else:
                 #they're logged in but still don't have the necessary permissions
-                raise paste.httpexceptions.HTTPForbidden("Access denied")
+                raise httpexceptions.HTTPForbidden("Access denied")
 
         func = getattr(self, action)
         dog = getattr(func, 'watchdog', None)
