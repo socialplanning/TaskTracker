@@ -31,7 +31,7 @@ class CreateListForm(formencode.Schema):
     allow_extra_fields = True
     title = SafeHTML(not_empty = True)
     member_level = formencode.validators.Int()
-    other_level = formencode.validators.Int()
+    other_level = formencode.validators.Int(if_missing=None)
     initial_assign = formencode.validators.Int()
 
 def add_feature(name, value = None):
@@ -91,6 +91,7 @@ class TasklistController(BaseController):
         if c.username not in c.administrators:
             c.administrators.append(c.username)
         c.contextual_wrapper_class = 'tt-context-tasklist-create'
+        c.project_permission_level = request.environ['topp.project_permission_level']
         return render_response('tasklist/show_create.myt')
 
     def _apply_role(self, members, tasklist, role):
@@ -114,15 +115,16 @@ class TasklistController(BaseController):
         manager_level = Role.getLevel('ListOwner')
 
         actions = ['', 'task_show', 'task_claim', 'task_create', 'task_update']
+        
         for i in range(len(actions)):
             action = actions[i]
             if not action: continue
-            if i <= p['other_level']:
+            if i <= p.get('other_level', 0):
                 if action == 'task_claim' or action == 'task_comment':
                     level = auth_level
                 else:
                     level = other_level
-            elif i <= p['member_level']:
+            elif i <= p.get('member_level', 0):
                 level = member_level
             else:
                 level = manager_level

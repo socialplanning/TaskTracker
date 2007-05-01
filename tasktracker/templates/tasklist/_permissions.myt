@@ -1,14 +1,18 @@
 
 <table><tbody><tr valign="top" padding="50px;">
 <td>
-<h2><% c.project.title %>'s team members can</h2>
+<h2><% c.project.title %>'s project members can</h2>
 <ul id="member_permissions"></ul>
 </td>
 <td width="20;">&nbsp;</td>
+
+% if c.project_permission_level != "closed_policy":
 <td>
-<h2>Anyone else can</h2>
+<h2>Other users can</h2>
 <ul id="other_permissions"></ul>
 </td>
+%
+
 </tr></tbody></table>
 
 <!-- these will be filled in by htmlfill, and then deleted by js -->
