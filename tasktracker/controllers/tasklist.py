@@ -169,8 +169,8 @@ class TasklistController(BaseController):
         p['username'] = c.username
         p['projectID'] = c.project.id
         dup_tls = TaskList.selectBy(projectID = c.project.id, title = p['title'])
-        if dup_tls.count():
-            raise httpexceptions.HTTPInternalServerError("A tasklist with this title already exists.")
+        if dup_tls.count(): pass
+        #raise httpexceptions.HTTPInternalServerError("A tasklist with this title already exists.")
 
         if "feature_custom_status" not in p and "statuses" in p:
             del p['statuses']
