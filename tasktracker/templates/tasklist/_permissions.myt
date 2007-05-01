@@ -26,6 +26,7 @@ var lists = ['member', 'other'];
 checked = {};
 lists.each(function(list_name) {
 	var list = $(list_name + '_permissions');
+	if( !list ) return;
 	list.className = "undecorated_list";
 	options.each(function(option, index) {
 		var button = Builder.node('input', {
@@ -47,6 +48,7 @@ lists.each(function(list_name) {
 lists.each(function(list_name) {
         // move "not even see this list" to the bottom of the list in the next three lines.
         var m = $(list_name + '_item_0');
+	if( !m ) return;
 	m.parentNode.appendChild(m);
 	old = $(list_name + '_level_old');
 	permission_set(old.value, list_name);
@@ -54,6 +56,8 @@ lists.each(function(list_name) {
 
 function show_selected(list_name, index) {
     //also show what's selected
+    var list = $(list_name + '_permissions');
+    if( !list ) return;
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(list_name + '_level_' + i);
 	if( i <= index && (i == index || i > 0) ) {
@@ -74,6 +78,7 @@ function permission_set(index, type) {
     var selected = null;
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(other + '_level_' + i);
+	if( !radio ) continue;
 	if (radio.checked) {
 	    selected = radio;
 	}
@@ -85,8 +90,11 @@ function permission_set(index, type) {
 	    removeClass(radio.parentNode, "disabled-permission");
 	}
     }
-    if( (other == 'other' && selected.value > index) || (other == 'member' && selected.value < index) ) {
-	$(other + '_level_' + index).checked = true;
+    if( selected ) {
+        if( (other == 'other' && selected.value > index) || (other == 'member' && selected.value < index) ) {
+	    var radio = $(other + '_level_' + index);
+	    if( radio ) radio.checked = true;
+	}
     }
 
     show_selected(type, index);
@@ -94,9 +102,11 @@ function permission_set(index, type) {
 
 function cull_old() {
   var old = $('member_level_old');
-  old.parentNode.removeChild(old);
+  if( old )
+    old.parentNode.removeChild(old);
   old = $('other_level_old');
-  old.parentNode.removeChild(old);
+  if( old )
+    old.parentNode.removeChild(old);
 }
 
 </script>
