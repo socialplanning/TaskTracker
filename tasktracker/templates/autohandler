@@ -33,7 +33,6 @@
 % if c.compress_resources:
 <% h.stylesheet_link_tag('combined.css') %>
 % else:
-<!-- <% h.stylesheet_link_tag('plone-base.css') %> -->
 <% h.stylesheet_link_tag('list.css') %>
 <% h.stylesheet_link_tag('datebocks_engine.css') %>
 <% h.stylesheet_link_tag('calendar-blue.css') %>
