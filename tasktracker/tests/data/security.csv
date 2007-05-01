@@ -1,0 +1,81 @@
+
+,,all passwords = wehatecars
+
+
+,,List Security Settings
+,zope permission level,team can,anyone else can,, project manager or list manager,,,,,team member,,,,,regular user,,,,,not logged in
+,,,,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit
+
+,open security,not even see this list,not even see this list,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N,,N,N,N,N
+
+,open security,view this list,not even see this list,,Y,Y,Y,Y,,Y,N,N,N,,N,N,N,N,,N,N,N,N
+,open security,view this list,view this list,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N,,Y,N,N,N
+
+,open security,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,N,N,,N,N,N,N,,N,N,N,N
+,open security,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,N,N,,Y,N,N,N,,Y,N,N,N
+,open security,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,N,N,,Y,Y,N,N,,Y,N,N,N
+
+,open security,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+,open security,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,N,N,N,,Y,N,N,N
+,open security,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,N,N,,Y,N,N,N
+,open security,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N,,Y,N,N,N
+
+,open security,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,open security,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N
+,open security,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,N,N,,Y,N,N,N
+,open security,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,N,N,N
+,open security,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N
+
+
+,,List Security Settings
+,zope permission level,team can,anyone else can,, project manager or list manager,,,,,team member,,,,,regular user,,,,,not logged in
+,,,,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit
+,medium security,not even see this list,not even see this list,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N,,N,N,N,N
+
+,medium security,view this list,not even see this list,,Y,Y,Y,Y,,Y,N,N,N,,N,N,N,N,,N,N,N,N
+,medium security,view this lists,view this list,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N,,Y,N,N,N
+
+,medium security,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,N,N,,N,N,N,N,,N,N,N,N
+,medium security,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,N,N,,Y,N,N,N,,Y,N,N,N
+,medium security,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,N,N,,Y,N,N,N,,Y,N,N,N
+
+,medium security,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+,medium security,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,N,N,N,,Y,N,N,N
+,medium security,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,N,N,N,,Y,N,N,N
+,medium security,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,N,N,N,,Y,N,N,N
+
+,medium security,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,medium security,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N
+,medium security,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N
+,medium security,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N
+,medium security,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,N,N,N,,Y,N,N,N
+
+,,List Security Settings
+,zope permission level,team can,anyone else can,,project manager or list manager,,,,,team member,,,,,regular user,,,,,not logged in
+,,,,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit,,view,claim,create,edit
+,closed security,not even see this list,not even see this list,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N,,N,N,N,N
+
+,closed security,view this list,not even see this list,,Y,Y,Y,Y,,Y,N,N,N,,N,N,N,N,,N,N,N,N
+,closed security,view this list,view this list,,Y,Y,Y,Y,,Y,N,N,N,,N,N,N,N,,N,N,N,N
+
+,closed security,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,N,N,,N,N,N,N,,N,N,N,N
+,closed security,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,N,N,,N,N,N,N,,N,N,N,N
+,closed security,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,N,N,,N,N,N,N,,N,N,N,N
+
+,closed security,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+,closed security,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+,closed security,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+,closed security,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N,,N,N,N,N
+
+,closed security,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,closed security,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,closed security,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,closed security,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+,closed security,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+
+
+,zope permission level,,,,project manager,,,,,team member,,,,,regular user,,,,,not logged in
+,,,,,view tasktracker,,create tasklist,,,view tasktracker,,create tasklist,,,view tasktracker,,create tasklist,,,view tasktracker,,create tasklist
+,open security,,,,Y,,Y,,,Y,,Y,,,Y,,Y,,,Y,,N
+,medium security,,,,Y,,Y,,,Y,,Y,,,Y,,N,,,Y,,N
+,closed security,,,,Y,,Y,,,Y,,Y,,,N,,N,,,N,,N
