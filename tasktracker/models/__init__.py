@@ -183,6 +183,9 @@ class Task(SQLObject):
 
         if task_list.initial_assign == 0 and not kwargs.get('owner'):
             kwargs['owner'] = c.username
+        
+        if not kwargs['owner']:
+            kwargs['owner'] = None
 
         super(Task, self)._create(id, **kwargs)
         if self.parentID:

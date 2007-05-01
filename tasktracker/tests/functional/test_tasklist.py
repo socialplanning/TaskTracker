@@ -347,7 +347,7 @@ class TestTaskListController(TestController):
         line_no = 0
         for line in f:
             line_no += 1
-            fields = line.split(",")
+            fields = line[:-1].split(",")
             project_level, member_level, other_level = fields[0:3]
             member_level = security_levels.index(member_level)
             other_level = security_levels.index(other_level)
@@ -376,5 +376,5 @@ class TestTaskListController(TestController):
                     raise
 
                 tl.destroySelf()
-
+                task.destroySelf()
             
