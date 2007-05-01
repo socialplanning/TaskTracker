@@ -29,6 +29,7 @@ def _user_dict(name):
         roles = ["Authenticated"]
     elif name == "anon":
         roles = ["Anonymous"]
+        name = ''
     else:
         roles = "Authenticated ProjectMember".split()
     return dict(username = name,

@@ -339,4 +339,42 @@ class TestTaskListController(TestController):
         
         tl.destroySelf()
 
+    def test_task_security(self):
+        #load the security matrix
+        f = open("tasktracker/tests/data/security.csv")
+        security_levels = ['not even see this list', 'view this list', 'and claim tasks', 'and create new tasks', 'and edit any task']
+        users = ['admin', 'member', 'auth', 'anon']
+        line_no = 0
+        for line in f:
+            line_no += 1
+            fields = line.split(",")
+            project_level, member_level, other_level = fields[0:3]
+            member_level = security_levels.index(member_level)
+            other_level = security_levels.index(other_level)
+            fields = fields[3:]
+            for user in users:
+                _, view, claim, create, edit = [x == 'Y' for x in fields[:5]]
+                fields = fields[5:]
 
+                app = self.getApp(user, project_permission_level = project_level)
+                tl = self.create_tasklist('fleem', member_level, other_level)
+                #create a task programmatically
+                task = Task(title='morx', task_listID=tl.id)
+
+                status = 200
+                if not view:
+                    status = 403
+                    if user == 'anon':
+                        status = 401
+                
+                #test viewing
+                try:
+                    res = app.get(url_for(controller='task', action='show', id=task.id), status=status)
+                except:
+                    print app.get(url_for(controller='task', action='show', id=task.id))
+                    print "line: %d, user: %s, action: view, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                tl.destroySelf()
+
+            
