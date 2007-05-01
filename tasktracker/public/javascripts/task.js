@@ -419,7 +419,7 @@ function setTaskParents() {
 }
 
 function setupEmptyList() {
-    in_task_show = $('subtasks') ? 1 : 0;
+    var in_task_show = $('subtasks') ? 1 : 0;
     if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length) && !in_task_show)
 	showTaskCreate();
 }
@@ -986,10 +986,13 @@ function doneMovingTask(req) {
 //doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function showTaskCreate() {
-    removeClass($('create'), 'hidden');
-    $('show_create').hide();
-    //    $('create_anchor').scrollTo();
-    $('title').focus();
+    var create = $('create');
+    if( create ) {
+        removeClass(create, 'hidden');
+        $('show_create').hide();
+    //  $('create_anchor').scrollTo();
+        $('title').focus();
+    }
     return false;
 }
 
@@ -1301,4 +1304,3 @@ addLoadEvent(setupEmptyList);
 addLoadEvent(setTaskParents);
 
 addLoadEvent(sortAndFilter);
-
