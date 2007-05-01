@@ -214,6 +214,7 @@ class BaseController(WSGIController):
 
         #special case for creating task lists
         if action_name == 'tasklist_create':
+            #FIXME: this does not match Zope's settings 
             if c.project_permission_level in ['open_policy', 'medium_policy']:
                 return c.level <= Role.getLevel('ProjectMember')
             else:
