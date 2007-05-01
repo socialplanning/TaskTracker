@@ -1,5 +1,14 @@
 <!-- Please also see show_update for the editable version -->
 
+<span class="small">
+ <a href="<% h.url_for(controller='tasklist', action='index') %>">
+    all lists</a
+ >&nbsp;&raquo;
+ <a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
+                   href="<% h.url_for(controller='tasklist', action='show') + '?' + c.permalink %>">
+   <% c.tasklist.title %></a
+ ></span>
+
 <div id="title">
 <h1> <% c.tasklist.title %></h1>
 </div>
