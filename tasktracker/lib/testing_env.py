@@ -48,7 +48,6 @@ class UserMapper(usermapper.UserMapper):
     def project_members(self):
         # @@ let's make this usable somehow
         names = 'admin,member'.split(',')
-        names.extend([''])
         members = map(_user_dict, names)
         return members
 
