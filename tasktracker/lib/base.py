@@ -174,7 +174,7 @@ class BaseController(WSGIController):
         if not self._authorize(project, action, params):
             if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
-                abort(403, 'Login required')
+                abort(401, 'Login required')
             else:
                 #they're logged in but still don't have the necessary permissions
                 raise httpexceptions.HTTPForbidden("Access denied")
