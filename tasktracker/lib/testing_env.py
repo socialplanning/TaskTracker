@@ -20,22 +20,35 @@
 
 from tasktracker.models import *
 from pylons import c
+from paste import httpexceptions
 
 def _user_dict(name):
+    if name == "admin":
+        roles = "Authenticated ProjectMember ProjectAdmin".split()
+    elif name == "auth":
+        roles = ["Authenticated"]
+    elif name == "":
+        roles = ["Anonymous"]
+    else:
+        roles = "Authenticated ProjectMember".split()
     return dict(username = name,
                 email = "%s@topp.example.com" % name, 
-                roles = 'Authenticated ProjectMember'.split(),
+                roles = roles,
                 )
 
 from tasktracker.lib import usermapper
 class UserMapper(usermapper.UserMapper):
+    """
+    admin: ProjectAdmin of every project
+    member: ProjectMember of every project
+    auth: Authenticated sitewide, nonmember
+    [emptystring]: Anonymous user
+    """
     def project_members(self):
         # @@ let's make this usable somehow
-        names = 'admin, listowner, member, Fred, George, Kate, Larry, Curly, Moe, Raven, Buffy, Sal, Thomas, Tanaka, Nobu, Hargattai, Mowbray, Sinbad, Louis, Matthew, Dev, egj, dcrosta, shamoon, novalis, ltucker, magicbronson, jarasi, cholmes'.split(', ')
-        members = map (_user_dict, names)
-        for member in members:
-            if member['username'] == 'admin':
-                member['roles'].append('ProjectAdmin')
+        names = 'admin,member,auth'.split(',')
+        names.extend([''])
+        members = map(_user_dict, names)
         return members
 
 class TestingEnv(object):
@@ -49,21 +62,9 @@ class TestingEnv(object):
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
             password = password.encode("base64")
-
             environ['REMOTE_USER'] = username
-            
-            environ['topp.user_info'] = dict(username = username, 
-                                             roles = ['ProjectMember'],
-                                             email = '%s@example.com' % username)
+            environ['topp.user_info'] = _user_dict(username)
 
-            #these are needed for tests
-            if username == 'admin':
-                environ['topp.user_info']['roles'] = ['ProjectAdmin']
-            if username == 'auth':
-                environ['topp.user_info']['roles'] = ['Authenticated']
-            if username == 'anon':
-                environ['topp.user_info']['roles'] = ['Anonymous']
-                environ['REMOTE_USER'] = ''
             return True
 
         except KeyError:
@@ -77,8 +78,7 @@ class TestingEnv(object):
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'theproject')
-        environ['topp.project_permission_level'] = 'open_policy'
-        #environ['initialization_not_required'] = True
+        environ['topp.project_permission_level'] = environ.get("HTTP_X_OPENPLANS_TTPOLICY", 'open_policy')
 
         if not self.authenticate(environ):
             status = "401 Authorization Required"
