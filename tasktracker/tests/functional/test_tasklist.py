@@ -255,7 +255,7 @@ class TestTaskListController(TestController):
 
     def test_readonly(self):
 
-        def try_create_tasklist(title, member_level=4, other_level=4):
+        def try_create_tasklist(title, member_level=4, other_level=4, status=303):
             res = app.get(url_for(controller='tasklist', action='show_create'))
 
             form = res.forms[0]
@@ -268,7 +268,7 @@ class TestTaskListController(TestController):
             form.fields['member_level'] = [level(member_level)]
             form.fields['other_level'] = [level(other_level)]
                     
-            res = form.submit()
+            res = form.submit(status=status)
             return res
 
         ### set a readonly lock on the project 
@@ -276,7 +276,7 @@ class TestTaskListController(TestController):
         res = app.post(url_for(controller='project', action='lock'))
 
         ### creating a new tasklist should no longer be possible
-        res = try_create_tasklist('test locking')
+        res = try_create_tasklist('test locking', status=403)
         res = app.get(url_for(controller='tasklist'))
         assert 'test locking' not in res
 
