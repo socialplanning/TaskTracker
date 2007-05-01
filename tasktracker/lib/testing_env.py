@@ -27,7 +27,7 @@ def _user_dict(name):
         roles = "Authenticated ProjectMember ProjectAdmin".split()
     elif name == "auth":
         roles = ["Authenticated"]
-    elif name == "":
+    elif name == "anon":
         roles = ["Anonymous"]
     else:
         roles = "Authenticated ProjectMember".split()
@@ -42,7 +42,7 @@ class UserMapper(usermapper.UserMapper):
     admin: ProjectAdmin of every project
     member: ProjectMember of every project
     auth: Authenticated sitewide, nonmember
-    [emptystring]: Anonymous user
+    anon: Anonymous user
     """
     def project_members(self):
         # @@ let's make this usable somehow
@@ -63,6 +63,8 @@ class TestingEnv(object):
             username, password = encoded.decode("base64").split(":")
             password = password.encode("base64")
             environ['REMOTE_USER'] = username
+            if username == 'anon':
+                environ['REMOTE_USER'] = ''
             environ['topp.user_info'] = _user_dict(username)
 
             return True
@@ -78,7 +80,7 @@ class TestingEnv(object):
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'theproject')
-        environ['topp.project_permission_level'] = environ.get("HTTP_X_OPENPLANS_TTPOLICY", 'open_policy')
+        environ['topp.project_permission_level'] = environ.get("openplans_ttpolicy", 'open_policy')
 
         if not self.authenticate(environ):
             status = "401 Authorization Required"

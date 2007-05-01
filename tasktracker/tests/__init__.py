@@ -106,9 +106,10 @@ class TestController(TestCase):
 
         self.project = Project(title='theproject')
 
-    def getApp(self, username):
+    def getApp(self, username, project_permission_level='open_policy', project='theproject'):
         encoded = 'Basic ' + (username + ':nopassword').encode('base64')        
-        return paste.fixture.TestApp(self.wsgiapp, extra_environ={'HTTP_AUTHORIZATION': encoded})
+        return paste.fixture.TestApp(self.wsgiapp, extra_environ={'HTTP_AUTHORIZATION': encoded,
+'openplans_ttpolicy' : project_permission_level, "HTTP_X_OPENPLANS_PROJECT" : project})
         
     def create_tasklist(self, title, member_level=4, other_level=4):
         app = self.getApp('admin')

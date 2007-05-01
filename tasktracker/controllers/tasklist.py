@@ -134,7 +134,10 @@ class TasklistController(BaseController):
 
             #change_status is just another kind of update
             if action == 'task_update':
-                make_permission('task_change_status', tasklist, level)
+                if level == manager_level:
+                    make_permission('task_change_status', tasklist, Role.getLevel('TaskOwner'))
+                else:
+                    make_permission('task_change_status', tasklist, level)
 
         #only managers can assign and update list and deal with private tasks
         #and delete tasklists
