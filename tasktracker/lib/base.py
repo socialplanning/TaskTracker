@@ -195,11 +195,12 @@ class BaseController(WSGIController):
             id = params.get('task_listID')
         key = (controller, id)
         if action_name == 'tasklist_create':
-            #FIXME: this does not match Zope's settings 
-            if c.project_permission_level in ['open_policy', 'medium_policy']:
-                return c.level <= Role.getLevel('ProjectMember')
+            ### tasklist creation permissions are based entirely on the project permission level
+            ### and conform to the text descriptions of security settings in opencore
+            if c.project_permission_level == 'open_policy':
+                return c.level <= Role.getLevel('Authenticated')
             else:
-                return c.level <= Role.getLevel('ProjectAdmin')
+                return c.level <= Role.getLevel('ProjectMember')
         else:
             permissions = c.permission_cache.get(key)
             if permissions:
