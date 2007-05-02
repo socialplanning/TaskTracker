@@ -345,7 +345,7 @@ class BaseController(WSGIController):
         #A few special cases follow, with the general permission case at the end.
 
         #if callable(action_verb):  #TODO: this isn't a good solution!
-        #    return True
+        #    return True            ## @@ commented out 01-05-07 with no apparent ill effects
 
         if c.project_permission_level == 'closed_policy':
             if not c.username in c.usermapper.project_member_names():
