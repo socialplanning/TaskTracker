@@ -72,7 +72,7 @@ class TaskController(BaseController):
     
     @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
-    @attrs(action=_field_permission, watchdog=TaskUpdateWatchdog, readonly=False)
+    @attrs(action=_field_permission, readonly=False)
     @catches_errors
     def change_field(self, id, *args, **kwargs):
 
@@ -159,7 +159,7 @@ class TaskController(BaseController):
         task.moveBelow(new_sibling)
 
     @jsonify
-    @attrs(action='update', watchdog=TaskMoveWatchdog, readonly=False)
+    @attrs(action='update', readonly=False)
     def move(self, id):        
         if request.params.has_key('new_parent'):
             new_parent_id = int(request.params['new_parent'])
@@ -190,13 +190,13 @@ class TaskController(BaseController):
         return render_response('task/show_create.myt')
 
     @authenticate
-    @attrs(action='create', watchdog=TaskCreateWatchdog, readonly=False)
+    @attrs(action='create', readonly=False)
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
         return self._create_task(url_from=request.params.get('url_from', None), **self.form_result)
 
     @authenticate
-    @attrs(action='create', watchdog=TaskCreateWatchdog, readonly=False)
+    @attrs(action='create', readonly=False)
     def create_ajax(self, id):
         try:
             params = EditTaskForm().to_python(request.params)
@@ -244,7 +244,7 @@ class TaskController(BaseController):
         c.task.owner = request.params["owner"]
         return Response.redirect_to(action='show',controller='task', id=id)
 
-    @attrs(action='comment', watchdog=TaskCommentWatchdog, readonly=False)
+    @attrs(action='comment', readonly=False)
     @catches_errors
     def comment(self, id, *args, **kwargs):
         comment = request.params["text"].strip()
@@ -264,7 +264,7 @@ class TaskController(BaseController):
 
     # @@ is this ever used?
     @authenticate
-    @attrs(action='update', watchdog=TaskUpdateWatchdog, readonly=False)
+    @attrs(action='update', readonly=False)
     @validate(schema=EditTaskForm(), form='show_update')
     def update(self, id):
         c.task = safe_get(Task, id, check_live=True)

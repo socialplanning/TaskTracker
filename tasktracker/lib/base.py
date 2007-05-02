@@ -29,7 +29,6 @@ from pylons.templating import render, render_response
 from pylons.helpers import abort, redirect_to, etag_cache
 from tasktracker.models import *
 from tasktracker.controllers import *
-from tasktracker.lib.watchers import *
 from paste.deploy.converters import asbool
 from paste.deploy.config import CONFIG
 import sqlobject
@@ -182,29 +181,9 @@ class BaseController(WSGIController):
                 #they're logged in but still don't have the necessary permissions
                 raise httpexceptions.HTTPForbidden("Access denied")
 
-        func = getattr(self, action)
-        dog = getattr(func, 'watchdog', None)
-        self.watchdog = local()
-
-        if dog:
-            self.watchdog.dog = dog()
-            self.watchdog.dog.before(params)
-            self.watchdog.action = action
-        else:
-            self.watchdog.dog = None
-
-    def __after__(self, action, **params):
-        if not hasattr(self, "watchdog"):
-            return
-        if self.watchdog.dog:
-            if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
-                self.watchdog.dog.after(params)
-
-
     @classmethod
     def _has_permissionx(cls, controller, action_verb, params):
         v = cls._has_permissionx(controller, action_verb, params)
-        #print v
         return v
 
     @classmethod
