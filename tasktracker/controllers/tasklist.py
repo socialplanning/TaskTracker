@@ -130,10 +130,11 @@ class TasklistController(BaseController):
             else:
                 level = manager_level
 
-            #task_show and tasklist_show are the same
+            #task_show and tasklist_show are the same, as is comment
             make_permission(action, tasklist, level)
             if action == 'task_show':
                 make_permission('tasklist_show', tasklist, level)
+                make_permission('task_comment', tasklist, level)
 
             #change_status goes with claim
             if action == 'task_claim':
@@ -150,8 +151,6 @@ class TasklistController(BaseController):
         make_permission('tasklist_update', tasklist, list_owner_level)
         make_permission('tasklist_delete', tasklist, list_owner_level)
         
-        #anyone can comment
-        make_permission('task_comment', tasklist, auth_level)
 
         list_owner = Role.selectBy(name='ListOwner')[0].id
         #demote old managers
