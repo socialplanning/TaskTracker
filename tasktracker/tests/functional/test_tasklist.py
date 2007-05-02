@@ -436,6 +436,22 @@ class TestTaskListController(TestController):
                     print "line: %d, user: %s, action: view, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
                     raise
 
+                #test commenting
+                try:
+                    comment = view
+                    if project_level != 'open_policy' and user == 'auth':
+                        comment = 403 #only members can comment on non-open projects
+
+                    if user == 'anon':
+                        comment = 401 #anonymous users cannot comment -- all else is as per grid
+
+                    res = app.post(url_for(controller='task', action='comment', id=task.id, text='comment text'), status=comment)
+                except:
+
+                    print "line: %d, user: %s, action: comment, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+
                 res = app.get(url_for(controller='task', action='show_authenticate', id=task.id))
 
                 key_re = re.compile('key = (\w+)')
