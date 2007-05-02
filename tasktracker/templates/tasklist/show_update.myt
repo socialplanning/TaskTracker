@@ -59,6 +59,7 @@ function show_permissions() {
   lists.each(function(list_name) {
       for (var i = 0; i < 5; i ++) {  
         var item = $(list_name + '_item_' + i);
+	if( !item ) continue;
         var button = $(list_name + '_level_' + i);
 	item.show();
         button.show();
@@ -75,10 +76,11 @@ lists.each(function(list_name) {
       var old = parseInt( $(list_name + '_level_old').value );
       if( i > old || ( !i && old ) ) {
         var item = $(list_name + '_item_' + i);
-	item.hide();
+        if( item )
+	  item.hide();
       }
       var button = $(list_name + '_level_' + i);
-      button.hide();
+      if( button ) button.hide();
     }
   });
 </script>

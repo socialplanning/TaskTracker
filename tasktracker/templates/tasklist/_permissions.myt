@@ -65,13 +65,21 @@ lists.each(function(list_name) {
 	show_selected(list_name, old.value);
     });
 lists.each(function(list_name) {
-        // move "not even see this list" to the bottom of the list in the next three lines.
+	/*    // move "not even see this list" to the bottom of the list in the next three lines.
         var m = $(list_name + '_item_0');
 	if( !m ) return;
-	m.parentNode.appendChild(m);
+	m.parentNode.appendChild(m);*/
 	old = $(list_name + '_level_old');
 	permission_set(old.value, list_name);
     });
+
+% if c.project_permission_level == "medium_policy":
+for( var i = 2; i < options.length; ++ i ) {
+  var m = $("other_item_" + i);
+  if( !m ) continue;
+  m.parentNode.removeChild(m);
+}
+%
 
 function show_selected(list_name, index) {
     //also show what's selected
@@ -79,6 +87,7 @@ function show_selected(list_name, index) {
     if( !list ) return;
     for (var i = 0; i < options.length; ++ i) {
 	var radio = $(list_name + '_level_' + i);
+	if( !radio ) continue;
 	if( i <= index && (i == index || i > 0) ) {
 	    removeClass(radio.parentNode, 'unselected-permission')
 	    addClass(radio.parentNode, 'selected-permission');
