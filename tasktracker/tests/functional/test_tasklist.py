@@ -328,6 +328,34 @@ class TestTaskListController(TestController):
         
         tl.destroySelf()
 
+    def test_tasklist_security(self):
+        #load the tasklist security matrix
+        f = open("tasktracker/tests/data/tasklists_security.csv")
+        users = ['admin', 'member', 'auth', 'anon']
+        line_no = 0
+        for line in f:
+            line_no += 1
+            fields = line.strip('\n').split(',')
+            project_level = fields[0]
+            fields = fields[1:]
+            for user in users:
+                view_index, create_list = fields[:2]
+                fields = fields[2:]
+                
+                app = self.getApp(user, project_permission_level = project_level)
+                status = view_index == "Y" and 200 or user == "anon" and 401 or 403
+
+                # test viewing
+                try:
+                    res = app.get(url_for(controller='tasklist', action='index'), status=status)
+                    print "user %s, security %s, view_index successfully got %s" % (user, project_level, view_index)
+                except:
+                    print "Error on line %d: user %s, security %s, view_index expected %s" % (line_no, user, project_level, view_index)
+                    raise
+
+                # test tasklist creation
+            print "Done testing line %d: %s" % (line_no, line)
+
     def test_task_security(self):
         #load the security matrix
         f = open("tasktracker/tests/data/security.csv")
@@ -411,9 +439,6 @@ class TestTaskListController(TestController):
                 except:
                     print "line: %d, user: %s, action: edit, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
                     raise
-
-
-
+                
                 tl.destroySelf()
                 task.destroySelf()
-            
