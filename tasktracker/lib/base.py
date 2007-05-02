@@ -170,6 +170,9 @@ class BaseController(WSGIController):
         if restrict_remote_addr:
             if request.environ['REMOTE_ADDR'] != '127.0.0.1':
                 redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj
+        
+        if action == "show_authenticate":
+            return True
 
         if not self._authorize(project, action, params):
             if not c.username:
@@ -191,6 +194,8 @@ class BaseController(WSGIController):
             self.watchdog.dog = None
 
     def __after__(self, action, **params):
+        if not hasattr(self, "watchdog"):
+            return
         if self.watchdog.dog:
             if self.watchdog.action == request.environ['pylons.routes_dict']['action']:
                 self.watchdog.dog.after(params)
@@ -354,6 +359,10 @@ class BaseController(WSGIController):
         #if callable(action_verb):  #TODO: this isn't a good solution!
         #    return True
 
+        if c.project_permission_level == 'closed_policy':
+            if not c.username in c.usermapper.project_member_names():
+                return False
+
         if action_verb == 'open':
             return True
 
@@ -362,10 +371,6 @@ class BaseController(WSGIController):
                 abort(403, 'Forbidden')
             else:
                 return True
-
-        if c.project_permission_level == 'closed_policy':
-            if not c.username in c.usermapper.project_member_names():
-                return False
 
         params = dict(params)
         params.update(request.params)
