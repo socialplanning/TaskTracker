@@ -168,7 +168,7 @@ class BaseController(WSGIController):
         restrict_remote_addr = getattr(func, 'restrict_remote_addr', False)
         if restrict_remote_addr:
             if request.environ['REMOTE_ADDR'] != '127.0.0.1':
-                redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj
+                redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj - make it a 404
         
         if action == "show_authenticate":
             return True
@@ -273,21 +273,27 @@ class BaseController(WSGIController):
         If authorization fails at this step, raise an exception or redirect.
         """
 
-        if callable(action_verb):  #TODO: this isn't a good solution!
+        ### if action_verb is callable, it has nothing to do with project initialization
+        ### so authorization checks must continue
+        if callable(action_verb):
             return False
         
+        ### if we're initializing the project or displaying the uninitialized error message
+        ### authorization can succeed or fail at this step
         action_name = controller + '_' + action_verb
         if action_name == 'project_initialize':
             if c.level <= Role.getLevel('ProjectAdmin'):
-                return True #OK, let admins initialize the project.
+                return True # let only admins initialize the project
             else:
                 raise NotInitializedException
         elif action_name == 'project_show_uninitialized':
             return True
 
+        ### if the project is already initialized, authorization procedures must continue
         if c.project.initialized:
             return False
 
+        ### the project is not initialized, so we redirect to the error message for uninitialized projects
         redirect_to(controller='project', action='show_uninitialized', id = c.project.id) # @@ ugh -egj
         
     def _authorize(self, project, action, params):
@@ -295,6 +301,7 @@ class BaseController(WSGIController):
 
         if controller == 'error':
             return True
+
         environ = request.environ
 
         role_name = _getRole(environ)
@@ -318,10 +325,9 @@ class BaseController(WSGIController):
 
         if controller=='task' and callable(action_verb) and request.params.get('field') == 'status' and c.username == 'member':
             pass#import pdb;pdb.set_trace()
+
         # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized
         # if function returns false, the project IS initialized, so we have to continue checking auth.
-        #        if action_verb in ("initialize","show_uninitialized") or \
-            #if "initialization_not_required" not in params['environ']:
         if self._initialize_project(controller, action_verb, params):
             return True            
 
