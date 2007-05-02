@@ -343,17 +343,29 @@ class TestTaskListController(TestController):
                 fields = fields[2:]
                 
                 app = self.getApp(user, project_permission_level = project_level)
-                status = view_index == "Y" and 200 or user == "anon" and 401 or 403
 
                 # test viewing
+                status = view_index == "Y" and 200 or user == "anon" and 401 or 403
                 try:
                     res = app.get(url_for(controller='tasklist', action='index'), status=status)
-                    print "user %s, security %s, view_index successfully got %s" % (user, project_level, view_index)
                 except:
                     print "Error on line %d: user %s, security %s, view_index expected %s" % (line_no, user, project_level, view_index)
                     raise
 
                 # test tasklist creation
+                status = create_list == "Y" and 200 or user == "anon" and 401 or 403
+                try:
+                    res = app.get(url_for(controller='tasklist', action='show_create'), status=status)
+                    if status == 200:
+                        form = res.forms[0]
+                        form['title'] = "The new tasklist title"
+                        form['member_level'] = 4
+                        form['other_level'] = 4
+                        res = form.submit(status=303) # annoying special case.. tasklist creation redirects to index
+                except:
+                    print "Error on line %d: user %s, security %s, create_list expected %s" % (line_no, user, project_level, create_list)
+                    raise
+
             print "Done testing line %d: %s" % (line_no, line)
 
     def test_task_security(self):
