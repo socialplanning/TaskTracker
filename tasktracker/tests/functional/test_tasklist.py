@@ -329,7 +329,22 @@ class TestTaskListController(TestController):
         tl.destroySelf()
 
     def test_tasklist_security(self):
-        #load the tasklist security matrix
+        """
+        Tests all possible security settings for actions
+        pertaining to tasklists based on a security matrix.
+        Actions not covered in these tests have not yet
+        been added to the security matrix.
+
+        Actions covered in these tests:
+        view tasklist index (or access any TaskTracker page)
+        tasklist_create
+
+        Actions that are NOT covered in these tests:
+        tasklist_show
+        tasklist_update
+        tasklist_delete
+        """
+
         f = open("tasktracker/tests/data/tasklists_security.csv")
         users = ['admin', 'member', 'auth', 'anon']
         line_no = 0
@@ -369,7 +384,25 @@ class TestTaskListController(TestController):
             print "Done testing line %d: %s" % (line_no, line)
 
     def test_task_security(self):
-        #load the security matrix
+        """
+        Tests all possible security settings for actions
+        pertaining to tasks based on a security matrix.
+        Actions not covered in these tests have not yet
+        been added to the security matrix.
+
+        Actions covered in these tests:
+        task_view
+        task_claim
+        task_change_status
+        task_create
+        task_update
+
+        Actions that are NOT covered in these tests:
+        task_assign  <-- identical to task_claim i believe?
+        task_comment
+        task_private
+        """
+
         f = open("tasktracker/tests/data/security.csv")
         security_levels = ['not even see this list', 'view this list', 'and claim tasks', 'and create new tasks', 'and edit any task']
         users = ['admin', 'member', 'auth', 'anon']
