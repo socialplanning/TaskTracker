@@ -74,7 +74,8 @@ class TasklistController(BaseController):
     @catches_errors
     def show(self, id, *args, **kwargs):
         c.tasklist = safe_get(TaskList, id, check_live=True)
-        
+        self.preload_permission_cache(c.tasklist)
+
         c.task_listID = id
         c.tasks = c.tasklist.topLevelTasks()
         c.parentID = 0

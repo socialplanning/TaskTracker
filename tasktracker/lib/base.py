@@ -181,6 +181,27 @@ class BaseController(WSGIController):
                 #they're logged in but still don't have the necessary permissions
                 raise httpexceptions.HTTPForbidden("Access denied")
 
+    def preload_permission_cache(self, tasklist):
+        local_level = c.level
+
+        if c.level > Role.getLevel('ListOwner'):
+            if tasklist.isOwnedBy(c.username):
+                local_level = Role.getLevel('ListOwner')
+
+        #general permissions
+        tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == tasklist.id, TaskListPermission.q.min_level >= local_level))
+        permissions = set((p.actionName() for p in tl_permissions))
+
+        for task in tasklist.tasks:
+            key = ('task', task.id)
+            if task.private:
+                #special case for private tasks
+                if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(c.username):
+                    c.permission_cache[key] = set()
+                    return False
+            else:
+                c.permission_cache[key] = permissions 
+
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
 
