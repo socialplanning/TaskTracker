@@ -1,0 +1,45 @@
+open_policy,not even see this list,not even see this list,,Y,Y,Y,Y,,N, N,N,N,,N,N,N,N
+open_policy,view this list,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+open_policy,view this list,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+open_policy,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+open_policy,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+open_policy,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+open_policy,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+open_policy,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+open_policy,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+open_policy,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,Y
+medium_policy,not even see this list,not even see this list,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+medium_policy,view this list,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+medium_policy,view this list,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+medium_policy,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+medium_policy,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,Y,Y,Y,N
+medium_policy,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+medium_policy,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+medium_policy,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+medium_policy,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+medium_policy,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,Y,Y,Y,N
+closed_policy,not even see this list,not even see this list,,Y,Y,Y,Y,,N,N,N,N,,N,N,N,N
+closed_policy,view this list,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,view this list,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and claim tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and claim tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and claim tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and create new tasks,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and create new tasks,view this list,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and create new tasks,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and create new tasks,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,N,,N,N,N,N
+closed_policy,and edit any task,not even see this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+closed_policy,and edit any task,view this list,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+closed_policy,and edit any task,and claim tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+closed_policy,and edit any task,and create new tasks,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N
+closed_policy,and edit any task,and edit any task,,Y,Y,Y,Y,,Y,Y,Y,Y,,N,N,N,N

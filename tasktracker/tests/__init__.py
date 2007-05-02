@@ -19,6 +19,7 @@
 # USA
 
 import os, sys
+import re
 from unittest import TestCase
 
 here_dir = os.path.dirname(__file__)
@@ -59,13 +60,13 @@ class TestController(TestCase):
         self.setup_fixtures()
         TestCase.__init__(self, *args)
 
-    def _get_authenticator(self, res):
-        authenticator = None
-        for form in res.forms.values():
-            if form.get('authenticator', None):
-                authenticator = form['authenticator'].value
-                break
-        assert authenticator
+    def _get_authenticator(self, app):
+
+        res = app.get(url_for(controller='task', action='show_authenticate', id=0))
+
+        key_re = re.compile('key = (\w+)')
+        result = key_re.search(res.body)
+        authenticator = result.groups(1)[0]
         return authenticator
 
     def setup_fixtures(self):

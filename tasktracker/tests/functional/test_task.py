@@ -37,7 +37,7 @@ class TestTaskController(TestController):
         res.mustcontain(lists[0].title)
 
         task = lists[0].tasks[0]
-        authenticator = self._get_authenticator(res)
+        authenticator = self._get_authenticator(app)
 
         assert not task.status.done
         res2 = app.post('/task/change_field/%s' % task.id,
@@ -110,7 +110,7 @@ class TestTaskController(TestController):
         res.mustcontain("delete this task")
         # we actually can't just click the link, because there's some magical hidden javascript
         res = app.post(url_for(controller='task', action='destroy', id=top_level_task.id,
-                               authenticator=self._get_authenticator(res)))
+                               authenticator=self._get_authenticator(app)))
 
         ### this should redirect us to the tasklist page
         res = res.follow()
@@ -263,7 +263,7 @@ class TestTaskController(TestController):
 
         ### when you change a task owner, the response should consist of the new task TR
         res = app.post('/task/change_field/%s' % task.id,
-                       params=dict(owner='Mowbray', field='owner', authenticator=self._get_authenticator(res)))
+                       params=dict(owner='Mowbray', field='owner', authenticator=self._get_authenticator(app)))
         assert re.search('<tr[^>]*owner\s*=\s*"Mowbray"', res.body)
 
         ### and the new owner should be displayed on the task page
@@ -281,17 +281,17 @@ class TestTaskController(TestController):
 
         ### changing the status, deadline, and priority should do the same thing
         res = app.post('/task/change_field/%s' % task.id,
-                       params=dict(status='true', field='status', authenticator=self._get_authenticator(res)))
+                       params=dict(status='true', field='status', authenticator=self._get_authenticator(app)))
         assert re.search('<tr[^>]*status\s*=\s*"done"', res.body)
         res = app.get(url_for(controller='task', action='show', id=task.id))
 
         res = app.post('/task/change_field/%s' % task.id,
-                       params=dict(deadline='11-26-1984', field='deadline', authenticator=self._get_authenticator(res)))
+                       params=dict(deadline='11-26-1984', field='deadline', authenticator=self._get_authenticator(app)))
         assert re.search('<tr[^>]*deadline\s*=\s*"1984-11-26"', res.body)
         res = app.get(url_for(controller='task', action='show', id=task.id))
 
         res = app.post('/task/change_field/%s' % task.id,
-                       params=dict(priority='High', field='priority', authenticator=self._get_authenticator(res)))
+                       params=dict(priority='High', field='priority', authenticator=self._get_authenticator(app)))
         assert re.search('<tr[^>]*priority\s*=\s*"High"', res.body)
         res = app.get(url_for(controller='task', action='show', id=task.id))
 
@@ -310,7 +310,7 @@ class TestTaskController(TestController):
         ### when he tries to change a field, the controller should throw us an AssertionError
         res = app.get(url_for(controller='task', action='show', id=task.id))
         res = app.post('/task/change_field/%s' % task.id,
-                       params=dict(owner='member', field='owner', authenticator=self._get_authenticator(res)), status=403)
+                       params=dict(owner='member', field='owner', authenticator=self._get_authenticator(app)), status=403)
 
         ### his change should not be reflected in the task detail page
         res = app.get(url_for(controller='task', action='show', id=task.id))

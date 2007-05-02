@@ -20,7 +20,6 @@
 
 from tasktracker.tests import *
 from tasktracker.models import *
-import re
 
 class TestTaskListController(TestController):
         
@@ -100,7 +99,7 @@ class TestTaskListController(TestController):
         assert "delete this list" not in res.body
         
         ### they can't even do it directly
-        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)), status=403)
+        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(app)), status=403)
 
         res = app.get(url_for(controller='tasklist'))        
         res.mustcontain("testing tasklist deletion")
@@ -109,7 +108,7 @@ class TestTaskListController(TestController):
         app = self.getApp("admin")
         res = app.get(url_for(controller='tasklist', action='show'))
         res.mustcontain("delete this list")
-        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(res)))
+        res = app.post(url_for(controller='tasklist', action='destroy', id=tl.id, authenticator=self._get_authenticator(app)))
 
         ### it will redirect to the list of tasklists page, and the tasklist will be gone
         res = res.follow()
@@ -438,9 +437,6 @@ class TestTaskListController(TestController):
                 #test commenting
                 try:
                     comment = view
-                    if project_level != 'open_policy' and user == 'auth':
-                        comment = 403 #only members can comment on non-open projects
-
                     if user == 'anon':
                         comment = 401 #anonymous users cannot comment -- all else is as per grid
 
@@ -450,12 +446,7 @@ class TestTaskListController(TestController):
                     print "line: %d, user: %s, action: comment, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
                     raise
 
-
-                res = app.get(url_for(controller='task', action='show_authenticate', id=task.id))
-
-                key_re = re.compile('key = (\w+)')
-                result = key_re.search(res.body)
-                authenticator = result.groups(1)[0]
+                authenticator = self._get_authenticator(app)
 
                 #test claim: status
                 try:
@@ -515,3 +506,67 @@ class TestTaskListController(TestController):
                 
                 tl.destroySelf()
                 task.destroySelf()
+
+    def test_task_owner_security(self):
+        """ Tests all possible security settings for task owner actions based
+on a security matrix.
+
+        Actions covered in these tests:
+        task_view
+        task_comment
+        task_change_status
+        task_edit
+
+        Actions that are NOT covered in these tests:
+        task_private, at least
+        """
+
+        f = open("tasktracker/tests/data/taskowner_security.csv")
+        security_levels = ['not even see this list', 'view this list', 'and claim tasks', 'and create new tasks', 'and edit any task']
+        users = ['admin', 'member', 'auth']
+        line_no = 0
+        for line in f:
+            line_no += 1
+            fields = line[:-1].split(",")
+            project_level, member_level, other_level = fields[0:3]
+            member_level = security_levels.index(member_level)
+            other_level = security_levels.index(other_level)
+            fields = fields[3:]
+            for user in users:
+                def status_for_action(action):
+                    status = 200
+                    if not action:
+                        status = 403
+                    return status
+                _, view, comment, status, edit = [status_for_action(x == 'Y') for x in fields[:5]]
+                fields = fields[5:]
+
+                app = self.getApp(user, project_permission_level = project_level)
+                tl = self.create_tasklist('fleem', member_level, other_level)
+                #create a task programmatically (assigned to user)
+                task = Task(title='morx', task_listID=tl.id, owner=user)
+
+                #test viewing
+                try:
+                    res = app.get(url_for(controller='task', action='show', id=task.id), status=view)
+                except:
+                    print "line: %d, user: %s, action: view, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                authenticator = self._get_authenticator(app)
+
+                #test commenting
+                try:
+                    res = app.post(url_for(controller='task', action='comment', id=task.id, text='comment text'), status=comment)
+                except:
+
+                    print "line: %d, user: %s, action: comment, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
+                #test status
+                try:
+                    res = app.post('/task/change_field/%s' % task.id,
+                                    params={'field':'status', 'status':'true', 'authenticator':authenticator}, status=status)
+                except:
+                    print "line: %d, user: %s, action: status, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise

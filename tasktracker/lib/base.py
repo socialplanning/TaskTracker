@@ -192,13 +192,11 @@ class BaseController(WSGIController):
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == tasklist.id, TaskListPermission.q.min_level >= local_level))
         permissions = set((p.actionName() for p in tl_permissions))
 
-        extra_permissions = set()
         for task in tasklist.tasks:
             key = ('task', task.id)
-
-            if local_level > Role.getLevel('TaskOwner'):
-                if task.isOwnedBy(c.username):
-                    extra_permissions = set(['task_show', 'task_comment', 'task_change_status'])
+            extra_permissions = set()
+            if local_level > Role.getLevel('TaskOwner') and 'task_show' in permissions and task.isOwnedBy(c.username):
+                    extra_permissions = set(['task_comment', 'task_change_status'])
 
             if task.private:
                 #special case for private tasks
@@ -208,19 +206,41 @@ class BaseController(WSGIController):
             else:
                 c.permission_cache[key] = permissions.union(extra_permissions)
 
+
+    @classmethod
+    def _zope_allows(cls, action_name, username, id):
+        if c.project_permission_level == 'open_policy':
+            return True
+        elif c.project_permission_level == 'medium_policy':
+            if action_name in ['task_show', 'tasklist_show']:
+                return True
+            if c.username in c.usermapper.project_member_names():
+                return True
+            if action_name == 'task_comment':
+                return True
+            if action_name == 'task_change_status':
+                return safe_get(Task, id).isOwnedBy(username)
+        elif c.project_permission_level == 'closed_policy':
+            if c.username in c.usermapper.project_member_names():
+                return True
+        return False
+
+
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
-
+        
         if callable(action_verb):
             action_verb = action_verb(params)
 
         action_name = controller + '_' + action_verb
-
         id = params.get('id')
-        #print action_name, id
         if not id:
             id = params.get('task_listID')
         key = (controller, id)
+
+        if not cls._zope_allows(action_name, params['username'], id):
+            return False
+
         if action_name == 'tasklist_create':
             ### tasklist creation permissions are based entirely on the project permission level
             ### and conform to the text descriptions of security settings in opencore
@@ -228,22 +248,10 @@ class BaseController(WSGIController):
                 return c.level <= Role.getLevel('Authenticated')
             else:
                 return c.level <= Role.getLevel('ProjectMember')
-        else:
-            permissions = c.permission_cache.get(key)
-            if permissions:
-                return action_name in permissions
 
-        #Fixme: this needs to be done through the regular permission system and updated
-        #when Zope sends events
-        #Zope security
-        if c.project_permission_level == 'medium_policy':
-            if c.level > Role.getLevel('ProjectMember'):
-                if not (action_name == 'task_show' or action_name == 'tasklist_show'):
-                    return False
-        if c.project_permission_level == 'closed_policy':
-            if c.level > Role.getLevel('ProjectMember'):
-                return False
-
+        permissions = c.permission_cache.get(key)
+        if permissions:
+            return action_name in permissions
         if controller == 'tasklist':
             task_list = safe_get(TaskList, params['id'])
         elif controller == 'task':
@@ -274,17 +282,19 @@ class BaseController(WSGIController):
                 if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(params['username']):
                     c.permission_cache[key] = set()
                     return False
-        extra_permissions = set()
-        if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
-            if task.isOwnedBy(params['username']):
-                extra_permissions = set(['task_show', 'task_comment', 'task_change_status'])
         
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == task_list.id, TaskListPermission.q.min_level >= local_level))
 
         permissions = set((p.actionName() for p in tl_permissions))
 
-        c.permission_cache[key] = permissions.union(extra_permissions)
+        extra_permissions = set()
+        if controller == 'task' and local_level > Role.getLevel('TaskOwner') and 'task_show' in permissions:
+            if task.isOwnedBy(params['username']):
+                extra_permissions = set(['task_comment', 'task_change_status'])
 
+        permissions = permissions.union(extra_permissions)
+
+        c.permission_cache[key] = permissions
         return action_name in permissions
 
     def _initialize_project(self, controller, action_verb, params):
