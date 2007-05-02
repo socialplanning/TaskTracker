@@ -182,11 +182,6 @@ class BaseController(WSGIController):
                 raise httpexceptions.HTTPForbidden("Access denied")
 
     @classmethod
-    def _has_permissionx(cls, controller, action_verb, params):
-        v = cls._has_permissionx(controller, action_verb, params)
-        return v
-
-    @classmethod
     def _has_permission(cls, controller, action_verb, params):
 
         if callable(action_verb):
