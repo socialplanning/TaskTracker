@@ -166,6 +166,11 @@ class Task(SQLObject):
         if kwargs.get('private'):
             assert 'private_tasks' in [f.name for f in task_list.features]
 
+        if kwargs.get('parentID'):
+            parent = Task.get(kwargs['parentID'])
+            if parent.private:
+                kwargs['private'] = True
+
         if 'statusID' in kwargs:
             try:
                 kwargs['statusID'] = int(kwargs['statusID'])
@@ -198,6 +203,13 @@ class Task(SQLObject):
             self.parent.num_children -= 1
         if value:
             Task.get(value).num_children += 1
+
+    def _set_private(self, value):
+        if getattr(self, 'id', None):
+            if self.parentID:
+                if self.parent.private:
+                    value = True
+        self._SO_set_private(value)
 
     def _set_parentID(self, value):
         if getattr(self, 'id', None):
