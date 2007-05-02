@@ -347,7 +347,7 @@ class TaskController(BaseController):
         c.task.live = False
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
-    @attrs(action='open', readonly=False)
+    @attrs(action='open', readonly=False, restrict_remote_addr=True)
     @catches_errors
     def show_authenticate(self, id, *args, **kwargs):
         return render_response('task/authenticate.myt')
