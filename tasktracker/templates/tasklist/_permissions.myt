@@ -1,3 +1,19 @@
+<div id="permission_help">
+
+<p>The Task Tracker is s designed to accommodate many different ways of getting things done. You can create task lists that match your particular needs by choosing the options that best work for you.</p>
+
+<ul>
+<li>For a private task list you can choose to make it so that team-members and non-members can <b>not even see the list</b>.</li>
+<li>If a set of tasks requires more direction, create a manger-directed list in which members can views tasks that have been assigned to them or <b>claim tasks</b> that have been left unassigned.</li>
+
+<li>For a more collaborative project, allow members to <b>create new tasks</b> and <b>edit tasks</b>.</li>
+</ul>
+
+<p> The options further down the list add to or override those options further up. If you select to allow team members to edit any task, for instance, then they can also view this list, and claim tasks, and create new tasks. If you choose to allow non-members to create new tasks then they can also view this list and claim tasks.</p>
+
+<p>The options are also designed to avoid incompatible choices. You can&#39;rsquo;t, for example, allow non-members to edit any tasks but restrict team members to only viewing the list.</p> 
+
+</div>
 
 <table><tbody><tr valign="top" padding="50px;">
 <td>
@@ -19,6 +35,8 @@
 
 <input type="hidden" name="member_level" id="member_level_old" value="0">
 <input type="hidden" name="other_level" id="other_level_old" value="0">
+
+<hr/>
 
 <script>
 var options = ["not even see this list", "view this list", "and claim tasks", "and create new tasks", "and edit any task"];

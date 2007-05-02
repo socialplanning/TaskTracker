@@ -1,3 +1,19 @@
+#oc-tasktracker #permissions_section #permissions_help {
+  float: right;
+  width: 50%;
+  padding-left: 1em;
+}
+
+#oc-tasktracker #permissions_section #permissions_help ul {
+  list-style-type: square;
+}
+
+#oc-tasktracker #permissions_section hr {
+  clear: both;
+  visibility: hidden;
+  margin: 0;
+}
+
 #oc-tasktracker {
   margin: 0 2em 0.5em;
   font-size: 1em;
