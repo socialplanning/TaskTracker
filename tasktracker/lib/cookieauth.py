@@ -135,7 +135,7 @@ class CookieAuth(object):
             return False
         
     def needs_redirection(self, status, headers):
-        return status.startswith('403')
+        return status.startswith('401')
 
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].strip("/").startswith("_debug"):
