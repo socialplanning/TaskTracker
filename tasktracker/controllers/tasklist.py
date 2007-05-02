@@ -134,7 +134,10 @@ class TasklistController(BaseController):
             make_permission(action, tasklist, level)
             if action == 'task_show':
                 make_permission('tasklist_show', tasklist, level)
-                make_permission('task_comment', tasklist, level)
+                comment_level = level
+                if level == other_level:
+                    comment_level = auth_level
+                make_permission('task_comment', tasklist, comment_level)
 
             #change_status goes with claim
             if action == 'task_claim':
