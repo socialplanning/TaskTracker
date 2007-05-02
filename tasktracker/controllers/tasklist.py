@@ -142,12 +142,13 @@ class TasklistController(BaseController):
                 else:
                     make_permission('task_change_status', tasklist, level)
 
+        list_owner_level = Role.getLevel('ListOwner')
         #only managers can assign and update list and deal with private tasks
         #and delete tasklists
-        make_permission('task_assign', tasklist, Role.getLevel('ListOwner'))
-        make_permission('task_private', tasklist, Role.getLevel('ListOwner'))
-        make_permission('tasklist_update', tasklist, Role.getLevel('ListOwner'))
-        make_permission('tasklist_delete', tasklist, Role.getLevel('ListOwner'))
+        make_permission('task_assign', tasklist, list_owner_level)
+        make_permission('task_private', tasklist, list_owner_level)
+        make_permission('tasklist_update', tasklist, list_owner_level)
+        make_permission('tasklist_delete', tasklist, list_owner_level)
         
         #anyone can comment
         make_permission('task_comment', tasklist, auth_level)

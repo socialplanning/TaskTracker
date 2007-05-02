@@ -228,21 +228,19 @@ class TaskController(BaseController):
             self._move_below_sibling(c.task.id, siblingID)
         return render_response('task/task_list_item.myt', atask=c.task, fragment=True)
 
-    # @@ This is no longer used.
+    # @@ The next two methods are no longer used, but cannot be removed because
+    # security depends upon them.  
+
     @attrs(action='claim', readonly=False)
     @catches_errors
     def claim(self, id, *args, **kwargs):
-        c.task = safe_get(Task, id, check_live=True)
-        c.task.owner = c.username
-        return Response.redirect_to(action='show',controller='task', id=id)
+        return render_response("dummy")
 
     # @@ This is no longer used.
     @attrs(action='assign', readonly=False)
     @catches_errors
     def assign(self, id, *args, **kwargs):
-        c.task = safe_get(Task, id, check_live=True)
-        c.task.owner = request.params["owner"]
-        return Response.redirect_to(action='show',controller='task', id=id)
+        return render_response("dummy")
 
     @attrs(action='comment', readonly=False)
     @catches_errors
