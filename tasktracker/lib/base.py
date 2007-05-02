@@ -331,6 +331,9 @@ class BaseController(WSGIController):
         if self._initialize_project(controller, action_verb, params):
             return True            
 
+        # @@@ you know, readonly == GET, right? so there's some redundant information stored here
+        ###   since routes is using a different procedure to check whether an action is GET-safe
+        ###   (though i prefer this procedure since it's explicit)  -- egj
         if project.readonly:
             only_reads = getattr(func, 'readonly', False)
             if not only_reads:
