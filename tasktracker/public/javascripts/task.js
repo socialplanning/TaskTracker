@@ -350,8 +350,9 @@ var myrules = {
 
     'th.draggable-column-heading' : function(element) {
 	element.onclick = function() {
+            id = this.getAttribute("id");
 	    if( !this.columnName )
-		this.columnName = this.id.replace("-heading", '');
+		this.columnName = id.replace("-heading", '');
 	    sortBy(this.columnName);
 	    return false;
 	}
@@ -1186,11 +1187,11 @@ function sortBy(column, order) {
 
     $A(document.getElementsByClassName("column-heading")).each(function(e) {
 	    if (hasClass(e, column + '-column')) {
-		if( !order )
+		if( !order ) {
 		    order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
+		}
 		e.setAttribute('sortOrder', order);
 		addClass(e, 'selected-column');
-		order = e.getAttribute('sortOrder');
 	    } else {
 		e.setAttribute('sortOrder', '');
 		removeClass(e, 'selected-column');
