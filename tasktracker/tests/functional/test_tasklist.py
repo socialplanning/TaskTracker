@@ -398,7 +398,6 @@ class TestTaskListController(TestController):
         task_update
 
         Actions that are NOT covered in these tests:
-        task_comment
         task_private
         """
 
