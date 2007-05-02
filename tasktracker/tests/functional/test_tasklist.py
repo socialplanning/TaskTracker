@@ -398,7 +398,6 @@ class TestTaskListController(TestController):
         task_update
 
         Actions that are NOT covered in these tests:
-        task_assign  <-- identical to task_claim i believe?
         task_comment
         task_private
         """
@@ -484,6 +483,20 @@ class TestTaskListController(TestController):
                 except:
                     print "line: %d, user: %s, action: edit, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
                     raise
+
+                #test assign (list admins only)
+                try:
+                    if user == 'admin':
+                        assign = status_for_action(True)
+                    else:
+                        assign = status_for_action(False)
+
+                    res = app.post('/task/change_field/%s' % task.id,
+                                    params={'field':'owner', 'owner' : 'Mowbray', 'authenticator':authenticator}, status=assign)
+                except:
+                    print "line: %d, user: %s, action: assign, member_level %s, other_level %s" % (line_no, user, security_levels[member_level], security_levels[other_level])
+                    raise
+
                 
                 tl.destroySelf()
                 task.destroySelf()
