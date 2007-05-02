@@ -110,7 +110,7 @@ class TasklistController(BaseController):
             TaskListPermission(action=Action.selectBy(action = action_name)[0], 
                                task_list=tasklist, min_level = level)
 
-        other_level = Role.getLevel('Anonymous')
+        anon_level = Role.getLevel('Anonymous')
         auth_level = Role.getLevel('Authenticated')
         member_level = Role.getLevel('ProjectMember')
         manager_level = Role.getLevel('ListOwner')
@@ -124,7 +124,7 @@ class TasklistController(BaseController):
                 if action != 'task_show':
                     level = auth_level
                 else:
-                    level = other_level
+                    level = anon_level
             elif i <= p.get('member_level', 0):
                 level = member_level
             else:
@@ -135,7 +135,7 @@ class TasklistController(BaseController):
             if action == 'task_show':
                 make_permission('tasklist_show', tasklist, level)
                 comment_level = level
-                if level == other_level:
+                if level == anon_level:
                     comment_level = auth_level
                 make_permission('task_comment', tasklist, comment_level)
 
