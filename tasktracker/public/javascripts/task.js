@@ -537,7 +537,7 @@ function filterField(fieldname, task) {
     if( filtervalue == 'All' ) {
 	return false;
     }
-    if( fieldname == "status" && filtervalue == "All%20Uncompleted" ) {
+    if( fieldname == "status" && filtervalue == "AllUncompleted" ) {
 	return( task.getAttribute(fieldname) == "done" );
     }
     
