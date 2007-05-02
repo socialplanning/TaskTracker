@@ -192,15 +192,21 @@ class BaseController(WSGIController):
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == tasklist.id, TaskListPermission.q.min_level >= local_level))
         permissions = set((p.actionName() for p in tl_permissions))
 
+        extra_permissions = set()
         for task in tasklist.tasks:
             key = ('task', task.id)
+
+            if local_level > Role.getLevel('TaskOwner'):
+                if task.isOwnedBy(c.username):
+                    extra_permissions = set(['task_show', 'task_comment', 'task_change_status'])
+
             if task.private:
                 #special case for private tasks
                 if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(c.username):
                     c.permission_cache[key] = set()
                     return False
             else:
-                c.permission_cache[key] = permissions 
+                c.permission_cache[key] = permissions.union(extra_permissions)
 
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
@@ -268,17 +274,16 @@ class BaseController(WSGIController):
                 if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(params['username']):
                     c.permission_cache[key] = set()
                     return False
-
-        #FIXME?  We no longer give task owners any special rights
-        #if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
-        #    if task.isOwnedBy(params['username']):
-        #        local_level = Role.getLevel('TaskOwner')
+        extra_permissions = set()
+        if controller == 'task' and local_level > Role.getLevel('TaskOwner'):
+            if task.isOwnedBy(params['username']):
+                extra_permissions = set(['task_show', 'task_comment', 'task_change_status'])
         
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == task_list.id, TaskListPermission.q.min_level >= local_level))
 
         permissions = set((p.actionName() for p in tl_permissions))
 
-        c.permission_cache[key] = permissions
+        c.permission_cache[key] = permissions.union(extra_permissions)
 
         return action_name in permissions
 
