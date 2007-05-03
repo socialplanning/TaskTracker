@@ -47,6 +47,7 @@ function getElementsBySelector(parent, selector_string) {
        optimization -- currently always searches by tagname first. this is definitely stupid in the case of tagname=* 
         and may be generally stupid; it seems likely that search-by-tagname will give the most results and should come last.
     */
+
     var selectors = selector_string.split(" ");
     var i;
     var search_in = [parent];
@@ -97,11 +98,8 @@ var Behavior = {
 	    for( rule in ruleset ) {
 		if( rule instanceof Function )
 		    continue;
-		var elements = $$(rule);
 		var elements = getElementsBySelector(document, rule);
-		elements.each( function(element) {
-			ruleset[rule] (element);
-		    });
+		elements.each(ruleset[rule]);
 	    }
 	}
     },
@@ -114,9 +112,7 @@ var Behavior = {
 	    if( !rule || !(rule instanceof Function) )
 		continue;
 	    var elements = getElementsBySelector(document, selector);
-	    elements.each( function(element) {
-		    rule (element);
-		});
+	    elements.each(rule);
 	}
     },
     
