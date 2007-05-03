@@ -103,6 +103,8 @@ class UserMapper(usermapper.UserMapper):
     def project_members(self):
         return get_users_for_project(self.project, self.server)
         
+class BadCookieError(Exception): pass
+
 class CookieAuth(object):
     def __init__(self, app, app_conf):
         self.app = app
@@ -111,7 +113,7 @@ class CookieAuth(object):
         if not os.environ.get('TOPP_SECRET_FILENAME'):
             raise Exception("Environment variable TOPP_SECRET_FILENAME has not been set.")
         
-    def authenticate (self, environ):
+    def authenticate(self, environ):
         try:
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']
@@ -121,9 +123,7 @@ class CookieAuth(object):
         try:
             username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
         except ValueError:
-            status = "401 Unauthorized"
-            start_response(status, [])
-            return ["Please delete your brower's cookies and login again."]
+            raise BadCookieError
             
         secret = get_secret()
         if not auth == hmac.new(secret, username, sha).hexdigest():
@@ -144,7 +144,14 @@ class CookieAuth(object):
         
 	username = ''
         environ['topp.user_info'] = dict(username = '', roles = ['Anonymous'], email = 'null@example.com')
-	if self.authenticate(environ):
+	try:
+	    authenticated = self.authenticate(environ)
+        except BadCookieError:
+            status = "401 Unauthorized"
+            start_response(status, [])
+            return ["Please delete your brower's cookies and login again."]
+
+        if authenticated:
             username = environ['REMOTE_USER']
         
         project_name = environ['topp.project_name']
