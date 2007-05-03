@@ -16,8 +16,6 @@
 
 </div>
 
-<hr/>
-
 <table><tbody><tr valign="top" padding="50px;">
 <td>
 <h2><% c.project.title %>'s project members can</h2>
@@ -138,3 +136,4 @@ function cull_old() {
 }
 
 </script>
+<hr/>

@@ -1,10 +1,10 @@
-#oc-tasktracker #permissions_section #permissions_help {
+#oc-tasktracker #permissions_section #permission_help {
   float: right;
   width: 50%;
   padding-left: 1em;
 }
 
-#oc-tasktracker #permissions_section #permissions_help ul {
+#oc-tasktracker #permissions_section #permission_help ul {
   list-style-type: square;
 }
 
