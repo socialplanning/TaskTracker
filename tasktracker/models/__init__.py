@@ -326,6 +326,7 @@ class Task(SQLObject):
 
         if not orderBy:
             orderBy = "sort_index"
+            orderBy_column = orderBy
 
         if level >= Role.getLevel("ListOwner"):
             #filtering needed
