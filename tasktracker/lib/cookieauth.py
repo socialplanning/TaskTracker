@@ -116,23 +116,23 @@ class CookieAuth(object):
             #authenticate cookie
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']
-
-            username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
-            secret = get_secret()
-            if not auth == hmac.new(secret, username, sha).hexdigest():
-                return False
-
-
-            environ['REMOTE_USER'] = username
-
-            environ['topp.user_info'] = dict(username = username, 
-                                             roles = ['Authenticated'],
-                                             email = '%s@example.com' % username)
-
-            return True
-
         except KeyError:
             return False
+
+        try:
+            username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
+        except ValueError:
+            return False
+
+        secret = get_secret()
+        if not auth == hmac.new(secret, username, sha).hexdigest():
+            return False
+
+        environ['REMOTE_USER'] = username
+        environ['topp.user_info'] = dict(username = username, 
+                                         roles = ['Authenticated'],
+                                         email = '%s@example.com' % username)
+        return True
         
     def needs_redirection(self, status, headers):
         return status.startswith('401')
