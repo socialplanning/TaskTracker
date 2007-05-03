@@ -317,8 +317,10 @@ class Task(SQLObject):
         sortOrder = None
         if options: 
             sql, orderBy, sortOrder = options
+            orderBy_column = orderBy
             if orderBy == 'status':
                 orderBy = 'statusID'
+                orderBy_column = 'status_id'
         if not sortOrder:
             sortOrder = "ASC"
 
@@ -342,7 +344,7 @@ class Task(SQLObject):
             minus = ""
             if sortOrder == "DESC":
                 minus = "-"
-            order = [minus + orderBy, minus + "sort_index"]
+            order = [minus + orderBy_column, minus + "sort_index"]
 
             #find sibling tasks 
             adj = list(Task.select(AND(query, predicate, Task.q.parentID == c.task.parentID)).orderBy(order).limit(1))
@@ -379,7 +381,7 @@ class Task(SQLObject):
                 if not child:
                     return child
                 while 1:
-                    child_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, Task.q.parentID == child.id), 'mysql'), orderBy, sortOrder, sortOrder)
+                    child_task_query = "%s order by %s %s, sort_index %s" % (sqlrepr(AND(query, Task.q.parentID == child.id), 'mysql'), orderBy_column, sortOrder, sortOrder)
                     new_child = list(Task.select(child_task_query).orderBy(None).limit(1))
                     if not new_child:
                         break
