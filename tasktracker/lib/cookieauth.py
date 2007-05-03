@@ -113,7 +113,6 @@ class CookieAuth(object):
         
     def authenticate (self, environ):
         try:
-            #authenticate cookie
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']
         except KeyError:
@@ -122,8 +121,10 @@ class CookieAuth(object):
         try:
             username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
         except ValueError:
-            return False
-
+            status = "401 Unauthorized"
+            start_response(status, [])
+            return ["Please delete your brower's cookies and login again."]
+            
         secret = get_secret()
         if not auth == hmac.new(secret, username, sha).hexdigest():
             return False
