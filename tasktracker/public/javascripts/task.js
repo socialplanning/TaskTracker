@@ -1081,12 +1081,13 @@ function removeRow(ul, row) {
     ul.removeChild(row.second_line);
 }
 
-function sortListBy(ul, column, forward, parentID) {
+function sortListBy(ul, column, forward, parentID, the_tasks) {
     if( !parentID ) parentID = "0";
-    items = $A(ul.getElementsByClassName('task-item')).filter( function(i) {
+
+    var items = $A(the_tasks).filter( function(i) {
 	    return i.getAttribute("parentID") == parentID;
 	} );
-
+    
     var hack_for_priority = (column == 'priority');
     var priority_hack_dict = {'High':1, 'Medium':2, 'Low':3, 'None':4};
     for( i = 0; i < items.length; i++ ) {
@@ -1128,7 +1129,7 @@ function sortListBy(ul, column, forward, parentID) {
 		    ul.appendChild(i.second_line);
 		});	    
 	    if( len_of(x.childTasks) )
-		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"));
+		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"), the_tasks);
 	});
 }
 
@@ -1181,33 +1182,44 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column, order) {
-    $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
-	    e.hide();
-	});
+    var sort_arrows = new Array;
+    var columns = ["status", "priority", "owner", "deadline", "updated"];
+    for( var i = 0; i < columns.length; ++i ) {
+        var arrow = document.getElementById(columns[i] + "-arrows");
+        if( arrow ) {
+            if( columns[i] == column ) arrow.show();
+            else arrow.hide();
+        }
+    }
 
-    $A(document.getElementsByClassName("column-heading")).each(function(e) {
-	    if (hasClass(e, column + '-column')) {
-		if( !order ) {
-		    order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
-		}
-		e.setAttribute('sortOrder', order);
-		addClass(e, 'selected-column');
-	    } else {
-		e.setAttribute('sortOrder', '');
-		removeClass(e, 'selected-column');
-	    }
-	});
-    $(column + '-arrows').show();    
+    var the_columns = document.getElementById("column-heading").getElementsByTagName("TH");
+    for( var i = 0; i < the_columns.length; ++i ) {
+        var e = the_columns[i];
+        if( e.id == column + "-heading" ) {
+            e = e.childNodes[1];
+            if( !order )
+                order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
+            e.setAttribute('sortOrder', order);
+            addClass(e, 'selected-column');
+	} else {
+            e = e.childNodes[1];
+	    e.setAttribute('sortOrder', '');
+	    removeClass(e, 'selected-column');
+	}
+    }
 
     var otherorder = (order == 'up') ? 'down' : 'up';
     addClass($(column + '-' + otherorder + '-arrow'), 'grayed-out');
     removeClass($(column + '-' + order + '-arrow'), "grayed-out");
-    
+
     setPermalink("sortBy", column);
     setPermalink("sortOrder", order);
-    
-    sortListBy($('tasks'), column, order == 'up' ? 1 : -1);
+    var the_tasks = $('tasks').getElementsByClassName("task-item");
+
+    sortListBy($('tasks'), column, order == 'up' ? 1 : -1, "0", the_tasks);
 }
+
+sortBy = safeify(sortBy, "sortBy");
 var initialized = false;
 
 function unfold () {
