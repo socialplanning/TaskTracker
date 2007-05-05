@@ -732,7 +732,7 @@ function doneAddingTask(req) {
     new_item.childTasks = []; 
     enableDragDrop(new_item);
 
-    Behavior.apply();
+    //Behavior.apply();
 
     $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
@@ -751,7 +751,7 @@ function doneAddingTask(req) {
     return;
 }
 
-doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
+//doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 //succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
