@@ -29,10 +29,6 @@
 		margin-top: 0.25em;
 	}
 
-#oc-tasktracker input {
-	text-transform: lowercase;
-}
-
 #oc-tasktracker textarea {
 	display: block;
 }
