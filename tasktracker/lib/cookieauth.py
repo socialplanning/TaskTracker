@@ -45,7 +45,7 @@ def get_secret():
     global secret
     if not secret:
         secret_file_name = os.environ.get('TOPP_SECRET_FILENAME')
-        assert secret_file_name
+        assert secret_file_name, ("Missing secret filename")
         f = open(secret_file_name)
         secret = f.readline().strip()
         f.close()
@@ -89,7 +89,7 @@ def get_info_for_project(project, server):
         raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
     tree = ET.fromstring(content)
     policy = tree[0]
-    assert policy.tag == "policy"
+    assert policy.tag == "policy", ("Bad info from project info getter")
     info = dict(policy=policy.text)
     return info
 

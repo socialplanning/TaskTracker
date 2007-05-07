@@ -288,7 +288,7 @@ def _get_permalink(dikt):
     permalink = ""
     for param in dikt:
         #prevent sql injection
-        assert ' ' not in dikt[param]
+        assert ' ' not in dikt[param], ("Abort to prevent SQL injection in %s" % dikt[param])
 
         if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
@@ -299,7 +299,7 @@ def _get_permalink_without_filters(dikt):
     for param in dikt:
         if param in "sortBy sortOrder columnOrder".split():
             #prevent sql injection
-            assert ' ' not in dikt[param]
+            assert ' ' not in dikt[param], ("Abort to prevent SQL injection in %s" % dikt[param])
 
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
     return permalink

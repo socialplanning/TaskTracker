@@ -88,14 +88,14 @@ class TaskController(BaseController):
         #special case for status if only two statuses are present.
         elif field == 'status':
             if not task.task_list.hasFeature('custom_status'):
-                assert newfield in ('true', 'false')
+                assert newfield in ('true', 'false'), ("Bad status %s on task %d" % (newfield, id))
                 if newfield == 'true':
                     newfield = task.task_list.getDoneStatus()
                 else:
                     newfield = task.task_list.getNotDoneStatus()
             else:
                 newfield = task.task_list.getStatusByName(newfield)
-                assert newfield
+                assert newfield, ("Nonexistent status on task %d" % id)
 
         #special case for owner
 
@@ -132,8 +132,8 @@ class TaskController(BaseController):
 
     def _move_under_parent(self, id, parentID):
         task = safe_get(Task, id, check_live=True)
-        assert parentID == 0 or Task.get(parentID).task_listID == task.task_listID
-        assert parentID != task.id
+        assert parentID == 0 or Task.get(parentID).task_listID == task.task_listID, ("Line 135")
+        assert parentID != task.id, ("Time paradox!")
         task.parentID = parentID
         if parentID > 0:
             parent = Task.get(parentID)
@@ -150,7 +150,7 @@ class TaskController(BaseController):
             return
 
         new_sibling = Task.get(siblingID)
-        assert new_sibling.task_listID == task.task_listID
+        assert new_sibling.task_listID == task.task_listID, ("Mismatched tasklists for tasks %d and %d" % (new_sibling.id, task.id))
         task.parentID = new_sibling.parentID
         if new_sibling.parentID > 0:
             parent = Task.get(new_sibling.parentID)
@@ -181,7 +181,7 @@ class TaskController(BaseController):
             raise ValueError("Can only create a task within a task list.")
 
         c.tasklist = safe_get(TaskList, c.task_listID)
-        assert c.tasklist.project == c.project
+        assert c.tasklist.project == c.project, ("Bad projects!")
         if 'parentID' in request.params:
             c.parentID = request.params['parentID']
         else:
