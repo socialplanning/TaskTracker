@@ -52,7 +52,6 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 	startDrag: function() {
 	    var element = this.htmlElement;
 	    var subtractOne = false;
-	    
 	    // when a column is picked up, all the other draggable/droppable column headers are assigned ordered indices
 	    $A(this.parent.getElementsByClassName("draggable-column-heading")).each( function(col, i) {
 		    if( col == element ) {
@@ -1285,6 +1284,7 @@ function moveSecondNextToFirst(a, b, before) {
     var x = a + '-column';
     var y = b + '-column';
     $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
+            if( hasClass(row, "second-line") ) return;
 	    var one = row.getElementsByClassName(x)[0];
 	    var two = row.getElementsByClassName(y)[0];
 	    if( one && two ) {
