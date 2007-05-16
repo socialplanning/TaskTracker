@@ -39,7 +39,7 @@ class Status(SQLObject):
     class sqlmeta:
         defaultOrder = 'id'
 
-    name = StringCol(length=255)
+    name = UnicodeCol(length=255)
     task_list = ForeignKey("TaskList")
     done = BoolCol(default=False)
 
@@ -72,7 +72,7 @@ class Role(SQLObject):
         return Role.selectBy(name=name)[0]
 
 class Project(SQLObject):
-    title = StringCol(length=255)
+    title = UnicodeCol(length=255)
     task_lists = MultipleJoin("TaskList")
     initialized = BoolCol(default=False)
     readonly = BoolCol(default=False)
@@ -144,8 +144,8 @@ class Task(SQLObject):
     sort_index = IntCol()
     status = ForeignKey("Status")
     task_list = ForeignKey("TaskList")
-    text = StringCol(default="")
-    title = StringCol(length=255)
+    text = UnicodeCol(default="")
+    title = UnicodeCol(length=255)
     updated = DateTimeCol(default=datetime.datetime.now)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
 
@@ -545,7 +545,7 @@ class Comment(SQLObject):
 
     date = DateTimeCol(default=datetime.datetime.now)
     user = StringCol(length=255)
-    text = StringCol()
+    text = UnicodeCol()
     task = ForeignKey("Task")
 
 def _task_list_sort_index():
@@ -575,8 +575,8 @@ class TaskList(SQLObject):
     project = ForeignKey("Project")
     sort_index = IntCol(default=_task_list_sort_index)
     tasks = MultipleJoin("Task")
-    text = StringCol()
-    title = StringCol(length=255)
+    text = UnicodeCol()
+    title = UnicodeCol(length=255)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     created = DateTimeCol(default=datetime.datetime.now)
     features = MultipleJoin("TaskListFeature")
@@ -658,6 +658,8 @@ class TaskList(SQLObject):
             statuses = kwargs['statuses'].split(",")
             existing_statuses = [s.name for s in Status.selectBy(task_listID=self.id)]
             for status in statuses:
+                if isinstance(status, str):
+                    status = status.decode('utf8')
                 if status not in existing_statuses:
                     Status(name=status, task_list=self.id, done=(status=="done"))
 

@@ -419,7 +419,7 @@ def filled_render(template, obj, extra_dict={}):
     response = render_response(template)
     d = sqlobject_to_dict(obj)
     d.update(extra_dict)
-    response.content = [htmlfill.render("".join(response.content), d)]
+    response.content = [htmlfill.render("".join(response.content), d, encoding='utf8')]
     return response
 
 #FIXME: merge with previewText
@@ -507,7 +507,10 @@ def field_last_updated(task, field):
 
 def task_item_tr(task, is_preview, is_flat, editable_title):
     id = task.id
-    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(task.statusName()))]
+    statusName = task.statusName()
+    if isinstance(statusName, unicode):
+        statusName = statusName.encode('utf8')
+    tr = ['<tr parentID="%s" id="task_%d" task_id="%d" status="%s" ' % (task.parentID, id, id, quote(statusName))]
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'updated']:
         value = getattr(task, prop)

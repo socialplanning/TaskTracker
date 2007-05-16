@@ -47,8 +47,8 @@ function getItemName(item_li) {
 }
 
 function addItem(list, item) {
-    item = item.replace(/[^A-Za-z0-9 ]/g, '');
-
+    item = item.replace(/[,&<>?=\000-\017"']/g, '');
+ 
     if( item.length < 1 ) {
         return;
     }
