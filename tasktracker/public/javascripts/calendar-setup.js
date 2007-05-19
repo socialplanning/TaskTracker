@@ -155,7 +155,7 @@ Calendar.setup = function (params) {
   var triggerElHelp = params.help;
   
   triggerElHelp["on" + params.eventName] = function() {
-    DateBocks.windowOpenCenter('/calendar-help.html', 'dateBocksHelp', 'width=500,height=430,autocenter=true');
+    DateBocks.windowOpenCenter('../../calendar-help.html?notheme', 'dateBocksHelp', 'width=500,height=430,autocenter=true');
   	//return false;
   };
 

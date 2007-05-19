@@ -1,5 +1,21 @@
 /* From tasktracker/public/stylesheets/list.css: */
 
+#oc-tasktracker #permissions_section #permission_help {
+  float: right;
+  width: 50%;
+  padding-left: 1em;
+}
+
+#oc-tasktracker #permissions_section #permission_help ul {
+  list-style-type: square;
+}
+
+#oc-tasktracker #permissions_section hr {
+  clear: both;
+  visibility: hidden;
+  margin: 0;
+}
+
 #oc-tasktracker {
   margin: 0 2em 0.5em;
   font-size: 1em;
@@ -14,10 +30,6 @@
 		display: block;
 		margin-top: 0.25em;
 	}
-
-#oc-tasktracker input {
-	text-transform: lowercase;
-}
 
 #oc-tasktracker textarea {
 	display: block;
@@ -198,7 +210,7 @@
 	cursor: pointer;
 }
 
-	#oc-tasktracker .editable:hover
+	#oc-tasktracker .editable:hover,
 	#oc-tasktracker .editable.hover {
 		background: #ffc;
 		border: none;

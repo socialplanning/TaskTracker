@@ -2309,6 +2309,7 @@ function getElementsBySelector(parent, selector_string) {
        optimization -- currently always searches by tagname first. this is definitely stupid in the case of tagname=* 
         and may be generally stupid; it seems likely that search-by-tagname will give the most results and should come last.
     */
+
     var selectors = selector_string.split(" ");
     var i;
     var search_in = [parent];
@@ -2359,11 +2360,8 @@ var Behavior = {
 	    for( rule in ruleset ) {
 		if( rule instanceof Function )
 		    continue;
-		var elements = $$(rule);
 		var elements = getElementsBySelector(document, rule);
-		elements.each( function(element) {
-			ruleset[rule] (element);
-		    });
+		elements.each(ruleset[rule]);
 	    }
 	}
     },
@@ -2376,9 +2374,7 @@ var Behavior = {
 	    if( !rule || !(rule instanceof Function) )
 		continue;
 	    var elements = getElementsBySelector(document, selector);
-	    elements.each( function(element) {
-		    rule (element);
-		});
+	    elements.each(rule);
 	}
     },
     
@@ -4571,7 +4567,6 @@ ColumnDraggable.prototype = (new Rico.Draggable()).extend( {
 	startDrag: function() {
 	    var element = this.htmlElement;
 	    var subtractOne = false;
-	    
 	    // when a column is picked up, all the other draggable/droppable column headers are assigned ordered indices
 	    $A(this.parent.getElementsByClassName("draggable-column-heading")).each( function(col, i) {
 		    if( col == element ) {
@@ -4869,8 +4864,9 @@ var myrules = {
 
     'th.draggable-column-heading' : function(element) {
 	element.onclick = function() {
+            id = this.getAttribute("id");
 	    if( !this.columnName )
-		this.columnName = this.id.replace("-heading", '');
+		this.columnName = id.replace("-heading", '');
 	    sortBy(this.columnName);
 	    return false;
 	}
@@ -4938,7 +4934,7 @@ function setTaskParents() {
 }
 
 function setupEmptyList() {
-    in_task_show = $('subtasks') ? 1 : 0;
+    var in_task_show = $('subtasks') ? 1 : 0;
     if ($('tasks') && !($('tasks').getElementsByClassName('task-item').length) && !in_task_show)
 	showTaskCreate();
 }
@@ -5055,7 +5051,7 @@ function filterField(fieldname, task) {
     if( filtervalue == 'All' ) {
 	return false;
     }
-    if( fieldname == "status" && filtervalue == "All%20Uncompleted" ) {
+    if( fieldname == "status" && filtervalue == "AllUncompleted" ) {
 	return( task.getAttribute(fieldname) == "done" );
     }
     
@@ -5250,7 +5246,7 @@ function doneAddingTask(req) {
     new_item.childTasks = []; 
     enableDragDrop(new_item);
 
-    Behavior.apply();
+    //Behavior.apply();
 
     $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
@@ -5269,7 +5265,7 @@ function doneAddingTask(req) {
     return;
 }
 
-doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
+//doneAddingTask = safeify(doneAddingTask, 'doneAddingTask');
 //succeededChangingField = safeify(succeededChangingField, 'suceededChangingField');
 
 function failedAddingTask(req) {
@@ -5505,10 +5501,13 @@ function doneMovingTask(req) {
 //doneMovingTask = safeify(doneMovingTask, 'doneMovingTask');
 
 function showTaskCreate() {
-    removeClass($('create'), 'hidden');
-    $('show_create').hide();
-    //    $('create_anchor').scrollTo();
-    $('title').focus();
+    var create = $('create');
+    if( create ) {
+        removeClass(create, 'hidden');
+        $('show_create').hide();
+    //  $('create_anchor').scrollTo();
+        $('title').focus();
+    }
     return false;
 }
 
@@ -5596,12 +5595,13 @@ function removeRow(ul, row) {
     ul.removeChild(row.second_line);
 }
 
-function sortListBy(ul, column, forward, parentID) {
+function sortListBy(ul, column, forward, parentID, the_tasks) {
     if( !parentID ) parentID = "0";
-    items = $A(ul.getElementsByClassName('task-item')).filter( function(i) {
+
+    var items = $A(the_tasks).filter( function(i) {
 	    return i.getAttribute("parentID") == parentID;
 	} );
-
+    
     var hack_for_priority = (column == 'priority');
     var priority_hack_dict = {'High':1, 'Medium':2, 'Low':3, 'None':4};
     for( i = 0; i < items.length; i++ ) {
@@ -5643,7 +5643,7 @@ function sortListBy(ul, column, forward, parentID) {
 		    ul.appendChild(i.second_line);
 		});	    
 	    if( len_of(x.childTasks) )
-		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"));
+		sortListBy($('tasks'), column, forward, x.getAttribute("task_id"), the_tasks);
 	});
 }
 
@@ -5696,33 +5696,44 @@ function flattenTask(task_id) {
 }
 
 function sortBy(column, order) {
-    $A(document.getElementsByClassName("sort-arrows")).each(function(e) {
-	    e.hide();
-	});
+    var sort_arrows = new Array;
+    var columns = ["status", "priority", "owner", "deadline", "updated"];
+    for( var i = 0; i < columns.length; ++i ) {
+        var arrow = document.getElementById(columns[i] + "-arrows");
+        if( arrow ) {
+            if( columns[i] == column ) arrow.show();
+            else arrow.hide();
+        }
+    }
 
-    $A(document.getElementsByClassName("column-heading")).each(function(e) {
-	    if (hasClass(e, column + '-column')) {
-		if( !order )
-		    order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
-		e.setAttribute('sortOrder', order);
-		addClass(e, 'selected-column');
-		order = e.getAttribute('sortOrder');
-	    } else {
-		e.setAttribute('sortOrder', '');
-		removeClass(e, 'selected-column');
-	    }
-	});
-    $(column + '-arrows').show();    
+    var the_columns = document.getElementById("column-heading").getElementsByTagName("TH");
+    for( var i = 0; i < the_columns.length; ++i ) {
+        var e = the_columns[i];
+        if( e.id == column + "-heading" ) {
+            e = e.childNodes[1];
+            if( !order )
+                order = e.getAttribute('sortOrder') == 'up' ? 'down' : 'up';
+            e.setAttribute('sortOrder', order);
+            addClass(e, 'selected-column');
+	} else {
+            e = e.childNodes[1];
+	    e.setAttribute('sortOrder', '');
+	    removeClass(e, 'selected-column');
+	}
+    }
 
     var otherorder = (order == 'up') ? 'down' : 'up';
     addClass($(column + '-' + otherorder + '-arrow'), 'grayed-out');
     removeClass($(column + '-' + order + '-arrow'), "grayed-out");
-    
+
     setPermalink("sortBy", column);
     setPermalink("sortOrder", order);
-    
-    sortListBy($('tasks'), column, order == 'up' ? 1 : -1);
+    var the_tasks = $('tasks').getElementsByClassName("task-item");
+
+    sortListBy($('tasks'), column, order == 'up' ? 1 : -1, "0", the_tasks);
 }
+
+sortBy = safeify(sortBy, "sortBy");
 var initialized = false;
 
 function unfold () {
@@ -5788,6 +5799,7 @@ function moveSecondNextToFirst(a, b, before) {
     var x = a + '-column';
     var y = b + '-column';
     $A( $('tasks').getElementsByTagName("TR") ).each( function(row) {
+            if( hasClass(row, "second-line") ) return;
 	    var one = row.getElementsByClassName(x)[0];
 	    var two = row.getElementsByClassName(y)[0];
 	    if( one && two ) {
@@ -5820,7 +5832,6 @@ addLoadEvent(setupEmptyList);
 addLoadEvent(setTaskParents);
 
 addLoadEvent(sortAndFilter);
-
 
 
 
@@ -6966,8 +6977,8 @@ function getItemName(item_li) {
 }
 
 function addItem(list, item) {
-    item = item.replace(/[^A-Za-z0-9 ]/g, '');
-
+    item = item.replace(/[,&<>?=\000-\017"']/g, '');
+ 
     if( item.length < 1 ) {
         return;
     }
@@ -9652,7 +9663,7 @@ Calendar.setup = function (params) {
   var triggerElHelp = params.help;
   
   triggerElHelp["on" + params.eventName] = function() {
-    DateBocks.windowOpenCenter('/calendar-help.html', 'dateBocksHelp', 'width=500,height=430,autocenter=true');
+    DateBocks.windowOpenCenter('../../calendar-help.html?notheme', 'dateBocksHelp', 'width=500,height=430,autocenter=true');
   	//return false;
   };
 
