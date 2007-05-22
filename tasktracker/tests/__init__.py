@@ -56,12 +56,15 @@ class TestController(TestCase):
         CONFIG.push_process_config({'app_conf': self.conf.local_conf,
                                     'global_conf': self.conf.global_conf})
         self.wsgiapp = loadapp('config:development.ini#test', relative_to=conf_dir)
+        request_config().environ = {
+            'SCRIPT_NAME': '',
+            'HTTP_HOST': 'localhost',
+            }
         self.setup_database()
         self.setup_fixtures()
         TestCase.__init__(self, *args)
 
     def _get_authenticator(self, app):
-
         res = app.get(url_for(controller='task', action='show_authenticate', id=0))
 
         key_re = re.compile('key = (\w+)')
