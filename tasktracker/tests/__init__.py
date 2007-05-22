@@ -56,13 +56,12 @@ class TestController(TestCase):
         CONFIG.push_process_config({'app_conf': self.conf.local_conf,
                                     'global_conf': self.conf.global_conf})
         self.wsgiapp = loadapp('config:development.ini#test', relative_to=conf_dir)
-        if request_config().environ is None:
-            # FIXME: Sometimes, for some reason, this attribute isn't set,
-            # which causes url_for to fail
-            request_config().environ = {
-                'SCRIPT_NAME': '',
-                'HTTP_HOST': 'localhost',
-                }
+        # FIXME: Sometimes, for some reason, this attribute isn't set,
+        # which causes url_for to fail
+        request_config().environ = {
+            'SCRIPT_NAME': '',
+            'HTTP_HOST': 'localhost',
+            }
         self.setup_database()
         self.setup_fixtures()
         TestCase.__init__(self, *args)
