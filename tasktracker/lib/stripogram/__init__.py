@@ -50,6 +50,10 @@ try:
 except ImportError:
     # no Zope around
     pass
+except AttributeError, e:
+    # Something else is weird
+    import warnings
+    warnings.warn("Cannot import AccessControl: %s" % e)
 else:
     ModuleSecurityInfo('Products.stripogram').declareObjectPublic()
     ModuleSecurityInfo('Products.stripogram').declarePublic('html2text', 'html2safehtml')
