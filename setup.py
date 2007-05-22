@@ -34,7 +34,7 @@ setup(
       "Myghty",
       "Pylons==0.9.4.1",
       "Routes==1.6.2.1",
-      "SQLObject==0.9.0b1", 
+      "SQLObject==dev,>=0.10dev",
       "decorator", 
       "httplib2", 
       "elementtree", 
@@ -54,6 +54,7 @@ setup(
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
       "http://labix.org/python-dateutil",
       "http://www.openplans.org/projects/opencore/dependencies"
+      "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       ],
     entry_points="""
     [paste.app_factory]
