@@ -88,7 +88,7 @@ class TaskController(BaseController):
         #special case for status if only two statuses are present.
         elif field == 'status':
             if not task.task_list.hasFeature('custom_status'):
-                assert newfield in ('true', 'false'), ("Bad status %s on task %d" % (newfield, id))
+                assert newfield in ('true', 'false'), ("Bad status %s on task %s" % (newfield, id))
                 if newfield == 'true':
                     newfield = task.task_list.getDoneStatus()
                 else:
