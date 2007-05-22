@@ -162,6 +162,7 @@ class BaseController(WSGIController):
         c.action_names = {}
 
         c.username = request.environ.get('REMOTE_USER', '')
+
         params['username'] = c.username
 
         func = getattr(self, action)
@@ -228,7 +229,7 @@ class BaseController(WSGIController):
 
     @classmethod
     def _has_permission(cls, controller, action_verb, params):
-        
+
         if callable(action_verb):
             action_verb = action_verb(params)
 
@@ -248,7 +249,7 @@ class BaseController(WSGIController):
                 return c.level <= Role.getLevel('Authenticated')
             else:
                 return c.level <= Role.getLevel('ProjectMember')
-
+        
         permissions = c.permission_cache.get(key)
         if permissions:
             return action_name in permissions
@@ -353,10 +354,6 @@ class BaseController(WSGIController):
             raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % 
                                            (action, controller))
         action_verb = func.action
-        #print "HERE",  controller, action_verb, request.params.get('field'), c.username
-
-        if controller=='task' and callable(action_verb) and request.params.get('field') == 'status' and c.username == 'member':
-            pass#import pdb;pdb.set_trace()
 
         # if project is initializable by current user or we're displaying show_uninitialized msg, we're authorized
         # if function returns false, the project IS initialized, so we have to continue checking auth.
@@ -375,9 +372,6 @@ class BaseController(WSGIController):
         controller = getattr(func, 'controller', controller)
 
         #A few special cases follow, with the general permission case at the end.
-
-        #if callable(action_verb):  #TODO: this isn't a good solution!
-        #    return True            ## @@ commented out 01-05-07 with no apparent ill effects
 
         if c.project_permission_level == 'closed_policy':
             if not c.username in c.usermapper.project_member_names():

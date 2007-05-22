@@ -187,7 +187,7 @@ class Task(SQLObject):
         kwargs['live'] = True
 
         if not kwargs.get('owner'):
-            if task_list.initial_assign == 0:
+            if task_list.initial_assign == 0 and c.username:
                 kwargs['owner'] = c.username
             else:
                 kwargs['owner'] = None

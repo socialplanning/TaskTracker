@@ -424,7 +424,7 @@ class TestTaskListController(TestController):
 
                 app = self.getApp(user, project_permission_level = project_level)
                 tl = self.create_tasklist('fleem', member_level, other_level)
-                #create a task programmatically
+                #create a task programmatically (note: bypasses security)
                 task = Task(title='morx', task_listID=tl.id)
 
                 #test viewing
