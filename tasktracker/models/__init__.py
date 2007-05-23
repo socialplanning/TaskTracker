@@ -171,16 +171,29 @@ class Task(SQLObject):
             if parent.private:
                 kwargs['private'] = True
 
+        if 'statusID' in kwargs and 'status' in kwargs:
+            raise ValueError(
+                "You cannot pass both status=%r and statusID=%r"
+                % (kwargs['status'], kwargs['statusID']))
+        status = None
         if 'statusID' in kwargs:
-            try:
-                kwargs['statusID'] = int(kwargs['statusID'])
-            except ValueError:
-                kwargs['statusID'] = task_list.getStatusByName(kwargs['status']).id
+            status = kwargs.pop('statusID')
+        elif 'status' in kwargs:
+            status = kwargs.pop('status')
+        if status is not None:
+            if isinstance(status, basestring):
+                try:
+                    status = int(status)
+                except ValueError:
+                    pass
+                else:
+                    status = Status.get(status)
+                    assert status.task_list == task_list
+            if isinstance(status, basestring):
+                status = task_list.getStatusByName(status)
+            kwargs['statusID'] = status.id
         else:
             kwargs['statusID'] = task_list.statuses[0].id
-
-        if 'status' in kwargs:
-            del kwargs['status']
 
         kwargs['sort_index'] = _task_sort_index()
         kwargs.setdefault('parentID', 0)
