@@ -53,7 +53,7 @@ setup(
       "http://routes.groovie.org/svn/trunk#egg=Routes-dev",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
       "http://labix.org/python-dateutil",
-      "http://www.openplans.org/projects/opencore/dependencies"
+      "http://www.openplans.org/projects/opencore/dependencies",
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       ],
     entry_points="""
