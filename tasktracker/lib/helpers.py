@@ -46,6 +46,9 @@ import formencode.validators
 from urllib import quote
 import datetime
 
+from rfc822 import formatdate
+import time
+
 class SafeHTML(formencode.validators.String):
     def to_python(self, value, state):
         return html2safehtml(super(SafeHTML, self).to_python(value, state))
@@ -86,6 +89,12 @@ def readableDate(date):
         return prettyDate(date)
     else:
         return "No deadline"
+
+def format_date_long(date):
+    """
+    Format a date with no reference to the current time (e.g., for an export)
+    """
+    return formatdate(time.mktime(date.timetuple()))
 
 def help(text):
     help_id = 'help_' + str(random())[2:]
