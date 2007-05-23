@@ -4,10 +4,10 @@ from tasktracker.lib.base import *
 
 class ExportController(BaseController):
 
-    @authenticate
-    @attrs(action='tasklist_show', readonly=True)
+#    @authenticate
+    @attrs(action_noun="tasklist", action='show', readonly=True)
     @catches_errors
-    def index(self, id):
+    def index(self, id, *args, **kwargs):
         # FIXME: is it actually okay to export old lists?  Probably not...
         c.task_list = safe_get(TaskList, id, check_live=True)
         c.tasks = [

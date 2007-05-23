@@ -330,7 +330,8 @@ class BaseController(WSGIController):
         redirect_to(controller='project', action='show_uninitialized', id = c.project.id) # @@ ugh -egj
         
     def _authorize(self, project, action, params):
-        controller = params['controller']
+        func = getattr(self, action)
+        controller = getattr(func, "action_noun", params['controller'])
 
         if controller == 'error':
             return True
@@ -349,7 +350,6 @@ class BaseController(WSGIController):
         c.project_permission_level = environ.get('topp.project_permission_level', None)
         c.usermapper = environ['topp.project_members']
 
-        func = getattr(self, action)
         if not getattr(func, 'action', None):
             raise MissingSecurityException("Programmer forgot to give the action attribute to the function '%s' in the controller '%s'" % 
                                            (action, controller))
