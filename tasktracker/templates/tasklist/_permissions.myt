@@ -34,7 +34,7 @@
 
 <!-- these will be filled in by htmlfill, and then deleted by js -->
 
-<input type="hidden" name="member_level" id="member_level_old" value="0">
+<input type="hidden" name="member_level" id="member_level_old" value="4">
 <input type="hidden" name="other_level" id="other_level_old" value="0">
 
 <script>
