@@ -37,6 +37,9 @@ def make_map():
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     map = Mapper(directory=os.path.join(root_path, 'controllers'))
+
+    # Currently we can't handle unicode in our mappings:
+    map.encoding = None
     
     # This route handles displaying the error page and graphics used in the 404/500
     # error pages. It should likely stay at the top to ensure that the error page is
