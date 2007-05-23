@@ -63,7 +63,7 @@ root-task
 % if is_preview:
 preview-link
 %
-"><% h.previewText(atask.title) %></a>
+"><% atask.title %></a>
 %
 &nbsp;
 
