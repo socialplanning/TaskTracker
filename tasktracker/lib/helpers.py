@@ -514,7 +514,7 @@ def task_item_tr(task, is_preview, is_flat, editable_title):
 
     for prop in ['sort_index', 'owner', 'deadline', 'priority', 'updated']:
         value = getattr(task, prop)
-        if not value:
+        if not value and prop == 'owner':
             value = '' #handle null owner
         tr.append('%s = "%s" ' % (prop, quote(str(value))))
 
