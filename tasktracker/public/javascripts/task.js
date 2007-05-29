@@ -1080,6 +1080,14 @@ function removeRow(ul, row) {
     ul.removeChild(row.second_line);
 }
 
+fuunction format_for_sorting(num) {
+    num = "0" + num;
+    while(num.length < 15) {
+	num = "0" + num;
+    }
+    return num
+}
+
 function sortListBy(ul, column, forward, parentID, the_tasks) {
     if( !parentID ) parentID = "0";
 
@@ -1092,7 +1100,7 @@ function sortListBy(ul, column, forward, parentID, the_tasks) {
     for( i = 0; i < items.length; i++ ) {
 	var item = items[i];
 	var attrib = item.getAttribute(column);
-	var sort_index = item.getAttribute('sort_index');
+	var sort_index = format_for_sorting(item.getAttribute('sort_index'));
 	if( hack_for_priority ) {
 	    key = priority_hack_dict[attrib];
 	}
