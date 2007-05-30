@@ -10,9 +10,7 @@ class ExportController(BaseController):
     def index(self, id, *args, **kwargs):
         # FIXME: is it actually okay to export old lists?  Probably not...
         c.task_list = safe_get(TaskList, id, check_live=True)
-        c.tasks = [
-            task for task in c.task_list.visibleTasks()
-            if not c.parent]
+        c.tasks = c.task_list.topLevelTasks()
         return render_response('export.myt')
 
     @attrs(action="open", readonly=True)
