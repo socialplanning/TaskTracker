@@ -25,3 +25,16 @@ class TestExportController(TestController):
             'dtcreated',
             )
 
+    def test_tasklists(self):
+        app = self.getApp('admin')
+        tlist = self.create_tasklist("export_list")
+        t2 = self.create_tasklist("export_2")
+        response = app.get(url_for(controller='export', action="show_tasklists"))
+        # Test response...
+        response.mustcontain(
+            '<ul class="xoxo">',
+            'export_list',
+            'export_2'
+            )
+
+

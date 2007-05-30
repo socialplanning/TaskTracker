@@ -177,6 +177,7 @@ class TasklistController(BaseController):
         p = dict(self.form_result)
         p['username'] = c.username
         p['projectID'] = c.project.id
+        p['creator'] = c.username
         dup_tls = TaskList.selectBy(projectID = c.project.id, title = p['title'])
         if dup_tls.count(): pass
         #raise httpexceptions.HTTPInternalServerError("A tasklist with this title already exists.")

@@ -1,6 +1,7 @@
 # See http://microformats.org/wiki/xoxo for format of export
 
 from tasktracker.lib.base import *
+from tasktracker.controllers.tasklist import TasklistController
 
 class ExportController(BaseController):
 
@@ -14,3 +15,8 @@ class ExportController(BaseController):
             if not c.parent]
         return render_response('export.myt')
 
+    @attrs(action="open", readonly=True)
+    @catches_errors
+    def show_tasklists(self, *args, **kwargs):
+        c.tasklists = TasklistController._getVisibleTaskLists(c.username)
+        return render_response('export_tasklists.myt')

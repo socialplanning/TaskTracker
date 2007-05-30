@@ -592,6 +592,7 @@ class TaskList(SQLObject):
     title = UnicodeCol(length=255)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     created = DateTimeCol(default=datetime.datetime.now)
+    creator = StringCol(length=255, default="")
     features = MultipleJoin("TaskListFeature")
     statuses = MultipleJoin("Status")
     initial_assign = IntCol(default=0)
