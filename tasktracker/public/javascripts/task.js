@@ -1080,7 +1080,7 @@ function removeRow(ul, row) {
     ul.removeChild(row.second_line);
 }
 
-fuunction format_for_sorting(num) {
+function format_for_sorting(num) {
     num = "0" + num;
     while(num.length < 15) {
 	num = "0" + num;
