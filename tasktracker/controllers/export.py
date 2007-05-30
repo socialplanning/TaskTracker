@@ -4,7 +4,6 @@ from tasktracker.lib.base import *
 
 class ExportController(BaseController):
 
-    # FIXME: should I call @authenticate, or is the @attrs enough?
     @attrs(action_noun="tasklist", action='show', readonly=True)
     @catches_errors
     def index(self, id, *args, **kwargs):
