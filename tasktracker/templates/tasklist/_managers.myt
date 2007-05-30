@@ -1,6 +1,6 @@
-<% h.editable_list('managers', c.managers, [c.username]) %>
+<% h.editable_list('managers', c.managers, c.administrators) %>
 
-% available_users = sorted([user for user in c.usermapper.project_member_names() if user not in c.managers and user != c.username], key=str.lower)
+% available_users = sorted([user for user in c.usermapper.project_member_names() if user not in c.managers and user not in c.administrators], key=str.lower)
 
 <input type="hidden" value="<% ",".join(c.administrators + c.managers) %>" id="managers" name="managers">
 
