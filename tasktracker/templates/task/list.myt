@@ -1,5 +1,5 @@
 <span class="small">
- <a href="<% h.url_for(controller='tasklist', action='index') %>">
+ <a href="<% h.url_for('home') %>">
     all lists</a
  >&nbsp;&raquo;
  <a id="permalink" permalink="<% c.permalink %>" base="<% h.url_for(controller='tasklist', action='show') %>"
