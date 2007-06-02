@@ -157,7 +157,7 @@ class CookieAuth(object):
         project_name = environ['topp.project_name']
 
         environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
-        if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':
+        if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':  # ugly hack
             environ['topp.user_info']['roles'].append("ProjectAdmin")
             environ['topp.project_permission_level'] = 'closed'
         else:
