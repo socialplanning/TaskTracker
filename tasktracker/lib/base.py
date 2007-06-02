@@ -38,7 +38,7 @@ from paste import httpexceptions
 from threading import local
 
 #remove this bit when paste includes non-exception redirect_to
-From paste.wsgiwrappers import WSGIResponse
+from paste.wsgiwrappers import WSGIResponse
 from routes import url_for
 class Response(WSGIResponse):
     @classmethod
