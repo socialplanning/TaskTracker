@@ -20,7 +20,7 @@ editable_title = False
 
 <span id="draggable_<% atask.id %>" depth="<% atask.depth() - c.depth %>" class="taskitem draggable">
 % if not is_flat:
-<% h.image_tag('blank.png', ### h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
+<% h.image_tag(h.test(atask.liveChildren(), 'plus.png', 'blank.png'),
    class_='treewidget handle',
    id='handle_%d' % atask.id,
    style='margin-left: %.1fem;' % ((atask.depth() - c.depth) * 1.5)) %>
