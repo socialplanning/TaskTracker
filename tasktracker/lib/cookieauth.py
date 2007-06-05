@@ -121,7 +121,7 @@ class CookieAuth(object):
         admin_file = os.environ.get('TOPP_ADMIN_INFO_FILENAME')
         if not admin_file:
             raise Exception("Environment variable TOPP_ADMIN_INFO_FILENAME has not been set.")
-        self.admin_info = tuple(file(admin_file).read().split(":"))
+        self.admin_info = tuple(file(admin_file).read().strip().split(":"))
         if len(self.admin_info) != 2:
             raise Exception("Bad format in administrator info file")
 
