@@ -58,7 +58,7 @@ import elementtree.ElementTree as ET
 
 from topp.utils import memorycache
 
-@memorycache.cache(120)
+#@memorycache.cache(120)
 def get_users_for_project(project, server, admin_info):
     h = httplib2.Http()
     # because of some zope silliness we have to do this as a POST instead of basic auth
