@@ -58,7 +58,7 @@ import elementtree.ElementTree as ET
 
 from topp.utils import memorycache
 
-#@memorycache.cache(120)
+@memorycache.cache(120)
 def get_users_for_project(project, server, admin_info):
     h = httplib2.Http()
     # because of some zope silliness we have to do this as a POST instead of basic auth
@@ -121,7 +121,7 @@ class CookieAuth(object):
         admin_file = os.environ.get('TOPP_ADMIN_INFO_FILENAME')
         if not admin_file:
             raise Exception("Environment variable TOPP_ADMIN_INFO_FILENAME has not been set.")
-        self.admin_info = file(admin_file).read().split(":")
+        self.admin_info = tuple(file(admin_file).read().split(":"))
         if len(self.admin_info) != 2:
             raise Exception("Bad format in administrator info file")
 
