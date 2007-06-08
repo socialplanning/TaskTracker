@@ -20,7 +20,7 @@ item
 	     value=<% item.title %>
              />
       <button type="submit" name="task"
-              value= <% '%d_update' % item.id> >
+              value= <% '%d_update' % item.id %> >
         Save
       </button>
       or
@@ -35,7 +35,7 @@ item
   <td>
     CREATED OR UPDATED DATE
     by
-    <a href="#todo fillin">
+    <a href="#todo_fillin">
       CREATOR OR UPDATOR
     </a>
   </td>
