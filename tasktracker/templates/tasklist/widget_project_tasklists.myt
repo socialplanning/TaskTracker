@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-% for item in item_collection:
+% for item in c.tasklists:
         <& widget_project_tasklists_row.myt, item=item &>
 % #endfor
       </tbody>
