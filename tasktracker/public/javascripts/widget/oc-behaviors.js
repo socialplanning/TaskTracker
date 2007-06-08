@@ -195,7 +195,7 @@ OC.LiveForm = function(extEl) {
         
         // Create Array from o.responseText
         var IDs = eval(o.responseText);
-        
+        OMO = IDs;
         for (var i = 0; i<IDs.length; i++) {
           _removeItem(IDs[i]);
         }

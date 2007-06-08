@@ -52,12 +52,13 @@ def remove_feature(name, value = None):
 
 def octopus_form_handler(func):
     def inner(self):
+
         # XXX todo don't rely on underscore special character                                                                                             
 
         target, action = request.params.get("task").split("_")
 
-        if target == 'batch' and self.request.form.get('batch[]'):
-            target = self.request.form.get("batch[]")
+        if target == 'batch' and request.params.get('batch[]'):
+            target = request.params.get("batch[]")
         if not isinstance(target, (tuple, list)):
             target = [target]
 
@@ -66,16 +67,17 @@ def octopus_form_handler(func):
         for item in target:
             itemdict = {}
             filterby = item + '_'
-            keys = [key for key in self.request.form if key.startswith(filterby)]
+            keys = [key for key in request.params if key.startswith(filterby)]
             for key in keys:
-                itemdict[key.replace(filterby, '')] = self.request.form.get(key)
+                itemdict[key.replace(filterby, '')] = request.params.get(key)
             fields.append(itemdict)
 
         ret = func(self, action, target, fields)
-        mode = self.request.form.get("mode")
+
+        mode = request.params.get("mode")
         if mode == "async":
             return ret
-        return self.redirect(self.request.environ['HTTP_REFERER'])
+        return Response.redirect_to(request.environ['HTTP_REFERER'])
 
     return inner
 
@@ -108,8 +110,8 @@ class TasklistController(BaseController):
             for tl in lists:
                 if True or has_permission('tasklist', 'delete'):
                     tl.live = False
-                    result.append(tl.id)
-            return result
+                    result.append(str(tl.id))
+            return render_text(result)
         
         if action == 'update':
             c.snippet = True
@@ -117,8 +119,8 @@ class TasklistController(BaseController):
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
             for tl, title in zip(lists, fields):
                 tl.title = title
-                result[tl.id] = render_response('tasklist/widget_project_tasklists.myt')
-            return result
+                result[str(tl.id)] = render_response('tasklist/widget_project_tasklists.myt')
+            return render_text(result)
         
 
     @attrs(action='open', readonly=True)
