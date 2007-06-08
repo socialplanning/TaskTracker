@@ -43,7 +43,7 @@ item
     <ul class="oc-actions oc-dataTable-row-actions">
       <li>
         <a class="oc-actionLink"
-           href=<% "modify-contents?task=%d_delete" % task.id %> >
+           href=<% "modify-contents?task=%d_delete" % item.id %> >
           Delete
         </a>
       </li>
