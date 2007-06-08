@@ -41,6 +41,9 @@
 </head>
 
 <body>
+% if c.snippet:
+% m.call_next()
+% else:
 
 <div style="background-color:#edf">
 Logged in as: <% c.username %>
@@ -54,6 +57,6 @@ Logged in as: <% c.username %>
 % m.call_next()
  </div>
 </div>
-
+% #endif
 </body>
 </html>

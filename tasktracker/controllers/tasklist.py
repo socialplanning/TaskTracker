@@ -65,6 +65,12 @@ class TasklistController(BaseController):
                 if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
 
     @attrs(action='open', readonly=True)
+    def show_widget_project_tasklists(self):
+        c.tasklists = self._getVisibleTaskLists(c.username)
+        c.snippet = True
+        return render_response('tasklist/widget_project_tasklists.myt')
+
+    @attrs(action='open', readonly=True)
     def index(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
         c.contextual_wrapper_class = 'tt-context-tasklist-index'
