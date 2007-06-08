@@ -50,6 +50,7 @@ def make_map():
     # so they may take precedent over the more generic routes. For more information, refer
     # to the routes manual @ http://routes.groovie.org/docs/
 
+    map.connect('modify-contents', 'modify-contents', controller='tasklist', action='batch_form')
     map.connect(':controller/:action/:id', conditions=dict(function=is_safe_method))
     map.connect('', controller='tasklist', action='index')
     map.connect('*url', controller='template', action='view')

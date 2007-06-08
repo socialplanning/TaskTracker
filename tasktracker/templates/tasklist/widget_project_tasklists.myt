@@ -7,7 +7,7 @@
     1-20 of 55
   </div>
   
-  <form class="oc-liveForm" action="modify-contents">
+  <form class="oc-liveForm" action="<% h.url_for('modify-contents') %>">
     <input type="hidden" name="item_type" value="tasklists" />
     <table class="oc-dataTable" cellpadding="0" cellspacing="0">
       <thead>

@@ -50,6 +50,35 @@ def remove_feature(name, value = None):
     if f.count():
         f[0].destroySelf()
 
+def octopus_form_handler(func):
+    def inner(self):
+        # XXX todo don't rely on underscore special character                                                                                             
+
+        target, action = request.params.get("task").split("_")
+
+        if target == 'batch' and self.request.form.get('batch[]'):
+            target = self.request.form.get("batch[]")
+        if not isinstance(target, (tuple, list)):
+            target = [target]
+
+        # grab items' fields from request and fill dicts in an ordered list                                                                               
+        fields = []
+        for item in target:
+            itemdict = {}
+            filterby = item + '_'
+            keys = [key for key in self.request.form if key.startswith(filterby)]
+            for key in keys:
+                itemdict[key.replace(filterby, '')] = self.request.form.get(key)
+            fields.append(itemdict)
+
+        ret = func(self, action, target, fields)
+        mode = self.request.form.get("mode")
+        if mode == "async":
+            return ret
+        return self.redirect(self.request.environ['HTTP_REFERER'])
+
+    return inner
+
 
 def set_features(p):
     for feature in ['deadlines', 'custom_status', 'private_tasks']:
@@ -69,6 +98,28 @@ class TasklistController(BaseController):
         c.tasklists = self._getVisibleTaskLists(c.username)
         c.snippet = True
         return render_response('tasklist/widget_project_tasklists.myt')
+
+    @attrs(action='open', readonly=False)
+    @octopus_form_handler
+    def batch_form(self, action, sources, fields):
+	if action == 'delete':
+            result = []
+            lists = [safe_get(TaskList, id, check_live=True) for id in sources]
+            for tl in lists:
+                if True or has_permission('tasklist', 'delete'):
+                    tl.live = False
+                    result.append(tl.id)
+            return result
+        
+        if action == 'update':
+            c.snippet = True
+            result = {}
+            lists = [safe_get(TaskList, id, check_live=True) for id in sources]
+            for tl, title in zip(lists, fields):
+                tl.title = title
+                result[tl.id] = render_response('tasklist/widget_project_tasklists.myt')
+            return result
+        
 
     @attrs(action='open', readonly=True)
     def index(self):
