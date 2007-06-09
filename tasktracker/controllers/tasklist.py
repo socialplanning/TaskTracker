@@ -108,7 +108,7 @@ class TasklistController(BaseController):
             result = []
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
             for tl in lists:
-                if True or has_permission('tasklist', 'delete'):
+                if has_permission('tasklist', 'delete', id=tl.id):
                     tl.live = False
                     result.append(str(tl.id))
             return render_text(result)
@@ -117,9 +117,10 @@ class TasklistController(BaseController):
             c.snippet = True
             result = {}
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
-            for tl, title in zip(lists, fields):
-                tl.title = title
-                result[str(tl.id)] = render_response('tasklist/widget_project_tasklists.myt')
+            for tl, title in zip(lists, fields): # todo <-- this isn't right, fields is dicts
+                if has_permission('tasklist', 'update', id=tl.id):
+                    tl.title = title
+                    result[str(tl.id)] = render_response('tasklist/widget_project_tasklists.myt')
             return render_text(result)
         
 
