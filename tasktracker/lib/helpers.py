@@ -496,17 +496,6 @@ def render_action(action):
     return comment
 
 
-def field_last_updated(task, field):
-    the_version = None
-    for version in reversed(list(task.versions)):
-        if field.title() in version.getChangedFields():
-            the_version = version
-            break
-    if not the_version:
-        return ""
-    return "%s by %s" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
-
-
 def task_item_tr(task, is_preview, is_flat, editable_title):
     id = task.id
     statusName = task.statusName()
