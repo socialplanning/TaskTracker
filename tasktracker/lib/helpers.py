@@ -96,13 +96,6 @@ def format_date_long(date):
     """
     return formatdate(time.mktime(date.timetuple()))
 
-def help(text):
-    help_id = 'help_' + str(random())[2:]
-    return """
-%s
-<div id="%s" onclick="$('%s').hide()" class="help_text" style="display: none;">%s</div>
-""" % (image_tag("question.png", onclick="$('%s').toggle();", class_="help"), help_id, help_id, help_id, text)
-
 def editable_list(field, updateable_items=[], fixed_items=[]):
     out = ['<ul id="list_%s" class="task_list" field="%s">' % (field, field)]
     for item in fixed_items:
