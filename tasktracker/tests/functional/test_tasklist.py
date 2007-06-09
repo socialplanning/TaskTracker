@@ -190,6 +190,7 @@ class TestTaskListController(TestController):
         form = res.forms[0]
         form['title'] = 'The new tl title'
         form['managers'] = 'admin,member'
+        form['member_level'] = '0'
         res = form.submit()
 
         ### the tasklist preferences page should show the additional manager

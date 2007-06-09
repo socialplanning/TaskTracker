@@ -64,7 +64,7 @@ class MissingArgumentError(Exception):
 
 class NotInitializedException(Exception):
     pass
-
+ 
 def catches_errors(f):
     def new_f(*args, **kwds):
         try:
@@ -96,7 +96,7 @@ def safe_get(so_class, id, check_live=False):
     not_project = False
     try:
         id = int(id)
-    except ValueError:
+    except (ValueError, TypeError):
         raise httpexceptions.HTTPBadRequest(
             "The id %r is not a valid number" % id)
     try:

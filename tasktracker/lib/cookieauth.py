@@ -29,7 +29,7 @@ import base64
 import hmac
 import sha
 
-from urllib import quote, unquote
+from urllib import quote, unquote, urlencode
 from Cookie import BaseCookie
 
 def _user_dict(name):
@@ -59,10 +59,16 @@ import elementtree.ElementTree as ET
 from topp.utils import memorycache
 
 @memorycache.cache(120)
-def get_users_for_project(project, server):
+def get_users_for_project(project, server, admin_info):
     h = httplib2.Http()
-    resp, content = h.request("%s/projects/%s/members.xml" % (server, project), "GET")
+    # because of some zope silliness we have to do this as a POST instead of basic auth
+    data = {"__ac_name":admin_info[0], "__ac_password":admin_info[1]}
+    body = urlencode(data)
+    resp, content = h.request("%s/projects/%s/members.xml" % (server, project), method="POST", body=body, redirections=0)
     if resp['status'] != '200':
+        if resp['status'] == '302':
+            # redirect probably means auth failed
+            extra = '; did your admin authentication fail?'
         if resp['status'] == '400':
             # Probably Zope is gone
             extra = '; is Zope started?'
@@ -94,14 +100,15 @@ def get_info_for_project(project, server):
     return info
 
 class UserMapper(usermapper.UserMapper):
-    def __init__(self, environ, project, server):
+    def __init__(self, environ, project, server, admin_info):
         usermapper.UserMapper.__init__(self)
         self.project = project
         self.server = server
         self.environ = environ
+	self.admin_info = admin_info
 
     def project_members(self):
-        return get_users_for_project(self.project, self.server)
+        return get_users_for_project(self.project, self.server, self.admin_info)
         
 class BadCookieError(Exception): pass
 
@@ -110,6 +117,14 @@ class CookieAuth(object):
         self.app = app
         self.openplans_instance = app_conf['openplans_instance']
         self.login_uri = app_conf['login_uri']
+
+        admin_file = os.environ.get('TOPP_ADMIN_INFO_FILENAME')
+        if not admin_file:
+            raise Exception("Environment variable TOPP_ADMIN_INFO_FILENAME has not been set.")
+        self.admin_info = tuple(file(admin_file).read().strip().split(":"))
+        if len(self.admin_info) != 2:
+            raise Exception("Bad format in administrator info file")
+
         if not os.environ.get('TOPP_SECRET_FILENAME'):
             raise Exception("Environment variable TOPP_SECRET_FILENAME has not been set.")
         
@@ -156,8 +171,8 @@ class CookieAuth(object):
         
         project_name = environ['topp.project_name']
 
-        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance)
-        if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':
+        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance, self.admin_info)
+        if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':  # ugly hack
             environ['topp.user_info']['roles'].append("ProjectAdmin")
             environ['topp.project_permission_level'] = 'closed'
         else:
