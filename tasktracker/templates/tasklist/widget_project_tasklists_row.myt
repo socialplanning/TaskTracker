@@ -36,7 +36,6 @@ item
     FILL IN WITH SOMETHING LIKE SIZE
   </td>
   <td>
-    CREATED OR UPDATED DATE
 % creator = item.creator
 % if creator:
     by
