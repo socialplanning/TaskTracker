@@ -18,23 +18,21 @@
 # Boston, MA  02110-1301
 # USA
 
+import os
+import datetime
 from sqlobject import *
+from sqlobject.sqlbuilder import *
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.versioning import Versioning
-from sqlobject.sqlbuilder import *
-from pylons.database import PackageHub
 from pylons import c, g
-from tasktracker.lib.memoize import memoize
+from pylons.database import PackageHub
 import tasktracker.lib.helpers as h
+from tasktracker.lib.memoize import memoize
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
 
 # Don't forget to update soClasses, below
-
-import datetime
-
-import os
 
 class Status(SQLObject):
     class sqlmeta:
