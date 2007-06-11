@@ -25,6 +25,7 @@ from sqlobject.sqlbuilder import *
 from pylons.database import PackageHub
 from pylons import c, g
 from tasktracker.lib.memoize import memoize
+import tasktracker.lib.helpers as h
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
@@ -276,7 +277,6 @@ class Task(SQLObject):
                 task.sort_index += 1
     @memoize
     def liveChildren(self):
-        import tasktracker.lib.helpers as h
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
     def liveDescendents(self):
