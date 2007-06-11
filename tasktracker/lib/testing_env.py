@@ -79,7 +79,7 @@ class TestingEnv(object):
 
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
-        environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'theproject')
+        environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'opencore')
         environ['topp.project_permission_level'] = environ.get("openplans_ttpolicy", 'open_policy')
         environ['REMOTE_ADDR'] = '127.0.0.1'
         if not self.authenticate(environ):
