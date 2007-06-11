@@ -389,8 +389,11 @@ def has_permission(controller, action, **params):
 
     controller = getattr(module, cap_controller + 'Controller')
 
-    action_verb = getattr(controller, action)
-    action_verb = action_verb.action
+    if params.get('using_verb') == True:
+        action_verb = action
+    else:
+        action_verb = getattr(controller, action)
+        action_verb = action_verb.action
 
     params['username'] = c.username
 

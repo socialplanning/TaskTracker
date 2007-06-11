@@ -14,7 +14,7 @@ item
       </a>
     </div>
 
-% if h.has_permission('tasklist', 'update', id=item.id):
+% if h.has_permission('tasklist', 'update', id=item.id, using_verb=True):
     <div class="oc-liveItem-editForm">
       <input type="text"
              name=<% '%d_title' % item.id %>
@@ -45,7 +45,7 @@ item
   <td>
     <ul class="oc-actions oc-dataTable-row-actions">
 
-% if h.has_permission('tasklist', 'delete', id=item.id):
+% if h.has_permission('tasklist', 'delete', id=item.id, using_verb=True):
       <li>
         <a class="oc-actionLink"
            href=<% "%s?task=%d_delete" % (h.url_for('modify-contents'), item.id) %> >

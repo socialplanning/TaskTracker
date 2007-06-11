@@ -93,7 +93,7 @@ class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
         return [t for t in TaskList.selectBy(projectID = c.project.id, live = True)
-                if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
+                if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username})]
 
     @attrs(action='open', readonly=True)
     def show_widget_project_tasklists(self):
@@ -108,7 +108,7 @@ class TasklistController(BaseController):
             result = []
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
             for tl in lists:
-                if has_permission('tasklist', 'delete', id=tl.id):
+                if has_permission('tasklist', 'delete', id=tl.id, using_verb=True):
                     tl.live = False
                     result.append(str(tl.id))
             return render_text(result)
@@ -118,7 +118,7 @@ class TasklistController(BaseController):
             result = {}
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
             for tl, title in zip(lists, fields): # todo <-- this isn't right, fields is dicts
-                if has_permission('tasklist', 'update', id=tl.id):
+                if has_permission('tasklist', 'update', id=tl.id, using_verb=True):
                     tl.title = title
                     result[str(tl.id)] = render_response('tasklist/widget_project_tasklists.myt')
             return render_text(result)
