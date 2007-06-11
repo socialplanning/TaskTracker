@@ -632,28 +632,21 @@ class TaskList(SQLObject):
         return TaskListFeature.selectBy(task_listID=self.id, name=feature_name).count() > 0
 
     def topLevelTasks(self):
-        import tasktracker.lib.helpers as h
-
-        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id)
+                if h.has_permission('task', 'show', id=c.id)]
 
     @memoize
     def uncompletedTasks(self):
-        import tasktracker.lib.helpers as h
-
         return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
                                            Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
-        import tasktracker.lib.helpers as h
-        
         return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
                                            Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
 
     def visibleTasks(self):
-        import tasktracker.lib.helpers as h
-
         return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
 
