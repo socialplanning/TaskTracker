@@ -26,7 +26,6 @@ from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.versioning import Versioning
 from pylons import c, g
 from pylons.database import PackageHub
-import tasktracker.lib.helpers as h
 from tasktracker.lib.memoize import memoize
 
 hub = PackageHub("tasktracker", pool_connections=False)
@@ -275,6 +274,8 @@ class Task(SQLObject):
                 task.sort_index += 1
     @memoize
     def liveChildren(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
     def liveDescendents(self):
@@ -630,21 +631,29 @@ class TaskList(SQLObject):
         return TaskListFeature.selectBy(task_listID=self.id, name=feature_name).count() > 0
 
     def topLevelTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id)
                 if h.has_permission('task', 'show', id=c.id)]
 
     @memoize
     def uncompletedTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
                                            Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
                                            Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
 
     def visibleTasks(self):
+        import tasktracker.lib.helpers as h
+
         return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True))
                 if h.has_permission('task', 'show', id=c.id)]
 
