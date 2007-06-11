@@ -703,6 +703,9 @@ class TaskList(SQLObject):
 
         super(TaskList, self)._create(id, **params)
 
+        if not self.creator:
+            self.creator = kwargs.get('creator') or username
+
         if kwargs.get('statuses', None):
             statuses = kwargs['statuses'].split(",")
             if 'done' in statuses:
