@@ -47,6 +47,7 @@
 <% h.javascript_include_tag('widget/yui-ext/ext.js') %>
 <% h.javascript_include_tag('widget/oc-behaviors.js') %>
 <% h.stylesheet_link_tag('widget/openplans.css') %>
+<% h.stylesheet_link_tag('widget/opencore.css') %>
 % #endif
 </head>
 

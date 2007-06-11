@@ -12,6 +12,9 @@ item
       <a href=<% h.url_for(controller='tasklist', action='view', id=item.id) %> >
         <% item.title %>
       </a>
+      <a href="#" class="oc-liveItem_hoverShowForm">
+	Edit
+      </a>
     </div>
 
 % if h.has_permission('tasklist', 'update', id=item.id, using_verb=True):
