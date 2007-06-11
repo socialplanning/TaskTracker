@@ -33,7 +33,7 @@ item
 
   </td>
   <td>
-    FILL IN WITH SOMETHING LIKE SIZE
+    <% len(item.uncompletedTasks()) %>
   </td>
   <td>
 % creator = item.creator
