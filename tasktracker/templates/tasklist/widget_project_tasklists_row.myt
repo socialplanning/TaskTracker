@@ -37,10 +37,13 @@ item
   </td>
   <td>
     CREATED OR UPDATED DATE
+% creator = item.creator
+% if creator:
     by
     <a href="#todo_fillin">
-      CREATOR OR UPDATOR
+      <% creator %>
     </a>
+% #endif
   </td>
   <td>
     <ul class="oc-actions oc-dataTable-row-actions">
