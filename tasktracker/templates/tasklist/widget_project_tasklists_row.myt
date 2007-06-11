@@ -9,7 +9,7 @@ item
   </td>
   <td>
     <div class="oc-liveItem-value">
-      <a href=<% h.url_for(controller='tasklist', action='view', id=item.id) %> >
+      <a href=<% h.url_for(controller='tasklist', action='show', id=item.id) %> >
         <% item.title %>
       </a>
       <a href="#" class="oc-liveItem_hoverShowForm">
