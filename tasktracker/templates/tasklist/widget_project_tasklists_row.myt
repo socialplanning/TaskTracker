@@ -42,7 +42,7 @@ item
 % creator = item.creator
 % if creator:
     by
-    <a href="#todo_fillin">
+    <a href=<% c.usermapper.member_url(creator) %> >
       <% creator %>
     </a>
 % #endif

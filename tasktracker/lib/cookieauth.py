@@ -107,6 +107,9 @@ class UserMapper(usermapper.UserMapper):
         self.environ = environ
 	self.admin_info = admin_info
 
+    def member_url(self, name):
+        return "http://www.openplans.org/people/%s/profile" % name
+
     def project_members(self):
         return get_users_for_project(self.project, self.server, self.admin_info)
         

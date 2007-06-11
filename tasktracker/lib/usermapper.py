@@ -34,3 +34,6 @@ class UserMapper(object):
 
     def project_members(self):
         pass
+
+    def member_url(self, name):
+        pass
