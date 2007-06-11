@@ -13,7 +13,8 @@ item
         <% item.title %>
       </a>
     </div>
-    
+
+% if h.has_permission('tasklist', 'update', id=item.id):
     <div class="oc-liveItem-editForm">
       <input type="text"
              name=<% '%d_title' % item.id %>
@@ -28,6 +29,8 @@ item
         Cancel
       </a>
     </div>
+% #endif
+
   </td>
   <td>
     FILL IN WITH SOMETHING LIKE SIZE
@@ -41,12 +44,16 @@ item
   </td>
   <td>
     <ul class="oc-actions oc-dataTable-row-actions">
+
+% if h.has_permission('tasklist', 'delete', id=item.id):
       <li>
         <a class="oc-actionLink"
            href=<% "%s?task=%d_delete" % (h.url_for('modify-contents'), item.id) %> >
           Delete
         </a>
       </li>
+% #endif
+
     </ul>
   </td>
 </tr>
