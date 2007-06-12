@@ -99,6 +99,8 @@ class TasklistController(BaseController):
     def show_widget_project_tasklists(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
         c.snippet = True
+        if not c.tasklists:
+            return render_text("No tasklists are available.")
         return render_response('tasklist/widget_project_tasklists.myt')
 
     @attrs(action='open', readonly=False)
@@ -117,10 +119,10 @@ class TasklistController(BaseController):
             c.snippet = True
             result = {}
             lists = [safe_get(TaskList, id, check_live=True) for id in sources]
-            for tl, title in zip(lists, fields): # todo <-- this isn't right, fields is dicts
+            for tl, field in zip(lists, fields): # todo <-- this isn't right, fields is dicts
                 if has_permission('tasklist', 'update', id=tl.id, using_verb=True):
-                    tl.title = title
-                    result[str(tl.id)] = render_response('tasklist/widget_project_tasklists.myt')
+                    tl.title = field['title']
+                    result[str(tl.id)] = render_response('tasklist/widget_project_tasklists_row.myt', item=tl).content[0] # <-- todo ugh
             return render_text(result)
         
 
