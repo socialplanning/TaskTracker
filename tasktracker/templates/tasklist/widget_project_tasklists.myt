@@ -14,7 +14,7 @@
         <tr>
           <th class="oc-dataTable-checkBoxColumn"><input type="checkbox" class="oc-checkAll" /></th>
           <th scope="col"><a class="oc-columnSortable oc-selected" href="">Title &darr;</a></th>
-          <th scope="col"><a class="oc-columnSortable" href="">Size</a></th>
+          <th scope="col"><a class="oc-columnSortable" href="">Uncompleted tasks</a></th>
           <th scope="col"><a class="oc-columnSortable" href="">Created</a></th>
           <th>Actions</th>
         </tr>
