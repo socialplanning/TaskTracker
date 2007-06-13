@@ -39,6 +39,7 @@ item
     <% len(item.uncompletedTasks()) %>
   </td>
   <td>
+<% h.prettyDate(item.created) %>
 % creator = item.creator
 % if creator:
     by
