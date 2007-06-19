@@ -220,6 +220,8 @@ class TaskController(BaseController):
 
         assert TaskList.get(p['task_listID']).project == c.project
         c.task = Task(**p)
+        g.edit_queue.send_message(dict(url=h.url_for(controller='task', action='show', id=c.task.id, qualified=True)), queue = "page_edit")
+        
         # some ugly error checking
         assert TaskList.get(p['task_listID']).id == int(p['task_listID'])
         assert int(p['parentID']) == 0 or Task.get(p['parentID']).task_listID == int(p['task_listID'])

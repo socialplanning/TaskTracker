@@ -350,7 +350,6 @@ class Task(SQLObject):
             #find sibling tasks 
             adj = list(Task.select(AND(query, predicate, Task.q.parentID == c.task.parentID)).orderBy(order).limit(1))
             if adj:
-                print "SIB", adj[0]
                 adj = adj[0]
             else:
                 #check parent task for prev, or ancestor sibs for prev/next
