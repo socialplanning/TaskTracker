@@ -94,6 +94,10 @@ def safe_get(so_class, id, check_live=False):
     """
     not_live = False
     not_project = False
+    if id is None:
+        ### we use pylons.helpers.redirect_to here
+        ### because we need to raise an exception
+        redirect_to('home')
     try:
         id = int(id)
     except (ValueError, TypeError):
