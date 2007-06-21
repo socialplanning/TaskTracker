@@ -69,7 +69,11 @@ def get_tasks_in_display_order(tasklist):
     return sum(map(get_child_tasks_in_display_order, tasklist.topLevelTasks()), [])
     
 class TaskController(BaseController):
-    
+
+    @attrs(action='open', readonly=True)
+    def index(self, *args, **kwargs):
+        return Response.redirect_to(url_for('home'))
+
     @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action=_field_permission, readonly=False)
