@@ -20,6 +20,7 @@
 
 
 from eventserver import DummyEventServer
+from threading import Thread
 
 class Globals(object):
 
@@ -51,7 +52,7 @@ class Globals(object):
         if 'event_queue_directory' in app_conf:
             from cabochonclient import CabochonClient            
             self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'])
-            sender = event_server.sender()
+            sender = self.event_server.sender()
             t = Thread(target=sender.send_forever)
             t.setDaemon(True)
             t.start()    
@@ -59,7 +60,8 @@ class Globals(object):
             print "WARNING, no Cabochon", app_conf
             self.event_server = DummyEventServer()
             
-        self.edit_queue = self.event_server.queue("object_edit")
+        self.queues = dict(create=self.event_server.queue("create_page"),
+                           edit=self.event_server.queue("edit_page"))
         self.events = {}
 
     def __del__(self):
