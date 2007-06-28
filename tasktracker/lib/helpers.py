@@ -54,7 +54,7 @@ def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
 
-link_pattern = r'(http://\S*)'
+link_pattern = r'(http://\S{3,})'
 import re
 def htmlize(text):
     html = text.replace("\n", "<br/>")
