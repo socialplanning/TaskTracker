@@ -19,8 +19,9 @@
 # USA
 
 
-from eventserver import DummyEventServer
+from eventserver import DummyEventServer, init_events
 from threading import Thread
+
 
 class Globals(object):
 
@@ -63,6 +64,8 @@ class Globals(object):
         self.queues = dict(create=self.event_server.queue("create_page"),
                            edit=self.event_server.queue("edit_page"))
         self.events = {}
+
+        init_events()
 
     def __del__(self):
         """
