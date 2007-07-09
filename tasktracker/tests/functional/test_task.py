@@ -278,7 +278,7 @@ class TestTaskController(TestController):
 
         ### and that version should reflect the original task information before the update
         assert version.owner == 'admin'
-        assert version.dateArchived - task.created < timedelta(0,1)
+        assert version.dateArchived - task.created < timedelta(0,2)
 
         ### changing the status, deadline, and priority should do the same thing
         res = app.post('/task/change_field/%s' % task.id,
