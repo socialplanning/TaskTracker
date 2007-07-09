@@ -69,7 +69,11 @@ def get_tasks_in_display_order(tasklist):
     return sum(map(get_child_tasks_in_display_order, tasklist.topLevelTasks()), [])
     
 class TaskController(BaseController):
-    
+
+    @attrs(action='open', readonly=True)
+    def index(self, *args, **kwargs):
+        return Response.redirect_to(url_for('home'))
+
     @authenticate
     @validate(schema=EditTaskForm(), form='show_update')
     @attrs(action=_field_permission, readonly=False)
@@ -211,8 +215,6 @@ class TaskController(BaseController):
         p['creator'] = c.username
         if not p.has_key('task_listID'):
             p['task_listID'] = c.tasklist.id
-        if p.has_key('text'):
-            p['text'] = p['text'].replace('\n', "<br>")  #TODO there must be a better way to do this
         if not p.has_key('parentID'):
             p['parentID'] = 0
         siblingID = p['siblingID']
@@ -250,7 +252,7 @@ class TaskController(BaseController):
         if not len(comment):
             return Response('')
         c.task = safe_get(Task, id, check_live=True)
-        c.comment = Comment(text=comment.replace('\n', "<br>"), user=c.username, task=c.task)
+        c.comment = Comment(text=comment, user=c.username, task=c.task)
         return Response(c.comment.text)
 
     @attrs(action='update', readonly=True)
@@ -284,9 +286,6 @@ class TaskController(BaseController):
                 p['private'] = False
         else:
             p['private'] = c.task.private
-
-        if p.has_key('text'):
-            p['text'] = p['text'].replace('\n', "<br>")
 
         if not (c.level <= Role.getLevel('ProjectAdmin') or
                 c.task.task_list.isOwnedBy(c.username) or

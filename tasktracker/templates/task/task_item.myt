@@ -18,7 +18,7 @@ editable_title = False
 <td colspan="7">
 % if atask.text:
  <div class="second-line-task-description">
-   <% h.previewText(atask.text, 200) %>
+   <% h.htmlize(h.previewText(atask.text, 200)) %>
 </div>
 %
 
