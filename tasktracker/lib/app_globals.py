@@ -18,12 +18,9 @@
 # Boston, MA  02110-1301
 # USA
 
-import imp
 
-def require(*libs):
-    for lib in libs:
-        #attempt to load module
-        module = imp.load_module(lib, *imp.find_module(lib))        
+from eventserver import DummyEventServer, init_events
+from threading import Thread
 
 
 class Globals(object):
@@ -53,7 +50,22 @@ class Globals(object):
         """
         self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
 
+        if 'event_queue_directory' in app_conf:
+            from cabochonclient import CabochonClient            
+            self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'])
+            sender = self.event_server.sender()
+            t = Thread(target=sender.send_forever)
+            t.setDaemon(True)
+            t.start()    
+        else:
+            print "WARNING, no Cabochon", app_conf
+            self.event_server = DummyEventServer()
+            
+        self.queues = dict(create=self.event_server.queue("create_page"),
+                           edit=self.event_server.queue("edit_page"))
         self.events = {}
+
+        init_events()
 
     def __del__(self):
         """

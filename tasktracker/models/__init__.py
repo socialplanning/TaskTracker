@@ -718,7 +718,6 @@ class TaskList(SQLObject):
 TaskVersion = Task.versions.versionClass
 TaskVersion.getChangedFields = memoize(TaskVersion.getChangedFields)
 
-
 soClasses = [
 Action,
 Comment,

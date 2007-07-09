@@ -21,6 +21,7 @@
 from tasktracker.tests import *
 from tasktracker.models import *
 import re
+from datetime import timedelta
 
 class TestTaskController(TestController):
 
@@ -69,8 +70,8 @@ class TestTaskController(TestController):
         res = form.submit()
         location = res.header_dict['location']
         the_id = location.split("/")[-1]  
-        Task(title='a task to claim', task_listID = the_id, text = '')
-
+        task = self.create_task(title='a task to claim', task_listID = the_id, text = '')
+        self.task_set(task, 'owner', '')
         #now as auth
         app = self.getApp('auth')
         res = app.get(url_for(controller='tasklist', action='show', id=the_id))
@@ -100,9 +101,9 @@ class TestTaskController(TestController):
 
     def test_delete_task(self):
         tl = self.create_tasklist('testing deletion')
-        top_level_task = Task(title='top level', task_listID = tl.id, text = '')
-        sub_task = Task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
-        second_task = Task(title='another task', task_listID = tl.id, text = '')
+        top_level_task = self.create_task(title='top level', task_listID = tl.id, text = '')
+        sub_task = self.create_task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
+        second_task = self.create_task(title='another task', task_listID = tl.id, text = '')
         app = self.getApp('admin')
 
         ### we should be able to delete a task by clicking a link
@@ -134,8 +135,8 @@ class TestTaskController(TestController):
     def test_subtask(self):
         """ Test that subtasks show up on the page for the task they come from. """
         tl = self.create_tasklist('testing subtasks')
-        top_level_task = Task(title='top level', task_listID = tl.id, text = '')
-        sub_task = Task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
+        top_level_task = self.create_task(title='top level', task_listID = tl.id, text = '')
+        sub_task = self.create_task(title='second level', task_listID = tl.id, text = '', parentID = top_level_task.id)
         app = self.getApp('admin')
 
         ### both the top-level and subtask should show up on the tasklist
@@ -162,7 +163,7 @@ class TestTaskController(TestController):
                 found = True
                 perm.min_level = Role.getLevel("Authenticated")
         assert found
-        task1 = Task(title='Fleem', text='x', owner='fred', task_listID=tl.id)
+        task1 = self.create_task(title='Fleem', text='x', owner='fred', task_listID=tl.id)
         app = self.getApp('auth')
 
         ### make sure the task shows up
@@ -185,8 +186,8 @@ class TestTaskController(TestController):
         tl = self.create_tasklist('testing the auth role')
         #hack to force private tasks
         TaskListFeature(task_listID=tl.id, name='private_tasks', value=None)
-        nonpriv = Task(title='The non-private one', text='x', private=False, task_listID=tl.id)
-        priv = Task(title='The private one', text='x', private=True, task_listID=tl.id)
+        nonpriv = self.create_task(title='The non-private one', text='x', private=False, task_listID=tl.id)
+        priv = self.create_task(title='The private one', text='x', private=True, task_listID=tl.id)
 
         ### admins can see everything
         app = self.getApp('admin')
@@ -256,7 +257,7 @@ class TestTaskController(TestController):
 
     def test_task_update_field(self):
         tl = self.create_tasklist('testing task update', member_level=1, other_level=1)
-        task = Task(title='The task', text='x', private=False, task_listID=tl.id)        
+        task = self.create_task(title='The task', text='x', task_listID=tl.id)        
         app = self.getApp('admin')
         
         res = app.get(url_for(controller='tasklist', action='show', id=tl.id))
@@ -276,8 +277,8 @@ class TestTaskController(TestController):
         version = versions[0]
 
         ### and that version should reflect the original task information before the update
-        assert version.owner == None
-        assert version.dateArchived == task.created
+        assert version.owner == 'admin'
+        assert version.dateArchived - task.created < timedelta(0,2)
 
         ### changing the status, deadline, and priority should do the same thing
         res = app.post('/task/change_field/%s' % task.id,
@@ -305,7 +306,7 @@ class TestTaskController(TestController):
 
         ### now make sure that a member cannot do this
         app = self.getApp('member')
-        task = Task(title='The task', text='x', private=False, task_listID=tl.id)
+        task = self.create_task(title='The task', text='x', task_listID=tl.id)
 
         ### when he tries to change a field, the controller should throw us an AssertionError
         res = app.get(url_for(controller='task', action='show', id=task.id))
@@ -326,9 +327,9 @@ class TestTaskController(TestController):
     def test_next_prev_task(self):
         tl = self.create_tasklist('testing next/prev tasks')
         name = "ZZZ XXX YYY VVV WWW UUU".split()
-        tasks = [Task(title=name[i], task_listID=tl.id, owner='admin') for i in range(6)]
-        tasks[3].owner = "Mowbray"
-        tasks[4].priority = "High"
+        tasks = [self.create_task(title=name[i], task_listID=tl.id, owner='admin') for i in range(6)]
+        self.task_set(tasks[3], 'owner', 'Mowbray')
+        self.task_set(tasks[4], 'priority', 'High')
 
         app = self.getApp('admin')
         
@@ -392,7 +393,7 @@ class TestTaskController(TestController):
         res.mustcontain("VVV")
         
         ### if a task has a child, the child will be the next task
-        child = Task(title="child", task_listID=tl.id, owner='admin', parentID=tasks[0].id)
+        child = self.create_task(title="child", task_listID=tl.id, owner='admin', parentID=tasks[0].id)
         res = app.get(url_for(controller='task', action='show', id=tasks[0].id, sortBy="title"))
         res.mustcontain("ZZZ")
         res.mustcontain("YYY")

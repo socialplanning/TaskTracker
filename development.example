@@ -56,6 +56,9 @@ translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 obsolete_future_history_dir = %(here)s/afh
 
+#event_server = http://localhost:24532
+#event_queue_directory = %(here)s/eq
+
 #filter-with = prefix
 #
 #[filter:prefix]
