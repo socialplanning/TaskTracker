@@ -426,7 +426,7 @@ class TestTaskListController(TestController):
                 app = self.getApp(user, project_permission_level = project_level)
                 tl = self.create_tasklist('fleem', member_level, other_level)
                 #create a task programmatically (note: bypasses security)
-                task = Task(title='morx', task_listID=tl.id)
+                task = self.create_task(title='morx', task_listID=tl.id)
 
                 #test viewing
                 try:
@@ -545,7 +545,7 @@ on a security matrix.
                 app = self.getApp(user, project_permission_level = project_level)
                 tl = self.create_tasklist('fleem', member_level, other_level)
                 #create a task programmatically (assigned to user)
-                task = Task(title='morx', task_listID=tl.id, owner=user)
+                task = self.create_task(title='morx', task_listID=tl.id, owner=user)
 
                 #test viewing
                 try:

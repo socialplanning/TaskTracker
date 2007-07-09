@@ -18,9 +18,8 @@ def taskCreated(kwargs, post_funcs):
     post_funcs.append(taskCreatedPost)
 
 def taskCreatedPost(task):
-    print "Task created post"
-    g.queues['create'].send_message(dict(url=h.url_for(controller='task', action='show', id=task.id, qualified=True), categories=['projects/' + c.project_name, 'tasktracker']))
+    g.queues['create'].send_message(dict(url=h.url_for(controller='task', action='show', id=task.id, qualified=True), categories=['projects/' + c.project_name, 'tasktracker'], user=c.user))
 
 def taskUpdated(task, kwargs):
-    g.queues['edit'].send_message(dict(url=h.url_for(controller='task', action='show', id=task.id, qualified=True), categories=['projects/' + c.project_name, 'tasktracker']))
+    g.queues['edit'].send_message(dict(url=h.url_for(controller='task', action='show', id=task.id, qualified=True), categories=['projects/' + c.project_name, 'tasktracker'], user=c.user))
 

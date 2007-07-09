@@ -85,18 +85,16 @@ class TestController(TestCase):
         app.post(url_for(controller='project', action='initialize'))
 
         self.task_list = self.create_tasklist('The list')
-
-        Task(title="Task 1", text="This is a task",
-             task_list=self.task_list)
-        Task(title="Task 2", text="Another task",
-             task_list=self.task_list)
+        
+        self.create_task(task_list=self.task_list, title="Task 1",
+                         text="This is a task")
+        self.create_task(task_list=self.task_list, title="Task 2",
+                         text="Another task")
         task_list_complete = self.create_tasklist('Complete list')
-        Task(title="Task A", text="more",
-             task_list=task_list_complete,
-             status='done')
-        Task(title="Task B", text="yet more text",
-             task_list=task_list_complete,
-             status='done')
+        self.create_task(task_list=task_list_complete, title="Task A",
+                         text="more", status='true')
+        self.create_task(task_list=task_list_complete, title="Task B",
+                         text="yet more text", status='true')
 
 
     def setup_database(self):
@@ -116,6 +114,41 @@ class TestController(TestCase):
         encoded = 'Basic ' + (username + ':nopassword').encode('base64')        
         return paste.fixture.TestApp(self.wsgiapp, extra_environ={'HTTP_AUTHORIZATION': encoded,
 'openplans_ttpolicy' : project_permission_level, "HTTP_X_OPENPLANS_PROJECT" : project})
+
+    def create_task(self, task_list = None, task_listID = None, title="", text="", **kwargs):
+        if task_list:
+            task_listID = task_list.id
+        assert task_listID
+        app = self.getApp('admin')
+        res = app.get(url_for(controller='tasklist', action='show', id=task_listID))
+        form = res.forms['add_task_form']
+        form['title'] = title
+        form['text'] = text
+        if kwargs.get('parentID', None):
+            form['parentID'] = kwargs['parentID']
+            del kwargs['parentID']
+        res = form.submit()
+        try:
+            task_id = re.search('<tr[^>]*id\s*=\s*"task_(\d+)"', res.body).group(1)
+        except AttributeError:
+            print "failed to create task", title, text
+            print res.body
+            return
+
+        task = Task.get(task_id)
+        for field, value in kwargs.items():
+            self.task_set(task, field, value)
+        return task
+
+    def task_set(self, task, field, value, app=None):
+        if not app:
+            app = self.getApp('admin')
+        if field == 'private':
+            res = app.post('/task/update_private/%s' % task.id,
+                                   params={'private' : str(value).lower(), 'authenticator':self._get_authenticator(app)})
+        else:
+            res = app.post('/task/change_field/%s' % task.id,
+                       params={'field':field, field:value, 'authenticator':self._get_authenticator(app)})
         
     def create_tasklist(self, title, member_level=4, other_level=4):
         app = self.getApp('admin')

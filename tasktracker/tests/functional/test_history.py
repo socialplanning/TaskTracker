@@ -25,12 +25,12 @@ class TestHistoryController(TestController):
         #let's create a task and do some things to it.
 
         tl = TaskList.select()[0]
-        task = Task(title='initial title', task_listID = tl.id, text = '')
+        task = self.create_task(title='initial title', task_listID = tl.id, text = '')
 
         #the first series of changes
-        
-        task.title = 'changed title'
-        task.text = 'changed text'
+
+        self.task_set(task, 'title', 'changed title')
+        self.task_set(task, 'text', 'changed text')
 
         Comment(taskID = task.id, text='the first comment', user='first user')
 
@@ -42,9 +42,9 @@ class TestHistoryController(TestController):
 
         #second series
 
-        task.title = 'changed title again'
-        task.text = 'changed text again'
-
+        self.task_set(task, 'title', 'changed title again')
+        self.task_set(task, 'text', 'changed text again')
+        
         Comment(taskID = task.id, text='the second comment', user='second user')
 
         assert len(list(task.comments)) == 2
