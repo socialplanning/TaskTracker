@@ -82,9 +82,6 @@ task
 </span>
 left) </span>
 
-% if atask.private:
--- (private)
-%
 </span>
 
 </td>

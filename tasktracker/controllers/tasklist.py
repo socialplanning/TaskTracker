@@ -41,18 +41,14 @@ def add_feature(name, value = None):
     else:
         TaskListFeature(task_listID=c.tasklist.id, name=name, value=value)
 
-def remove_feature(name, value = None):
-    if name == 'private_tasks':
-        for task in c.tasklist.tasks:
-            task.private = False
-    
+def remove_feature(name, value = None):  
     f = TaskListFeature.selectBy(task_listID=c.tasklist.id, name=name)
     if f.count():
         f[0].destroySelf()
 
 
 def set_features(p):
-    for feature in ['deadlines', 'custom_status', 'private_tasks']:
+    for feature in ['deadlines', 'custom_status']:
         if p.get('feature_%s' % feature, None):
             add_feature(feature)
         else:
@@ -147,10 +143,9 @@ class TasklistController(BaseController):
                     make_permission('task_change_status', tasklist, level)
 
         list_owner_level = Role.getLevel('ListOwner')
-        #only managers can assign and update list and deal with private tasks
+        #only managers can assign and update list
         #and delete tasklists
         make_permission('task_assign', tasklist, list_owner_level)
-        make_permission('task_private', tasklist, list_owner_level)
         make_permission('tasklist_update', tasklist, list_owner_level)
         make_permission('tasklist_delete', tasklist, list_owner_level)
         

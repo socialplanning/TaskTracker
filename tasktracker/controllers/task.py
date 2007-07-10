@@ -47,7 +47,6 @@ class EditTaskForm(formencode.Schema):
     editable_title = StringBoolean(not_empty = True)
     columnOrder = String()
     depth = Int()
-    private = NotEmpty()
 
 def _assignment_permitted(new_owner):
     return ( h.has_permission(controller='task', action='assign') ) or \
@@ -139,10 +138,7 @@ class TaskController(BaseController):
         assert parentID == 0 or Task.get(parentID).task_listID == task.task_listID, ("Line 135")
         assert parentID != task.id, ("Time paradox!")
         task.parentID = parentID
-        if parentID > 0:
-            parent = Task.get(parentID)
-            if parent.private:
-                task.private = True
+
         task.moveToTop()
 
     def _move_below_sibling(self, id, siblingID):
@@ -156,10 +152,6 @@ class TaskController(BaseController):
         new_sibling = Task.get(siblingID)
         assert new_sibling.task_listID == task.task_listID, ("Mismatched tasklists for tasks %d and %d" % (new_sibling.id, task.id))
         task.parentID = new_sibling.parentID
-        if new_sibling.parentID > 0:
-            parent = Task.get(new_sibling.parentID)
-            if parent.private:
-                task.private = True
         task.moveBelow(new_sibling)
 
     @jsonify
@@ -210,8 +202,6 @@ class TaskController(BaseController):
     
 
     def _create_task(self, url_from = None, **p):
-        if c.level > Role.getLevel('ProjectMember'):
-            p['private'] = False
         p['creator'] = c.username
         if not p.has_key('task_listID'):
             p['task_listID'] = c.tasklist.id
@@ -281,30 +271,11 @@ class TaskController(BaseController):
         if not p['owner']:
             del p['owner']
 
-        if c.task.owner == c.username or c.task.tasklist.isListOwner(c.username):
-            if not 'private' in p.keys():
-                p['private'] = False
-        else:
-            p['private'] = c.task.private
-
-        if not (c.level <= Role.getLevel('ProjectAdmin') or
-                c.task.task_list.isOwnedBy(c.username) or
-                c.task.owner == c.username):
-            del p['private']
-
         c.task.set(**p)
 
         return Response.redirect_to(action='show', controller='tasklist', id=c.task.task_listID)
 
-    # @@ is this ever used?
-    @authenticate
-    @attrs(action='private', readonly=False)
-    def update_private(self, id):
-        c.task = safe_get(Task, id, check_live=True)
-        c.task.private = request.params['private'] == 'true'
-        return render_response('task/_private.myt', fragment=True)
-
-    @attrs(action='private', readonly=False)
+    @attrs(action='update', readonly=False)
     def revertToDate(self, id):
         c.task = safe_get(Task, id, check_live=True)
         date = dateparse(request.params['date'])

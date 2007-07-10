@@ -24,8 +24,8 @@ from tasktracker.models import *
 class TestTaskController(TestController):
     def test_my_tasks(self):
         tl = self.create_tasklist('testing task query')
-        my_task = self.create_task(title='Admin task', text='x', private=False, task_listID=tl.id, owner='admin')
-        her_task = self.create_task(title='Her task', text='x', private=False, task_listID=tl.id, owner='maria')
+        my_task = self.create_task(title='Admin task', text='x', task_listID=tl.id, owner='admin')
+        her_task = self.create_task(title='Her task', text='x', task_listID=tl.id, owner='maria')
 
         ### admin's task should show up here and maria's should not
         app = self.getApp('admin')
@@ -46,7 +46,7 @@ class TestTaskController(TestController):
 
     def test_project_tasks(self):
         tl = self.create_tasklist('testing task query')
-        task = self.create_task(title='A task', text='x', private=False, task_listID=tl.id)
+        task = self.create_task(title='A task', text='x', task_listID=tl.id)
         app = self.getApp('admin')
 
         res = app.get(url_for(controller='query', action='show_project_tasks'))
@@ -60,8 +60,8 @@ class TestTaskController(TestController):
 
         assert tl.id != self.task_list.id # @@ ?
 
-        task = self.create_task(title='A task', text='x', private=False, task_listID=tl.id)
-        task2 = self.create_task(title='Not here', text='x', private=False, task_listID=self.task_list.id)
+        task = self.create_task(title='A task', text='x', task_listID=tl.id)
+        task2 = self.create_task(title='Not here', text='x', task_listID=self.task_list.id)
 
         app = self.getApp('admin')
 

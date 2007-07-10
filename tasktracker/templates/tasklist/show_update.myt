@@ -102,19 +102,6 @@ lists.each(function(list_name) {
   <input type="checkbox" name="feature_deadlines" value="1" class="features"/>Deadlines<br/>
  </div>
 
- <div id="edit_private" class="folded">
-  <input type="checkbox" name="feature_private_tasks" value="1" class="features" id="feature_private_tasks"/>Private tasks<br/>
- </div>
-
- <div id="private" class="editable unfolded">
-% if c.feature_private_tasks:
-This list has private tasks.
-  <script>$('feature_private_tasks').onclick=function() {return confirm('All private tasks will be made public.  Proceed?')};</script>
-% else:
-This list does not have private tasks.
-%
- </div>
-
  <div id="initial_assign" class="unfolded editable">
     By default, tasks are initially
 % if c.tasklist.initial_assign:

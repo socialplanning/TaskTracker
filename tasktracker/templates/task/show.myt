@@ -99,14 +99,6 @@
  </div>
 % 
 
-% if c.task.task_list.hasFeature("private_tasks"):
-% if h.has_permission(controller='task', action='update_private', id=c.task.id):
- <span id="private">
- | <& _private.myt &>
- </span>
-% #endif h.has_permission
-% #endif c.task.task_list.hasFeature
-
 % if h.has_permission(controller='task', action='update', id=c.task.id):
  <% h.secure_link_to('delete this task', class_='post-link',
     confirm_msg='Are you sure you want to delete this task?', url=h.url_for(controller='task', action='destroy', id=c.task.id)) %>

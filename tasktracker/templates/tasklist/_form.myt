@@ -29,14 +29,6 @@
   <label for="feature_deadlines">Specify deadlines</label>
  </div>
 
- <div id="private">
-  <input type="checkbox" name="feature_private_tasks" 
-         id="feature_private_tasks" value="1" class="features"/>
-  <label for="feature_private_tasks">
-Authorize private tasks on this list
-  </label>
- </div>
-
  <div id="initial_assign">
   By default, tasks are initially assigned to
   <input type="radio" name="initial_assign" value="0" checked="checked"/>

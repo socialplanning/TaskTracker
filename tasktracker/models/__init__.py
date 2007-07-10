@@ -140,7 +140,6 @@ class Task(SQLObject):
     owner = StringCol(length=255, default=None)
     parent = ForeignKey("Task")
     priority = StringCol(length=255, default="None")
-    private = BoolCol(default=False)
     sort_index = IntCol()
     status = ForeignKey("Status")
     task_list = ForeignKey("TaskList")
@@ -163,13 +162,8 @@ class Task(SQLObject):
 
         task_list = TaskList.get(kwargs['task_listID'])
 
-        if kwargs.get('private'):
-            assert 'private_tasks' in [f.name for f in task_list.features]
-
         if kwargs.get('parentID'):
             parent = Task.get(kwargs['parentID'])
-            if parent.private:
-                kwargs['private'] = True
 
         if 'statusID' in kwargs:
             try:
@@ -203,13 +197,6 @@ class Task(SQLObject):
             self.parent.num_children -= 1
         if value:
             Task.get(value).num_children += 1
-
-    def _set_private(self, value):
-        if getattr(self, 'id', None):
-            if self.parentID:
-                if self.parent.private:
-                    value = True
-        self._SO_set_private(value)
 
     def _set_parentID(self, value):
         if getattr(self, 'id', None):
@@ -330,7 +317,7 @@ class Task(SQLObject):
 
         if level >= Role.getLevel("ListOwner"):
             #filtering needed
-            query = AND(query, OR(Task.q.private == 0, Task.q.owner == user))
+            query = AND(query, Task.q.owner == user)
         
         attr = getattr(c.task, orderBy)
         next_predicate_fn = lambda attr: (getattr(Task.q, orderBy) > attr, "ASC")
@@ -422,7 +409,7 @@ class Task(SQLObject):
 
         if level >= Role.getLevel("ListOwner"):
             #filtering needed
-            query += " AND (task.private = 0 OR task.owner = '%s')" % user
+            query += " AND task.owner = '%s'" % user
 
         conn = hub.getConnection()
         trans = conn.transaction()

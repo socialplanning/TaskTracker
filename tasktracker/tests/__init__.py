@@ -143,11 +143,7 @@ class TestController(TestCase):
     def task_set(self, task, field, value, app=None):
         if not app:
             app = self.getApp('admin')
-        if field == 'private':
-            res = app.post('/task/update_private/%s' % task.id,
-                                   params={'private' : str(value).lower(), 'authenticator':self._get_authenticator(app)})
-        else:
-            res = app.post('/task/change_field/%s' % task.id,
+        res = app.post('/task/change_field/%s' % task.id,
                        params={'field':field, field:value, 'authenticator':self._get_authenticator(app)})
         
     def create_tasklist(self, title, member_level=4, other_level=4):

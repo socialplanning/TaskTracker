@@ -496,9 +496,6 @@ def render_action(action):
         if 'Text' in fields:
             fields.remove('Text')
             fields.append('Description')
-        if 'Private' in fields:
-            fields.remove('Private')
-            fields.append('Privacy')
         user = action.updatedBy
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     return comment
