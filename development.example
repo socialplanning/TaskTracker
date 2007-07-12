@@ -76,6 +76,9 @@ obsolete_future_history_dir = %(here)s/afh-test
 
 fill_environ REMOTE_ADDR = 127.0.0.1
 
+event_server = 
+event_queue_directory = 
+
 ############################################################
 ## Deliverance-enabled example
 ############################################################

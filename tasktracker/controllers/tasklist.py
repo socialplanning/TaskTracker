@@ -160,7 +160,7 @@ class TasklistController(BaseController):
         for manager in p['managers'].split(","):
             # ignore submitted managers who aren't project members
             # @@ this currently works silently.. should it error?
-            if manager and manager not in administrators and manager in c.usermapper.project_member_names():
+            if manager and manager not in administrators and c.usermapper.is_project_member(manager):
                 TaskListRole(task_listID=tasklist.id, username=manager,roleID=list_owner)
 
     @authenticate

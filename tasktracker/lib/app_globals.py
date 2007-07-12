@@ -50,7 +50,7 @@ class Globals(object):
         """
         self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
 
-        if 'event_queue_directory' in app_conf:
+        if app_conf.get('event_queue_directory', None):
             from cabochonclient import CabochonClient            
             self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'])
             sender = self.event_server.sender()
