@@ -18,11 +18,6 @@ cancel_button = ''
 <div id="hideable_title_label" style="display:none;">title</div>
 <% h.text_field_r('oldtask', 'title', size=50, tabindex=1, maxlength=255) %>
 
-% if c.tasklist.hasFeature('private_tasks'):
-<div style="display:inline;">
-  <% h.check_box_r('oldtask', 'private', tabindex=3) %> make this task private
-</div>
-%
 <p>
 <div id="hideable_add_description">
 <a id="show_description" href="#nevermind" class="small">

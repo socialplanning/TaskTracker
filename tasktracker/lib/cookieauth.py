@@ -113,7 +113,10 @@ class UserMapper(usermapper.UserMapper):
 
     def project_members(self):
         return get_users_for_project(self.project, self.server, self.admin_info)
-        
+    
+    def is_project_member(self, member):
+        return member in self.project_member_names()
+    
 class BadCookieError(Exception): pass
 
 class CookieAuth(object):

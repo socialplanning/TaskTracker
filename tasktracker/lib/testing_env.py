@@ -61,7 +61,6 @@ class TestingEnv(object):
             basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
             if basic != "Basic": return False
             username, password = encoded.decode("base64").split(":")
-            password = password.encode("base64")
             environ['REMOTE_USER'] = username
             if username == 'anon':
                 environ['REMOTE_USER'] = ''

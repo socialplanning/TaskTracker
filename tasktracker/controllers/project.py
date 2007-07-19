@@ -25,6 +25,10 @@ import formencode
 
 class ProjectController(BaseController):
 
+    @attrs(action='open', readonly=True)
+    def index(self, *args, **kwargs):
+        return Response.redirect_to(url_for('home'))
+
     @attrs(action='initialize', readonly=True, restrict_remote_addr=True)
     def initialize(self, *args, **kwargs):
         c.project.initialized = True

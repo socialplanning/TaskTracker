@@ -134,7 +134,6 @@ class TestTaskListController(TestController):
         ### it should display the proper preferences based on the creation
         assert res.form['feature_deadlines'].checked
         assert not res.form.fields.has_key('feature_custom_status')
-        assert not res.form['feature_private_tasks'].checked
         
         TaskList.get(the_id).destroySelf
 
@@ -214,33 +213,6 @@ class TestTaskListController(TestController):
         tl = TaskList.get(the_id)
         tl.destroySelf()
 
-    def test_privacy(self):
-        app = self.getApp('admin')
-
-        ### create a new tasklist with private tasks installed
-        res = app.get(url_for(controller='tasklist', action='show_create'))
-        form = res.forms[0]
-        form['title'] = 'The new tl title'
-        form['feature_private_tasks'] = 1
-        res = form.submit()
-
-        ### there should now be an option to make tasks private
-        res = res.follow()
-        form = res.forms[0]
-        assert form.fields.has_key('private')
-        res.mustcontain("make this task private")
-
-        ### uninstall private tasks
-        res = app.get(url_for(controller='tasklist', action='show_create'))
-        form = res.forms[0]
-        form['title'] = 'The new tl title'
-        form['feature_private_tasks'] = 0
-        res = form.submit()
-
-        ### the privacy option should now be gone
-        res = res.follow()
-        form = res.forms[0]
-        assert not form.fields.has_key('private')
 
     def test_readonly(self):
 
@@ -397,8 +369,6 @@ class TestTaskListController(TestController):
         task_create
         task_update
 
-        Actions that are NOT covered in these tests:
-        task_private
         """
 
         f = open("tasktracker/tests/data/security.csv")
@@ -426,7 +396,7 @@ class TestTaskListController(TestController):
                 app = self.getApp(user, project_permission_level = project_level)
                 tl = self.create_tasklist('fleem', member_level, other_level)
                 #create a task programmatically (note: bypasses security)
-                task = Task(title='morx', task_listID=tl.id)
+                task = self.create_task(title='morx', task_listID=tl.id)
 
                 #test viewing
                 try:
@@ -518,8 +488,6 @@ on a security matrix.
         task_change_status
         task_edit
 
-        Actions that are NOT covered in these tests:
-        task_private, at least
         """
 
         f = open("tasktracker/tests/data/taskowner_security.csv")
@@ -545,7 +513,7 @@ on a security matrix.
                 app = self.getApp(user, project_permission_level = project_level)
                 tl = self.create_tasklist('fleem', member_level, other_level)
                 #create a task programmatically (assigned to user)
-                task = Task(title='morx', task_listID=tl.id, owner=user)
+                task = self.create_task(title='morx', task_listID=tl.id, owner=user)
 
                 #test viewing
                 try:

@@ -3,7 +3,6 @@
 <p>Task Tracker is designed to accommodate many different ways of getting things done. You can create task lists that match your particular needs by choosing the options that best work for you.</p>
 
 <ul>
-<li>For a private task list you can choose to make it so that team-members and non-members can <b>not even see the list</b>.</li>
 
 <li>If a set of tasks requires more direction, create a manger-directed list in which members can views tasks that have been assigned to them or <b>claim tasks</b> that have been left unassigned.</li>
 

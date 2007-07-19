@@ -19,10 +19,6 @@
 <td><% h.select('priority', h.options_for_select((('None', 'None'), ('High','High'), ('Medium','Medium'), ('Low','Low')), h.get_value('oldtask', 'priority', 'None')))%></td>
 </tr>
 
-<tr><td><label class="row-heading" for="private">Private:</label></td>
-<td><% h.check_box_r('oldtask', 'private')%>
-<!--input name="private" id="private" type="checkbox"--></td></tr>
-
 % if c.owner:
 <tr><td><span class="row-heading">Assigned to:</span></td>
 <td><% c.owner %></td>

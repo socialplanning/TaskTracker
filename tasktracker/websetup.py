@@ -128,6 +128,6 @@ def setup_config(command, filename, section, vars):
 
     setRoles(makeAction(action="task_comment"), members)
 
-    setRoles(makeAction(action="task_private"), [manager, pa])
+
 
 

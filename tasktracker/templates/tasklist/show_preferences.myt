@@ -77,14 +77,6 @@ lists.each(function(list_name) {
 %
  </div>
 
- <div id="private">
-% if c.feature_private_tasks:
-This list has private tasks.
-% else:
-This list does not have private tasks.
-%
- </div>
-
  <div id="initial_assign">
 By default, tasks are initially
 % if c.tasklist.initial_assign:

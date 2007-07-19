@@ -201,15 +201,9 @@ class BaseController(WSGIController):
             key = ('task', task.id)
             extra_permissions = set()
             if local_level > Role.getLevel('TaskOwner') and 'task_show' in permissions and task.isOwnedBy(c.username):
-                    extra_permissions = set(['task_comment', 'task_change_status'])
+                extra_permissions = set(['task_comment', 'task_change_status'])
 
-            if task.private:
-                #special case for private tasks
-                if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(c.username):
-                    c.permission_cache[key] = set()
-                    return False
-            else:
-                c.permission_cache[key] = permissions.union(extra_permissions)
+            c.permission_cache[key] = permissions.union(extra_permissions)
 
 
     @classmethod
@@ -282,14 +276,7 @@ class BaseController(WSGIController):
         if c.level > Role.getLevel('ListOwner'):
             if task_list.isOwnedBy(params['username']):
                 local_level = Role.getLevel('ListOwner')
-
-        #special case for private tasks
-        if controller == 'task':
-            if task.private:
-                if local_level > Role.getLevel('ListOwner') and not task.isOwnedBy(params['username']):
-                    c.permission_cache[key] = set()
-                    return False
-        
+      
         tl_permissions = TaskListPermission.select(AND(TaskListPermission.q.task_listID == task_list.id, TaskListPermission.q.min_level >= local_level))
 
         permissions = set((p.actionName() for p in tl_permissions))

@@ -57,6 +57,14 @@ def debugThings(obj = None):
     foo = c
     import pdb; pdb.set_trace()
 
+link_pattern = r'(http://\S{3,})'
+import re
+def htmlize(text):
+    html = text.replace("\n", "<br/>")
+    pat = re.compile(link_pattern)
+    html = pat.sub('<a href="\\1">\\1</a>', html)
+    return html
+
 def previewText(text, length=25):
     #length might be an empty string b/c of tal
     if length == "":
@@ -169,6 +177,8 @@ def editableField(task, field, ifNone = None, uneditable = False):
     elif field == 'priority':
         if contents == 'None':
             contents = '--'
+    elif field == 'text':
+        contents = htmlize(contents)
 
     if field == 'status':
         contents = task.statusName()
@@ -491,9 +501,6 @@ def render_action(action):
         if 'Text' in fields:
             fields.remove('Text')
             fields.append('Description')
-        if 'Private' in fields:
-            fields.remove('Private')
-            fields.append('Privacy')
         user = action.updatedBy
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     return comment
