@@ -6,10 +6,10 @@ class TestExportController(TestController):
         # FIXME: what username should I use?
         app = self.getApp('admin')
         tlist = self.create_tasklist("export_list")
-        Task(title="Task A", text="This is Task A",
-             task_list=tlist)
-        t = Task(title="Task B", text="This is Task B",
-             task_list=tlist, statusID='done')
+        self.create_task(title="Task A", text="This is Task A",
+                         task_list=tlist)
+        t = self.create_task(title="Task B", text="This is Task B",
+             task_list=tlist, status='true')
         response = app.get(url_for(controller='export', id=tlist.id))
         # Test response...
         response.mustcontain(
