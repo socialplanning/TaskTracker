@@ -27,9 +27,9 @@ setup(
     name='TaskTracker',
     version="",
     #description="",
-    #author="",
-    #author_email="",
-    #url="",
+    author="The Open Planning Project",
+    author_email="ejucovy@openplans.org",
+    url="http://www.openplans.org/projects/tasktracker",
     install_requires=[
       "Myghty",
       "Pylons==0.9.4.1",
