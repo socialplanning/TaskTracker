@@ -51,8 +51,16 @@ class Globals(object):
         self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
 
         if app_conf.get('event_queue_directory', None):
-            from cabochonclient import CabochonClient            
-            self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'])
+            from cabochonclient import CabochonClient
+            username = app_conf.get('cabochon_username', None)
+            password = app_conf.get('cabochon_password', None)
+
+            self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'], username=username, password=password)
+            if not self.event_server.test_login():
+                print "Bad Cabochon login information"
+                import sys
+                sys.exit(0)
+                
             sender = self.event_server.sender()
             t = Thread(target=sender.send_forever)
             t.setDaemon(True)
