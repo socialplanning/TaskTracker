@@ -100,12 +100,17 @@ def get_info_for_project(project, server):
     return info
 
 class UserMapper(usermapper.UserMapper):
-    def __init__(self, environ, project, server, admin_info):
+
+    def __init__(self, environ, project, server, admin_info, profile_uri):
         usermapper.UserMapper.__init__(self)
         self.project = project
         self.server = server
         self.environ = environ
 	self.admin_info = admin_info
+        self.profile_uri = profile_uri
+
+    def member_url(self, name):
+        return self.profile_uri % name
 
     def project_members(self):
         return get_users_for_project(self.project, self.server, self.admin_info)
@@ -120,6 +125,10 @@ class CookieAuth(object):
         self.app = app
         self.openplans_instance = app_conf['openplans_instance']
         self.login_uri = app_conf['login_uri']
+        self.profile_uri = app_conf['profile_uri']
+
+        if self.profile_uri.count('%s') != 1:
+            raise Exception("Badly formatted profile_uri: must include a single '%s'")
 
         admin_file = os.environ.get('TOPP_ADMIN_INFO_FILENAME')
         if not admin_file:
@@ -174,8 +183,11 @@ class CookieAuth(object):
         
         project_name = environ['topp.project_name']
 
-        environ['topp.project_members'] = umapper = UserMapper(environ, project_name, self.openplans_instance, self.admin_info)
+        environ['topp.project_members'] = umapper = UserMapper(environ, project_name,
+                                                               self.openplans_instance,
+                                                               self.admin_info, self.profile_uri)
         if environ.get("HTTP_X_TASKTRACKER_INITIALIZE") == "True" and environ['REMOTE_ADDR'] == '127.0.0.1':  # ugly hack
+
             environ['topp.user_info']['roles'].append("ProjectAdmin")
             environ['topp.project_permission_level'] = 'closed'
         else:

@@ -95,13 +95,6 @@ def readableDate(date):
     else:
         return "No deadline"
 
-def help(text):
-    help_id = 'help_' + str(random())[2:]
-    return """
-%s
-<div id="%s" onclick="$('%s').hide()" class="help_text" style="display: none;">%s</div>
-""" % (image_tag("question.png", onclick="$('%s').toggle();", class_="help"), help_id, help_id, help_id, text)
-
 def editable_list(field, updateable_items=[], fixed_items=[]):
     out = ['<ul id="list_%s" class="task_list" field="%s">' % (field, field)]
     for item in fixed_items:
@@ -397,8 +390,11 @@ def has_permission(controller, action, **params):
 
     controller = getattr(module, cap_controller + 'Controller')
 
-    action_verb = getattr(controller, action)
-    action_verb = action_verb.action
+    if params.get('using_verb') == True:
+        action_verb = action
+    else:
+        action_verb = getattr(controller, action)
+        action_verb = action_verb.action
 
     params['username'] = c.username
 
@@ -499,17 +495,6 @@ def render_action(action):
         user = action.updatedBy
         comment = "%s updated %s by %s" % (", ".join (fields), prettyDate(action.dateArchived), user)
     return comment
-
-
-def field_last_updated(task, field):
-    the_version = None
-    for version in reversed(list(task.versions)):
-        if field.title() in version.getChangedFields():
-            the_version = version
-            break
-    if not the_version:
-        return ""
-    return "%s by %s" % (prettyDate(the_version.dateArchived), the_version.updatedBy)
 
 
 def task_item_tr(task, is_preview, is_flat, editable_title):

@@ -243,10 +243,12 @@ class BaseController(WSGIController):
         if action_name == 'tasklist_create':
             ### tasklist creation permissions are based entirely on the project permission level
             ### and conform to the text descriptions of security settings in opencore
-            if c.project_permission_level == 'open_policy':
-                return c.level <= Role.getLevel('Authenticated')
-            else:
-                return c.level <= Role.getLevel('ProjectMember')
+            #if c.project_permission_level == 'open_policy':
+            #    return c.level <= Role.getLevel('Authenticated')
+            #else:
+
+            # don't let project non-members create tasklists, ever!
+            return c.level <= Role.getLevel('ProjectMember')
         
         permissions = c.permission_cache.get(key)
         if permissions:

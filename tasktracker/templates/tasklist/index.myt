@@ -80,3 +80,5 @@
 </ul>
 </div>
 %
+
+<hr class="oc-clearElement" />

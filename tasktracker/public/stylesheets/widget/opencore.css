@@ -1,0 +1,1205 @@
+/* 
+Title: NUI for OpenCore
+Date: April 2007
+Author: Rolando Penate & Nick Grossman
+Version: 1ish
+
+@Contents: (@ symbol to make searching easy)
+ - Global Layout
+ - Header
+ - Content
+ - Footer
+ - Layout for OpenPlans pages
+ - OpenPlans Project Page
+ - "Custom" CSS - little tricks & snazzy stuff
+ - General Classes
+ - HTML Elements & General Typography
+
+*/
+
+/* @Global Layout
+-----------------------------------------*/
+html {
+}
+body {
+  margin: 0;
+  padding: 0 8px;
+  color: #333333;
+}
+#oc-page-container {
+  /* max-width: 70em; */ 
+  /* As a rule, measure should be between two and three alphabets long. In other words, between 52 and 78 characters, including spaces. Since characters average out to about one-half EM in width this translates to a minimum width of 26em and a maximum of 39em, or two to three alphabets.   IN OTHER WORDS: avoid changing the width. */
+  /* min-width: 52em; */
+  margin: 0 auto;
+  padding: 0;
+}
+#oc-topnav {
+  margin: 0;
+  padding: 0;
+}
+#oc-content-container {
+  margin: 0;
+  padding: 1em;
+}
+#oc-content-main {
+  float: left;
+  clear: none;
+  width: 65%;
+}
+#oc-content-main.oc-content-main-fullWidth {
+  width: 100%;
+}
+#oc-content-sidebar {
+  float: right;
+  clear: none;
+  width: 33%;
+  padding: 0;
+  line-height: 1.35;
+}
+#oc-project-tabs {
+
+}
+#oc-project-content {
+
+}
+#oc-footer {
+  clear: both;
+  margin: 3em 0 0 0;
+  padding: .5em 1em;
+}
+
+/* @TOPNAV - Global header
+--------------------------------------- */
+#oc-topnav {
+  position: relative;
+  text-align: left;
+}
+#oc-topnav h1 {
+  padding: 0.5em 0 0.25em;
+  margin: 0;
+}
+ul#oc-topnav-context {
+  list-style-type: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+ul#oc-topnav-context li {
+  float: left;
+  clear: none;
+  display: block;
+  padding: 0.25em 0.5em;
+  margin: 0 0.25em;
+}
+ul#oc-topnav-context li.oc-topnav-selected {
+}
+#oc-topnav-usermenu {
+  position: absolute;
+  top: 0em;
+  right: 0em;
+  padding: 0.25em;
+}
+#oc-topnav-usermenu input.oc-input-typeText {
+  padding-left: 0.25em;
+  display: inline; 
+  font-size: 10px;
+}
+#oc-usermenu-list {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 10px;
+  text-transform: lowercase;
+  text-align: left;
+}
+#oc-usermenu-list li {
+  float: left;
+  margin: 0 0.25em;
+}
+#oc-usermenu-list li #oc-usermenu-explore {
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+}
+#oc-usermenu-list li #oc-usermenu-explore li {
+  float: none;
+}
+/* @FOOTER - Global footer
+--------------------------------------- */
+#oc-footer-about {
+  text-align: right;
+}
+
+#oc-footer ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  float: left;
+}
+#oc-footer li {
+  display: inline;
+  padding: 0 0.5em;
+}
+
+/* LAYOUT for @OpenPlans Pages
+-------------------------------------------- */
+/* This is where general layout elements within the content of a page are defined. Could also aply to how we implement templates. 
+  
+/* GENERIC layout elements */
+
+.oc-plainList { /* list with no formatting */
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 1em;
+}
+.oc-inlineList { /* comma-separated list (space-separated in IE) */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.oc-inlineList li {
+  display: inline;
+}
+.oc-inlineList li:after {
+  content: ", ";
+}
+.oc-inlineList li:last-child:after {
+  content: "";
+}
+.oc-boxy {
+  margin-bottom: 1em;
+}
+.oc-boxy-content {
+  margin: 0;
+  padding: 0;
+}
+.oc-boxy textarea {
+  margin: 0;
+}
+.oc-column-group {
+  width: 100%;
+}
+.oc-column-left {
+  float: left;
+  clear: none;
+  width: 49%;
+}
+.oc-column-right {
+  float: right;
+  clear: none;
+  width: 49%;
+}
+#oc-contact .fn {
+  margin-left: 4em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+}
+#oc-contact dl {
+  margin: 0;
+}
+#oc-contact dt {
+  float: left;
+  width: 3.5em;
+  margin-right: 0.5em;
+  text-align: right;
+  font-weight: bold;
+}
+#oc-contact dd {
+  margin-bottom: 0.5em;
+}
+/* GENERIC search results & lineups */
+
+.oc-lineup, /* series of similar items */
+.oc-searchresults {
+}
+.oc-lineup-list,
+.oc-searchresults-list {
+  list-style-type: none;
+  margin:  0;
+  padding: 0;
+  clear: both;
+  border-top: 2px solid #eee;
+
+}
+.oc-lineup-item,
+.oc-searchresults-item {
+  margin: 0.25em 0;
+  padding-bottom: 0.25em;
+  border-bottom: 1px dotted #eee;
+}
+.oc-lineup-item h3,
+.oc-searchresults-item h3 {
+  display: inline;
+  font-size: 12px;
+}
+.oc-lineup-item p,
+.oc-searchresults-item p {
+  margin: 0;
+}
+.oc-lineup-item-sorter,
+.oc-searchresults-nresults {
+  /* float: left; */
+  font-size: 10px;
+}
+.oc-lineup-item-sorter form,
+.oc-lineup-item-sorter select,
+.oc-searchresults-nresults form,
+.oc-searchresults-nresults form select {
+  display: inline;
+  font-size: 100%;
+}
+.oc-lineup-item-sorter input,
+.oc-searchresults-nresults form input {
+  display: none;
+}
+.oc-lineup .oc-paginator,
+.oc-searchresults .oc-paginator,
+.oc-peopleresults .oc-paginator {
+  float: right;
+  clear: none;
+  font-size: 10px;
+}
+
+/* People search results (people-searchresults.pt) */
+
+.oc-peopleresults {
+}
+.oc-peopleresults-list {
+  clear: both;
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 0;
+}
+.oc-peopleresults-list li {
+  margin: 0 0.75em 0.75em 0;
+  width: 47%;
+  float: left;
+  clear: none;
+  white-space: nowrap;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+.oc-peopleresults-list .oc-avatar {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  float: left;
+  clear: none;
+}
+.oc-peopleresults-content {
+  float: left;
+  clear: none;
+  white-space: normal;
+  padding: 0.5em;
+}
+.oc-peopleresults-content .fn, /* OpenPlans username */
+.oc-peopleresults-content .n /* full name */ {
+  margin: 0;
+}
+.oc-peopleresults-content .adr /* location */ {
+  font-style: normal;
+}
+
+/* Team View */
+.oc-roster {
+  clear: both;
+  list-style-type: none;
+  padding: 0;
+}
+.oc-roster .oc-avatar {
+  width: 80px;
+  height: 80px;
+  overflow: hidden;
+  background: #eee;
+  float: left;
+  clear: none;
+  margin-right: 1em;
+}
+.oc-roster-content {
+  float: left;
+  clear: none;
+  width: 60%;
+  white-space: normal;
+}
+.oc-roster-content h3 /* OpenPlans username */{
+  display: inline;
+  margin: 0;
+}
+.oc-roster .adr /* location */ {
+  font-weight: bold;
+}
+.oc-roster .oc-roster-projects {
+  font-weight: bold;
+  float: left;
+  padding-right: 0.5em;
+}
+
+
+/* Member profile */
+
+#oc-member-badge {
+  padding: 1em;
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
+#oc-member-badge .oc-avatar {
+  width: 200px;
+  overflow: hidden;
+  float: left; 
+  clear: none; 
+}
+#oc-member-badge .oc-avatar img {
+  width: 200px;
+  text-align: center;
+  margin: 0 auto;
+}
+#oc-member-badge .oc-member-details {
+  margin-left: 200px;
+  padding-left: 1em;
+}
+#oc-member-badge .oc-member-details .oc-headingBlock p {
+  margin: 0;
+  line-height: normal;
+}
+dl.oc-member-info {
+  line-height: normal;
+}
+dl.oc-member-info dt {
+  font-weight: bold;
+}
+dl.oc-member-info dd {
+  margin: 0 0 1em;
+}
+
+/* Member profile edit */
+
+.oc-member-edit #oc-member-badge {
+  background-color: transparent;
+}
+.oc-member-edit #oc-member-badge .oc-member-editimage {
+  float: left;
+  width: 200px;
+  margin-right: 1em;
+  margin-bottom: 0.5em;
+}
+.oc-member-edit #oc-member-badge .oc-plainList input {
+  width: 75%;
+}
+.oc-member-edit textarea {
+  width: 99%;
+}
+
+/* Wiki pages */
+
+.oc-wiki {
+}
+.oc-wiki-headingBlock {
+  margin-top: 1.5em;
+}
+ul.oc-tabs {
+  margin-top: -1.5em;
+ line-height: 2em;
+}
+.oc-tabs li a {
+ border: 1px solid #666;
+ background: #eee;
+}
+.oc-tabs li a:hover {
+  background: #ccc;
+  border-bottom: 1px solid #000;
+  color: #000;
+}
+/* Selected tab */
+#oc-wiki-tabs-view .oc-wiki-tabs-view a,
+#oc-wiki-tabs-edit .oc-wiki-tabs-edit a,
+#oc-wiki-tabs-history .oc-wiki-tabs-history a,
+#oc-wiki-tabs-version_compare .oc-wiki-tabs-history a,
+#oc-wiki-tabs-version .oc-wiki-tabs-history a
+ {
+  border-bottom: 1px solid #fff;
+  background: #fff;
+}
+.oc-tabs form {
+  display: inline;
+}
+.oc-wiki-content {
+}
+.oc-wiki-content ol,
+.oc-wiki-content ul,
+.oc-wiki-content dl {
+  line-height: 1.25;
+}
+.oc-wiki-edit-content {
+
+}
+.oc-actions.oc-wiki-actions {
+  border-top: 2px solid;
+  padding-top: .5em;
+}
+
+/* History */
+.oc-wiki-history-item-context {
+  padding: 0 0 0 2.5em;
+  margin: 0;
+}
+.oc-wiki-history-item {
+  margin: .25em 0;
+  border: 1px solid #fff;
+  padding: .25em;
+}
+.oc-wiki-history-item h3 {
+  display: inline;
+}
+.oc-wiki-history-item.oc-selected {
+  background: lightgreen;
+  border: 1px solid green;
+}
+
+.oc-widget-version-compare {
+  background: #eee;
+  border: 1px solid #ccc;
+  margin-bottom: .5em;
+}
+.oc-widget-version-compare table {
+  float: left;
+  padding: .25em 1em 0;
+  border-right: 1px solid #ccc;
+}
+.oc-widget-version-compare th {
+  text-align: right;
+  padding: .125em 1em;
+}
+.oc-widget-version-compare td {
+  text-align: center;
+  padding: .125em .25em;
+}
+.oc-version-compare-legend {
+  float: left;
+  margin: 0 0 0 1em;
+  padding: .5em 1em;
+}
+.oc-widget-version-compare ul.oc-actions {
+  float: left;
+  margin: 0 0 0 1em;
+  padding: .5em 1em;
+}
+.oc-widget-version-compare ul.oc-actions li {
+  float: left;
+  padding-right: 1em;
+}
+.oc-version-compare-legend ul {
+  margin: 0;
+  padding: 0;
+}
+.oc-version-compare-legend li {
+  list-style: none;
+  padding: 0;
+}
+.oc-wiki del,
+.oc-widget-version-compare a.oc-version-old {
+ background: #ddd;
+ color: #666;
+ padding: 0 .125em;
+}
+.oc-wiki ins,
+.oc-widget-version-compare a.oc-version-current {
+  background: lightgreen;
+  text-decoration:none;
+  padding: 0 .125em;
+  color: #000;
+}
+.oc-widget-version-compare a.oc-version-current {
+  text-decoration: underline;
+}
+
+/* "@Custom" CSS : clearAfter Hack, op-dropdown Dropdowns
+-------------------------------------------- */
+
+/* This hack replicates the CSS3 "clearAfter" property.
+The IE hacks take advantage of several IE non-compliance issues to clearAfter the floated columns. */
+
+.oc-clearAfter:after,
+#oc-topnav-global:after,
+#oc-page-container:after
+{ 
+  content: ""; 
+  display: block; 
+  height: 0; 
+  clear: both;
+  visibility: hidden;
+}
+      
+/* GENERIC CLASSES & FORMS & WIDGETS & BEHAVIORS oh my - reusable thingys
+-------------------------------------------
+
+GENERIC: Buttons
+GENERIC: Elements
+
+@FORM Stuff
+  Expanders
+  Actions
+
+@WIDGETS
+  headingBlock
+  List table
+  Last modified
+  Feeds
+  Invitations
+  Search box
+  Alphabet Search
+  
+@BEHAVIORS
+
+*/
+
+.oc-hidden {
+   display:none;
+}
+.oc-hover {
+   background: #fdffdd;
+}
+/* GENERIC: Buttons */
+input.oc-button {
+  display: inline;
+  padding: .25em .5em;
+  font-size: inherit;
+}
+a.oc-button {
+  display: block;
+  padding:  0 .25em;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  background: #eee;
+}
+a.oc-button:hover {
+  background: #ddd;
+  color: #000;
+}
+
+/* GENERIC: Elements */
+.oc-paginator {
+  margin: 0;
+  padding: 0;
+}
+.oc-paginator li {
+  display: inline;
+  padding: 0 .25em;
+}
+/* bcrumb */
+.oc-bcrumb {
+  padding: 0;
+  margin: 0;
+  display: inline;
+  font-size: 12px;
+}
+.oc-bcrumb li {
+  display: inline;
+}
+.oc-bcrumb .oc-bcrumb-current {
+  font-size: 14px;
+}
+a.oc-close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  color: red;
+  display: block;
+  padding: 2px;
+  text-decoration: none;
+  font-weight: bold;
+}
+a.oc-close:hover {
+  background: red;
+  color: white;
+}
+.oc-message {
+  background-color: #FFF6BF;
+  border: 1px solid gray;
+  color: #333333;
+  font-weight: bold;
+  margin: 0.25em 0em;
+  padding: 0.125em 0.25em;
+  padding-right: 0.25em;
+  position: relative;
+  vertical-align: middle;
+}
+.oc-message-error {
+  background: pink;
+}
+
+/* @FORM Stuff */
+fieldset .oc-legend-heading {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+ }
+fieldset .oc-headingContext {
+  margin: 0 0 1em;
+  line-height: normal;
+}
+fieldset fieldset .oc-legend-heading,
+#oc-content-sidebar fieldset .oc-legend-heading {
+  font-size: 14px;
+}
+fieldset fieldset fieldset .oc-legend-heading,
+#oc-content-sidebar fieldset fieldset .oc-legend-heading {
+  font-size: 12px;
+}
+#oc-content-sidebar fieldset fieldset fieldset .oc-legend-heading {
+  font-size: 10px;
+}
+fieldset .oc-legend-label {
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+#oc-content-sidebar fieldset .oc-legend-label {
+  font-size: 10px;
+}
+fieldset .oc-heading-context {
+  margin: 0 0 .5em;
+  padding: 0;
+}
+.oc-label-option {
+  font-weight: normal;
+  font-size: 10px;
+}
+
+
+.oc-form {
+}
+.oc-form * {
+  vertical-align: top;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.oc-form-label {
+  text-align: right;
+  width: 8em;
+  padding-right: 0.5em;
+  line-height: normal;
+}
+.oc-form-radiolist {
+  list-style-type: none;
+  margin: 0 0 0 8em;
+  padding: 0;
+}
+.oc-form-radiolist ul {
+  list-style-type: none;
+}
+.oc-form-value {
+  width: auto;
+}
+.oc-form-help {
+  display: block;
+  line-height: normal;
+}
+.oc-form-context {
+  color: #666;
+  font-style: italic;
+}
+.oc-form-validator {
+
+}
+.oc-form-fieldBlock {
+  /* white-space: nowrap; */
+}
+.oc-form-fieldBlock label {
+  font-weight: normal;
+}
+.oc-form-fieldBlock input.oc-input-typeCheck,
+.oc-form-fieldBlock input.oc-input-typeRadio {
+  margin-left: 0;
+}
+.oc-input-typeText { /* Since browser support for selecting by type is... limited */
+}
+
+.oc-input-typeRadio,
+.oc-input-typeCheck {
+font-size: 100%;
+width: 1em;
+height: 1em;
+}
+
+/* Expanders */
+.oc-expander {
+  margin: .25em 0;
+}
+.oc-expander-open {
+  background: #eee;
+  border: 1px solid #ccc;
+  padding: .5em;
+}
+.oc-expander-content {
+  margin: .25em 0;
+  padding: .5em;
+}
+
+/* Actions */
+.oc-actions { 
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+}
+.oc-actions li {
+  margin: 0;
+  display: inline;
+}
+
+.oc-chooseThis { /* Default option */
+  font-weight: bold;
+}
+.oc-actions .oc-chooseAccept,
+.oc-actions a.oc-chooseAccept {
+  color: #0c0;
+}
+.oc-actions .oc-chooseReject,
+.oc-actions a.oc-chooseReject {
+  color: #c00;
+}
+.oc-actions .oc-chooseSpam,
+.actions a.chooseSpam {
+  color: #999;
+}
+
+/* @WIDGETS */
+.oc-widget {
+ /* clear: both; */
+}
+
+/* Widget heading blocks */
+.oc-widget .oc-headingBlock {
+   margin-bottom: .5em;
+   clear: both;
+}
+.oc-widget .oc-headingBlock h2 {
+  font-size: 14px;
+}
+.oc-widget .oc-headingContext {
+}
+
+/* List table */
+.oc-widget-dataTable {
+  clear: both;
+}
+.oc-dataTable  {
+   width: 100%;
+   white-space: nowrap;
+   font-size: 10px;
+}
+.oc-dataTable thead {
+   background: #eee;
+}
+.oc-dataTable thead th, 
+.oc-dataTable thead th.oc-sortableColumn, 
+.oc-dataTable thead th.oc-columnActions {
+  text-align: left;
+  padding: .25em .5em;
+  /* font-size: 10px; */
+  border-bottom: 2px solid #ccc;
+}
+.oc-dataTable td {
+  padding: .25em .5em;
+  border-bottom: 1px solid #ccc;
+  /* font-size: 10px; */
+} 
+.oc-dataTable a.oc-columnSortable {
+  color: #000;
+}
+.oc-dataTable a.oc-columnSortable.oc-selected {
+}
+.oc-dataTable th.oc-dataTable-checkBoxColumn {
+  width: 25px;
+}
+.oc-dataTable-row-title {
+   white-space: normal;
+   font-size: 12px;
+}
+.oc-dataTable-row-actions li {
+  list-style: none;
+}
+.oc-dataTable-actions {
+  float: left;
+  padding: .5em 0;
+  margin:0;
+  font-size: 10px;
+}
+.oc-dataTable-actions li {
+   
+}
+.oc-dataTable-paginator {
+  float: right;
+  padding: .5em 0;
+  font-size: 10px;
+}
+
+/* Last Modified Stuff */
+.oc-widget-lastModified thead {
+  display: none;
+}
+.oc-widget-lastModified td {
+  border-bottom: none;
+}
+
+/* Feeds */
+
+.oc-widget-feed {
+  margin-bottom: 1em;
+  padding-bottom: 0.25em;
+}
+.oc-widget-feed.oc-column-left,
+.oc-widget-feed.oc-column-right {
+  width: 46%;
+}
+.oc-widget-feed h2{
+  margin: 0;
+}
+.oc-feed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li.oc-feed-item {
+  margin: 0.5em 0;
+  padding: 0;
+}
+li.oc-feed-item .oc-avatar {
+  width: 80px;
+  float: left;
+  clear: none;
+  margin-right: 1em;
+}
+li.oc-feed-item .oc-project-logo {
+  width: 80px;
+  float: left;
+  clear: none;
+  margin-right: 1em;
+}
+li.oc-feed-item .oc-feed-item-content {
+  float: left;
+  clear: none;
+  width: 80%;
+}
+li.oc-feed-item .oc-feed-item-title,
+li.oc-feed-item .oc-feed-item-data,
+li.oc-feed-item .oc-feed-item-description {
+  margin: 0;
+  line-height: normal;
+}
+.oc-widget-feed .oc-paginator {
+  display: block;
+  padding: 0.75em 0;
+}
+
+/* Invitations Widget */
+.oc-widget-invite {
+}
+.oc-invite-list {
+  font-size: 10px;
+   margin: 0;
+   padding: 0;
+}
+li.oc-invite {
+  clear: both;
+  list-style:none;
+  position: relative;
+}
+li.oc-invite .oc-avatar {
+  float: left;
+  margin-right: 1em;
+}
+li.oc-invite .oc-avatar img {
+  width: 75px;
+}
+li.oc-invite .oc-invite-content {
+  float: left;
+   clear: none;
+   margin: 0;
+   width: 25em; /* TODO: find a way not to specify width */
+}
+.oc-invite-actions {
+  float: right;
+}
+.oc-invite-actions li {
+   display: inline;
+}
+
+/* Search box */
+
+.oc-widget-search {
+}
+#oc-content-sidebar .oc-widget-search {
+}
+.oc-widget-search form input {
+  font-size: 10px;
+}
+#oc-content-main .oc-widget-search form .oc-input-typeText {
+  width: 50%;
+}
+#oc-content-sidebar .oc-widget-search form .oc-input-typeText {
+  width: 65%;
+}
+.oc-widget-search h2 {
+  margin: 0 0 0.5em;
+}
+
+/* Alphabet search */
+
+.oc-widget-alphabet {
+  list-style: none;
+  margin-bottom: 0;
+  padding: 0.25em;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+}
+.oc-widget-search ul.oc-widget-alphabet {
+  margin-top: 1em;
+}
+#oc-content-sidebar ul.oc-widget-alphabet {
+  background: none;
+}
+.oc-widget-alphabet li {
+  display: block;
+  float: left;
+}
+.oc-widget-alphabet li a {
+  text-decoration: none;
+  display: block;
+  float: left;
+  padding: 0.065em 0.25em;
+}
+.oc-widget-alphabet li a:hover {
+}
+
+/* Get Started */
+
+.oc-getstarted {
+  margin-bottom: 1em;
+}
+.oc-getstarted h2 {
+  margin-bottom: 0.5em;
+}
+.oc-getstarted-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.oc-getstarted-list li h3 {
+  margin: 0;
+}
+.oc-getstarted-list li h3 a {
+  text-decoration: none;
+}
+.oc-getstarted-list li h3 a:hover {
+  text-decoration: underline;
+}
+.oc-getstarted-list li p.oc-discreetText {
+  margin: 0 0 0.5em;
+  line-height: normal;
+}
+
+/* @BEHAVIORS
+--------------------------*/
+.oc-liveEdit-value,
+.oc-liveItem-value {
+  /* border-bottom: 1px solid transparent;
+  border-bottom: 1px dotted #256E81; */
+  position: relative;
+}
+a.oc-liveItem_showForm,
+a.oc-liveItem_showForm:visited {
+  color: #999;
+  text-decoration: none;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+a.oc-liveItem_hoverShowForm,
+a.oc-liveItem_hoverShowForm:visited {
+ position: absolute;
+ top: 0;
+ right: 0;
+ color: red;
+ text-transform: uppercase;
+ font-size: .9em
+}
+a.oc-liveItem_cancel {
+ color: red;
+}
+.oc-liveEdit-value .oc-liveEdit-hover,
+.oc-liveItem-hover {
+ background: #ffffcc;
+}
+
+.oc-liveEdit-form,
+.oc-liveEdit-selected,
+.oc-liveItem-editForm {
+  background: #ffe5c1;
+  padding: .25em;
+}
+.oc-liveEdit-hover {
+  background: #ffffcc;
+  cursor: pointer;
+}
+.oc-liveEdit-editing,
+.oc-table td.oc-liveEdit-editing {
+  background-color: #cbeb9b;
+  padding: 3px;
+}
+
+/* @HTML ELEMENTS GENERAL @TYPOGRAPHY
+This should be the only place where font information is specified
+-------------------------------------------- */
+
+body, textarea {
+  font-size: 12px;
+  line-height: 1.5em;
+  font-family: "Lucida Grande", "Frutiger", "Univers", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  /* These typographic rules will establish rhythm of 18px at base font size */
+}
+#oc-content-sidebar {
+  font-size: 10px;
+}
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  letter-spacing: 0;
+   margin: 0 0 1em;
+}   
+h4 {
+  margin: 0 0 .5em;
+}
+h1 acronym, h1 abbr, h2 acronym, h2 abbr, h3 acronym, h3 abbr, h4 acronym, h4 abbr {
+  border: none;
+}
+h1, .oc-biggestText {
+  font-size: 24px;
+  line-height: 0.75em;
+  /* margin-top: 1.5em; */
+  /* margin-bottom: 0.75em; */
+}
+h2, .oc-biggerText, #oc-topnav-title h1,
+#oc-content-sidebar h1 {
+  font-size: 18px;
+  line-height: 1em;
+  /* margin: 1em 0; */
+}
+h3, .oc-bigText,
+#oc-content-sidebar h2 {
+  font-size: 14px;
+  /* line-height: 1.286em; */
+  /* margin-top: 1.929em; */
+  /* margin-bottom: 0.643em; */
+}
+#oc-content-sidebar h3 {
+  font-size: 12px;
+}
+h4, .h4 {
+  font-size: 14px;
+  font-style: italics;
+}
+#oc-content-sidebar h4 {
+  font-size: 12px;
+}
+select,
+input,
+button,
+textarea {
+  /* ToDo Style buttons nicely */
+  / * border: 1px solid #ccc; */
+  padding: 0.125em;
+  margin: 0;
+  font-size: 12px;
+}
+#oc-content-sidebar select,
+#oc-content-sidebar input,
+#oc-content-sidebar textarea {
+  font-size: 10px;
+}
+textarea {
+  margin-bottom: 1em;
+}
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+label {
+  font-weight: bold;
+}
+address {
+  font-style: normal;
+}
+.oc-smallText,
+.oc-discreetText,
+  
+  /* Error Messages */
+    .oc-portalMessage,
+    .oc-portalWarningMessage,
+    .oc-portalStopMessage,
+    .oc-system-message,
+    #oc-error-handling
+  {
+  font-size: 10px;
+  line-height: 1.9em;
+}
+#oc-content-sidebar .smallText,
+#oc-content-sidebar .discreetText {
+  font-size: 10px;
+}
+.oc-discreetText {
+  color: #999;
+}
+
+/* Heading Blocks */
+
+.oc-headingBlock {
+}
+.oc-headingBlock h1,
+.oc-headingBlock h2,
+.oc-headingBlock h3,
+.oc-headingBlock h4 {
+  margin: 0;
+  margin-bottom: 0.25em;
+}
+.oc-headingBlock .oc-headingContext {
+  margin: 0 0 1em;
+}
+.oc-headingSimple a {
+  text-decoration: none;
+}
+.oc-headingSimple a:hover {
+  text-decoration: underline;
+}
+a {
+}  
+a:hover {
+}
+img {
+   border: none;
+}
+/* hr {
+  clear: both;
+} */
+.oc-clearElement {
+  visibility: hidden;
+  clear: both;
+  height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* MICROFORMATS
+-------------------------------------------- */
+
+/* @hCard
+-----------
+.vcard {} Identifies the hCard
+.vcard .fn {} Formatted name: this is necessary and can only be used once; we use it for usernames
+.vcard .n {} Name: this is optional and can be inferred from .fn; we use it for real names
+.vcard .adr {} Address: this is optional and describes location; we use it for location
+*/

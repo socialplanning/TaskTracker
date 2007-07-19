@@ -18,22 +18,20 @@
 # Boston, MA  02110-1301
 # USA
 
+import os
+import datetime
 from sqlobject import *
+from sqlobject.sqlbuilder import *
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.versioning import Versioning
-from sqlobject.sqlbuilder import *
-from pylons.database import PackageHub
 from pylons import c, g
+from pylons.database import PackageHub
 from tasktracker.lib.memoize import memoize
 
 hub = PackageHub("tasktracker", pool_connections=False)
 __connection__ = hub
 
 # Don't forget to update soClasses, below
-
-import datetime
-
-import os
 
 class Status(SQLObject):
     class sqlmeta:
@@ -136,7 +134,7 @@ class Task(SQLObject):
     created = DateTimeCol(default=datetime.datetime.now)
     creator = StringCol(length=255, default="")
     deadline = DateTimeCol(default=None)
-    live = BoolCol(default=True)    
+    live = BoolCol(default=True)
     owner = StringCol(length=255, default=None)
     parent = ForeignKey("Task")
     priority = StringCol(length=255, default="None")
@@ -158,7 +156,7 @@ class Task(SQLObject):
 
     def _create(self, id, **kwargs):
         if 'task_list' in kwargs:
-            kwargs['task_listID'] = kwargs.pop('task_list').id          
+            kwargs['task_listID'] = kwargs.pop('task_list').id
 
         task_list = TaskList.get(kwargs['task_listID'])
 
@@ -251,6 +249,7 @@ class Task(SQLObject):
     @memoize
     def liveChildren(self):
         import tasktracker.lib.helpers as h
+
         return [c for c in self.children if c.live and h.has_permission('task', 'show', id=c.id)]
 
     def liveDescendents(self):
@@ -566,6 +565,7 @@ class TaskList(SQLObject):
     title = UnicodeCol(length=255)
     versions = Versioning(extraCols=dict(updatedBy = StringCol(length=255, default=lambda : c.username)))
     created = DateTimeCol(default=datetime.datetime.now)
+    creator = StringCol(length=255, default="")
     features = MultipleJoin("TaskListFeature")
     statuses = MultipleJoin("Status")
     initial_assign = IntCol(default=0)
@@ -607,23 +607,29 @@ class TaskList(SQLObject):
     def topLevelTasks(self):
         import tasktracker.lib.helpers as h
 
-        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.selectBy(parentID=0, live=True, task_listID=self.id)
+                if h.has_permission('task', 'show', id=c.id)]
 
     @memoize
     def uncompletedTasks(self):
         import tasktracker.lib.helpers as h
 
-        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False, Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
+                                           Task.q.task_listID == self.id, Task.q.live == True))
+                if h.has_permission('task', 'show', id=c.id)]
     
     def completedTasks(self):
         import tasktracker.lib.helpers as h
-        
-        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False, Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
+
+        return [c for c in Task.select(AND(Task.q.statusID == Status.q.id, Status.q.done == False,
+                                           Task.q.task_listID == self.id, Task.q.live == True))
+                if h.has_permission('task', 'show', id=c.id)]
 
     def visibleTasks(self):
         import tasktracker.lib.helpers as h
 
-        return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True)) if h.has_permission('task', 'show', id=c.id)]
+        return [c for c in Task.select(AND(Task.q.task_listID == self.id, Task.q.live == True))
+                if h.has_permission('task', 'show', id=c.id)]
 
     def set(self, **kwargs):
 
@@ -675,6 +681,9 @@ class TaskList(SQLObject):
         trans = conn.transaction()
 
         super(TaskList, self)._create(id, **params)
+
+        if not self.creator:
+            self.creator = kwargs.get('creator') or username
 
         if kwargs.get('statuses', None):
             statuses = kwargs['statuses'].split(",")

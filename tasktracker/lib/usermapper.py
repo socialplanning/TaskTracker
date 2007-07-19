@@ -37,3 +37,9 @@ class UserMapper(object):
 
     def is_project_member(self, member):
         return True
+
+    def member_url(self, name):
+        pass
+
+    def is_project_member(self, member):
+        return True

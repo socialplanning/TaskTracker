@@ -46,6 +46,37 @@ def remove_feature(name, value = None):
     if f.count():
         f[0].destroySelf()
 
+def octopus_form_handler(func):
+    def inner(self):
+
+        # XXX todo don't rely on underscore special character                                                                                             
+
+        target, action = request.params.get("task").split("_")
+
+        if target == 'batch' and request.params.get('batch[]'):
+            target = request.params.get("batch[]")
+        if not isinstance(target, (tuple, list)):
+            target = [target]
+
+        # grab items' fields from request and fill dicts in an ordered list                                                                               
+        fields = []
+        for item in target:
+            itemdict = {}
+            filterby = item + '_'
+            keys = [key for key in request.params if key.startswith(filterby)]
+            for key in keys:
+                itemdict[key.replace(filterby, '')] = request.params.get(key)
+            fields.append(itemdict)
+
+        ret = func(self, action, target, fields)
+
+        mode = request.params.get("mode")
+        if mode == "async":
+            return ret
+        return Response.redirect_to(request.environ['HTTP_REFERER'])
+
+    return inner
+
 
 def set_features(p):
     for feature in ['deadlines', 'custom_status']:
@@ -58,7 +89,38 @@ class TasklistController(BaseController):
     @classmethod
     def _getVisibleTaskLists(cls, username):
         return [t for t in TaskList.selectBy(projectID = c.project.id, live = True)
-                if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username, 'blah':'blah'})]
+                if cls._has_permission('tasklist', 'show', {'id':t.id, 'username':username})]
+
+    @attrs(action='open', readonly=True)
+    def show_widget_project_tasklists(self):
+        c.tasklists = self._getVisibleTaskLists(c.username)
+        c.snippet = True
+        if not c.tasklists:
+            return render_text("No tasklists are available.")
+        return render_response('tasklist/widget_project_tasklists.myt')
+
+    @attrs(action='open', readonly=False)
+    @octopus_form_handler
+    def batch_form(self, action, sources, fields):
+	if action == 'delete':
+            result = []
+            lists = [safe_get(TaskList, id, check_live=True) for id in sources]
+            for tl in lists:
+                if has_permission('tasklist', 'delete', id=tl.id, using_verb=True):
+                    tl.live = False
+                    result.append(str(tl.id))
+            return render_text(result)
+        
+        if action == 'update':
+            c.snippet = True
+            result = {}
+            lists = [safe_get(TaskList, id, check_live=True) for id in sources]
+            for tl, field in zip(lists, fields): # todo <-- this isn't right, fields is dicts
+                if has_permission('tasklist', 'update', id=tl.id, using_verb=True):
+                    tl.title = field['title']
+                    result[str(tl.id)] = render_response('tasklist/widget_project_tasklists_row.myt', item=tl).content[0] # <-- todo ugh
+            return render_text(result)
+        
 
     @attrs(action='open', readonly=True)
     def index(self):
