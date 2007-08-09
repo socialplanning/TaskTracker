@@ -94,7 +94,6 @@ class TasklistController(BaseController):
     @attrs(action='open', readonly=True)
     def show_widget_project_tasklists(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
-        c.snippet = True
         if not c.tasklists:
             return render_text("No tasklists are available.")
         return render_response('tasklist/widget_project_tasklists.myt')

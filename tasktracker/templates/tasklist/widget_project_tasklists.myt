@@ -1,4 +1,4 @@
-<div class="oc-widget oc-widget-dataTable">
+<div id="tasklists_table" class="oc-widget oc-widget-dataTable">
 
   <div class="oc-heading">
     <h3>Tasklists</h3>
