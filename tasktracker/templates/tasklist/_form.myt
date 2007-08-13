@@ -9,7 +9,9 @@
 </div>
 
 <div id="managers-section">
- <h2><label for="managers">Managers</label></h2>
+ <h2><label for="managers">Task list managers</label></h2>
+ <p>Task list managers can perform all task list functions, set permissions for others, add and remove features, and delete the list.</p>
+ <p>In addition to the team members added below, all project administrators also have these privileges. Project administrators are labelled on the project's team page.</p>
 <& _managers.myt &>
 </div>
 
