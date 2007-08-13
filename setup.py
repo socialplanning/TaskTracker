@@ -33,7 +33,7 @@ setup(
     install_requires=[
       "Myghty",
       "Pylons==0.9.4.1",
-      "Routes==1.6.2.1",
+      "Routes>=1.7",
       "SQLObject==dev,>=0.10dev",
       "decorator", 
       "httplib2", 
@@ -53,7 +53,6 @@ setup(
     dependency_links = [
       "http://pythonpaste.org/package_index.html",
       "http://cheeseshop.python.org/pypi/Pylons/0.9.4",
-      "http://routes.groovie.org/svn/tags/1.6.2.1#egg=Routes-1.6.2.1",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
       "http://labix.org/python-dateutil",
       "http://www.openplans.org/projects/opencore/dependencies",
