@@ -52,6 +52,10 @@ profile_uri = http://stage.openplans.org/people/%s/profile
 # library):
 #compress_resources = true
 
+# where secret stuff lives
+topp_secret_filename = /fill/me/in
+topp_admin_info_filename = /fill/me/in
+
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR

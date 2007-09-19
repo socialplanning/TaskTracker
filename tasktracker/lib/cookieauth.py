@@ -38,19 +38,6 @@ def _user_dict(name):
                 roles = 'Authenticated ProjectMember'.split(),
                 )
 
-
-secret = ""
-
-def get_secret():
-    global secret
-    if not secret:
-        secret_file_name = os.environ.get('TOPP_SECRET_FILENAME')
-        assert secret_file_name, ("Missing secret filename")
-        f = open(secret_file_name)
-        secret = f.readline().strip()
-        f.close()
-    return secret
-
 from tasktracker.lib import usermapper
 
 import httplib2
@@ -130,16 +117,16 @@ class CookieAuth(object):
         if self.profile_uri.count('%s') != 1:
             raise Exception("Badly formatted profile_uri: must include a single '%s'")
 
-        admin_file = os.environ.get('TOPP_ADMIN_INFO_FILENAME')
-        if not admin_file:
-            raise Exception("Environment variable TOPP_ADMIN_INFO_FILENAME has not been set.")
+        admin_file = app_conf['topp_admin_info_filename']
         self.admin_info = tuple(file(admin_file).read().strip().split(":"))
         if len(self.admin_info) != 2:
             raise Exception("Bad format in administrator info file")
 
-        if not os.environ.get('TOPP_SECRET_FILENAME'):
-            raise Exception("Environment variable TOPP_SECRET_FILENAME has not been set.")
-        
+        secret_filename = app_conf['topp_secret_filename']
+        f = open(secret_file_name)
+        self.secret = f.readline().strip()
+        f.close()
+
     def authenticate(self, environ):
         try:
             cookie = BaseCookie(environ['HTTP_COOKIE'])
@@ -152,8 +139,7 @@ class CookieAuth(object):
         except ValueError:
             raise BadCookieError
             
-        secret = get_secret()
-        if not auth == hmac.new(secret, username, sha).hexdigest():
+        if not auth == hmac.new(self.secret, username, sha).hexdigest():
             return False
 
         environ['REMOTE_USER'] = username
