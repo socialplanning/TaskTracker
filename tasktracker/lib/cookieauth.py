@@ -123,7 +123,7 @@ class CookieAuth(object):
             raise Exception("Bad format in administrator info file")
 
         secret_filename = app_conf['topp_secret_filename']
-        f = open(secret_file_name)
+        f = open(secret_filename)
         self.secret = f.readline().strip()
         f.close()
 
