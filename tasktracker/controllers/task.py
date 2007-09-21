@@ -242,7 +242,7 @@ class TaskController(BaseController):
         if not len(comment):
             return Response('')
         c.task = safe_get(Task, id, check_live=True)
-        c.comment = Comment(text=comment, user=c.username, task=c.task)
+        c.comment = Comment(text=h.html2safehtml(comment), user=c.username, task=c.task)
         return Response(c.comment.text)
 
     @attrs(action='update', readonly=True)
