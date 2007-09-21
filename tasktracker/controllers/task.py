@@ -189,19 +189,19 @@ class TaskController(BaseController):
     @attrs(action='create', readonly=False)
     @validate(schema=EditTaskForm(), form='show_create')
     def create(self, *args, **kwargs):
-        return self._create_task(url_from=request.params.get('url_from', None), **self.form_result)
+        return self._create_task(**self.form_result)
 
     @authenticate
     @attrs(action='create', readonly=False)
     def create_ajax(self, id):
         try:
             params = EditTaskForm().to_python(request.params)
-            return self._create_task(url_from=request.params.get('url_from', None), **params)
+            return self._create_task(**params)
         except formencode.api.Invalid, invalid:
             return render_text(invalid.msg, code=500)
     
 
-    def _create_task(self, url_from = None, **p):
+    def _create_task(self, **p):
         p['creator'] = c.username
         if not p.has_key('task_listID'):
             p['task_listID'] = c.tasklist.id
@@ -296,7 +296,6 @@ class TaskController(BaseController):
         c.tasklist = c.task.task_list
         c.task_listID = c.tasklist.id        
         c.depth = c.task.depth()
-        c.url_from = url_for(controller='task', action='show', id=id)
         c.permalink = h._get_permalink(request.GET)
         c.prev, c.next = c.task.adjacentTasks(options=h.permalink_to_sql(c.permalink),
                                                                 user=c.username, level=c.level)

@@ -126,7 +126,7 @@ def sortableColumn(field, fieldname = None, klass = None, colspan=1):
        <span id="%s-up-arrow">&#x2191;</span>
       </span>
     </span>
-    </th>""" % (field, klass or "%s-column" % field, colspan, field, fieldname or field, field, field, field)
+    </th>""" % (field, klass or "%s-column" % field, colspan, field, fieldname or field, field, field, field) #""" #stupid syntax highliter
     return span
 
 def editableField(task, field, ifNone = None, uneditable = False):
