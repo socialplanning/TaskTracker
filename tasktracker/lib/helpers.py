@@ -287,13 +287,14 @@ def _ownerFilter(onblur = None, tasklist = None):
     return select('owner_filter', options_for_select(options, 'All'),
                   method='post', originalvalue='All', id='owner_filter', onchange=onblur)
 
+allowed_permalink_params = set("sortBy sortOrder status deadline priority owner updated columnOrder".split())
 def _get_permalink(dikt):
     permalink = ""
     for param in dikt:
         #prevent sql injection
         assert ' ' not in dikt[param], ("Abort to prevent SQL injection in %s" % dikt[param])
 
-        if param in "sortBy sortOrder status deadline priority owner updated columnOrder".split():
+        if param in allowed_permalink_params:
             permalink = "%s%s=%s&" % (permalink, param, dikt[param])
     return permalink
 
