@@ -19,7 +19,7 @@
 # USA
 from tasktracker.lib.base import *
 from tasktracker.models import *
-from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML
+from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML, html2safehtml
 
 import formencode  
 
@@ -276,6 +276,9 @@ class TasklistController(BaseController):
         
         if "feature_custom_status" not in p and "statuses" in p:
             del p['statuses']
+
+        if 'text' in p:
+            p['text'] = html2safehtml(p['text'])
         c.tasklist.set(**p)
 
         set_features(p)

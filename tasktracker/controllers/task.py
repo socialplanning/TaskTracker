@@ -113,6 +113,8 @@ class TaskController(BaseController):
         editable_title = self.form_result.get('editable_title', None)
         depth = self.form_result.get('depth', 0)
         columnOrder = self.form_result.get('columnOrder', None)
+        if isinstance(newfield, basestring):
+            newfield = h.html2safehtml(newfield)        
         if not old == newfield:
             setattr(task, field, newfield)
 
