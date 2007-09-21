@@ -17,7 +17,6 @@
 # 51 Franklin Street, Fifth Floor, 
 # Boston, MA  02110-1301
 # USA
-
 from tasktracker.lib.base import *
 from tasktracker.models import *
 from tasktracker.lib.helpers import filled_render, has_permission, SafeHTML
@@ -30,6 +29,7 @@ class CreateListForm(formencode.Schema):
     pre_validators = [formencode.variabledecode.NestedVariables()]
     allow_extra_fields = True
     title = SafeHTML(not_empty = True)
+    text = SafeHTML(not_empty = False)    
     member_level = formencode.validators.Int()
     other_level = formencode.validators.Int(if_missing=None)
     initial_assign = formencode.validators.Int()
