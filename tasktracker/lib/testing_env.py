@@ -18,9 +18,9 @@
 # Boston, MA  02110-1301
 # USA
 
-from tasktracker.models import *
 from pylons import c
 from paste import httpexceptions
+from tasktracker.lib import usermapper
 
 def _user_dict(name):
     if name == "admin":
@@ -37,7 +37,7 @@ def _user_dict(name):
                 roles = roles,
                 )
 
-from tasktracker.lib import usermapper
+
 class UserMapper(usermapper.UserMapper):
     """
     admin: ProjectAdmin of every project

@@ -33,8 +33,7 @@ from tasktracker.config.environment import load_environment
 from tasktracker.lib.testing_env import TestingEnv
 from tasktracker.lib.cookieauth import CookieAuth
 
-import tasktracker.lib.app_globals as app_globals
-import tasktracker.lib.helpers
+from pylons import config
 
 def translate_environ_middleware(app, global_conf, app_conf):
     kw = dict()
@@ -69,15 +68,10 @@ def make_app(global_conf, **app_conf):
     
     """
     # Load our Pylons configuration defaults
-    config = load_environment()
-    config.init_app(global_conf, app_conf, package='tasktracker')
+    load_environment(global_conf, app_conf)
 
     # Load our default Pylons WSGI app and make g available
-    app = pylons.wsgiapp.PylonsApp(config, 
-	helpers=tasktracker.lib.helpers,
-	g=app_globals.Globals)
-    g = app.globals
-    g.config = config
+    app = pylons.wsgiapp.PylonsApp()
     app = ConfigMiddleware(app, {'app_conf':app_conf,
         'global_conf':global_conf})
     

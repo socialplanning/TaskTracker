@@ -21,6 +21,8 @@
 from paste.deploy import loadapp, appconfig, CONFIG
 
 from tasktracker.models import soClasses, Task, TaskList
+from tasktracker.config.environment import load_environment
+
 
 import os
 import sys
@@ -56,6 +58,8 @@ def setup_config(command, filename, section, vars):
     dummy, sect = section.split(':')
 
     conf = appconfig('config:%s#%s' % (filename, sect), relative_to=conf_dir)
+    load_environment(conf.global_conf, conf.local_conf)
+    
     CONFIG.push_process_config({'app_conf': conf.local_conf,
                                 'global_conf': conf.global_conf})
     

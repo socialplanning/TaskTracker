@@ -20,11 +20,12 @@
 
 import os
 
-import pylons.config
+from pylons import config
 
 from tasktracker.config.routing import make_map
+import tasktracker.lib.app_globals as app_globals
 
-def load_environment():
+def load_environment(global_conf, app_conf):
     map = make_map()
     # Setup our paths
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,9 +40,18 @@ def load_environment():
     # available to the Myghty handler are available for your use here
     myghty = {}
     myghty['log_errors'] = True
-    
+
     # Add your own Myghty config options here, note that all config options will override
     # any Pylons config options
     
     # Return our loaded config object
-    return pylons.config.Config(myghty, map, paths)
+    config.init_app(global_conf, app_conf, package='tasktracker',
+                    template_engine='pylonsmyghty', paths=paths)
+
+    config['routes.map'] = make_map()
+    config['pylons.g'] = app_globals.Globals()
+    import tasktracker.lib.helpers    
+    config['pylons.h'] = tasktracker.lib.helpers
+
+
+    #return pylons.config.Config(myghty, map, paths)

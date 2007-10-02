@@ -22,40 +22,19 @@
 from eventserver import DummyEventServer, init_events
 from threading import Thread
 
+from pylons import config
 
 class Globals(object):
 
-    def __init__(self, global_conf, app_conf, **extra):
-        """
-        You can put any objects which need to be initialised only once
-        here as class attributes and they will be available as globals
-        everywhere in your application and will be intialised only once,
-        not on every request.
-        
-        ``global_conf``
-            The same as variable used throughout ``config/middleware.py``
-            namely, the variables from the ``[DEFAULT]`` section of the
-            configuration file.
-            
-        ``app_conf``
-            The same as the ``kw`` dictionary used throughout 
-            ``config/middleware.py`` namely, the variables the section 
-            in the config file for your application.
-            
-        ``extra``
-            The configuration returned from ``load_config`` in 
-            ``config/middleware.py`` which may be of use in the setup of 
-            your global variables.
-            
-        """
-        self.obsolete_future_history_dir = app_conf['obsolete_future_history_dir']
+    def __init__(self):
+        self.obsolete_future_history_dir = config['obsolete_future_history_dir']
 
-        if app_conf.get('event_queue_directory', None):
+        if config.get('event_queue_directory', None):
             from cabochonclient import CabochonClient
-            username = app_conf.get('cabochon_username', None)
-            password = app_conf.get('cabochon_password', None)
+            username = config.get('cabochon_username', None)
+            password = config.get('cabochon_password', None)
 
-            self.event_server = CabochonClient(app_conf['event_queue_directory'], app_conf['event_server'], username=username, password=password)
+            self.event_server = CabochonClient(config['event_queue_directory'], config['event_server'], username=username, password=password)
             if not self.event_server.test_login():
                 print "Bad Cabochon login information"
                 import sys
@@ -66,7 +45,7 @@ class Globals(object):
             t.setDaemon(True)
             t.start()    
         else:
-            print "WARNING, no Cabochon", app_conf
+            #print "WARNING, no Cabochon", config
             self.event_server = DummyEventServer()
             
         self.queues = dict(create=self.event_server.queue("create_page"),
