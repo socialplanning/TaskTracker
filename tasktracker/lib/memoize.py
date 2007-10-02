@@ -1,4 +1,4 @@
-from pylons.decorator import decorator
+from decorator import decorator
 from pylons import c
 
 def _make_key(f, args, kw):

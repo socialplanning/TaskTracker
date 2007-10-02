@@ -17,7 +17,6 @@
 # Boston, MA  02110-1301
 # USA
 
-from tasktracker.models import *
 from pylons import c
 
 from paste.wsgilib import intercept_output

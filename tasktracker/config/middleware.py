@@ -28,8 +28,6 @@ from pylons.error import error_template
 from pylons.middleware import ErrorHandler, ErrorDocuments, StaticJavascripts, error_mapper
 import pylons.wsgiapp
 
-from tasktracker.config.environment import load_environment
-
 from tasktracker.lib.testing_env import TestingEnv
 from tasktracker.lib.cookieauth import CookieAuth
 
@@ -68,6 +66,7 @@ def make_app(global_conf, **app_conf):
     
     """
     # Load our Pylons configuration defaults
+    from tasktracker.config.environment import load_environment    
     load_environment(global_conf, app_conf)
 
     # Load our default Pylons WSGI app and make g available
@@ -101,7 +100,7 @@ def make_app(global_conf, **app_conf):
     # @@@ Establish the Registry for this application @@@
     app = RegistryManager(app)
 
-    if config.app_conf.get('openplans_wrapper') == 'TestingEnv':
+    if app_conf.get('openplans_wrapper') == 'TestingEnv':
         users = {'anon' : 'Anonymous',
                  'auth' : 'Authenticated',
                  'member' : 'ProjectMember',

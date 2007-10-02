@@ -1,7 +1,7 @@
 import random
 from pylons import g, session
 from webhelpers import form, hidden_field, link_to_remote, link_to, form_remote_tag
-from pylons.decorator import decorator
+from decorator import decorator
 from pylons import request, Response
 
 def session_key():

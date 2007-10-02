@@ -26,7 +26,7 @@ from pylons import c, g, cache, request, session
 from pylons.controllers import WSGIController
 from pylons.decorators import jsonify, rest, validate
 from pylons.templating import render, render_response
-from pylons.helpers import abort, redirect_to, etag_cache
+from pylons.controllers.util import abort, redirect_to, etag_cache
 from tasktracker.models import *
 from tasktracker.controllers import *
 from paste.deploy.converters import asbool
