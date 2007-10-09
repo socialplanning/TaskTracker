@@ -127,6 +127,13 @@ class CookieAuth(object):
         f.close()
 
     def authenticate(self, environ):
+        username = environ.get('REMOTE_USER')
+        if username:
+            environ['topp.user_info'] = dict(username = username, 
+                                             roles = ['Authenticated'],
+                                             email = '%s@example.com' % username)
+            return True
+        
         try:
             cookie = BaseCookie(environ['HTTP_COOKIE'])
             morsel = cookie['__ac']

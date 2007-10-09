@@ -57,6 +57,11 @@ class TestingEnv(object):
         self.users = users
         
     def authenticate(self, environ):
+        username = environ.get('REMOTE_USER')
+        if username:
+            environ['topp.user_info'] = _user_dict(username)
+            return True
+        
         try:
             basic, encoded = environ['HTTP_AUTHORIZATION'].split(" ")
             if basic != "Basic": return False
