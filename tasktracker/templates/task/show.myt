@@ -1,4 +1,4 @@
-${h.twirlip_link()}
+<% h.twirlip_link() %>
 
 <span class="small">
 
