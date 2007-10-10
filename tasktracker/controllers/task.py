@@ -24,7 +24,7 @@ from tasktracker.lib import helpers as h
 import formencode
 from formencode.validators import *
 from tasktracker.lib.datetimeconverter import *
-from pylons.templating import render_response as render_body
+
 from dateutil.parser import parse as dateparse
 
 class EditTaskForm(formencode.Schema):  
@@ -124,7 +124,7 @@ class TaskController(BaseController):
         if columnOrder:
             c.permalink = columnOrder
 
-        return render_response('task/task_item_row.myt', fragment=True, atask=c.task,
+        return render('task/task_item_row.myt', fragment=True, atask=c.task,
                                is_preview=is_preview, is_flat=is_flat, 
                                editable_title=editable_title)
 
@@ -185,7 +185,7 @@ class TaskController(BaseController):
         else:
             c.parentID = 0
         c.contextual_wrapper_class = 'tt-context-task-create'
-        return render_response('task/show_create.myt')
+        return render('task/show_create.myt')
 
     @authenticate
     @attrs(action='create', readonly=False)
@@ -221,7 +221,7 @@ class TaskController(BaseController):
         c.depth = 0
         if siblingID > 0:
             self._move_below_sibling(c.task.id, siblingID)
-        return render_response('task/task_list_item.myt', atask=c.task, fragment=True)
+        return render('task/task_list_item.myt', atask=c.task, fragment=True)
 
     # @@ The next two methods are no longer used, but cannot be removed because
     # security depends upon them.  
@@ -229,13 +229,13 @@ class TaskController(BaseController):
     @attrs(action='claim', readonly=False)
     @catches_errors
     def claim(self, id, *args, **kwargs):
-        return render_response("dummy")
+        return render("dummy")
 
     # @@ This is no longer used.
     @attrs(action='assign', readonly=False)
     @catches_errors
     def assign(self, id, *args, **kwargs):
-        return render_response("dummy")
+        return render("dummy")
 
     @attrs(action='comment', readonly=False)
     @catches_errors
@@ -253,7 +253,7 @@ class TaskController(BaseController):
         c.oldtask = safe_get(Task, id, check_live=True)
         c.owner = c.oldtask.owner
         c.contextual_wrapper_class = 'tt-context-task-update'
-        return render_response('task/show_update.myt')
+        return render('task/show_update.myt')
 
     # @@ is this ever used?
     @authenticate
@@ -307,7 +307,7 @@ class TaskController(BaseController):
             c.permalink = h._get_permalink_without_filters(request.GET)
         
         c.contextual_wrapper_class = 'tt-context-task-show'
-        return render_response('task/show.myt')
+        return render('task/show.myt')
 
     @authenticate
     @attrs(action='update', readonly=False)
@@ -320,4 +320,4 @@ class TaskController(BaseController):
     @attrs(action='open', readonly=False, restrict_remote_addr=True)
     @catches_errors
     def show_authenticate(self, id, *args, **kwargs):
-        return render_response('task/authenticate.myt')
+        return render('task/authenticate.myt')
