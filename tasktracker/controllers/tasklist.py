@@ -96,7 +96,7 @@ class TasklistController(BaseController):
         c.tasklists = self._getVisibleTaskLists(c.username)
         if not c.tasklists:
             return render_text("No tasklists are available.")
-        return render_response('tasklist/widget_project_tasklists.myt')
+        return render('tasklist/widget_project_tasklists.myt')
 
     @attrs(action='open', readonly=False)
     @octopus_form_handler
@@ -117,7 +117,7 @@ class TasklistController(BaseController):
             for tl, field in zip(lists, fields): # todo <-- this isn't right, fields is dicts
                 if has_permission('tasklist', 'update', id=tl.id, using_verb=True):
                     tl.title = field['title']
-                    result[str(tl.id)] = render_response('tasklist/widget_project_tasklists_row.myt', item=tl).content[0] # <-- todo ugh
+                    result[str(tl.id)] = render('tasklist/widget_project_tasklists_row.myt', item=tl).content[0] # <-- todo ugh
             return render_text(result)
         
 
@@ -125,7 +125,7 @@ class TasklistController(BaseController):
     def index(self):
         c.tasklists = self._getVisibleTaskLists(c.username)
         c.contextual_wrapper_class = 'tt-context-tasklist-index'
-        return render_response('tasklist/index.myt')
+        return render('tasklist/index.myt')
 
     @attrs(action='show', readonly=True)
     @catches_errors
@@ -140,7 +140,7 @@ class TasklistController(BaseController):
         from tasktracker.lib import helpers as h
         c.permalink = h._get_permalink(request.GET)
         c.contextual_wrapper_class = 'tt-context-tasklist-show'
-        return render_response('task/list.myt')
+        return render('task/list.myt')
 
     @attrs(action='create', readonly=True)
     def show_create(self):
@@ -150,7 +150,7 @@ class TasklistController(BaseController):
             c.administrators.append(c.username)
         c.contextual_wrapper_class = 'tt-context-tasklist-create'
         c.project_permission_level = request.environ['topp.project_permission_level']
-        return render_response('tasklist/show_create.myt')
+        return render('tasklist/show_create.myt')
 
     def _apply_role(self, members, tasklist, role):
         for member in members:

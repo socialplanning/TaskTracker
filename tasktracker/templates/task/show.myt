@@ -1,3 +1,5 @@
+${h.twirlip_link()}
+
 <span class="small">
 
  <% h.link_to("all lists", h.url_for('home')) %>

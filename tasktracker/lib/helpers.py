@@ -26,7 +26,7 @@ All names available in this module will be available under the Pylons h object.
 from webhelpers import *
 from pylons.util import _, log, set_lang, get_lang
 from routes import url_for
-from pylons import Response, c, g, cache, request, session
+from pylons import Response, c, g, cache, request, session, config
 from tasktracker.models import Task, TaskList, Comment
 
 from datebocks_helper import datebocks_field
@@ -35,7 +35,7 @@ from stripogram import html2safehtml
 import sys, os
 
 from formencode import htmlfill
-from tasktracker.lib.base import render_response
+from tasktracker.lib.base import render
 from tasktracker.lib.secure_forms import *
 
 from topp.utils.pretty_date import prettyDate
@@ -423,10 +423,10 @@ def sqlobject_to_dict(obj):
     return out
 
 def filled_render(template, obj, extra_dict={}):
-    response = render_response(template)
+    response = render(template)
     d = sqlobject_to_dict(obj)
     d.update(extra_dict)
-    response.content = [htmlfill.render("".join(response.content), d, encoding='utf8')]
+    response = htmlfill.render(response, d, encoding='utf8')
     return response
 
 #FIXME: merge with previewText
@@ -728,3 +728,10 @@ def is_task_allowed(task, permalink):
                 return False
         
     return True
+
+def twirlip_link():
+    try:
+        twirlip_server = config['twirlip_server']
+        return '<a href="%s/watch/control" rel="include"></a>' % twirlip_server
+    except KeyError:
+        return ''
