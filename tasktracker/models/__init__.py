@@ -490,6 +490,10 @@ class Task(SQLObject):
 
         f.close()
 
+    @property
+    def long_title(self):
+        return "%s - %s - %s" % (self.task_list.project.title, self.task_list.title, self.title)
+
 def sortedTasks(allowed_tasks, this_level, sort_by, sort_order):
     def _cmp(x, y):
         try:
