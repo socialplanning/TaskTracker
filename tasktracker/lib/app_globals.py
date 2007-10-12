@@ -49,7 +49,8 @@ class Globals(object):
             self.event_server = DummyEventServer()
             
         self.queues = dict(create=self.event_server.queue("create_page"),
-                           edit=self.event_server.queue("edit_page"))
+                           edit=self.event_server.queue("edit_page"),
+                           delete=self.event_server.queue("delete_page"))
         self.events = {}
 
         init_events()

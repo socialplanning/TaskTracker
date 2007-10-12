@@ -17,6 +17,7 @@ def init_events():
     events.listen(taskCreated, Task,
                   events.RowCreatedSignal)    
 
+
 def taskCreated(kwargs, post_funcs):
     post_funcs.append(taskCreatedPost)
 
@@ -25,11 +26,21 @@ def taskCreatedPost(task):
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
         categories=['projects/' + c.project_name, 'tasktracker'],
-        name = task.title,
+        title = task.long_title,
         user = c.username,
         date = datetime_to_string(datetime.now())))
 
+def taskDeletedPost(task):
+    g.queues['delete'].send_message(dict(
+        url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
+        user = c.username,
+        date = datetime_to_string(datetime.now())))
+
+
 def taskUpdated(task, kwargs):
+    if kwargs.get('live') == 0:
+        return taskDeletedPost(task)
+    
     if len(kwargs) == 1 and 'num_children' in kwargs:
         return #this was just an update caused by children being added
 
@@ -47,7 +58,7 @@ def taskUpdated(task, kwargs):
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
         categories=['projects/' + c.project_name, 'tasktracker'],
-        name = task.title,        
+        title = task.long_title,
         user = c.username,
         date = datetime_to_string(datetime.now()),
         event_class = event_class,
