@@ -85,6 +85,13 @@ def get_info_for_project(project, server):
     info = dict(policy=policy.text)
     return info
 
+def get_secret(conf):
+    secret_filename = conf['topp_secret_filename']
+    f = open(secret_filename)
+    secret = f.readline().strip()
+    f.close()
+    return secret
+
 class UserMapper(usermapper.UserMapper):
 
     def __init__(self, environ, project, server, admin_info, profile_uri):
@@ -121,10 +128,7 @@ class CookieAuth(object):
         if len(self.admin_info) != 2:
             raise Exception("Bad format in administrator info file")
 
-        secret_filename = app_conf['topp_secret_filename']
-        f = open(secret_filename)
-        self.secret = f.readline().strip()
-        f.close()
+        self.secret = get_secret(app_conf)
 
     def authenticate(self, environ):
         username = environ.get('REMOTE_USER')
@@ -199,3 +203,10 @@ class CookieAuth(object):
             return []
         else:
             return body
+
+def make_cookie(username):
+    from pylons import config
+    secret = get_secret(config['app_conf'])
+    auth = hmac.new(secret, username, sha).hexdigest()
+    cookie = quote(("%s\0%s" % (username, auth)).encode("base64")).strip()
+    return ('__ac', cookie)
