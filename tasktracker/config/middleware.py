@@ -33,6 +33,8 @@ from tasktracker.lib.cookieauth import CookieAuth
 
 from pylons import config
 
+from transcluder.middleware import TranscluderMiddleware, TaskList
+
 def translate_environ_middleware(app, global_conf, app_conf):
     kw = dict()
     for key, val in app_conf.items():
@@ -73,6 +75,8 @@ def make_app(global_conf, **app_conf):
     app = pylons.wsgiapp.PylonsApp()
     app = ConfigMiddleware(app, {'app_conf':app_conf,
         'global_conf':global_conf})
+
+    app = TranscluderMiddleware(app, tasklist = TaskList(0))
     
     # YOUR MIDDLEWARE
     # Put your own middleware here, so that any problems are caught by the error

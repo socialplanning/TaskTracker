@@ -4,7 +4,7 @@ class DummyEventServer:
     def queue(self, name):
         return self
 
-from tasktracker.models import Task
+from tasktracker.models import Task, Comment
 from sqlobject import events
 from pylons import c, g
 import tasktracker.lib.helpers as h
@@ -16,10 +16,16 @@ def init_events():
                   events.RowUpdateSignal)
     events.listen(taskCreated, Task,
                   events.RowCreatedSignal)    
+    events.listen(commentCreated, Comment,
+                  events.RowCreatedSignal)    
 
 
 def taskCreated(kwargs, post_funcs):
     post_funcs.append(taskCreatedPost)
+
+def commentCreated(kwargs, post_funcs):
+    post_funcs.append(commentCreatedPost)
+
 
 def taskCreatedPost(task):
     g.queues['create'].send_message(dict(
@@ -27,6 +33,21 @@ def taskCreatedPost(task):
         context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
         categories=['projects/' + c.project_name, 'tasktracker'],
         title = task.long_title,
+        user = c.username,
+        date = datetime_to_string(datetime.now())))
+
+    #if the task is assigned, send a task_assigned
+    if task.owner:
+        taskUpdated(task, {'owner' : task.owner})
+
+def commentCreatedPost(comment):
+    task = comment.task
+    g.queues['edit'].send_message(dict(
+        url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
+        context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
+        categories=['projects/' + c.project_name, 'tasktracker'],
+        title = task.long_title,
+        event_class = [['task_comment', comment.user]],
         user = c.username,
         date = datetime_to_string(datetime.now())))
 
