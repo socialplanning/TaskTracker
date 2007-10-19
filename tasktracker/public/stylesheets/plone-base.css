@@ -1339,7 +1339,7 @@ body.fullscreen #portal-searchbox {
 
 /*  */
 
-#portal-columns {
+#oc-tasktracker-wrapper {
     width: 100% !important;
     border-collapse: collapse;
     border-spacing: 0;
@@ -2487,17 +2487,17 @@ input,
     display: none;
 }
 
-div#portal-columns div#visual-column-wrapper,
-div#portal-columns div#visual-column-wrapper div#portal-column-content {
+div#oc-tasktracker-wrapper div#visual-column-wrapper,
+div#oc-tasktracker-wrapper div#visual-column-wrapper div#portal-column-content {
     width: 100%;
 }
 
-div#portal-columns div#visual-column-wrapper div#portal-column-content {
+div#oc-tasktracker-wrapper div#visual-column-wrapper div#portal-column-content {
     padding: 0;
     margin: 0;
 }
 
-div#portal-columns div#visual-column-wrapper div#portal-column-content * {
+div#oc-tasktracker-wrapper div#visual-column-wrapper div#portal-column-content * {
     text-align: left;
 }
 
