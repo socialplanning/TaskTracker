@@ -59,7 +59,6 @@ class TestingEnv(object):
     def authenticate(self, environ):
         username = environ.get('REMOTE_USER')
         if username:
-            environ['topp.user_info'] = _user_dict(username)
             return True
         
         try:
@@ -80,7 +79,6 @@ class TestingEnv(object):
         return self.users.keys()
 
     def __call__(self, environ, start_response):
-
         environ['topp.memberlist'] = self.memberlist
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'theproject')
