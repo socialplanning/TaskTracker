@@ -76,7 +76,7 @@ def taskUpdated(task, kwargs):
 
     #XXX this is duplicative of the model, but lacking post_funcs, I can't get
     #at the real new task object
-    long_title = "%s - %s - %s" % (task.task_list.project.title, task.task_list.title, kwargs['title'] or task.title)
+    long_title = "%s - %s - %s" % (task.task_list.project.title, task.task_list.title, kwargs.get('title', task.title))
     
     g.queues['edit'].send_message(dict(
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
