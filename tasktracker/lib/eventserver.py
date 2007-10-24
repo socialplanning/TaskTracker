@@ -74,12 +74,15 @@ def taskUpdated(task, kwargs):
     if task.owner:
         relevant_users.append(task.owner)
 
-
+    #XXX this is duplicative of the model, but lacking post_funcs, I can't get
+    #at the real new task object
+    long_title = "%s - %s - %s" % (task.task_list.project.title, task.task_list.title, kwargs['title'] or task.title)
+    
     g.queues['edit'].send_message(dict(
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
         categories=['projects/' + c.project_name, 'tasktracker'],
-        title = task.long_title,
+        title = long_title,
         user = c.username,
         date = datetime_to_string(datetime.now()),
         event_class = event_class,
