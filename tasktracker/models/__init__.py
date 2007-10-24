@@ -77,6 +77,7 @@ class Project(SQLObject):
     
     @classmethod
     def getProject(cls, title):
+        assert title
         projects = list(Project.selectBy(title=title))
         if not projects:
             return Project(title=title)

@@ -82,7 +82,7 @@ class TestController(TestCase):
             conn.query(delquery)
     
         app = self.getApp('admin')
-        app.post(url_for(controller='project', action='initialize'))
+        app.post(url_for(controller='project', action='initialize'), extra_environ={"HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE" : 'True'})
 
         self.task_list = self.create_tasklist('The list')
         

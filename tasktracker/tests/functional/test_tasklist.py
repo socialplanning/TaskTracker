@@ -73,7 +73,7 @@ class TestTaskListController(TestController):
         res.mustcontain("The new tl title")
 
         res = app.post(url_for(controller='project', action='initialize'),
-                       extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
+                       extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj", "HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE" : 'True'})
 
         res = app.get(url_for(controller='tasklist'), extra_environ={"HTTP_X_OPENPLANS_PROJECT":"differentproj"})
         assert "The new tl title" not in res.body
@@ -251,7 +251,7 @@ class TestTaskListController(TestController):
         app = self.getApp('admin')
 
         ### uninitialize the project
-        res = app.post(url_for(controller='project', action='uninitialize'))
+        res = app.post(url_for(controller='project', action='uninitialize'), extra_environ={"HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE" : 'True'})
         res.mustcontain("successfully uninitialized project")
         
         ### no mere member should be able to do anything
@@ -274,8 +274,8 @@ class TestTaskListController(TestController):
         res = res.follow()
         res.mustcontain("has not installed a task tracker.")
 
-        ### but an admin can initialize the project
-        res = app.post(url_for(controller='project', action='initialize'))
+        ### but an admin can initialize the project (via opencore)
+        res = app.post(url_for(controller='project', action='initialize'), extra_environ={"HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE" : 'True'})
         res.mustcontain("successfully initialized project")
         
         ### and then can do things as normal

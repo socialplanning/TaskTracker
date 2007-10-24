@@ -308,7 +308,7 @@ class BaseController(WSGIController):
         ### authorization can succeed or fail at this step
         action_name = controller + '_' + action_verb
         if action_name == 'project_initialize':
-            if c.level <= Role.getLevel('ProjectAdmin'):
+            if request.environ.get("HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE"):
                 return True # let only admins initialize the project
             else:
                 raise NotInitializedException
