@@ -145,6 +145,12 @@ class TestController(TestCase):
             app = self.getApp('admin')
         res = app.post('/task/change_field/%s' % task.id,
                        params={'field':field, field:value, 'authenticator':self._get_authenticator(app)})
+
+    def comment(self, taskID, text, user):
+        app = self.getApp(user)
+        res = app.post('/task/comment/%s' % taskID,
+                       params={'text':text, 'authenticator':self._get_authenticator(app)})
+        
         
     def create_tasklist(self, title, member_level=4, other_level=4):
         app = self.getApp('admin')

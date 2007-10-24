@@ -32,7 +32,7 @@ class TestHistoryController(TestController):
         self.task_set(task, 'title', 'changed title')
         self.task_set(task, 'text', 'changed text')
 
-        Comment(taskID = task.id, text='the first comment', user='first user')
+        self.comment(taskID = task.id, text='the first comment', user='first user')
 
         import time
         time.sleep(2)
@@ -45,7 +45,7 @@ class TestHistoryController(TestController):
         self.task_set(task, 'title', 'changed title again')
         self.task_set(task, 'text', 'changed text again')
         
-        Comment(taskID = task.id, text='the second comment', user='second user')
+        self.comment(taskID = task.id, text='the second comment', user='second user')
 
         assert len(list(task.comments)) == 2
         assert len(list(task.versions)) == 4
