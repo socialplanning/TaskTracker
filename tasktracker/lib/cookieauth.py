@@ -51,6 +51,11 @@ def get_users_for_project(project, server, admin_info):
     data = {"__ac_name":admin_info[0], "__ac_password":admin_info[1]}
     body = urlencode(data)
     resp, content = h.request("%s/projects/%s/members.xml" % (server, project), method="POST", body=body, redirections=0)
+
+    #404 means the project isn't fully initialized.
+    if resp['status'] == '404':
+        return [] #no members
+
     if resp['status'] != '200':
         if resp['status'] == '302':
             # redirect probably means auth failed
@@ -60,6 +65,7 @@ def get_users_for_project(project, server, admin_info):
             extra = '; is Zope started?'
         else:
             extra = ''
+            
         raise ValueError("Error retrieving project %s: status %s%s" 
                          % (project, resp['status'], extra))
     tree = ET.fromstring(content)
@@ -77,6 +83,8 @@ def get_users_for_project(project, server, admin_info):
 def get_info_for_project(project, server):
     h = httplib2.Http()
     resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
+    if resp['status'] == '404':
+        return dict(policy='closed_policy') #assume the most restrictive
     if resp['status'] != '200':
         raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
     tree = ET.fromstring(content)
