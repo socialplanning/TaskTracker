@@ -733,6 +733,8 @@ function doneAddingTask(req) {
 
     //Behavior.apply();
 
+    sortAndFilter();
+
     $A($('add_task_form').getElements()).each(function(node) {
 	    if (node.type == "checkbox") 
 		node.checked = false;
