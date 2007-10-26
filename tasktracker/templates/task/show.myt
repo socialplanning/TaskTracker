@@ -30,7 +30,7 @@
  </table>
 
  <div id="task-show-task-description">
-  <% h.editableField(c.task, 'text', 'Add a description') %>
+  <% h.editableField(c.task, 'text', ifNone='Add a description', ifNoneUneditable="") %>
  </div>
 
  <div

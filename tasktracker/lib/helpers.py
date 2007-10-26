@@ -129,7 +129,7 @@ def sortableColumn(field, fieldname = None, klass = None, colspan=1):
     </th>""" % (field, klass or "%s-column" % field, colspan, field, fieldname or field, field, field, field) #""" #stupid syntax highliter
     return span
 
-def editableField(task, field, ifNone = None, uneditable = False):
+def editableField(task, field, ifNone = None, uneditable = False, ifNoneUneditable=None):
     if uneditable:
         editable = False
     else:
@@ -160,7 +160,10 @@ def editableField(task, field, ifNone = None, uneditable = False):
     contents = getattr(task, field)
 
     if not contents:
-        contents = ifNone
+        if editable or ifNoneUneditable is None:
+            contents = ifNone
+        else:
+            contents = ifNoneUneditable
         if contents is None:
             contents = "--"
     elif field == 'deadline':
@@ -170,8 +173,7 @@ def editableField(task, field, ifNone = None, uneditable = False):
             contents = '--'
     elif field == 'text':
         contents = htmlize(contents)
-
-    if field == 'status':
+    elif field == 'status':
         contents = task.statusName()
         if not task.task_list.hasFeature('custom_status'):
             checked = False
