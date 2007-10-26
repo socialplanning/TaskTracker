@@ -44,14 +44,18 @@ import elementtree.ElementTree as ET
 
 from topp.utils import memorycache
 
-@memorycache.cache(120)
-def get_users_for_project(project, server, admin_info):
+def admin_post(url, admin_info):
     h = httplib2.Http()
     # because of some zope silliness we have to do this as a POST instead of basic auth
     data = {"__ac_name":admin_info[0], "__ac_password":admin_info[1]}
     body = urlencode(data)
-    resp, content = h.request("%s/projects/%s/members.xml" % (server, project), method="POST", body=body, redirections=0)
+    resp, content = h.request(url, method="POST", body=body, redirections=0)
+    return resp, content
 
+@memorycache.cache(120)
+def get_users_for_project(project, server, admin_info):
+    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), admin_info)
+    
     #404 means the project isn't fully initialized.
     if resp['status'] == '404':
         return [] #no members
@@ -80,9 +84,10 @@ def get_users_for_project(project, server, admin_info):
     return members
 
 @memorycache.cache(120)
-def get_info_for_project(project, server):
-    h = httplib2.Http()
-    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
+def get_info_for_project(project, server, admin_info):
+    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), admin_info)
+#    h = httplib2.Http()
+#    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
     if resp['status'] == '404':
         return dict(policy='closed_policy') #assume the most restrictive
     if resp['status'] != '200':
@@ -195,7 +200,7 @@ class CookieAuth(object):
                 environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
 
             environ['topp.project_permission_level'] = get_info_for_project(
-                project_name, self.openplans_instance)['policy']
+                project_name, self.openplans_instance, self.admin_info)['policy']
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 
