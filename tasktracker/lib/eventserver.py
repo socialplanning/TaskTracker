@@ -28,17 +28,18 @@ def commentCreated(kwargs, post_funcs):
 
 
 def taskCreatedPost(task):
+    event_class = []
+    if task.owner:
+        event_class.append(['task_assigned', task.owner])
+        
     g.queues['create'].send_message(dict(
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         context = h.url_for(controller='tasklist', action='show', id=task.task_listID, qualified=True),
         categories=['projects/' + c.project_name, 'tasktracker'],
         title = task.long_title,
         user = c.username,
+        event_class = event_class,        
         date = datetime_to_string(datetime.now())))
-
-    #if the task is assigned, send a task_assigned
-    if task.owner:
-        taskUpdated(task, {'owner' : task.owner})
 
 def commentCreatedPost(comment):
     task = comment.task
