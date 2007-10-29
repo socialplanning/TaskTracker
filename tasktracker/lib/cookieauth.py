@@ -131,6 +131,7 @@ class CookieAuth(object):
         self.app = app
         self.openplans_instance = app_conf['openplans_instance']
         self.login_uri = app_conf['login_uri']
+        self.homepage_uri = app_conf['homepage_uri']
         self.profile_uri = app_conf['profile_uri']
 
         if self.profile_uri.count('%s') != 1:
@@ -172,7 +173,7 @@ class CookieAuth(object):
         return True
         
     def needs_redirection(self, status, headers):
-        return status.startswith('401')
+        return status.startswith('401') or status.startswith('403')
 
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].strip("/").startswith("_debug"):
@@ -205,11 +206,18 @@ class CookieAuth(object):
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 
         if status:
-            status = "303 See Other"
-            url = construct_url(environ)
-            headers = [('Location', '%s?came_from=%s' % (self.login_uri, quote(url)))]
-            start_response(status, headers)
-            return []
+            if status.startswith('401'):
+                status = "303 See Other"
+                url = construct_url(environ)
+                headers = [('Location', '%s?came_from=%s' % (self.login_uri, quote(url)))]
+                start_response(status, headers)
+                return []
+            elif status.startswith('403'):
+                status = "303 See Other"
+                url = construct_url(environ)
+                headers = [('Location', '%s?came_from=%s' % (self.homepage_uri, quote(url)))]
+                start_response(status, headers)
+            return []        
         else:
             return body
 
