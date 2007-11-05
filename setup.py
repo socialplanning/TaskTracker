@@ -35,7 +35,7 @@ setup(
       "Pylons>=0.9.6.1",
       "Routes>=1.7",
       "SQLObject==dev,>=0.10dev",
-      "decorator", 
+      "decorator>=2.1.0", 
       "httplib2", 
       "elementtree", 
       "python-dateutil",
