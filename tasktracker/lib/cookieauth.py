@@ -52,13 +52,15 @@ def admin_post(url, admin_info):
     resp, content = h.request(url, method="POST", body=body, redirections=0)
     return resp, content
 
+class ProjectNotFoundError(Exception): pass
+
 @memorycache.cache(120)
 def get_users_for_project(project, server, admin_info):
     resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), admin_info)
     
     #404 means the project isn't fully initialized.
     if resp['status'] == '404':
-        return [] #no members
+        raise ProjectNotFoundError
 
     if resp['status'] != '200':
         if resp['status'] == '302':
@@ -89,7 +91,7 @@ def get_info_for_project(project, server, admin_info):
 #    h = httplib2.Http()
 #    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
     if resp['status'] == '404':
-        return dict(policy='closed_policy') #assume the most restrictive
+        raise ProjectNotFoundError #don't let this be cached
     if resp['status'] != '200':
         raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
     tree = ET.fromstring(content)
@@ -119,8 +121,11 @@ class UserMapper(usermapper.UserMapper):
         return self.profile_uri % name
 
     def project_members(self):
-        return get_users_for_project(self.project, self.server, self.admin_info)
-    
+        try:
+            return get_users_for_project(self.project, self.server, self.admin_info)
+        except ProjectNotFoundError:  # assume no members
+            return []
+
     def is_project_member(self, member):
         return member in self.project_member_names()
     
@@ -200,8 +205,10 @@ class CookieAuth(object):
             if username in umapper.project_member_names():
                 environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
 
-            environ['topp.project_permission_level'] = get_info_for_project(
-                project_name, self.openplans_instance, self.admin_info)['policy']
+            try:
+                environ['topp.project_permission_level'] = get_info_for_project(project_name, self.openplans_instance, self.admin_info)['policy']
+            except ProjectNotFoundError: #assume the most restrictive
+                environ['topp.project_permission_level'] = dict(policy='closed_policy')
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 

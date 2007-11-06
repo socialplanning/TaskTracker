@@ -177,7 +177,7 @@ class BaseController(WSGIController):
         
         if action == "show_authenticate":
             return True
-
+        
         if not self._authorize(project, action, params):
             if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
