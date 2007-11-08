@@ -493,7 +493,7 @@ class Task(SQLObject):
 
     @property
     def long_title(self):
-        return "%s - %s - %s" % (self.task_list.project.title, self.task_list.title, self.title)
+        return "%s in %s/%s" % (self.title, self.task_list.project.title, self.task_list.title)
 
 def sortedTasks(allowed_tasks, this_level, sort_by, sort_order):
     def _cmp(x, y):
