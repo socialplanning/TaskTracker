@@ -25,14 +25,27 @@ from pylons import config
 from tasktracker.config.routing import make_map
 import tasktracker.lib.app_globals as app_globals
 
+import pkg_resources
+
 def load_environment(global_conf, app_conf):
     map = make_map()
     # Setup our paths
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    template_paths = []
+
+    template_paths += [os.path.join(root_path, path) for path in \
+                                   ('components', 'templates')]
+
+                                                                        
+    if 'template_package' in app_conf:
+        alt_tmpl = pkg_resources.Requirement.parse(app_conf['template_package'])
+        alt_path = pkg_resources.resource_filename(alt_tmpl, 'tasktracker')
+        template_paths.append(os.path.join(alt_path, 'templates'))
+    
+    print template_paths
     paths = {'root': root_path,
              'controllers': os.path.join(root_path, 'controllers'),
-             'templates': [os.path.join(root_path, path) for path in \
-                           ('components', 'templates')],
+             'templates': template_paths,
              'static_files': os.path.join(root_path, 'public')
              }
     
