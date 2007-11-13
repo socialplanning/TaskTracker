@@ -65,6 +65,9 @@ obsolete_future_history_dir = %(here)s/afh
 #event_server = http://localhost:24532
 #event_queue_directory = %(here)s/eq
 
+#for alternate templates
+#template_package = sputnik
+
 #filter-with = prefix
 #
 #[filter:prefix]
