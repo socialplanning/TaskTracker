@@ -5,7 +5,7 @@
 <h2>About Task Tracker</h2> 
 
 
-<p>Task Tracker is experimental software that makes it easy to share tasks and get stuff done. This just means that we aren't quite done. It is far enough along to be used, but not as polished as we would like it to be. We figure it is better to put tools out there as early as possible and work on making them better as we go along. Just because we are not done developing it doesn't mean you don't already need it. If you love it, hate it, need more or fewer features then <a href="/contact-site-admin">let us know</a>!</p>
+<p>Task Tracker is experimental software that makes it easy to share tasks and get stuff done. This just means that we aren't quite done. It is far enough along to be used, but not as polished as we would like it to be. We figure it is better to put tools out there as early as possible and work on making them better as we go along. Just because we are not done developing it doesn't mean you don't already need it. If you love it, hate it, need more or fewer features then <a href="mailto:help@openplans.org">let us know</a>!</p>
 
 <ul id="tt-features">
 
