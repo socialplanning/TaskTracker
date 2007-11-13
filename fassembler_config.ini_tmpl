@@ -1,0 +1,103 @@
+{{##
+This file is used by fassembler to create the configuration for TaskTracker.
+It is a Tempita template
+##}}
+# TaskTracker - Pylons development environment configuration
+#
+# The %(here)s variable will be replaced with the parent directory of this file
+#
+[DEFAULT]
+debug = true
+## FIXME: this should default to something useful:
+email_to = 
+smtp_server = localhost
+error_email_from = paste@{{env.fq_hostname}}
+
+[server:main]
+use = egg:Paste#http
+host = {{config.host}}
+port = {{config.port}}
+
+[app:tasktracker]
+use = egg:TaskTracker
+## FIXME: I'd prefer some kind of scratch directory
+cache_dir = %(here)s/data
+cache_expiretime = 60
+session_key = tasktracker
+## FIXME: this should be auto-generated
+session_secret = somesecret
+
+# If you'd like to fine-tune the individual locations of the cache data dirs
+# for Myghty, the Cache data, or the Session saves, un-comment the desired
+# settings here:
+#myghty_data_dir = %(here)s/data/templates
+#cache_data_dir = %(here)s/data/cache
+#session_data_dir = %(here)s/data/sessions
+
+# Specify the database for SQLObject to use via pylons.database.PackageHub.
+# %(here) may include a ':' character on Windows environments; this can
+# invalidate the URI when specifying a SQLite db via path name. Refer to the
+# SQLObject documentation for a special syntax to preserve the URI.
+sqlobject.dburi = {{config.db_sqlobject}}
+
+database = {{config.db_sqlobject}}
+
+## WARNING: must be false for production
+set debug = false
+
+openplans_wrapper = CookieAuth
+#openplans_wrapper = ZWSGIFakeEnv
+## FIXME: these need to be dynamic:
+openplans_instance = http://localhost:8080/openplans
+login_uri = http://stage.openplans.org/login_form
+homepage_uri = http://stage.openplans.org/
+profile_uri = http://stage.openplans.org/people/%s/profile
+
+# If uncommented, the Javascript and CSS files will each respectively
+# be served as a single file (instead of having to load a file for each
+# library):
+#compress_resources = true
+
+# where secret stuff lives
+topp_secret_filename = {{env.config.get('general', 'topp_secret_filename')}}
+topp_admin_info_filename = {{env.config.get('general', 'admin_info_filename')}}
+
+translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
+
+#note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
+## FIXME: where should this go?
+obsolete_future_history_dir = %(here)s/afh
+
+#event_server = http://localhost:24532
+#event_queue_directory = %(here)s/eq
+
+#filter-with = prefix
+#
+#[filter:prefix]
+#use = egg:PasteDeploy#prefix
+#prefix = /tasks
+
+[app:test]
+use = tasktracker
+sqlobject.dburi = {{config.db_test_sqlobject}}
+database = {{config.db_test_sqlobject}}
+
+openplans_wrapper = TestingEnv
+
+## FIXME: where should this go?  Probably scratch is okay in this case
+obsolete_future_history_dir = %(here)s/afh-test
+
+fill_environ REMOTE_ADDR = 127.0.0.1
+
+event_server = 
+event_queue_directory = 
+
+############################################################
+## Deliverance-enabled example
+############################################################
+
+[filter-app:main]
+## FIXME: we should be using something more dynamic:
+use = egg:PasteDeploy#prefix
+prefix = /tasks
+next = tasktracker
