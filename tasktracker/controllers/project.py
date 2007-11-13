@@ -41,6 +41,11 @@ class ProjectController(BaseController):
         c.project.readonly = True
         return Response("successfully uninitialized project")
 
+    @attrs(action='destroy', readonly=True, restrict_remote_addr=True)
+    def destroy(self, *args, **kwargs):
+        c.project.destroySelf()
+        return Response("successfully destroyed project")
+
     @attrs(action='lock', readonly=True)
     def lock(self):
         c.project.readonly = True

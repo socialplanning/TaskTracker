@@ -84,6 +84,11 @@ class Project(SQLObject):
         else:
             return projects[0]
 
+    def destroySelf(self):
+        for tl in self.task_lists:
+            tl.destroySelf()
+        SQLObject.destroySelf(self)
+
 class TaskListRole(SQLObject):
     _cacheValue = False
     username = StringCol(length=255)
@@ -710,9 +715,15 @@ class TaskList(SQLObject):
     def destroySelf(self):
         for permission in self.permissions:
             permission.destroySelf()
+
+        for role in self.special_users:
+            role.destroySelf()
         
         for feature in self.features:
             feature.destroySelf()
+
+        for task in self.tasks:
+            task.destroySelf()
 
         super(TaskList, self).destroySelf()
 
