@@ -110,16 +110,16 @@ def make_app(global_conf, **app_conf):
         
         app = TestingEnv(app, users)
         
-    elif config.app_conf.get('openplans_wrapper') == 'CookieAuth':
+    elif app_conf.get('openplans_wrapper') == 'CookieAuth':
         app = CookieAuth(app, app_conf)
 
     else:
-        if not config.app_conf.get('openplans_wrapper'):
+        if not app_conf.get('openplans_wrapper'):
             raise ValueError(
                 "openplans_wrapper not set")
         else:
             raise ValueError(
-                "openplans_wrapper value not recognized (%r)" % config.app_conf.get('openplans_wrapper'))
+                "openplans_wrapper value not recognized (%r)" % app_conf.get('openplans_wrapper'))
 
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
