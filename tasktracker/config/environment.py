@@ -31,18 +31,19 @@ def load_environment(global_conf, app_conf):
     map = make_map()
     # Setup our paths
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
     template_paths = []
 
-    template_paths += [os.path.join(root_path, path) for path in \
-                                   ('components', 'templates')]
+#    Myghty doesn't actually support this even though it appears to.
 
-                                                                        
-    if 'template_package' in app_conf:
-        alt_tmpl = pkg_resources.Requirement.parse(app_conf['template_package'])
-        alt_path = pkg_resources.resource_filename(alt_tmpl, 'tasktracker')
-        template_paths.append(os.path.join(alt_path, 'templates'))
-    
-    print template_paths
+#    if 'template_package' in app_conf:
+#        alt_tmpl = pkg_resources.Requirement.parse(app_conf['template_package'])
+#        alt_path = pkg_resources.resource_filename(alt_tmpl, 'tasktracker')
+#        template_paths.append(os.path.join(alt_path, 'templates'))
+
+    template_paths += [os.path.join(root_path, path) for path in 
+                      ('components', 'templates')]
+
     paths = {'root': root_path,
              'controllers': os.path.join(root_path, 'controllers'),
              'templates': template_paths,
