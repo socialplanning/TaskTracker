@@ -1,53 +1,20 @@
-<div class="sbar">
-
-<div id="tt-about">
-
-<h2>About Task Tracker</h2> 
-
-
-<p>Task Tracker is experimental software that makes it easy to share tasks and get stuff done. This just means that we aren't quite done. It is far enough along to be used, but not as polished as we would like it to be. We figure it is better to put tools out there as early as possible and work on making them better as we go along. Just because we are not done developing it doesn't mean you don't already need it. If you love it, hate it, need more or fewer features then <a href="/contact-site-admin">let us know</a>!</p>
-
-<ul id="tt-features">
-
-<li>Create task lists to organize tasks by project, event, or anything else. You might, for example, make one task list for things that need to get done around the office and another task list for organizing opposition to a proposed law.</li>
-
-<li>Just drag-and-drop to divide tasks into sub-tasks then assign them, with or without deadlines, to other members of your project.</li>
-
-<li>Check off tasks as you finish them or track your progress with priority levels and custom statuses.</li>
-
-<li>Claim or steal a task if you see something that needs to get done.</li>
-
-</ul> <!-- end features -->
-
-</div> <!-- end about -->
-
-<div id="tt-glossary">
-
-<h3>Glossary</h3>
-
-<ul>
-<li><b>Task lists</b> are just that: independent groups of related things that need to get done.</li>
-<li>Anything that needs to get done is considered a <b>task</b>, regardless of whether or not it is part of larger task.</li>
-<li><b>Sub-tasks</b> are tasks that are explicitly part of a larger task.</li>
-<li>Managers can <b>assign</b> responsibility for a task to any particular user or leave it unassigned.</li>
-<li>Tasks can be given different <b>priority levels</b> and sorted or filtered accordingly.</li>
-<li>Instead of using a simple checkbox, managers can opt to create <b>custom statuses</b> (such as draft, reviewed, final, ann approved) to describe the state of tasks on a task list.</li>
-<li>Under certain settings you can <b>claim</b> unassigned tasks and assign them to yourself.</li>
-<li>Under certain settings you can <b>steal</b> tasks assigned to others and reassign them to yourself.</li>
-</ul>
-
-</div><!-- end glossary -->
-
-</div>
+          <div>
+      <div id="oc-content-main">
+        <div class="oc-headingBlock">
+          <h1>Task Lists</h1>
+          <p class="oc-headingContent">
+		Create, manage, and share to-do lists.          </p>
+        </div>
 
 <h1 class="documentFirstHeading">All task lists for <% c.project.title %></h1>
 <p>Create, manage, and share to-do lists.</p>
 
-% if h.has_permission('tasklist', 'show_create'): 
-<div id="add_list">
-<% h.link_to ('Create a new list', h.url_for(action='show_create')) %>
-</div>
-%
+
+% if not len(c.tasklists):
+          <p class="oc-boxy oc-discreetText">
+            There are currently no task lists for this project.
+          </p>
+% else:
 
 % undone_tasklists = [list for list in c.tasklists if len(list.uncompletedTasks())]
 % if len(undone_tasklists):
@@ -81,4 +48,47 @@
 </div>
 %
 
+%
+<!-- starts about -->
+  <div>
+  <ul class="oc-smallText">
+
+<li>Create a <b>task list</b> for each of your project's goals.</li>
+<li>Within a task list, create <b>tasks</b> and assign them <b>priorities</b>.  </li>
+<li>Drag-and-drop to divide tasks into <b>sub-tasks</b>.</li>
+
+<li>Choose specific task list<b> managers</b> from your project's team members.
+
+<li><b>Assign</b> tasks, with or without deadlines, to members of your project.</li>
+<li>Tasks can be given different <b>priority levels</b> and sorted or filtered accordingly</li>
+<li><b>Check off</b> tasks as you finish them or track them with <b>custom statuses</b>.	</li>
+<li><b>Claim</b> or <b>steal</b> a task if you see something that needs to get done.
+	</li>
+</ul>
+</div> <!-- end about -->
+        
+      </div><!-- oc-content-main -->
+      
+      
+      
+      <div id="oc-content-sidebar">
+        <div class="oc-getstarted">
+
+% if h.has_permission('tasklist', 'show_create'): 
+<% h.link_to ('Add a new task list', h.url_for(action='show_create'), class_="oc-banana") %>
+%
+    	</div>
+
+<div class="oc-boxy">    
+<h3>About Task Tracker</h3> 
+<p>Task Tracker makes it easy to share tasks and get stuff done. It's still in development,
+but just because we are not finished doesn't mean you don't already need it. If
+you love it, hate it, need more or fewer features then <a href="mailto:help@openplans.org">let us know</a>!</p>
+<p>
+Track your progress, steal tasks and experience a tailored to-do-list experience. </p>
+<!-- end features -->
+</div>
+    
+      </div>
+    </div>
 <hr class="oc-clearElement" />
