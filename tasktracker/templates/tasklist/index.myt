@@ -1,14 +1,9 @@
           <div>
       <div id="oc-content-main">
         <div class="oc-headingBlock">
-          <h1>Task Lists</h1>
-          <p class="oc-headingContent">
-		Create, manage, and share to-do lists.          </p>
+          <h1>Task lists</h1>
+          <p class="oc-headingContent">Create, manage, and share to-do lists.</p>
         </div>
-
-<h1 class="documentFirstHeading">All task lists for <% c.project.title %></h1>
-<p>Create, manage, and share to-do lists.</p>
-
 
 % if not len(c.tasklists):
           <p class="oc-boxy oc-discreetText">
@@ -18,7 +13,7 @@
 
 % undone_tasklists = [list for list in c.tasklists if len(list.uncompletedTasks())]
 % if len(undone_tasklists):
-<div id="active-tasklists">
+<div class="oc-boxy">
 <h2>Active Task Lists</h2>
 <ul>
 % for list in undone_tasklists:
@@ -34,7 +29,7 @@
 
 % done_tasklists = [list for list in c.tasklists if not len(list.uncompletedTasks())]
 % if len(done_tasklists):
-<div id="completed-tasklists">
+<div class="oc-boxy">
 <h2>Completed Task Lists</h2>
 <ul>
 % for list in done_tasklists:
@@ -51,7 +46,7 @@
 %
 <!-- starts about -->
   <div>
-  <ul class="oc-smallText">
+  <ul class="oc-smallText oc-plainList">
 
 <li>Create a <b>task list</b> for each of your project's goals.</li>
 <li>Within a task list, create <b>tasks</b> and assign them <b>priorities</b>.  </li>
@@ -72,7 +67,7 @@
       
       
       <div id="oc-content-sidebar">
-        <div class="oc-getstarted">
+        <div>
 
 % if h.has_permission('tasklist', 'show_create'): 
 <% h.link_to ('Add a new task list', h.url_for(action='show_create'), class_="oc-banana") %>
