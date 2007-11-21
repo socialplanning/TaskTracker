@@ -22,7 +22,10 @@
 }
 
 #oc-tasktracker br {
-	display: none;
+      	display: none; 
+}
+#oc-tasktracker .editable br {
+        display: block;
 }
 
 	#oc-tasktracker.tt-context-tasklist-create br,
