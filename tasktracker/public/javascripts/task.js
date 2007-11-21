@@ -698,6 +698,21 @@ function doneAddingTask(req) {
     if( placeholder ) {
 	placeholder.parentNode.removeChild(placeholder);
     }
+
+    columns = getColumnOrder();
+    //status, title are always first
+    columns.shift();
+    columns.unshift("title");
+    columns.unshift("status");
+    //rearrange new_fragment into current column order
+    var last = new_item.getElementsByTagName("TD")[0];
+    for (var i = 1; i < columns.length; i++) {
+	column = columns[i];
+	var cell = new_item.getElementsByClassName(column + "-column")[0];
+	insertAfter(cell, last);
+	last = cell;
+    }
+
     var table = $('tasks');
     if (siblingID != 0){
 	/* We have been inserted after a sibling. */
@@ -1288,6 +1303,19 @@ function onBodyClick(event) {
 	selected_label = null;
 
     }
+}
+
+
+var column_name_regex = new RegExp("(\\w+)-heading");
+
+function getColumnOrder() {
+    var t1 = $('tasks').getElementsByTagName("TR")[0];
+    var columns = new Array();
+    $A(t1.getElementsByTagName("TH")).each(function (th) {
+	colname = column_name_regex.exec(th.id)[1];
+	columns.push(colname);
+    });
+    return columns;
 }
 
 function moveSecondNextToFirst(a, b, before) {
