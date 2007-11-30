@@ -280,7 +280,7 @@ class TestTaskListController(TestController):
         
         ### and then can do things as normal
         res = app.get(url_for(controller='tasklist'))
-        res.mustcontain("Glossary")
+        res.mustcontain("Within a task list")
 
     def test_task_create(self):
         """Tests creating a new task"""
