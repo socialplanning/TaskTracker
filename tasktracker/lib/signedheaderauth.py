@@ -22,6 +22,8 @@ from pylons import c
 from paste.wsgilib import intercept_output
 from paste.request import construct_url
 
+from urllib import quote, unquote, urlencode
+
 from cookieauth import UserMapper, get_secret, get_info_for_project, get_users_for_project, ProjectNotFoundError
 
 from signedheaders import HeaderSignatureCheckingMiddleware
