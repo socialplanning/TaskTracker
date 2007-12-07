@@ -27,7 +27,7 @@ import tasktracker.lib.app_globals as app_globals
 
 import pkg_resources
 
-def load_environment(global_conf, app_conf):
+def load_environment(global_conf, app_conf, setup_config=False):
     map = make_map()
     # Setup our paths
     root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -63,7 +63,7 @@ def load_environment(global_conf, app_conf):
                     template_engine='pylonsmyghty', paths=paths)
 
     config['routes.map'] = make_map()
-    config['pylons.g'] = app_globals.Globals()
+    config['pylons.g'] = app_globals.Globals(setup_config=setup_config)
     import tasktracker.lib.helpers    
     config['pylons.h'] = tasktracker.lib.helpers
 

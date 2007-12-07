@@ -7,7 +7,7 @@ It is a Tempita template
 # The %(here)s variable will be replaced with the parent directory of this file
 #
 [DEFAULT]
-debug = true
+debug = false
 ## FIXME: this should default to something useful:
 email_to = 
 smtp_server = localhost
@@ -26,6 +26,7 @@ cache_expiretime = 60
 session_key = tasktracker
 ## FIXME: this should be auto-generated
 session_secret = somesecret
+base_config = {{env.base_path}}/etc/build.ini
 
 # If you'd like to fine-tune the individual locations of the cache data dirs
 # for Myghty, the Cache data, or the Session saves, un-comment the desired
@@ -68,8 +69,8 @@ translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 ## FIXME: where should this go?
 obsolete_future_history_dir = %(here)s/afh
 
-#event_server = http://localhost:24532
-#event_queue_directory = %(here)s/eq
+event_server = http://localhost:24532
+event_queue_directory = %(here)s/eq
 
 #filter-with = prefix
 #
@@ -88,9 +89,6 @@ openplans_wrapper = TestingEnv
 obsolete_future_history_dir = %(here)s/afh-test
 
 fill_environ REMOTE_ADDR = 127.0.0.1
-
-event_server = 
-event_queue_directory = 
 
 ############################################################
 ## Deliverance-enabled example

@@ -58,7 +58,7 @@ def setup_config(command, filename, section, vars):
     dummy, sect = section.split(':')
 
     conf = appconfig('config:%s#%s' % (filename, sect), relative_to=conf_dir)
-    load_environment(conf.global_conf, conf.local_conf)
+    load_environment(conf.global_conf, conf.local_conf, setup_config=True)
     
     CONFIG.push_process_config({'app_conf': conf.local_conf,
                                 'global_conf': conf.global_conf})
