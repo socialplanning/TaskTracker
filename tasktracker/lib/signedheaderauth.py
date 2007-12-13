@@ -28,13 +28,15 @@ from cookieauth import UserMapper, get_secret, get_info_for_project, get_users_f
 
 from signedheaders import HeaderSignatureCheckingMiddleware
 
+from tasktracker.lib import urireader 
+
 class _SignedHeaderAuth(object):
     def __init__(self, app, app_conf):
         self.app = app
-        self.openplans_instance = app_conf['openplans_instance']
-        self.login_uri = app_conf['login_uri']
-        self.homepage_uri = app_conf['homepage_uri']
-        self.profile_uri = app_conf['profile_uri']
+        self.openplans_instance = urireader.get_instance(app_conf)
+        self.login_uri = urireader.get_login_uri(app_conf)
+        self.homepage_uri = urireader.get_homepage_uri(app_conf)
+        self.profile_uri = urireader.get_profile_uri(app_conf)
 
         if self.profile_uri.count('%s') != 1:
             raise Exception("Badly formatted profile_uri: must include a single '%s'")

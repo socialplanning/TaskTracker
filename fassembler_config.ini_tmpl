@@ -48,10 +48,7 @@ set debug = false
 openplans_wrapper = CookieAuth
 #openplans_wrapper = ZWSGIFakeEnv
 ## FIXME: these need to be dynamic:
-openplans_instance = http://localhost:8080/openplans
-login_uri = http://stage.openplans.org/login_form
-homepage_uri = http://stage.openplans.org/
-profile_uri = http://stage.openplans.org/people/%s/profile
+openplans_build_ini = {{env.base_path}}/etc/build.ini
 
 # If uncommented, the Javascript and CSS files will each respectively
 # be served as a single file (instead of having to load a file for each
