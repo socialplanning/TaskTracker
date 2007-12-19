@@ -5,7 +5,7 @@ Read settings from the config or build.ini
 from ConfigParser import ConfigParser
 import os
 
-def get_instance(app_conf):
+def get_openplans_instance(app_conf):
     if app_conf.get('openplans_instance'):
         return app_conf['openplans_instance']
     if app_conf.get('openplans_build_ini'):

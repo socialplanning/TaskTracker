@@ -33,7 +33,7 @@ from tasktracker.lib import urireader
 class _SignedHeaderAuth(object):
     def __init__(self, app, app_conf):
         self.app = app
-        self.openplans_instance = urireader.get_instance(app_conf)
+        self.openplans_instance = urireader.get_openplans_instance(app_conf)
         self.login_uri = urireader.get_login_uri(app_conf)
         self.homepage_uri = urireader.get_homepage_uri(app_conf)
         self.profile_uri = urireader.get_profile_uri(app_conf)
