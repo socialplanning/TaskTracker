@@ -12,6 +12,7 @@ debug = false
 email_to = 
 smtp_server = localhost
 error_email_from = paste@{{env.fq_hostname}}
+var = {{env.var}}
 
 [server:main]
 use = egg:Paste#http
@@ -21,7 +22,7 @@ port = {{config.port}}
 [app:tasktracker]
 use = egg:TaskTracker
 ## FIXME: I'd prefer some kind of scratch directory
-cache_dir = %(here)s/data
+cache_dir = %(var)s/tasktracker/cache-data
 cache_expiretime = 60
 session_key = tasktracker
 ## FIXME: this should be auto-generated
@@ -61,13 +62,15 @@ topp_secret_filename = {{env.config.get('general', 'topp_secret_filename')}}
 topp_admin_info_filename = {{env.config.get('general', 'admin_info_filename')}}
 
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
+## FIXME: This feels like it should be more dynamic, less explicit, maybe middleware:
+translate_environ SCRIPT_NAME = HTTP_X_FORWARDED_PATH
 
 #note: this is a type three universe. "A shoot-on-sight policy is less crazy than it sounds!" -JBR
 ## FIXME: where should this go?
-obsolete_future_history_dir = %(here)s/afh
+obsolete_future_history_dir = %(var)s/tasktracker/afh
 
 event_server = http://localhost:24532
-event_queue_directory = %(here)s/eq
+event_queue_directory = %(var)s/tasktracker/eq
 
 #filter-with = prefix
 #
