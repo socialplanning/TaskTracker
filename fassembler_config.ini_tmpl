@@ -69,7 +69,6 @@ translate_environ SCRIPT_NAME = HTTP_X_FORWARDED_PATH
 ## FIXME: where should this go?
 obsolete_future_history_dir = %(var)s/tasktracker/afh
 
-event_server = http://localhost:24532
 event_queue_directory = %(var)s/tasktracker/eq
 
 #filter-with = prefix
