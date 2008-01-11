@@ -37,6 +37,7 @@ import sys, os
 from formencode import htmlfill
 from tasktracker.lib.base import render
 from tasktracker.lib.secure_forms import *
+from tasktracker.lib.urireader import get_twirlip_uri
 
 from topp.utils.pretty_date import prettyDate
 from random import random
@@ -733,7 +734,7 @@ def is_task_allowed(task, permalink):
 
 def twirlip_link():
     try:
-        twirlip_server = config['twirlip_server']
+        twirlip_server = get_twirlip_uri(config)
         return '<a href="%s/watch/control" rel="include"></a>' % twirlip_server
     except KeyError:
         return ''

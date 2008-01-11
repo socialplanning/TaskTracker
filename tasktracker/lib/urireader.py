@@ -8,7 +8,7 @@ import os
 def get_openplans_instance(app_conf):
     if app_conf.get('openplans_instance'):
         return app_conf['openplans_instance']
-    if app_conf.get('openplans_build_ini'):
+    if app_conf.get('base_config'):
         conf = read_config(app_conf)
         return conf.get('applications', 'opencore uri')
 
@@ -32,11 +32,16 @@ def get_profile_uri(app_conf):
     else:
         return '/people/%s/profile'
 
+def get_twirlip_uri(app_conf):
+    if app_conf.get('base_config'):
+        conf = read_config(app_conf)
+        return conf.get('applications', 'twirlip uri')
+
 def read_config(app_conf):
-    fn = app_conf.get('openplans_build_ini')
+    fn = app_conf.get('base_config')
     if not fn:
         raise ValueError(
-            "No openplans_build_ini setting was given")
+            "No base_config setting was given")
     if not os.path.exists(fn):
         raise OSError(
             "The build.ini file %s doesn't exist" % fn)

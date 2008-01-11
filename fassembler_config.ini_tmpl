@@ -49,8 +49,6 @@ set debug = false
 
 openplans_wrapper = CookieAuth
 #openplans_wrapper = ZWSGIFakeEnv
-## FIXME: these need to be dynamic:
-openplans_build_ini = {{env.base_path}}/etc/build.ini
 
 # If uncommented, the Javascript and CSS files will each respectively
 # be served as a single file (instead of having to load a file for each
