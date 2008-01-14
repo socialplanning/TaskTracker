@@ -18,7 +18,12 @@ def init_events():
                   events.RowCreatedSignal)    
     events.listen(commentCreated, Comment,
                   events.RowCreatedSignal)    
+    events.listen(taskDeleted, Task,
+                  events.RowDeletedSignal)    
 
+
+def taskDeleted(kwargs, post_funcs):
+    post_funcs.append(taskDeletedPost)
 
 def taskCreated(kwargs, post_funcs):
     post_funcs.append(taskCreatedPost)
