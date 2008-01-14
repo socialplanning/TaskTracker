@@ -19,11 +19,7 @@ def init_events():
     events.listen(commentCreated, Comment,
                   events.RowCreatedSignal)    
     events.listen(taskDeleted, Task,
-                  events.RowDeletedSignal)    
-
-
-def taskDeleted(kwargs, post_funcs):
-    post_funcs.append(taskDeletedPost)
+                  events.RowDestroySignal)    
 
 def taskCreated(kwargs, post_funcs):
     post_funcs.append(taskCreatedPost)
@@ -57,7 +53,7 @@ def commentCreatedPost(comment):
         user = c.username,
         date = datetime_to_string(datetime.now())))
 
-def taskDeletedPost(task):
+def taskDeleted(task):
     g.queues['delete'].send_message(dict(
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         user = c.username,
