@@ -29,6 +29,7 @@ def commentCreated(kwargs, post_funcs):
 
 
 def taskCreatedPost(task):
+    
     event_class = []
     if task.owner:
         event_class.append(['task_assigned', task.owner])
@@ -62,7 +63,7 @@ def taskDeleted(task):
 
 def taskUpdated(task, kwargs):
     if kwargs.get('live') == 0:
-        return taskDeletedPost(task)
+        return taskDeleted(task)
     
     if len(kwargs) == 1 and 'num_children' in kwargs:
         return #this was just an update caused by children being added
