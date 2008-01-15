@@ -263,9 +263,7 @@ class BaseController(WSGIController):
                 task = safe_get(Task, params['id'])
                 task_list = task.task_list
         elif controller == 'project':
-            # special case for lock/unlocking project's tt
-            if action_verb == 'lock':
-                return Role.getLevel('ProjectAdmin') >= c.level
+            return Role.getLevel('ProjectAdmin') >= c.level
         else:
             task_list = "I AM BROKEN"
             print "unknown controller %s" % controller

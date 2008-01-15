@@ -43,6 +43,9 @@ class ProjectController(BaseController):
 
     @attrs(action='destroy', readonly=True, restrict_remote_addr=True)
     def destroy(self, *args, **kwargs):
+        import logging
+        log = logging.getLogger('tasktracker')
+        log.info('project %s destroy called' % c.project.title)
         c.project.destroySelf()
         return Response("successfully destroyed project")
 
