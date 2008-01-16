@@ -31,6 +31,7 @@ import pylons.wsgiapp
 from tasktracker.lib.testing_env import TestingEnv
 from tasktracker.lib.cookieauth import CookieAuth
 from tasktracker.lib.signedheaderauth import SignedHeaderAuth
+from wsseauth import WSSEAuthMiddleware
 
 from pylons import config
 
@@ -115,7 +116,6 @@ def make_app(global_conf, **app_conf):
         app = CookieAuth(app, app_conf)
     elif app_conf.get('openplans_wrapper') == 'SignedHeaderAuth':
         app = SignedHeaderAuth(app, app_conf)
-
     else:
         if not app_conf.get('openplans_wrapper'):
             raise ValueError(
@@ -123,6 +123,16 @@ def make_app(global_conf, **app_conf):
         else:
             raise ValueError(
                 "openplans_wrapper value not recognized (%r)" % app_conf.get('openplans_wrapper'))
+
+
+    #handle cabochon messages
+    login_file = app_conf.get('cabochon_password_file')
+    if login_file:
+        username, password = file(login_file).read().strip().split(":")
+
+        if username:
+            app = WSSEAuthMiddleware(app, {username : password}, required=False)    
+
 
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)

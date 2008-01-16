@@ -263,7 +263,7 @@ class BaseController(WSGIController):
                 task = safe_get(Task, params['id'])
                 task_list = task.task_list
         elif controller == 'project':
-            return Role.getLevel('ProjectAdmin') >= c.level
+            return Role.getLevel('ProjectAdmin') >= c.level or request.environ.get('AUTHENTICATION_METHOD') == 'WSSE' 
         else:
             task_list = "I AM BROKEN"
             print "unknown controller %s" % controller

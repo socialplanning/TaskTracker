@@ -46,6 +46,7 @@ setup(
       "CabochonServer",
       "restclient",
       "signedheaders",
+      "wsseauth",
       ],
     packages=find_packages(),
     include_package_data=True,
