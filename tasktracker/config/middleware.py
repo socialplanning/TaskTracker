@@ -35,6 +35,26 @@ from wsseauth import WSSEAuthMiddleware
 
 from pylons import config
 
+from paste.request import parse_formvars
+from simplejson import loads
+
+def cabochon_to_tt_middleware(app):
+
+    def middleware(environ, start_response):
+
+        if environ.get('AUTHENTICATION_METHOD') != 'WSSE':
+            return app(environ, start_response)
+
+        params = parse_formvars(environ)
+        for param, value in params.items():
+            params[param] = loads(value)
+            
+        environ['topp.project_name'] = params['id']
+        environ['topp.project_permission_level'] = 0
+        
+        return app(environ, start_response)        
+    return middleware
+
 def translate_environ_middleware(app, global_conf, app_conf):
     kw = dict()
     for key, val in app_conf.items():
@@ -127,6 +147,7 @@ def make_app(global_conf, **app_conf):
 
     #handle cabochon messages
     login_file = app_conf.get('cabochon_password_file')
+
     if login_file:
         username, password = file(login_file).read().strip().split(":")
 
@@ -136,5 +157,5 @@ def make_app(global_conf, **app_conf):
 
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
-
+    app = cabochon_to_tt_middleware(app)
     return app

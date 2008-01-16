@@ -157,7 +157,7 @@ def _getRole(environ):
     return best
 
 class BaseController(WSGIController):
-    def __before__(self, action, **params):
+    def __before__(self, action, **params):       
         project = Project.getProject(request.environ['topp.project_name'])
         c.project = project
         c.id = params.get('id')
@@ -263,7 +263,7 @@ class BaseController(WSGIController):
                 task = safe_get(Task, params['id'])
                 task_list = task.task_list
         elif controller == 'project':
-            return Role.getLevel('ProjectAdmin') >= c.level or request.environ.get('AUTHENTICATION_METHOD') == 'WSSE' 
+            return Role.getLevel('ProjectAdmin') >= c.level
         else:
             task_list = "I AM BROKEN"
             print "unknown controller %s" % controller
