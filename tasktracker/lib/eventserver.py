@@ -55,6 +55,11 @@ def commentCreatedPost(comment):
         date = datetime_to_string(datetime.now())))
 
 def taskDeleted(task):
+    try:
+        g._current_obj()
+    except TypeError:
+        return #no G, must be in tests.
+    
     g.queues['delete'].send_message(dict(
         url = h.url_for(controller='task', action='show', id=task.id, qualified=True),
         user = c.username,
