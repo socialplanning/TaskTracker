@@ -449,6 +449,7 @@ class Task(SQLObject):
         return sorted(self.comments + list(self.versions), key=_by_date, reverse=True)
 
     def revertToDate(self, date):
+        """FIXME: this actually destroys data, stupidly.  Do not use it."""
         versions_in_future = []
         TaskVersion = Task.versions.versionClass
         last_good_version = TaskVersion.select(AND(TaskVersion.q.masterID==self.id, TaskVersion.q.dateArchived < date)).orderBy('dateArchived')[-1]
@@ -499,6 +500,11 @@ class Task(SQLObject):
     @property
     def long_title(self):
         return "%s in %s/%s" % (self.title, self.task_list.project.title, self.task_list.title)
+
+    def destroySelf(self):
+        for version in self.versions:
+            version.destroySelf()
+        super(Task, self).destroySelf()
 
 def sortedTasks(allowed_tasks, this_level, sort_by, sort_order):
     def _cmp(x, y):
