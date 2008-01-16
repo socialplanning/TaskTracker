@@ -35,7 +35,7 @@ def get_profile_uri(app_conf):
 def get_twirlip_uri(app_conf):
     if app_conf.get('base_config'):
         conf = read_config(app_conf)
-        return conf.get('applications', 'twirlip uri')
+        return conf.get('applications', 'twirlip path')
 
 def read_config(app_conf):
     fn = app_conf.get('base_config')
