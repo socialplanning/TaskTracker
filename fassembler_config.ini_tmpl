@@ -58,6 +58,7 @@ openplans_wrapper = CookieAuth
 # where secret stuff lives
 topp_secret_filename = {{env.config.get('general', 'topp_secret_filename')}}
 topp_admin_info_filename = {{env.config.get('general', 'admin_info_filename')}}
+cabochon_password_file = {{env.config.get('general', 'cabochon_user_info')}}
 
 translate_environ topp.project_name = HTTP_X_OPENPLANS_PROJECT
 ## FIXME: This feels like it should be more dynamic, less explicit, maybe middleware:
