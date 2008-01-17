@@ -20,7 +20,7 @@
 
 from tasktracker.lib.base import *
 from tasktracker.models import *
-
+import simplejson
 import formencode  
 
 class ProjectController(BaseController):
@@ -47,8 +47,9 @@ class ProjectController(BaseController):
         log = logging.getLogger('tasktracker')
         log.info('project %s destroy called' % c.project.title)
         c.project.destroySelf()
-        return Response("successfully destroyed project")
-
+        return simplejson.dumps({"status" : "accepted"})
+    delete = destroy
+    
     @attrs(action='lock', readonly=True)
     def lock(self):
         c.project.readonly = True

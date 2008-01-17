@@ -31,12 +31,17 @@ import pylons.wsgiapp
 from tasktracker.lib.testing_env import TestingEnv
 from tasktracker.lib.cookieauth import CookieAuth
 from tasktracker.lib.signedheaderauth import SignedHeaderAuth
+from tasktracker.lib.usermapper import UserMapper
 from wsseauth import WSSEAuthMiddleware
 
 from pylons import config
 
 from paste.request import parse_formvars
 from simplejson import loads
+
+class CabochonUserMapper(UserMapper):
+    def project_members(self):
+        return [{'username' : 'admin', 'roles' : ['ProjectAdmin']}]
 
 def cabochon_to_tt_middleware(app):
 
@@ -48,9 +53,11 @@ def cabochon_to_tt_middleware(app):
         params = parse_formvars(environ)
         for param, value in params.items():
             params[param] = loads(value)
-            
+        environ['REMOTE_USER'] = 'admin'
         environ['topp.project_name'] = params['id']
-        environ['topp.project_permission_level'] = 0
+        environ['topp.project_permission_level'] = 'closed_policy'
+        environ['topp.user_info'] = {'roles' : ['ProjectAdmin']}
+        environ['topp.project_members'] = CabochonUserMapper()
         
         return app(environ, start_response)        
     return middleware
@@ -122,6 +129,8 @@ def make_app(global_conf, **app_conf):
     # @@@ Establish the Registry for this application @@@
     app = RegistryManager(app)
 
+    app = cabochon_to_tt_middleware(app)
+
     if app_conf.get('openplans_wrapper') == 'TestingEnv':
         users = {'anon' : 'Anonymous',
                  'auth' : 'Authenticated',
@@ -144,7 +153,7 @@ def make_app(global_conf, **app_conf):
             raise ValueError(
                 "openplans_wrapper value not recognized (%r)" % app_conf.get('openplans_wrapper'))
 
-
+    
     #handle cabochon messages
     login_file = app_conf.get('cabochon_password_file')
 
@@ -154,8 +163,6 @@ def make_app(global_conf, **app_conf):
         if username:
             app = WSSEAuthMiddleware(app, {username : password}, required=False)    
 
-
     app = translate_environ_middleware(app, global_conf, app_conf)
     app = fill_environ_middleware(app, global_conf, app_conf)
-    app = cabochon_to_tt_middleware(app)
     return app

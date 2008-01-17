@@ -157,7 +157,7 @@ def _getRole(environ):
     return best
 
 class BaseController(WSGIController):
-    def __before__(self, action, **params):       
+    def __before__(self, action, **params):
         project = Project.getProject(request.environ['topp.project_name'])
         c.project = project
         c.id = params.get('id')
@@ -174,10 +174,10 @@ class BaseController(WSGIController):
         if restrict_remote_addr:
             if request.environ['REMOTE_ADDR'] != '127.0.0.1':
                 redirect_to(controller='error', action='document', message='Not permitted') # @@ ugh -egj - make it a 404
-        
+
         if action == "show_authenticate":
             return True
-        
+
         if not self._authorize(project, action, params):
             if not c.username:
                 #no username *and* needs more permissions -- maybe a login will help
@@ -311,6 +311,10 @@ class BaseController(WSGIController):
             else:
                 raise NotInitializedException
         elif action_name == 'project_show_uninitialized':
+            return True
+
+        #if the action is a project action, it doesn't matter if it's initialize
+        if controller == 'project':
             return True
 
         ### if the project is already initialized, authorization procedures must continue
