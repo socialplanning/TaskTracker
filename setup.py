@@ -42,8 +42,6 @@ setup(
       "uuid",
       "topp.utils>0.1",
       "FormEncode==dev,>=0.7.2dev-r2661",
-      "CabochonClient",
-      "CabochonServer",
       "restclient",
       ],
     packages=find_packages(),
