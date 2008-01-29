@@ -42,6 +42,7 @@ setup(
       "uuid",
       "topp.utils>0.1",
       "FormEncode==dev,>=0.7.2dev-r2661",
+      "pysqlite",
       "CabochonClient",
       "CabochonServer",
       "restclient",
@@ -51,6 +52,7 @@ setup(
     test_suite = 'nose.collector',
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
     dependency_links = [
+      "https://svn.openplans.org/eggs/pysqlite-2.4.0.tar.gz",
       "http://pythonpaste.org/package_index.html",
       "http://cheeseshop.python.org/pypi/Pylons/0.9.4",
       "http://zesty.ca/python/uuid.py#egg=uuid-dev",
