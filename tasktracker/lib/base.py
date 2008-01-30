@@ -262,7 +262,7 @@ class BaseController(WSGIController):
             else:
                 task = safe_get(Task, params['id'])
                 task_list = task.task_list
-        elif controller == 'project':
+        elif controller == 'project' or controller == 'migrate':
             return Role.getLevel('ProjectAdmin') >= c.level
         else:
             task_list = "I AM BROKEN"
