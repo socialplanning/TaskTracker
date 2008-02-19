@@ -53,10 +53,10 @@ setup(
     test_suite = 'nose.collector',
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
     dependency_links = [
+      "https://svn.openplans.org/eggs/",
       "http://pythonpaste.org/package_index.html",
       "http://cheeseshop.python.org/pypi/Pylons/0.9.4",
       "http://labix.org/python-dateutil",
-      "http://www.openplans.org/projects/opencore/dependencies",
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       ],
     entry_points="""
