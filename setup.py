@@ -32,7 +32,7 @@ setup(
     url="http://www.openplans.org/projects/tasktracker",
     install_requires=[
       "Myghty",
-      "Pylons>=0.9.6.1",
+      "Pylons==0.9.6.1",
       "Routes>=1.7",
       "SQLObject",
       "decorator>=2.1.0", 
