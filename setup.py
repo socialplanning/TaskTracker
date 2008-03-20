@@ -57,6 +57,7 @@ setup(
       "http://pythonpaste.org/package_index.html",
       "http://labix.org/python-dateutil",
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
+      "https://svn.openplans.org/svn/signedheaders#egg=signedheaders"
       ],
     entry_points="""
     [paste.app_factory]
