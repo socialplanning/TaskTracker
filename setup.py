@@ -55,7 +55,6 @@ setup(
     dependency_links = [
       "https://svn.openplans.org/eggs/",
       "http://pythonpaste.org/package_index.html",
-      "http://cheeseshop.python.org/pypi/Pylons/0.9.4",
       "http://labix.org/python-dateutil",
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       ],
