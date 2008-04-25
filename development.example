@@ -42,7 +42,7 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 set debug = false
 
 openplans_wrapper = CookieAuth
-#openplans_wrapper = ZWSGIFakeEnv
+#openplans_wrapper = TestingEnv
 openplans_instance = http://localhost:8080/openplans
 login_uri = http://stage.openplans.org/login_form
 homepage_uri = http://stage.openplans.org/
