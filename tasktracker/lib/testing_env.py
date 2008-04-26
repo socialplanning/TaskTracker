@@ -83,6 +83,8 @@ class TestingEnv(object):
         environ['topp.project_members'] = UserMapper()
         environ['topp.project_name'] = environ.get("HTTP_X_OPENPLANS_PROJECT", 'theproject')
         environ['topp.project_permission_level'] = environ.get("openplans_ttpolicy", 'open_policy')
+        environ['topp.app_installed'] = True
+
         environ['REMOTE_ADDR'] = '127.0.0.1'
         if not self.authenticate(environ):
             status = "401 Authorization Required"
