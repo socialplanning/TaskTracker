@@ -66,7 +66,7 @@ setup(
     main=paste.script.appinstall:Installer
 
     [tasktracker.wrappers]
-    openplans_wrapper = tacktracker.lib.cookieauth:CookieAuth
-    ;openplans_wrapper = tacktracker.lib.testing_env:TestingEnv
+    openplans_wrapper = tasktracker.lib.cookieauth:CookieAuth
+    ;openplans_wrapper = tasktracker.lib.testing_env:TestingEnv
     """,
 )
