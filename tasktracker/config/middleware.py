@@ -142,8 +142,9 @@ def make_app(global_conf, **app_conf):
     #    nwrappers += 1
     #if not nwrappers:
     #    raise ValueError('No entry point found for openplans_wrapper')
+    # XXX uncomment ^
 
-
+    # XXX then delete from v...
     if app_conf.get('openplans_wrapper') == 'TestingEnv':
         users = {'anon' : 'Anonymous',
                  'auth' : 'Authenticated',
@@ -165,6 +166,7 @@ def make_app(global_conf, **app_conf):
         else:
             raise ValueError(
                 "openplans_wrapper value not recognized (%r)" % app_conf.get('openplans_wrapper'))
+    # XXX ...to ^
 
     
     #handle cabochon messages

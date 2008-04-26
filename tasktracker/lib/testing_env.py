@@ -52,9 +52,21 @@ class UserMapper(usermapper.UserMapper):
         return members
 
 class TestingEnv(object):
+    #users = {'anon' : 'Anonymous',
+    #         'auth' : 'Authenticated',
+    #         'member' : 'ProjectMember',
+    #         'contentmanager' : 'ProjectContentManager',
+    #         'admin' : 'ProjectAdmin'
+    #         }
+    # XXX  uncomment ^
+
+    
     def __init__(self, app, users):
+    # XXX  replace ^ with v
+    # def __init__(self, app, app_conf_ONLY_HERE_TO_MATCH_OTHER_OPENPLANS_WRAPPERS_SIGNATURES):
         self.app = app
         self.users = users
+        # XXX delete ^
         
     def authenticate(self, environ):
         username = environ.get('REMOTE_USER')
