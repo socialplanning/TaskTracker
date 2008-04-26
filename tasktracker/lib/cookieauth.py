@@ -42,7 +42,7 @@ def _user_dict(name):
 from tasktracker.lib import usermapper
 
 import httplib2
-import elementtree.ElementTree as ET
+import elementtree.ElementTree as etree
 
 from topp.utils import memorycache
 
@@ -76,7 +76,7 @@ def get_users_for_project(project, server, admin_info):
             
         raise ValueError("Error retrieving project %s: status %s%s" 
                          % (project, resp['status'], extra))
-    tree = ET.fromstring(content)
+    tree = etree.fromstring(content)
     members = []
     for member in tree:
         m = {}
@@ -96,7 +96,7 @@ def get_info_for_project(project, server, admin_info):
         raise ProjectNotFoundError #don't let this be cached
     if resp['status'] != '200':
         raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
-    tree = ET.fromstring(content)
+    tree = etree.fromstring(content)
     policy = tree[0]
     assert policy.tag == "policy", ("Bad info from project info getter")
     info = dict(policy=policy.text)
