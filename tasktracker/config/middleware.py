@@ -39,6 +39,8 @@ from pylons import config
 from paste.request import parse_formvars
 from simplejson import loads
 
+import pkg_resources as pkr
+
 class CabochonUserMapper(UserMapper):
     def project_members(self):
         return [{'username' : 'admin', 'roles' : ['ProjectAdmin']}]
@@ -130,6 +132,17 @@ def make_app(global_conf, **app_conf):
     app = RegistryManager(app)
 
     app = cabochon_to_tt_middleware(app)
+
+
+#    wrappers = []
+#    for ep in pkr.iter_entry_points('tasktracker.wrappers', name='openplans_wrapper'):
+#        wrappers.append(str(ep))
+#        wrapper = ep.load()
+#        app = wrapper(app, app_conf)
+#        break
+#    if not wrappers:
+#        raise ValueError("No entry point found for openplans_wrapper")
+
 
     if app_conf.get('openplans_wrapper') == 'TestingEnv':
         users = {'anon' : 'Anonymous',
