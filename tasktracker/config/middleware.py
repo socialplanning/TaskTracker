@@ -28,9 +28,6 @@ from pylons.error import error_template
 from pylons.middleware import ErrorHandler, ErrorDocuments, StaticJavascripts, error_mapper
 import pylons.wsgiapp
 
-from tasktracker.lib.testing_env import TestingEnv
-from tasktracker.lib.cookieauth import CookieAuth
-from tasktracker.lib.signedheaderauth import SignedHeaderAuth
 from tasktracker.lib.usermapper import UserMapper
 from wsseauth import WSSEAuthMiddleware
 
@@ -133,41 +130,15 @@ def make_app(global_conf, **app_conf):
 
     app = cabochon_to_tt_middleware(app)
 
-    #nwrappers = 0
-    #for ep in pkr.iter_entry_points('tasktracker.wrappers', name='openplans_wrapper'):
-    #    if nwrappers:
-    #        raise ValueError('Expected exactly one entry point for openplans_wrapper, found more')
-    #    wrapper = ep.load()
-    #    app = wrapper(app, app_conf)
-    #    nwrappers += 1
-    #if not nwrappers:
-    #    raise ValueError('No entry point found for openplans_wrapper')
-    # XXX uncomment ^
-
-    # XXX then delete from v...
-    if app_conf.get('openplans_wrapper') == 'TestingEnv':
-        users = {'anon' : 'Anonymous',
-                 'auth' : 'Authenticated',
-                 'member' : 'ProjectMember',
-                 'contentmanager' : 'ProjectContentManager',
-                 'admin' : 'ProjectAdmin'
-                 }
-        
-        app = TestingEnv(app, users)
-        
-    elif app_conf.get('openplans_wrapper') == 'CookieAuth':
-        app = CookieAuth(app, app_conf)
-    elif app_conf.get('openplans_wrapper') == 'SignedHeaderAuth':
-        app = SignedHeaderAuth(app, app_conf)
-    else:
-        if not app_conf.get('openplans_wrapper'):
-            raise ValueError(
-                "openplans_wrapper not set")
-        else:
-            raise ValueError(
-                "openplans_wrapper value not recognized (%r)" % app_conf.get('openplans_wrapper'))
-    # XXX ...to ^
-
+    nwrappers = 0
+    for ep in pkr.iter_entry_points('tasktracker.wrappers', name='openplans_wrapper'):
+        if nwrappers:
+            raise ValueError('Expected exactly one entry point for openplans_wrapper, found more')
+        wrapper = ep.load()
+        app = wrapper(app, app_conf)
+        nwrappers += 1
+    if not nwrappers:
+        raise ValueError('No entry point found for openplans_wrapper')
     
     #handle cabochon messages
     login_file = app_conf.get('cabochon_password_file')

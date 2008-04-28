@@ -52,21 +52,17 @@ class UserMapper(usermapper.UserMapper):
         return members
 
 class TestingEnv(object):
-    #users = {'anon' : 'Anonymous',
-    #         'auth' : 'Authenticated',
-    #         'member' : 'ProjectMember',
-    #         'contentmanager' : 'ProjectContentManager',
-    #         'admin' : 'ProjectAdmin'
-    #         }
-    # XXX  uncomment ^
-
+    users = {'anon' : 'Anonymous',
+             'auth' : 'Authenticated',
+             'member' : 'ProjectMember',
+             'contentmanager' : 'ProjectContentManager',
+             'admin' : 'ProjectAdmin'
+             }
     
-    def __init__(self, app, users):
-    # XXX  replace ^ with v
-    # def __init__(self, app, app_conf_ONLY_HERE_TO_MATCH_OTHER_OPENPLANS_WRAPPERS_SIGNATURES):
+    def __init__(self, app, app_config_UNUSED)
+        # @@ the unused app_config parameter is present only to match the
+        # API of other openplans_wrapper wsgi applications.
         self.app = app
-        self.users = users
-        # XXX delete ^
         
     def authenticate(self, environ):
         username = environ.get('REMOTE_USER')
