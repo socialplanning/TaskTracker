@@ -67,6 +67,7 @@ setup(
 
     [tasktracker.wrappers]
     openplans_wrapper = tasktracker.lib.cookieauth:CookieAuth
+    ;openplans_wrapper = tasktracker.lib.signedheaderauth:SignedHeaderAuth
     ;openplans_wrapper = tasktracker.lib.testing_env:TestingEnv
     """,
 )
