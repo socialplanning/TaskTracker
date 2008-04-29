@@ -248,6 +248,7 @@ class TestTaskListController(TestController):
         assert 'test locking' in res
 
     def test_initialized(self):
+        tt_unavailable_msg = 'TaskTracker is currently unavailable'
         app = self.getApp('admin')
 
         ### uninitialize the project
@@ -258,7 +259,7 @@ class TestTaskListController(TestController):
         app = self.getApp('member')
         res = app.get(url_for(controller='tasklist'))
         res = res.follow()
-        res.mustcontain("has not installed a task tracker.")
+        res.mustcontain(tt_unavailable_msg)
 
         ### not even initialize the project
         from tasktracker.lib.base import NotInitializedException
@@ -272,7 +273,7 @@ class TestTaskListController(TestController):
         app = self.getApp('admin')
         res = app.get(url_for(controller='tasklist'))
         res = res.follow()
-        res.mustcontain("has not installed a task tracker.")
+        res.mustcontain(tt_unavailable_msg)
 
         ### but an admin can initialize the project (via opencore)
         res = app.post(url_for(controller='project', action='initialize'), extra_environ={"HTTP_X_OPENPLANS_TASKTRACKER_INITIALIZE" : 'True'})

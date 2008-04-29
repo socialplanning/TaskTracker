@@ -54,7 +54,7 @@ def commentCreatedPost(comment):
         user = c.username,
         date = datetime_to_string(datetime.now())))
 
-def taskDeleted(task):
+def taskDeleted(task, post_funcs=None):
     try:
         g._current_obj()
     except TypeError:

@@ -66,5 +66,4 @@ class ProjectController(BaseController):
 
     @attrs(action='show_uninitialized')
     def show_uninitialized(self, id):
-        #return render_text('This project has not installed a task tracker.  Talk to a project administrator.') # @@ ugly - egj
         return Response("""<html><body><div class="oc-genericError"><div class="oc-statusMessage">Sorry! TaskTracker is currently unavailable.</div></div></body></html>""")
