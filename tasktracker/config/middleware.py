@@ -36,7 +36,7 @@ from pylons import config
 from paste.request import parse_formvars
 from simplejson import loads
 
-from topp.utils.eputils import str2obj
+from topp.utils.eputils import load_object
 
 class CabochonUserMapper(UserMapper):
     def project_members(self):
@@ -134,7 +134,7 @@ def make_app(global_conf, **app_conf):
         openplans_wrapper = app_conf['openplans_wrapper']
     except KeyError:
         raise ValueError('No openplans_wrapper specified in [app:tasktracker] configuration')
-    openplans_wrapper = str2obj(openplans_wrapper)
+    openplans_wrapper = load_object(openplans_wrapper)
     app = openplans_wrapper(app, app_conf)
 
     #handle cabochon messages

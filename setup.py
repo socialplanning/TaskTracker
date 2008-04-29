@@ -40,7 +40,7 @@ setup(
       "elementtree", 
       "python-dateutil",
       "uuid",
-      "topp.utils>=0.4.3dev",
+      "topp.utils>=0.5",
       "FormEncode==dev,>=0.7.2dev-r2661",
       "CabochonClient",
       "CabochonServer",
