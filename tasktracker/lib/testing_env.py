@@ -59,7 +59,7 @@ class TestingEnv(object):
              'admin' : 'ProjectAdmin'
              }
     
-    def __init__(self, app, app_config_UNUSED)
+    def __init__(self, app, app_config_UNUSED):
         # @@ the unused app_config parameter is present only to match the
         # API of other openplans_wrapper wsgi applications.
         self.app = app
