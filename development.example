@@ -41,8 +41,8 @@ database = mysql://tasktracker:tasktracker@localhost/tasktracker
 # execute malicious code after an exception is raised.
 set debug = false
 
-openplans_wrapper = CookieAuth
-#openplans_wrapper = TestingEnv
+openplans_wrapper = tasktracker.lib.cookieauth:CookieAuth
+#openplans_wrapper = tasktracker.lib.signedheaderauth:SignedHeaderAuth
 openplans_instance = http://localhost:8080/openplans
 login_uri = http://stage.openplans.org/login_form
 homepage_uri = http://stage.openplans.org/
@@ -79,7 +79,7 @@ use = tasktracker
 sqlobject.dburi = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 database = mysql://tasktracker:tasktracker@localhost/tasktracker_test
 
-openplans_wrapper = TestingEnv
+openplans_wrapper = tasktracker.lib.testing_env:TestingEnv
 
 obsolete_future_history_dir = %(here)s/afh-test
 

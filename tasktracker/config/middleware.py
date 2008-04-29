@@ -36,7 +36,7 @@ from pylons import config
 from paste.request import parse_formvars
 from simplejson import loads
 
-import pkg_resources as pkr
+from topp.utils.eputils import str2obj
 
 class CabochonUserMapper(UserMapper):
     def project_members(self):
@@ -130,16 +130,13 @@ def make_app(global_conf, **app_conf):
 
     app = cabochon_to_tt_middleware(app)
 
-    nwrappers = 0
-    for ep in pkr.iter_entry_points('tasktracker.wrappers', name='openplans_wrapper'):
-        if nwrappers:
-            raise ValueError('Expected exactly one entry point for openplans_wrapper, found more')
-        wrapper = ep.load()
-        app = wrapper(app, app_conf)
-        nwrappers += 1
-    if not nwrappers:
-        raise ValueError('No entry point found for openplans_wrapper')
-    
+    try:
+        openplans_wrapper = app_conf['openplans_wrapper']
+    except KeyError:
+        raise ValueError('No openplans_wrapper specified in [app:tasktracker] configuration')
+    openplans_wrapper = str2obj(openplans_wrapper)
+    app = openplans_wrapper(app, app_conf)
+
     #handle cabochon messages
     login_file = app_conf.get('cabochon_password_file')
 

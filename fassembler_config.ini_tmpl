@@ -47,8 +47,8 @@ database = {{config.db_sqlobject}}
 ## WARNING: must be false for production
 set debug = false
 
-openplans_wrapper = CookieAuth
-#openplans_wrapper = ZWSGIFakeEnv
+openplans_wrapper = tasktracker.lib.cookieauth:CookieAuth
+#openplans_wrapper = tasktracker.lib.signedheaderauth:SignedHeaderAuth
 
 # If uncommented, the Javascript and CSS files will each respectively
 # be served as a single file (instead of having to load a file for each
@@ -81,7 +81,7 @@ use = tasktracker
 sqlobject.dburi = {{config.db_test_sqlobject}}
 database = {{config.db_test_sqlobject}}
 
-openplans_wrapper = TestingEnv
+openplans_wrapper = tasktracker.lib.testing_env:TestingEnv
 
 ## FIXME: where should this go?  Probably scratch is okay in this case
 obsolete_future_history_dir = %(here)s/afh-test

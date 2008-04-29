@@ -40,7 +40,7 @@ setup(
       "elementtree", 
       "python-dateutil",
       "uuid",
-      "topp.utils>0.1",
+      "topp.utils>=0.4.3dev",
       "FormEncode==dev,>=0.7.2dev-r2661",
       "CabochonClient",
       "CabochonServer",
@@ -64,10 +64,5 @@ setup(
     main=tasktracker:make_app
     [paste.app_install]
     main=paste.script.appinstall:Installer
-
-    [tasktracker.wrappers]
-    openplans_wrapper = tasktracker.lib.cookieauth:CookieAuth
-    ;openplans_wrapper = tasktracker.lib.signedheaderauth:SignedHeaderAuth
-    ;openplans_wrapper = tasktracker.lib.testing_env:TestingEnv
     """,
 )
