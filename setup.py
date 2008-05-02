@@ -25,7 +25,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='TaskTracker',
-    version="",
+    version="0.1",
     #description="",
     author="The Open Planning Project",
     author_email="ejucovy@openplans.org",
