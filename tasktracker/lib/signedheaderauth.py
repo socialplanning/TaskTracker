@@ -83,9 +83,12 @@ class _SignedHeaderAuth(object):
                 environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
 
             try:
-                environ['topp.project_permission_level'] = get_info_for_project(project_name, self.openplans_instance, self.admin_info)['policy']
+                info = get_info_for_project(project_name, self.openplans_instance, self.admin_info)
+                environ['topp.project_permission_level'] = info['policy']
+                environ['topp.app_installed'] = info['installed']
             except ProjectNotFoundError: #assume the most restrictive
                 environ['topp.project_permission_level'] = dict(policy='closed_policy')
+                environ['topp.app_installed'] = True # this should prob be false, but i don't want to change behavior
 
         status, headers, body = intercept_output(environ, self.app, self.needs_redirection, start_response)
 
