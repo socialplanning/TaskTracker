@@ -318,7 +318,7 @@ class BaseController(WSGIController):
             return True
 
         ### if the project is already initialized, authorization procedures must continue
-        if c.project.initialized:
+        if request.environ['topp.app_installed'] == True:
             return False
 
         ### the project is not initialized, so we redirect to the error message for uninitialized projects
