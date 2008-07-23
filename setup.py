@@ -46,6 +46,7 @@ setup(
       "CabochonServer",
       "restclient",
       "signedheaders",
+      "SupervisorErrorMiddleware",
       "wsseauth",
       ],
     packages=find_packages(),
@@ -57,7 +58,8 @@ setup(
       "http://pythonpaste.org/package_index.html",
       "http://labix.org/python-dateutil",
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
-      "https://svn.openplans.org/svn/signedheaders#egg=signedheaders"
+      "https://svn.openplans.org/svn/signedheaders#egg=signedheaders",
+      "https://svn.openplans.org/svn/SupervisorErrorMiddleware/trunk#egg=SupervisorErrorMiddleware-dev",
       ],
     entry_points="""
     [paste.app_factory]

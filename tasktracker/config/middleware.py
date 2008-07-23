@@ -28,6 +28,7 @@ from pylons.error import error_template
 from pylons.middleware import ErrorHandler, ErrorDocuments, StaticJavascripts, error_mapper
 import pylons.wsgiapp
 
+from supervisorerrormiddleware import SupervisorErrorMiddleware
 from tasktracker.lib.usermapper import UserMapper
 from wsseauth import WSSEAuthMiddleware
 
@@ -105,6 +106,8 @@ def make_app(global_conf, **app_conf):
     # YOUR MIDDLEWARE
     # Put your own middleware here, so that any problems are caught by the error
     # handling middleware underneath
+
+    app = SupervisorErrorMiddleware(app)
 
     # @@@ Change HTTPExceptions to HTTP responses @@@
     app = httpexceptions.make_middleware(app, global_conf)
