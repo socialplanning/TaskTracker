@@ -47,7 +47,7 @@ setup(
       "restclient",
       "signedheaders",
       "SupervisorErrorMiddleware",
-      "wsseauth",
+      "wsseauth>=0.1.1",
       ],
     packages=find_packages(),
     include_package_data=True,
