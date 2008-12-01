@@ -158,7 +158,10 @@ def _getRole(environ):
 
 class BaseController(WSGIController):
     def __before__(self, action, **params):
-        project = Project.getProject(request.environ['topp.project_name'])
+        try:
+            project = Project.getProject(request.environ['topp.project_name'])
+        except KeyError:
+            abort(404, 'Not Found')
         c.project = project
         c.id = params.get('id')
         c.compress_resources = asbool(CONFIG['app_conf'].get('compress_resources'))
@@ -169,7 +172,10 @@ class BaseController(WSGIController):
 
         params['username'] = c.username
 
-        func = getattr(self, action)
+        try:
+            func = getattr(self, action)
+        except AttributeError:
+            abort(404, 'Not Found')
         restrict_remote_addr = getattr(func, 'restrict_remote_addr', False)
         if restrict_remote_addr:
             if request.environ['REMOTE_ADDR'] != '127.0.0.1':

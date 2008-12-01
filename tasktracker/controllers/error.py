@@ -20,10 +20,17 @@
 
 import os.path
 from paste import fileapp
-from pylons.middleware import media_path, error_document_template
-from pylons.util import get_prefix
+from pylons.middleware import media_path
 from tasktracker.lib.base import *
 
+error_document_template = """
+<html><head><title>Error</title></head><body>
+<div id="oc-content-container">
+<div id="oc-tasktracker-wrapper">
+%(code)s  %(message)s: %(prefix)s
+</div>
+</div>
+</body></html>"""
 class ErrorController(BaseController):
     """
     Class to generate error documents as and when they are required. This behaviour of this
@@ -36,7 +43,7 @@ class ErrorController(BaseController):
         Change this method to change how error documents are displayed
         """
         page = error_document_template % {
-            'prefix': get_prefix(request.environ),
+            'prefix': request.environ.get('SCRIPT_NAME',''),
             'code': request.params.get('code', ''),
             'message': request.params.get('message', ''),
         }
