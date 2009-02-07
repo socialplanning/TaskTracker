@@ -80,7 +80,7 @@ def get_users_for_project(project, server, admin_info):
     members = []
     for member in tree:
         m = {}
-        m['username'] = member.find('id').text
+        m['username'] = member.find('id').text.lower()
         m['roles'] = []
         for role in member.findall('role'):
             m['roles'].append(role.text)
@@ -160,8 +160,9 @@ class CookieAuth(object):
         self.secret = get_secret(app_conf)
 
     def authenticate(self, environ):
-        username = environ.get('REMOTE_USER')
+        username = environ.get('REMOTE_USER', '')
         if username:
+            username = username.lower()
             environ['topp.user_info'] = dict(username = username, 
                                              roles = ['Authenticated'],
                                              email = '%s@example.com' % username)
@@ -180,7 +181,7 @@ class CookieAuth(object):
             
         if not auth == hmac.new(self.secret, username, sha).hexdigest():
             return False
-
+        username = username.lower()
         environ['REMOTE_USER'] = username
         environ['topp.user_info'] = dict(username = username, 
                                          roles = ['Authenticated'],
@@ -204,7 +205,7 @@ class CookieAuth(object):
             return ["Please delete your brower's cookies and login again."]
 
         if authenticated:
-            username = environ['REMOTE_USER']
+            username = environ.get('REMOTE_USER', '').lower()
 
         if 'topp.project_name' in environ:
             project_name = environ['topp.project_name']
