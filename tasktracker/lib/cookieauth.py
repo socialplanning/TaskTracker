@@ -68,7 +68,7 @@ def get_users_for_project(project, server, admin_info):
         if resp['status'] == '302':
             # redirect probably means auth failed
             extra = '; did your admin authentication fail?'
-        if resp['status'] == '400':
+        elif resp['status'] == '400':
             # Probably Zope is gone
             extra = '; is Zope started?'
         else:
