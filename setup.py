@@ -48,6 +48,7 @@ setup(
       "signedheaders",
       "SupervisorErrorMiddleware",
       "wsseauth>=0.1.1",
+      "WebHelpers>=0.3.2,<0.6dev",
       ],
     packages=find_packages(),
     include_package_data=True,
