@@ -518,6 +518,10 @@
 			width: 6em;
 		}
 		
+		#oc-tasktracker tr.taskrow {
+		        background: #EFEFEF;
+		}
+
 		#oc-tasktracker tr.taskrow,
 		#oc-tasktracker tr.second-line {
 
