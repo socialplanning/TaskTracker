@@ -49,6 +49,7 @@ setup(
       "SupervisorErrorMiddleware",
       "wsseauth>=0.1.1",
       "WebHelpers>=0.3.2,<0.6dev",
+      "opencore_integrationlib",
       ],
     packages=find_packages(),
     include_package_data=True,
@@ -61,6 +62,7 @@ setup(
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       "https://svn.openplans.org/svn/signedheaders#egg=signedheaders",
       "https://svn.openplans.org/svn/SupervisorErrorMiddleware/trunk#egg=SupervisorErrorMiddleware-dev",
+      "https://svn.openplans.org/svn/opencore/integrationlib/trunk#egg=opencore_integrationlib-dev",
       ],
     entry_points="""
     [paste.app_factory]
