@@ -48,10 +48,10 @@ from topp.utils import memorycache
 
 from opencore_integrationlib import auth as oc_auth
 
-def admin_post(url, admin_info):
+def admin_post(url, username, pw):
     h = httplib2.Http()
     # because of some zope silliness we have to do this as a POST instead of basic auth
-    data = {"__ac_name":admin_info[0], "__ac_password":admin_info[1]}
+    data = {"__ac_name":username, "__ac_password":pw}
     body = urlencode(data)
     resp, content = h.request(url, method="POST", body=body, redirections=0)
     return resp, content
@@ -60,7 +60,7 @@ class ProjectNotFoundError(Exception): pass
 
 @memorycache.cache(120)
 def get_users_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), admin_info)
+    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), *admin_info)
     
     #404 means the project isn't fully initialized.
     if resp['status'] == '404':
@@ -91,7 +91,7 @@ def get_users_for_project(project, server, admin_info):
 
 @memorycache.cache(120)
 def get_info_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), admin_info)
+    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), *admin_info)
 #    h = httplib2.Http()
 #    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
     if resp['status'] == '404':
