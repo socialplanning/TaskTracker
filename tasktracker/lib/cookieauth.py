@@ -47,70 +47,9 @@ import elementtree.ElementTree as etree
 from topp.utils import memorycache
 
 from opencore_integrationlib import auth as oc_auth
-
-def admin_post(url, username, pw):
-    h = httplib2.Http()
-    # because of some zope silliness we have to do this as a POST instead of basic auth
-    data = {"__ac_name":username, "__ac_password":pw}
-    body = urlencode(data)
-    resp, content = h.request(url, method="POST", body=body, redirections=0)
-    return resp, content
-
-class ProjectNotFoundError(Exception): pass
-
-@memorycache.cache(120)
-def get_users_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), *admin_info)
-    
-    #404 means the project isn't fully initialized.
-    if resp['status'] == '404':
-        raise ProjectNotFoundError
-
-    if resp['status'] != '200':
-        if resp['status'] == '302':
-            # redirect probably means auth failed
-            extra = '; did your admin authentication fail?'
-        elif resp['status'] == '400':
-            # Probably Zope is gone
-            extra = '; is Zope started?'
-        else:
-            extra = ''
-            
-        raise ValueError("Error retrieving project %s: status %s%s" 
-                         % (project, resp['status'], extra))
-    tree = etree.fromstring(content)
-    members = []
-    for member in tree:
-        m = {}
-        m['username'] = member.find('id').text.lower()
-        m['roles'] = []
-        for role in member.findall('role'):
-            m['roles'].append(role.text)
-        members.append(m)
-    return members
-
-@memorycache.cache(120)
-def get_info_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), *admin_info)
-#    h = httplib2.Http()
-#    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
-    if resp['status'] == '404':
-        raise ProjectNotFoundError #don't let this be cached
-    if resp['status'] != '200':
-        raise ValueError("Error retrieving project %s: status %s" % (project, resp['status']))
-    tree = etree.fromstring(content)
-    policy = tree[0]
-    assert policy.tag == "policy", ("Bad info from project info getter")
-
-    featurelets = tree[1]
-    installed = False
-    for flet in featurelets:
-        if flet.text == 'tasks':
-            installed = True
-            break
-
-    info = dict(policy=policy.text, installed=installed)
-    return info
+from opencore_integrationlib import get_info_for_project as oc_project_info
+from opencore_integrationlib import get_users_for_project as oc_project_members
+from opencore_integrationlib import ProjectNotFoundError
 
 def get_secret(conf):
     secret_filename = conf['topp_secret_filename']
@@ -131,7 +70,7 @@ class UserMapper(usermapper.UserMapper):
 
     def project_members(self):
         try:
-            return get_users_for_project(self.project, self.server, self.admin_info)
+            return oc_project_members(self.project, self.server, self.admin_info)
         except ProjectNotFoundError:  # assume no members
             return []
 
@@ -217,7 +156,7 @@ class CookieAuth(object):
                 environ['topp.user_info']['roles'].extend(umapper.project_member_roles(username))
 
             try:
-                info = get_info_for_project(project_name, self.openplans_instance, self.admin_info)
+                info = oc_project_info(project_name, self.openplans_instance, self.admin_info)
                 environ['topp.project_permission_level'] = info['policy']
                 environ['topp.app_installed'] = info['installed']
             except ProjectNotFoundError: #assume the most restrictive
