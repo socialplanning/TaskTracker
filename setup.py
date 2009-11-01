@@ -62,7 +62,7 @@ setup(
       "http://svn.colorstudy.com/SQLObject/trunk#egg=SQLObject-dev",
       "https://svn.openplans.org/svn/signedheaders#egg=signedheaders",
       "https://svn.openplans.org/svn/SupervisorErrorMiddleware/trunk#egg=SupervisorErrorMiddleware-dev",
-      "https://svn.openplans.org/svn/opencore/integrationlib/trunk#egg=opencore_integrationlib-dev",
+      "https://svn.openplans.org/svn/opencore/contrib/opencore_integrationlib/trunk#egg=opencore_integrationlib-dev",
       ],
     entry_points="""
     [paste.app_factory]
