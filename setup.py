@@ -20,16 +20,15 @@
 
 # Make sure we can import from *this* tasktracker package
 import sys, os
-#sys.path.insert(0, os.path.dirname(__file__))  # @@ what is this supposed to do? -egj
 from setuptools import setup, find_packages
 
 setup(
     name='TaskTracker',
-    version="0.1",
-    #description="",
-    author="The Open Planning Project",
-    author_email="ejucovy@openplans.org",
-    url="http://www.openplans.org/projects/tasktracker",
+    version="0.2",
+    description="task management software used on coactivate.org",
+    author="",
+    author_email="opencore-dev@lists.coactivate.org",
+    url="http://www.coactivate.org/projects/tasktracker",
     install_requires=[
       "Myghty",
       "Pylons==0.9.6.1",
