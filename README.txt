@@ -1,7 +1,8 @@
 TaskTracker is an application for managing and organizing tasks
 for groups of people.
 
-It was written for The Open Planning Project.
+It was written at The Open Planning Project for integration with
+OpenCore, on the community action site http://coactivate.org
 
 Installation and Setup
 ======================
