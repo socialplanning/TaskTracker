@@ -32,7 +32,7 @@ setup(
     install_requires=[
       "Myghty",
       "Pylons==0.9.6.1",
-      "Routes>=1.7",
+      "Routes==1.11",
       "SQLObject",
       "decorator>=2.1.0", 
       "httplib2", 
