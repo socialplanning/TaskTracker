@@ -11,7 +11,7 @@ Currently TaskTracker only runs on Python2.4
 
 Install ``TaskTracker`` in a contained environment using easy_install::
 
-    virtualenv --use=python2.4 /tmp/tt/ve
+    virtualenv --python=python2.4 /tmp/tt/ve
     source /tmp/tt/ve/bin/activate
     cd /tmp/tt
     easy_install -e -b . TaskTracker
