@@ -15,7 +15,7 @@ Install ``TaskTracker`` in a contained environment using easy_install::
     source /tmp/tt/ve/bin/activate
     cd /tmp/tt
     easy_install -e -b . TaskTracker
-    cd TaskTracker
+    cd tasktracker
     python setup.py develop
 
 Make a config file::
