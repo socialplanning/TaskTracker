@@ -18,14 +18,16 @@
 # Boston, MA  02110-1301
 # USA
 
-# Make sure we can import from *this* tasktracker package
 import sys, os
 from setuptools import setup, find_packages
 
+readme = open("README.txt").read()
+
 setup(
     name='TaskTracker',
-    version="0.3dev",
+    version="0.3",
     description="task management software used on coactivate.org",
+    long_description=readme,
     author="",
     author_email="opencore-dev@lists.coactivate.org",
     url="http://www.coactivate.org/projects/tasktracker",
@@ -48,6 +50,7 @@ setup(
       "SupervisorErrorMiddleware",
       "wsseauth>=0.1.1",
       "WebHelpers>=0.3.2,<0.6dev",
+      "WebOb",
       "libopencore",
       ],
     packages=find_packages(),
