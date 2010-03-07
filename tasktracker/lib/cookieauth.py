@@ -46,10 +46,12 @@ import elementtree.ElementTree as etree
 
 from topp.utils import memorycache
 
-def admin_post(url, admin_info):
+from opencore_integrationlib import auth as oc_auth
+
+def admin_post(url, username, pw):
     h = httplib2.Http()
     # because of some zope silliness we have to do this as a POST instead of basic auth
-    data = {"__ac_name":admin_info[0], "__ac_password":admin_info[1]}
+    data = {"__ac_name":username, "__ac_password":pw}
     body = urlencode(data)
     resp, content = h.request(url, method="POST", body=body, redirections=0)
     return resp, content
@@ -58,7 +60,7 @@ class ProjectNotFoundError(Exception): pass
 
 @memorycache.cache(120)
 def get_users_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), admin_info)
+    resp, content = admin_post("%s/projects/%s/members.xml" % (server, project), *admin_info)
     
     #404 means the project isn't fully initialized.
     if resp['status'] == '404':
@@ -89,7 +91,7 @@ def get_users_for_project(project, server, admin_info):
 
 @memorycache.cache(120)
 def get_info_for_project(project, server, admin_info):
-    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), admin_info)
+    resp, content = admin_post("%s/projects/%s/info.xml" % (server, project), *admin_info)
 #    h = httplib2.Http()
 #    resp, content = h.request("%s/projects/%s/info.xml" % (server, project), "GET")
     if resp['status'] == '404':
@@ -112,10 +114,7 @@ def get_info_for_project(project, server, admin_info):
 
 def get_secret(conf):
     secret_filename = conf['topp_secret_filename']
-    f = open(secret_filename)
-    secret = f.readline().strip()
-    f.close()
-    return secret
+    return oc_auth.get_secret(secret_filename)
 
 class UserMapper(usermapper.UserMapper):
 
@@ -175,12 +174,13 @@ class CookieAuth(object):
             return False
 
         try:
-            username, auth = base64.decodestring(unquote(morsel.value)).split("\0")
-        except ValueError:
+            username, auth = oc_auth.authenticate_from_cookie(
+                morsel.value, self.secret)
+        except oc_auth.BadCookie:
             raise BadCookieError
-            
-        if not auth == hmac.new(self.secret, username, sha).hexdigest():
+        except oc_auth.NotAuthenticated:
             return False
+
         username = username.lower()
         environ['REMOTE_USER'] = username
         environ['topp.user_info'] = dict(username = username, 
@@ -245,6 +245,6 @@ class CookieAuth(object):
 def make_cookie(username):
     from pylons import config
     secret = get_secret(config['app_conf'])
-    auth = hmac.new(secret, username, sha).hexdigest()
-    cookie = quote(("%s\0%s" % (username, auth)).encode("base64")).strip()
+    
+    cookie = oc_auth.generate_cookie_value(username, secret)
     return ('__ac', cookie)
