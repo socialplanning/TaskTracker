@@ -46,7 +46,7 @@ import elementtree.ElementTree as etree
 
 from topp.utils import memorycache
 
-from opencore_integrationlib import auth as oc_auth
+import libopencore.auth
 
 def admin_post(url, username, pw):
     h = httplib2.Http()
@@ -114,7 +114,7 @@ def get_info_for_project(project, server, admin_info):
 
 def get_secret(conf):
     secret_filename = conf['topp_secret_filename']
-    return oc_auth.get_secret(secret_filename)
+    return libopencore.auth.get_secret(secret_filename)
 
 class UserMapper(usermapper.UserMapper):
 
@@ -174,11 +174,11 @@ class CookieAuth(object):
             return False
 
         try:
-            username, auth = oc_auth.authenticate_from_cookie(
+            username, auth = libopencore.auth.authenticate_from_cookie(
                 morsel.value, self.secret)
-        except oc_auth.BadCookie:
+        except libopencore.auth.BadCookie:
             raise BadCookieError
-        except oc_auth.NotAuthenticated:
+        except libopencore.auth.NotAuthenticated:
             return False
 
         username = username.lower()
@@ -246,5 +246,5 @@ def make_cookie(username):
     from pylons import config
     secret = get_secret(config['app_conf'])
     
-    cookie = oc_auth.generate_cookie_value(username, secret)
+    cookie = libopencore.auth.generate_cookie_value(username, secret)
     return ('__ac', cookie)
