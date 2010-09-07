@@ -37,7 +37,7 @@ setup(
     name='TaskTracker',
     version="0.4",
     description="task management software used on coactivate.org",
-    long_description=readme,
+    long_description=desc,
     author="",
     author_email="opencore-dev@lists.coactivate.org",
     url="http://www.coactivate.org/projects/tasktracker",
