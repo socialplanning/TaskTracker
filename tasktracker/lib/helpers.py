@@ -429,7 +429,8 @@ def filled_render(template, obj, extra_dict={}):
     response = render(template)
     d = sqlobject_to_dict(obj)
     d.update(extra_dict)
-    response = htmlfill.render(response, d, encoding='utf8')
+    response = htmlfill.render(response, d, encoding='utf8',
+                               force_defaults=False)
     return response
 
 #FIXME: merge with previewText

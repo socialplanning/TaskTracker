@@ -1,0 +1,12 @@
+0.4
+===
+
+The tasklist update form now works.  Previously it would reject all
+submissions, because the ``authenticator`` form field used for XSRF
+protection was missing from the form served to the user (and therefore
+missing from the form submission) so tasktracker's secure_forms
+rejected all submissions.  This  has been fixed: the ``authenticator``
+was being stripped out of the response by ``formencode.htmlfill``
+which did not recognize it as part of the schema.  Passing parameter
+``force_defaults=False`` to ``formencode.htmlfill.render`` solves the
+problem.

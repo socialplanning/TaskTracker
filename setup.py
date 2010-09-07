@@ -22,10 +22,20 @@ import sys, os
 from setuptools import setup, find_packages
 
 readme = open("README.txt").read()
+changes = open("CHANGES.txt").read()
+
+desc = """
+%s
+
+History
+=======
+
+%s
+""" % (readme, changes)
 
 setup(
     name='TaskTracker',
-    version="0.3",
+    version="0.4",
     description="task management software used on coactivate.org",
     long_description=readme,
     author="",
