@@ -35,7 +35,7 @@ History
 
 setup(
     name='TaskTracker',
-    version="0.4",
+    version="0.5",
     description="task management software used on coactivate.org",
     long_description=desc,
     author="",
