@@ -67,8 +67,15 @@ def setup_config(command, filename, section, vars):
     # DONT EVER UNCOMMENT THIS CODE.
     # for table in soClasses[::-1]:
     #    table.dropTable(ifExists=True)
+    constraints = []
     for table in soClasses:
-        table.createTable(ifNotExists=True)
+        _constraints = table.createTable(ifNotExists=True, applyConstraints=False)
+        if _constraints is not None:
+            constraints += _constraints
+
+    connection = hub.hub.getConnection()
+    for constraint in constraints:
+        connection.query(constraint)
 
     def makeUser(usename, password="topp"):
         """Makes a user."""
