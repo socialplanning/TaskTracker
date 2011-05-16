@@ -49,7 +49,7 @@ setup(
       "decorator>=2.1.0", 
       "httplib2", 
       "elementtree", 
-      "python-dateutil",
+      "python-dateutil==1.5",
       "uuid",
       "topp.utils>=0.5",
       "FormEncode==dev,>=0.7.2dev-r2661",
