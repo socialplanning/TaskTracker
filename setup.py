@@ -69,8 +69,6 @@ setup(
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
     dependency_links = [
       "https://svn.openplans.org/eggs/",
-      "http://pythonpaste.org/package_index.html",
-      "http://labix.org/python-dateutil",
       ],
     entry_points="""
     [paste.app_factory]
