@@ -1,4 +1,3 @@
-
 # Copyright (C) 2006 The Open Planning Project
 
 # This program is free software; you can redistribute it and/or
@@ -67,9 +66,6 @@ setup(
     include_package_data=True,
     test_suite = 'nose.collector',
     package_data={'tasktracker': ['i18n/*/LC_MESSAGES/*.mo']},
-    dependency_links = [
-      "https://svn.openplans.org/eggs/",
-      ],
     entry_points="""
     [paste.app_factory]
     main=tasktracker:make_app
