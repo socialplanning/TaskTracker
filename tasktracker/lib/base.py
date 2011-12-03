@@ -397,6 +397,10 @@ class BaseController(WSGIController):
         # Insert any code to be run per request here. The Routes match
         # is under environ['pylons.routes_dict'] should you want to check
         # the action or route vars here
+
+        # Force Paste not to set the Content-Length to 0 before cgi.FieldStorage
+        # can read the request body
+        environ['CONTENT_LENGTH'] = '-1'
         return WSGIController.__call__(self, environ, start_response)
 
 
