@@ -44,8 +44,14 @@ from random import random
 
 import formencode.validators
 
-from urllib import quote
+from urllib import quote as base_quote
 import datetime
+
+def quote(text):
+    try:
+        return base_quote(text)
+    except:
+        return base_quote(text.encode("utf8"))
 
 class SafeHTML(formencode.validators.String):
     def to_python(self, value, state):

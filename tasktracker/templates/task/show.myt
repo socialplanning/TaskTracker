@@ -131,7 +131,7 @@ This task is part of the
     &lt;&lt; previous task: 
     <a href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.prev.id) %>"
-     title = "<% h.quote(c.prev.text) %>"
+     title = "<% h.html2safehtml(c.prev.text) %>"
      id = "title_<% c.prev.id %>"
      class = "uses_permalink big">
       <% c.prev.title %>
@@ -143,7 +143,7 @@ This task is part of the
     next task:
     <a href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
      base_href = "<% h.url_for(controller='task', action='show', id=c.next.id) %>"
-     title = "<% h.quote(c.next.text) %>"
+     title = "<% h.html2safehtml(c.next.text) %>"
      id = "title_<% c.next.id %>"
      class = "uses_permalink big">
       <% c.next.title %></a> &gt;&gt;
